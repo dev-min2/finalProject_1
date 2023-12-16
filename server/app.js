@@ -2,11 +2,19 @@ require('dotenv').config({ path : './config/mysql.env' });
 
 const express = require('express');
 const app = new express();
+const session = require('express-session');
 const productDAO = require('./DAO/ProductDAO');
 
 app.use(express.json({
     limit : '50mb'
 }));
+
+app.use(session({
+    secret: 'petGoods', // 따로 env파일로 뺴두는게 정석
+    resave: false,
+    saveUninitialized: true,
+    secure: false
+}))
 
 app.listen(12532, () => {
     console.log('server lisening');
