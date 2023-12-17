@@ -1,5 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainBody from '../views/min/MainBody.vue'
+import MainBody from '../views/MainBody.vue'
+import LoginComp from '../views/userview/LoginComp.vue'
+import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
+import TestUploadView from '../views/userview/TestUploadView.vue'
+import TestView from '../views/userview/TestView.vue'
 
 const routes = [
   {
@@ -7,14 +11,26 @@ const routes = [
     name: 'main',
     component: MainBody
   },
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  // }
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginComp
+  },
+  {
+    path: '/join/:sellerJoin',
+    name: 'join',
+    component: CreateAccountComp
+  },
+  {
+    path: '/upload',
+    name: 'upload',
+    component : TestUploadView
+  },
+  {
+    path: '/uploadView',
+    name: 'uploadView',
+    component : TestView
+  }
 ]
 
 const router = createRouter({

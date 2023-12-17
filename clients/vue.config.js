@@ -6,10 +6,13 @@ module.exports = defineConfig({
   devServer : {
     port : 8080,
     proxy : {
-      '/' : {
+      '/api' : {
         target,
         changeOrigin : true,
-        ws : false
+        ws : false,
+        pathRewrite : { // 경로를 다시씀. -> /api/~ -> / 
+          '^/api' : '/'
+        } 
       }
     }
   }
