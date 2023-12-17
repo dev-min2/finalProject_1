@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import MainBody from '../views/MainBody.vue'
 import LoginComp from '../views/userview/LoginComp.vue'
 import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
+import TestUploadView from '../views/userview/TestUploadView.vue'
+import TestView from '../views/userview/TestView.vue'
 
 const routes = [
   {
@@ -18,6 +20,16 @@ const routes = [
     path: '/join/:sellerJoin',
     name: 'join',
     component: CreateAccountComp
+  },
+  {
+    path: '/upload',
+    name: 'upload',
+    component : TestUploadView
+  },
+  {
+    path: '/uploadView',
+    name: 'uploadView',
+    component : TestView
   }
 ]
 
