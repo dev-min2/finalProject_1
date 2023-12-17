@@ -13,7 +13,21 @@ async function getConnection() {
     return pool.promise().getConnection(); // 이렇게해야만 커넥션 얻음
 };
 
+async function query(sql, values) {
+    return new Promise((resolve,reject) => {
+        pool.query(sql, values, (err, results) => {
+            if(err) {
+                reject( { err } );
+            }
+            else {
+                resolve(results);
+            }
+        })
+    })
+}
+
 module.exports = {
     pool,
-    getConnection
+    getConnection,
+    query
 };
