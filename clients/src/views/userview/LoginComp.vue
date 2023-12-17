@@ -53,6 +53,7 @@
 
 <script>
     import axios from 'axios'
+    import sha256 from 'crypto-js/sha256';
     export default {
         data() {
             return {
@@ -64,10 +65,10 @@
         methods : {
             async login() {
                 this.$showLoading();
-                // 로그인송신
+                
                 const userObj = {
                     userId : this.userId,
-                    userPw : this.userPw
+                    userPw : sha256(this.userPw).toString()
                 };
 
                 let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});

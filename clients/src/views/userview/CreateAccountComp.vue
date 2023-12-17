@@ -90,6 +90,7 @@
 
 <script>
     import axios from 'axios'
+    import sha256 from 'crypto-js/sha256';
     export default {
         data() {
             return {
@@ -216,7 +217,7 @@
                 
                 const userObj = {
                     user_id : this.userId,
-                    user_pw : this.userPw, // 암호화
+                    user_pw : sha256(this.userPw).toString(), // 암호화
                     nickname : this.userNickname,
                     user_birth : this.userBirth,
                     user_email : this.userEmail,
