@@ -25,6 +25,24 @@ const userDAO = {
         `;
 
         return query(selectUserQuery, [userId, userPw]);
+    },
+
+    //테스트용 지워야함
+    insertTestQuery : async function(data) {
+        const insertQuery = `
+            INSERT INTO productTest SET ?
+        `;
+
+        return query(insertQuery, data);
+    },
+
+    // 테스트용 지워야함
+    selectAllTestQuery : async function() {
+        const selectQuery = `
+            SELECT *
+                FROM productTest
+        `
+        return query(selectQuery);
     }
 };
 

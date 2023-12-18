@@ -30,7 +30,7 @@ const routes = [
     path: '/uploadView',
     name: 'uploadView',
     component : TestView
-  }
+  },
 ]
 
 const router = createRouter({
