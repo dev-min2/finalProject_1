@@ -2,13 +2,11 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-light"> <!-- bg-light -->
             <div class="container px-4 px-lg-5">
-                <template v-if="curShowPetType == '0'">
-                    <router-link class="navbar-brand m-0" to="/" style="font-family: 'Single Day', cursive;font-size:28px;font-weight:bold;color:#f0768b">마이디어 독</router-link>
-                    <img class ="mx-2" src="../assets/commonResource/dogIcon.png" alt="dog" style="width:40px;height:40px;">
+                <template v-if="curShowPetType == '0'">                    
+                    <router-link to="/"><img class ="mx-2" src="../assets/commonResource/doglogo.png" alt="dog" style="width:140px;"></router-link>
                 </template>
                 <template v-else>
-                    <router-link class="navbar-brand m-0" to="/" style="font-family: 'Single Day', cursive;font-size:28px;font-weight:bold;color:#f0768b">마이디어 캣</router-link>
-                    <img class ="mx-2" src="../assets/commonResource/catIcon.png" alt="dog" style="width:40px;height:40px;">
+                    <router-link to="/"><img class ="mx-2" src="../assets/commonResource/catlogo.png" alt="cat" style="width:140px;"></router-link>
                 </template>
                 
                 

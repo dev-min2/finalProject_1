@@ -6,12 +6,22 @@
     		<li data-target="#myCarousel" data-slide-to="1"></li>
   		</ol>
   	<div class="text-center carousel-inner">
-    	<div class="carousel-item active">
-      		<img src="../assets/commonResource/bannerImage/강아지.png" width="1230" height="500" alt="First slide">
-    	</div>
-    	<div class="carousel-item">
-      		<img src="../assets/commonResource/bannerImage/배너2.jpg" width="1230" height="500" alt="Second slide">
-    	</div>
+		<template v-if="$store.state.curShowPetType == '0'">
+    		<div class="carousel-item active">
+      			<img src="../assets/commonResource/bannerImage/dogBanner1.jpg" width="1230" height="500" alt="First slide">
+    		</div>
+    		<div class="carousel-item">
+	      		<img src="../assets/commonResource/bannerImage/dogBanner2.jpg" width="1230" height="500" alt="Second slide">
+    		</div>
+		</template>
+		<template v-else>
+			<div class="carousel-item active">
+      			<img src="../assets/commonResource/bannerImage/catBanner1.jpg" width="1230" height="500" alt="First slide">
+    		</div>
+    		<div class="carousel-item">
+	      		<img src="../assets/commonResource/bannerImage/catBanner2.jpg" width="1230" height="500" alt="Second slide">
+    		</div>
+		</template>
   	</div>
   	<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
     	<span class="carousel-control-prev-icon" aria-hidden="true"></span>

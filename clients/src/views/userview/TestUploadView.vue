@@ -2,18 +2,18 @@
     <section class="pt-2 pb-4">
 		<div class="container px-4 px-lg-5 mt-3">
 			<h3>상품 등록화면</h3>
-			<form @submit.prevent="uploadFile" ref="uploadForm">
+			<form @submit.prevent="uploadProduct" ref="uploadForm" class="row">
 				<table class="table">
 					<tr>
-						<th>애완동물타입</th>
-						<td>
+						<th class="col-md-2">애완동물타입</th>
+						<td class="col-md-4">
 							<select class="form-select" name="petType" v-model="petType" aria-label="Default select example">
                                 <option selected value="dog">강아지</option>
                                 <option value="cat">고양이</option>
 							</select>
 						</td>
-						<th>카테고리</th>
-						<td>
+						<th class="col-md-2">카테고리</th>
+						<td class="col-md-4">
 							<select class="form-select" name="categoryNo" aria-label="Default select example">
                                 <optgroup label="사료">
                                     <option value="5">건식사료</option>
@@ -49,17 +49,18 @@
 					</tr>
 					<tr>
 						<th>상품설명</th>
-						<td colspan="3"><textarea cols="100" rows="6" name="productDesc"
-								class="form-control"></textarea></td>
+						<!-- <td colspan="3"><textarea cols="100" rows="6" name="productDesc"
+								class="form-control"></textarea></td> -->
+						<td>
+							<div id="editor">
+							</div>
+						</td>
 					</tr>
 					<tr>
-						
-						<td>메인이미지 :</td>
+						<th>메인이미지</th>
 						<td><input ref="prImg" type="file" name="productImage" class="form-control"></td>
-					
-						<td>상세이미지 :</td>
-						<td><input ref="prDeImg" type="file" name="productDetailImage" class="form-control"></td>
 					</tr>
+					<input type="hidden" ref="deschtml" name="deschtml">
 					<tr>
 						<td colspan="2">
 							<input type="submit" value="저장" class="btn btn-primary"> 
@@ -73,7 +74,11 @@
 </template>
 
 <script>
+import Editor from '@toast-ui/editor'; /* ES6 모듈 방식 */
+import '@toast-ui/editor/dist/toastui-editor.css'; // Editor 스타일
 import axios from 'axios'
+
+let editor = null;
 export default {
     data() {
         return {
@@ -85,12 +90,41 @@ export default {
             this.$refs.prImg.name = `productImage/${this.petType}`;
             this.$refs.prDeImg.name = `productDetailImage/${this.petType}`;
             
-
             const formData = new FormData(this.$refs.uploadForm);
             console.log(this.$refs.uploadForm);
             let result = await axios.post('/api/user/upload', formData);
             console.log(result);
-        }
-    }
+        },
+		async uploadProduct() {
+			this.$refs.deschtml.value = editor.getHTML(); // html값 넣어주고
+			this.$refs.prImg.name = `productImage/${this.petType}`;
+			const formData = new FormData(this.$refs.uploadForm);
+			let result = await axios.post('/api/user/uploadProduct', formData);
+			console.log(result);
+		}
+    },
+	mounted() {
+			editor = new Editor({
+				el: document.querySelector('#editor'),
+				height: '600px',
+				initialEditType: 'wysiwyg',
+				previewStyle: 'vertical',
+				hooks: {
+					// 이미지가 올라오면 해당 이미지가 blob매개변수에 담김
+					addImageBlobHook: async (blob, callback) => {
+						const formData = new FormData();
+						formData.append('image', blob);
+
+						let result = await axios.post('/api/user/upload',formData,{"Content-Type": "multipart/form-data"});
+						const fileName = result.data;
+						console.log(result);
+						// 나중에 storage서버를 따로 만들까..
+						const imageUrl = `http://localhost:12532/uploads/productDescInImg/${fileName}`;
+
+						callback(imageUrl, 'image alt attribute');
+					}
+				},
+        });
+	}
 }
 </script>
