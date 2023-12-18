@@ -24,6 +24,23 @@ class UserService {
         let result = await UserDAO.selectUserQuery(userId,userPw);
         return result;
     }
+
+    // 테스트용
+    async testUpload(deschtml, fileName) {
+        let data = {
+            product_desc : deschtml,
+            product_img : fileName
+        }
+
+        let result = await UserDAO.insertTestQuery(data);
+        return result;
+    }
+
+    // 테스트용
+    async testData() {
+        let result = await UserDAO.selectAllTestQuery();
+        return result[4];
+    }
 }
 
 module.exports = UserService;
