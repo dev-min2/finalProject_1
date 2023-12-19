@@ -9,13 +9,14 @@ const store = createStore({
     plugins : [
         createPersistedState({
             storage: window.sessionStorage,
-            paths : ['userNo','curShowPetType'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
+            paths : ['userNo','curShowPetType','testData'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
         })
     ],
     state() {
         return {
             userNo : -1, // 서버 session이 무효화 or 로그아웃시 -1로 다시
-            curShowPetType : '0' // 0 : dog, 1 : cat
+            curShowPetType : '0', // 0 : dog, 1 : cat
+            testData : false, // true일경우 이미지 업로드를 http://192.168.0.40으로 함
         }
     },
     getters : {

@@ -39,7 +39,7 @@ class UserService {
     // 테스트용
     async testData() {
         let result = await UserDAO.selectAllTestQuery();
-        return result[4];
+        return result[0];
     }
 }
 
