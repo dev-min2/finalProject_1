@@ -118,8 +118,14 @@ export default {
 						let result = await axios.post('/api/user/upload',formData,{"Content-Type": "multipart/form-data"});
 						const fileName = result.data;
 						console.log(result);
-						// 나중에 storage서버를 따로 만들까..
-						const imageUrl = `http://localhost:12532/uploads/productDescInImg/${fileName}`;
+						
+						let imageUrl = '';
+						if(this.$store.state.testData) {
+							imageUrl = `http://192.168.0.40:12532/uploads/productDescInImg/${fileName}`;
+						}
+						else {
+							imageUrl = `http://localhost:12532/uploads/productDescInImg/${fileName}`;
+						}
 
 						callback(imageUrl, 'image alt attribute');
 					}
