@@ -9,10 +9,6 @@ let pool = mysql.createPool( {
     database : process.env.MYSQL_DB
 });
 
-async function getConnection() {
-    return pool.promise().getConnection(); // 이렇게해야만 커넥션 얻음
-};
-
 async function query(sql, values) {
     return new Promise((resolve,reject) => {
         pool.query(sql, values, (err, results) => {
@@ -25,6 +21,10 @@ async function query(sql, values) {
         })
     })
 }
+
+async function getConnection() {
+    return pool.promise().getConnection(); // 이렇게해야만 커넥션 얻음
+};
 
 module.exports = {
     pool,
