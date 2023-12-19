@@ -43,7 +43,7 @@ const userDAO = {
                 FROM productTest
         `
         return query(selectQuery);
-    }
+    },
 };
 
 module.exports = userDAO;

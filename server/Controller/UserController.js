@@ -1,12 +1,19 @@
 const express = require('express');
 const userRouter = express.Router();
 
-userRouter.use(express.json({
-    limit: '50mb'
-}));
+const UserSevice = require('../Service/UserSevice');
 
-//const employeeDAO = require('./db/DAO/employeeDAO');
-const UserSevice = require('../../Service/user/UserSevice');
+userRouter.post('/join', async(req,res) =>{
+    let user = req.body.user;
+    try {
+        const userService = new UserSevice();
+        let result = await userService.createUser(user);
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }  
+});
 
 userRouter.post('/checkId', async (req, res) => {
     let id = req.body.id;
@@ -20,19 +27,6 @@ userRouter.post('/checkId', async (req, res) => {
     }
 })
 
-userRouter.post('/join', async(req,res) =>{
-    let user = req.body.user;
-    try {
-        console.log(user);
-        const userService = new UserSevice();
-        let result = await userService.createUser(user);
-        console.log(result);
-        res.send(result);
-    }
-    catch(e) {
-        console.log(e);
-    }  
-});
 
 userRouter.post('/login', async(req,res) =>{
     let user = req.body.user;
@@ -125,9 +119,9 @@ const storage2 = multer2.diskStorage({
     destination: function (req, file, cb) {
         let folderName = '';
         if(file.fieldname == 'productImage/dog')
-            folderName = 'productImage/dog';
+            folderName = 'uploads/productImage/dog';
         else if(file.fieldname == 'productImage/cat')
-            folderName = 'productImage/cat';
+            folderName = 'uploads/productImage/cat';
         const uploadFolder = folderName;
         cb(null, uploadFolder);
     },
