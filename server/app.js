@@ -15,8 +15,14 @@ app.use(session({
 app.use(express.urlencoded({extended : false}));
 
 // 라우터(컨트롤러)추가영역
-const userController = require('./Controller/user/UserController');
-app.use('/user',userController);
+const userController = require('./Controller/UserController');
+const boardController = require('./Controller/BoardController');
+const productController = require('./Controller/ProductController');
+
+app.use('/user', userController);
+app.use('/board', boardController);
+app.use('/product', productController);
+//
 
 app.listen(12532, () => {
     console.log('server lisening');
