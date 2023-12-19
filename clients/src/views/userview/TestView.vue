@@ -10,7 +10,7 @@
                         <div class="card h-100">
                             <!-- Product image-->
                             <div class="hoverImg">
-                                <img class="card-img-top" :src="`http://localhost:12532/uploads/productImage/dog/${testData.product_img}`" alt="..." />
+                                <img class="card-img-top" :src="img_src" alt="..." />
                             </div>
                             <!-- Product details-->
                             <div class="card-body p-4">
@@ -44,16 +44,22 @@ export default {
                 product_img : ''
             },
             toastViewer: null,
+            ip : 'localhost',
+            img_src : ``,
         }
     },
     created() {
         this.getData();
+        if(this.$store.state.testData) {
+            this.ip = "192.168.0.40";
+        }
     },
     methods : {
         async getData() {
             let result = await axios.get('/api/user/testProductInfo');
             this.testData = result.data;
 
+            this.img_src = `http://${this.ip}:12532/uploads/productImage/dog/${this.testData.product_img}`;
             this.toastViewer.setMarkdown(this.testData.product_desc);
         }
     },

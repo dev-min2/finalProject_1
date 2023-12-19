@@ -125,9 +125,9 @@ const storage2 = multer2.diskStorage({
     destination: function (req, file, cb) {
         let folderName = '';
         if(file.fieldname == 'productImage/dog')
-            folderName = 'uploads/productImage/dog';
+            folderName = 'productImage/dog';
         else if(file.fieldname == 'productImage/cat')
-            folderName = 'uploads/productImage/cat';
+            folderName = 'productImage/cat';
         const uploadFolder = folderName;
         cb(null, uploadFolder);
     },
@@ -174,6 +174,7 @@ CREATE TABLE `productTest` (
 userRouter.get('/testProductInfo', async(req, res) => {
     try {
         const userService = new UserSevice();
+        console.log('요청옴');
         let result = await userService.testData();
         console.log(result);
         res.send(result);
