@@ -48,12 +48,15 @@ export default {
     },
     created() {
         //this.getMainItemList();
+        
+        
     },
     methods: {
         async getMainItemList() {
             this.$showLoading();
             let result = await axios.get('/api/main').catch(err => console.log(err));
             this.productList = result.data;
+            console.log(this.productList);
             this.$hideLoading();
         },
     },

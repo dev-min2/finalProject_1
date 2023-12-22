@@ -14,7 +14,13 @@ export default {
     Footer,
     Header,
     Banner,
+  },
+  methods : {
+   checkPermission() {
+    
+   } 
   }
+  
 }
 </script>
 

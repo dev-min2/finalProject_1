@@ -66,7 +66,7 @@
                                 <a class="dropdown-item dropdown-toggle">사료</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <router-link to="/dryFeed" class="dropdown-item">건식사료</router-link>
+                                        <router-link to="/" class="dropdown-item">건식사료</router-link>
                                     </li>
                                     <li><a class="dropdown-item" href="#">습식사료</a></li>
                                 </ul>
