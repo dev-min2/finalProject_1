@@ -13,7 +13,7 @@ export default {
   components : {
     Footer,
     Header,
-    Banner
+    Banner,
   }
 }
 </script>
