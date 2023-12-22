@@ -95,6 +95,7 @@
                     <router-link v-if="$store.state.userNo == -1" to="/login" class="nav-link">로그인</router-link>
                     <a v-else class="nav-link" @click="logout" >로그아웃</a>
                 </li>
+                <li class="nav-item"><router-link class="nav-link" to="/adminView">관리자테스트</router-link></li>
             </ul>
             </div>
         </nav>
@@ -111,6 +112,7 @@ export default {
     },
     created() {
     },
+    
     methods : {
         changePetType() {
             if(this.curShowPetType == '0')

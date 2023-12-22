@@ -4,6 +4,7 @@ import LoginComp from '../views/userview/LoginComp.vue'
 import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
 import TestView from '../views/userview/TestView.vue'
+import AdminMain from '../views/adminView/adminMain.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/uploadView',
     name: 'uploadView',
     component : TestView
+  },
+  {
+    path: '/adminView',
+    name: 'adminView',
+    component : AdminMain
   }
 ]
 
