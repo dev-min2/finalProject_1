@@ -8,32 +8,32 @@ import TestView from '../views/userview/TestView.vue'
 export default {
     path : '/',
     name : 'tmpMain',
-    components : UserTemplate,
-    children : [
+    component : UserTemplate,
+    children : [ // 자식에다가 컴포넌트 추가하면 됩니다.
         {
             path: '/main',
             name: 'main',
             component: MainBody
-          },
-          {
-            path: '/login',
-            name: 'login',
-            component: LoginComp
-          },
-          {
-            path: '/join/:sellerJoin',
-            name: 'join',
-            component: CreateAccountComp
-          },
-          {
-            path: '/upload',
-            name: 'upload',
-            component : TestUploadView
-          },
-          {
-            path: '/uploadView',
-            name: 'uploadView',
-            component : TestView
-          }
+        },
+        {
+          path: '/login',
+          name: 'login',
+          component: LoginComp
+        },
+        {
+          path: '/join/:sellerJoin',
+          name: 'join',
+          component: CreateAccountComp
+        },
+        {
+          path: '/upload',
+          name: 'upload',
+          component : TestUploadView
+        },
+        {
+          path: '/uploadView',
+          name: 'uploadView',
+          component : TestView
+        }
     ]
 };

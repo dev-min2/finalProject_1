@@ -3,10 +3,10 @@
         <nav class="navbar navbar-expand-lg navbar-light"> <!-- bg-light -->
             <div class="container px-4 px-lg-5">
                 <template v-if="curShowPetType == '0'">                    
-                    <router-link to="/"><img class ="mx-2" src="../assets/commonResource/doglogo.png" alt="dog" style="width:140px;"></router-link>
+                    <router-link to="/main"><img class ="mx-2" src="../assets/commonResource/doglogo.png" alt="dog" style="width:140px;"></router-link>
                 </template>
                 <template v-else>
-                    <router-link to="/"><img class ="mx-2" src="../assets/commonResource/catlogo.png" alt="cat" style="width:140px;"></router-link>
+                    <router-link to="/main"><img class ="mx-2" src="../assets/commonResource/catlogo.png" alt="cat" style="width:140px;"></router-link>
                 </template>
                 
                 
@@ -95,7 +95,7 @@
                     <router-link v-if="$store.state.userNo == -1" to="/login" class="nav-link">로그인</router-link>
                     <a v-else class="nav-link" @click="logout" >로그아웃</a>
                 </li>
-                <li class="nav-item"><router-link class="nav-link" to="/adminView">관리자테스트</router-link></li>
+                <li class="nav-item"><router-link class="nav-link" to="/admin">관리자테스트</router-link></li>
             </ul>
             </div>
         </nav>
