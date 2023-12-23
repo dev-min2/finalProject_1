@@ -4,6 +4,7 @@ import LoginComp from '../views/userview/LoginComp.vue'
 import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
 import TestView from '../views/userview/TestView.vue'
+import TestCartView from '../views/userview/TestCartView.vue'
 
 export default {
     path : '/',
