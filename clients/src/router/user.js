@@ -34,6 +34,11 @@ export default {
           path: '/uploadView',
           name: 'uploadView',
           component : TestView
-        }
+        },
+        {
+          path: "/cart",
+          name: "cart",
+          component: TestCartView,
+        },
     ]
 };
