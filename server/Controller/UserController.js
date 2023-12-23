@@ -55,6 +55,32 @@ userRouter.get('/logout', async(req,res) => {
     })
 })
 
+userRouter.post('/email-auth', async(req, res) => {
+    let email = req.body.email;
+    console.log(email);
+    try {
+        const userService = new UserSevice();
+        let result = await userService.createEmailAuthInfo(email);
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
+userRouter.post('/email-auth/confirm', async(req, res) => {
+    let { email, authcode } = req.body;
+    console.log(email);
+    try {
+        const userService = new UserSevice();
+        let result = await userService.confirmEmailAuth(email,authcode);
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
 // 파일 업로드 테스트용 코드
 const multer = require('multer'); 
 const path = require('path');

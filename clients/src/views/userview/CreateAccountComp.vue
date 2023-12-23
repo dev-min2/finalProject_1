@@ -7,34 +7,49 @@
 					<h4 class="hello">회원가입</h4>
 					<div class="row">
 						<div class="col-md-6 mb-3">
-									<label for="id">아이디</label> 
-                                    <input v-if="userIdDuplicateCheck == false" type="text" class="form-control" v-model="userId" id="id" name="id" placeholder="아이디" value="" required>
-                                    <input v-else type="text" class="form-control" v-model="userId" id="id" name="id" placeholder="아이디" value="" readonly required>
-									<div class="invalid-feedback">아이디를 입력해주세요.</div>
-								</div>
-									<input v-if="userIdDuplicateCheck == false" type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px">
-                                    <input v-else type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px" disabled>
-								<hr>
-								<div class="col-md-6 mb-3">
-									<label for="upw">비밀번호</label> 
-                                    <input type="password" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
-									<div class="invalid-feedback">비밀번호를 입력해주세요.</div>
-								</div>
-									<p class="ml-1" v-if="userPwCheck == false" id='alert' style="color:red;font-size:12px">비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자(!@#$%^)를 사용해 주세요.</p>
-                                    <p class="ml-1" v-else id='alert' style="color:green;font-size:12px">통과!</p>
-								<hr>
+								<label for="id">아이디</label> 
+                                <input v-if="userIdDuplicateCheck == false" type="text" class="form-control" v-model="userId" id="id" name="id" placeholder="아이디" value="" required>
+                                <input v-else type="text" class="form-control" v-model="userId" id="id" name="id" placeholder="아이디" value="" readonly required>
+								<div class="invalid-feedback">아이디를 입력해주세요.</div>
+							</div>
+								<input v-if="userIdDuplicateCheck == false" type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px">
+                                <input v-else type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px" disabled>
+							<hr>
+							<div class="col-md-6 mb-3">
+								<label for="upw">비밀번호</label> 
+                                <input type="password" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
+								<div class="invalid-feedback">비밀번호를 입력해주세요.</div>
+							</div>
+								<p class="ml-1" v-if="userPwCheck == false" id='alert' style="color:red;font-size:12px">비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자(!@#$%^)를 사용해 주세요.</p>
+                                <p class="ml-1" v-else id='alert' style="color:green;font-size:12px">통과!</p>
+							<hr>
                         
 							<div class="col-md-6 mb-3">
 								<label for="nick">이름</label> 
                                 <input type="text" class="form-control" v-model="userNickname" id="nick" name="nick" placeholder="이름 입력" value="" required>
 								<div class="invalid-feedback">이름을 입력해주세요.</div>
 							</div>
-						</div>
-						<div class="mb-3" >
-							<label for="email">이메일</label> 
-                            <input type="email" style="width:250px" class="form-control" v-model="userEmail" id="email" name="email" placeholder="you@example.com" required>
+						
+                        <label for="email">이메일</label> 
+						<div class="mb-3 d-flex gap-3" >
+                            <input type="email" style="width:250px; height:40px;" class="form-control align-self-center" v-model="userEmail" id="email" name="email" placeholder="you@example.com" required>
 							<div class="invalid-feedback">이메일을 입력해주세요.</div>
-						</div>
+                            <input v-if="showEmailAuth == false" type="button" @click="sendEmailAuthMail" value="이메일 인증" style="border-radius: 20px; margin-top:5px;width:150px;height:30px">
+                            <input v-else type="button" value="이메일 인증" style="border-radius: 20px; margin-top:5px;width:150px;height:30px" disabled>
+						</div>  
+                        <template v-if="showEmailAuth == true">
+                            <label for="emailAuth">이메일인증</label> 
+                            <div class="mb-3 d-flex gap-3">
+                                <input v-if="completedEmailAuth== false" type="text" style="width:250px; height:40px;" class="form-control align-self-center" id="emailAuth" name="emailAuth" v-model="authCode" required>
+                                <input v-else type="text" style="width:250px; height:40px;" class="form-control align-self-center" id="emailAuth" name="emailAuth" v-model="authCode" readonly required>
+                                <div class="invalid-feedback">이메일 인증값을 입력해주세요.</div>
+                                <input v-if="completedEmailAuth == false" type="button" @click="confirmEmailAuth" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px">
+                                <input v-else type="button" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px" disabled>
+                            </div>
+                            <div>
+                                <p v-show="completedEmailAuth == false" style="color:red;">유효시간 : {{showCount}}</p>
+                            </div>
+                        </template>
 						<div class="mb-3">
 							<label for="birth">생년월일</label> 
                             <input type="date" class="form-control" id="birth" name="birth" v-model="userBirth" placeholder="" required>
@@ -77,10 +92,11 @@
 
 						<hr class="mb-4">
 						<div class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input" id="aggrement" required> <label class="custom-control-label" for="aggrement">개인정보 수집 및 이용에 동의합니다.</label>
+							<input type="checkbox" class="custom-control-input" id="aggrement" required> <label class="mx-2 custom-control-label" for="aggrement">개인정보 수집 및 이용에 동의합니다.</label>
 						</div>
 						<div class="mb-4"></div>
 						<button class="btn btn-primary btn-lg btn-block" id="submit" type="submit" style="background-color:pink;border:none;">회원가입하기</button>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -111,6 +127,12 @@
                 emailCheckReg : /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                 phoneCheckReg : /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/,
                 busiCheckReg : /^[0-9]{3}-[0-9]{2}-[0-9]{5}$/,
+                showEmailAuth : false,
+                completedEmailAuth : false,
+                emailTimerCount : 0,
+                showCount : '',
+                emailInterval : '',
+                authCode : '',
             }
         },
         computed : {
@@ -120,9 +142,70 @@
         },
         created() {
             this.isSeller = this.$route.params.sellerJoin;
-            console.log("isSeller:", this.isSeller)
         },
         methods : {
+            async sendEmailAuthMail() {
+                if(!this.emailCheckReg.test(this.userEmail)) {
+                    alert('이메일 양식 확인해주세요');
+                    return;
+                }
+
+                const result = await axios.post('/api/user/email-auth', { email : this.userEmail }, {'Content-Type' : 'application/json'});
+                if(result.data) {
+                    this.showEmailAuth = true;
+                }
+                else {
+                    alert('이메일 인증값 생성에 실패했습니다. 다시 시도해주세요');
+                }
+            },
+            async confirmEmailAuth() {
+                if(!this.showEmailAuth) {
+                    return;
+                }
+
+                const result = await axios.post('/api/user/email-auth/confirm', {email : this.userEmail, authcode : this.authCode}, {'Content-Type' : 'application/json'});
+                if(!result.data) {
+                    alert('인증실패');
+                    return;
+                }
+                
+                alert('인증성공!');
+                this.completedEmailAuth = true;
+            },
+            updateEmailTimer() {
+                let result = false;
+                if(this.$route.path == '/join/0' || this.$route.path == '/join/1') {
+                    result = true;
+                }  
+                
+                // 라우터뷰가 달라져도 인터벌은 살아있기때문에 지워줘야함.
+                if(!result) {
+                    clearInterval(this.emailInterval);
+                    return;
+                }
+
+                if(this.completedEmailAuth) {
+                    clearInterval(this.emailInterval);
+                    return;
+                }
+
+                let min = Math.floor(this.emailTimerCount/60);
+                let sec = this.emailTimerCount - (60 * min);
+                
+                if(sec > 9)
+                    this.showCount = min + ":" + sec;
+                else
+                    this.showCount = min + ":0" + sec;
+
+                if(this.emailTimerCount <= 0) {
+                    clearInterval(this.emailInterval);
+                    alert('다시 인증시도 해주세요.');
+                    this.showEmailAuth = false;
+                    this.completedEmailAuth = false;
+                }
+
+                --this.emailTimerCount;
+            },
             callDaumAddressAPI(e) {
                 new daum.Postcode( {
 					oncomplete : (data) => {
@@ -197,8 +280,8 @@
                     return;
                 }
 
-                if(!this.emailCheckReg.test(this.userEmail)) {
-                    alert('이메일 양식 확인해주세요');
+                if(this.confirmEmailAuth == false) {
+                    alert('이메일 인증 해주세요');
                     return;
                 }
 
@@ -218,12 +301,12 @@
                 const userObj = {
                     user_id : this.userId,
                     user_pw : sha256(this.userPw).toString(), // 암호화
-                    nickname : this.userNickname,
+                    user_name : this.userNickname,
                     user_birth : this.userBirth,
                     user_email : this.userEmail,
                     user_phone : this.userPhone,
                     user_addr : this.roadAddress + ' ' + this.detailAddress,
-                    user_permission : this.isSeller == true ? '1' : '0',
+                    user_permission : this.isSeller == true ? '1' : '0',    
                 }
 
                 this.$showLoading();
@@ -236,6 +319,13 @@
                     alert('계정 생성에 실패 했습니다.');
                 }
                 this.$hideLoading();
+            }
+        },
+        watch : {
+            showEmailAuth(newValue, oldValue) {
+                this.showCount = "3:00";
+                this.emailTimerCount = 60 * 3;
+                this.emailInterval = setInterval(this.updateEmailTimer,1000);
             }
         }
     }

@@ -1,4 +1,5 @@
 require('dotenv').config({ path : './config/mysql.env' });
+require('dotenv').config({ path : './config/mail.env' });
 
 const express = require('express');
 const app = new express();

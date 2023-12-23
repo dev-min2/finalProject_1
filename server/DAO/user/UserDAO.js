@@ -4,7 +4,7 @@ const userDAO = {
     selectUserIdQuery : async function(userId) {
         const selectUserIdQuery = `
             SELECT user_id
-                FROM user_tbl
+                FROM user
                 WHERE user_id = ?
         `;
         return query(selectUserIdQuery, userId);
@@ -12,7 +12,7 @@ const userDAO = {
 
     insertUserQuery : async function(userObj) {
         const insertUserQuery = `
-            INSERT INTO user_tbl SET ?
+            INSERT INTO user SET ?
         `;
         return query(insertUserQuery, userObj);
     },
@@ -20,7 +20,7 @@ const userDAO = {
     selectUserQuery : async function(userId, userPw) {
         const selectUserQuery = `
             SELECT user_no
-                FROM user_tbl
+                FROM user
                 WHERE user_id = ? AND user_pw = ?
         `;
 

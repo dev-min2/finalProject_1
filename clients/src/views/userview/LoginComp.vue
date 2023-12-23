@@ -80,7 +80,7 @@
                     }
 
                     this.$store.commit('setUserNo', result.data[0].user_no);
-                    this.$router.push({path : '/'});
+                    this.$router.push({path : '/main'});
                 }
                 else {
                     alert('아이디와 비밀번호를 확인해주세요');
