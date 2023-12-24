@@ -71,21 +71,24 @@
                         </div>
                         
                         <template v-if="isSeller == 1">
-                            <div class="mb-3">
-                                <label for="business_number">사업자 등록증</label> 
-                                <input type="text" class="form-control" id="business_number" name="business_number" placeholder="111-11-11111" required>
+                            <label for="business_number">사업자 등록증</label> 
+                            <div class="mb-3 d-flex gap-3">
+                                <input v-if="completedBusinessAuth==false" type="text" class="form-control" id="business_number" name="business_number" v-model="businessNumber" placeholder="111-11-11111" required>
+                                <input v-else type="text" class="form-control" id="business_number" name="business_number" v-model="businessNumber" readonly required>
                                 <div class="invalid-feedback">사업자 등록증 입력해주세요</div>
+                                <input v-if="completedBusinessAuth == false" type="button" @click="checkBusinessNumber" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px">
+                                <input v-else type="button" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px" disabled>
                             </div>
 
                             <div class="mb-3">
                                 <label for="company_name">회사명</label> 
-                                <input type="text" class="form-control" name="company_name" placeholder="" required>
+                                <input type="text" class="form-control" name="company_name" v-model="companyName" placeholder="" required>
                                 <div class="invalid-feedback">회사명 입력해주세요</div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="ceo_name">대표자명</label> 
-                                <input type="text" class="form-control" id="ceo_name" name="ceo_name" placeholder="" required>
+                                <input type="text" class="form-control" id="ceo_name" name="ceo_name" v-model="ceoName" placeholder="" required>
                                 <div class="invalid-feedback">대표자명 입력해주세요</div>
                             </div>
                         </template>
@@ -107,6 +110,7 @@
 <script>
     import axios from 'axios'
     import sha256 from 'crypto-js/sha256';
+
     export default {
         data() {
             return {
@@ -133,6 +137,9 @@
                 showCount : '',
                 emailInterval : '',
                 authCode : '',
+                completedBusinessAuth : false,
+                companyName : '',
+                ceoName : '',
             }
         },
         computed : {
@@ -144,6 +151,31 @@
             this.isSeller = this.$route.params.sellerJoin;
         },
         methods : {
+            async checkBusinessNumber() {
+                if(!this.busiCheckReg.test(this.businessNumber)) {
+                    alert('사업자 등록번호 양식 확인해주세요.');
+                    return;
+                }
+                let busi = this.businessNumber.replaceAll('-','');
+
+                var sendObj = {
+                    "b_no": [busi], // 사업자번호 "xxxxxxx" 로 조회 시,
+                }; 
+                this.$showLoading();
+                const postURL = `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${process.env.VUE_APP_DATA_PROTAL_BUSINESS_NUMBER_CHECK_KEY}`;
+                const result = await axios.post(postURL,sendObj, {
+                    headers: { "Content-Type" : "application/json" }
+                });
+                this.$hideLoading();
+                
+                if(result.data.data[0].tax_type === '국세청에 등록되지 않은 사업자등록번호입니다.') {
+                    alert(result.data.data[0].tax_type);
+                    return;
+                }
+
+                this.completedBusinessAuth = true;
+                alert('사업자 인증 성공');
+            },
             async sendEmailAuthMail() {
                 if(!this.emailCheckReg.test(this.userEmail)) {
                     alert('이메일 양식 확인해주세요');
@@ -289,14 +321,6 @@
                     alert('전화번호 양식 확인해주세요');
                     return;
                 }
-
-                // 사업자쪽
-                if(this.isSeller == 1) {
-                    if(!this.busiCheckReg.test(this.businessNumber)) {
-                        alert('사업자 등록증 확인해주세요');
-                        return;
-                    }
-                }
                 
                 const userObj = {
                     user_id : this.userId,
@@ -307,6 +331,16 @@
                     user_phone : this.userPhone,
                     user_addr : this.roadAddress + ' ' + this.detailAddress,
                     user_permission : this.isSeller == true ? '1' : '0',    
+                }
+                
+                if(this.isSeller == 1) {
+                    if(!this.completedBusinessAuth) {
+                        alert('사업자 등록 인증해주세요');
+                        return;
+                    }
+                    userObj.company_name = this.companyName;
+                    userObj.business_number = this.businessNumber;
+                    userObj.ceo_name = this.ceoName;
                 }
 
                 this.$showLoading();

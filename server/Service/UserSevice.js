@@ -30,6 +30,9 @@ class UserService {
 
     async createEmailAuthInfo(email) {
         const { NODEMAILER_ID, NODEMAILER_PW } = process.env;
+
+        // 해당 이메일 인증하는 번호가 있다면 지워준다.
+        await emailAuthDAO.deleteQuery(email);
         
         const transporter = nodemailer.createTransport({
             service: 'naver',

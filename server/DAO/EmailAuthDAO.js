@@ -9,6 +9,10 @@ let emailAuthDAO = {
     selectQuery : async function(email, authcode) {
         const selectQuery = `SELECT * FROM email_auth WHERE email = ? AND authcode = ?`;
         return query(selectQuery, [email,authcode]);
+    },
+    deleteQuery : async function(email) {
+        const deleteQuey = `DELETE FROM email_auth WHERE email = ?`;
+        return query(deleteQuey,email);
     }
 };
 
