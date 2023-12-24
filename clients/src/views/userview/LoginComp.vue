@@ -1,7 +1,7 @@
 !<template>
 <div id="box">
     <form @submit.prevent>  
-		<div class="container">
+		<div class="container my-5">
 			<div class="input-form-backgroud row">
 				<div class="input-form col-md-12 mx-auto">
 					<h4 class="mb-5" style="text-align: center;font-size:50px;color:pink">마이디어 펫</h4>
@@ -22,8 +22,8 @@
                                 <label for="checkboxKIDBase">아이디 저장</label>
                             </div>
                             <div class="box__login-link">
-                                <span><router-link to="/">아이디 찾기 </router-link></span>
-                                <span><router-link to="/">| 비밀번호 찾기</router-link></span>
+                                <span><router-link :to="{ name : 'forgotAccount', params : { forgot : 'id' }}">아이디 찾기 </router-link></span>
+                                <span><router-link :to="{ name : 'forgotAccount', params : { forgot : 'pw' }}">| 비밀번호 찾기</router-link></span>
                             </div>
                         </div>
 						
@@ -40,7 +40,7 @@
                             <p>SNS 로그인</p>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <router-link to="/"><img src="../../assets/commonResource/kakaoLogo.png" alt="" style="width:48px; height:48px;"></router-link>
+                            <a href="#" @click="kakaoLogin"><img src="../../assets/commonResource/kakaoLogo.png" alt="" style="width:48px; height:48px;"></a>
                         </div>
                     </div>
                 </div>
@@ -53,22 +53,26 @@
 
 <script>
     import axios from 'axios'
-    import sha256 from 'crypto-js/sha256';
     export default {
         data() {
             return {
                 userId : localStorage.getItem("userId") || "",
                 userPw : '',
-                idSaveChecked : false
+                idSaveChecked : localStorage.getItem("userId") != "" ? true : false
             }
         },
         methods : {
+            async kakaoLogin() {
+                Kakao.Auth.authorize({
+                    redirectUri: `http://${this.$store.state.curIp}:8080/kakao-login`,
+                });
+            },
             async login() {
                 this.$showLoading();
                 
                 const userObj = {
                     userId : this.userId,
-                    userPw : sha256(this.userPw).toString()
+                    userPw : this.$encryptAES256(this.userPw)
                 };
 
                 let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
@@ -77,6 +81,9 @@
                     alert('로그인 성공!');
                     if(this.idSaveChecked) {
                         localStorage.setItem("userId", this.userId);
+                    }
+                    else {
+                        localStorage.setItem("userId", "");
                     }
 
                     this.$store.commit('setUserNo', result.data[0].user_no);

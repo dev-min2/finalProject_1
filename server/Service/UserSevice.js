@@ -1,6 +1,8 @@
 const UserDAO = require('../DAO/user/UserDAO');
 const emailAuthDAO = require('../DAO/EmailAuthDAO');
 const nodemailer = require('nodemailer');
+const { decryptAES256, encryptSHA256 } = require('../commonModule/commonModule');
+const userDAO = require('../DAO/user/UserDAO');
 
 class UserService {
     constructor() {
@@ -8,9 +10,9 @@ class UserService {
     }
 
     async createUser(userObj) {
-        //한번더 유효성 체크
-        //emailCheckReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        //phoneCheckReg = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+        const hashPW = encryptSHA256(decryptAES256(userObj.user_pw));
+        userObj.user_pw = hashPW;
+
         let result = await UserDAO.insertUserQuery(userObj);
         return result;
     }
@@ -22,7 +24,7 @@ class UserService {
 
     async loginUser(userObj) {
         const userId = userObj.userId;
-        const userPw = userObj.userPw;
+        const userPw = encryptSHA256(decryptAES256(userObj.userPw));
 
         let result = await UserDAO.selectUserQuery(userId,userPw);
         return result;
@@ -101,6 +103,85 @@ class UserService {
                 resolve(true);
             });
         });  
+    }
+
+    async sendForgotAccountInfoMail(forgotInfo) {
+        const { NODEMAILER_ID, NODEMAILER_PW } = process.env;
+        let mailOptions = {
+            from : NODEMAILER_ID
+        };
+
+        if(forgotInfo.forgotType == "id") {
+            let result = await userDAO.selectForgotIDQuery(forgotInfo.user_name, forgotInfo.user_email);
+            if(result.length <= 0)
+                return "일치하는 회원이 없음";
+
+            for(let i = 0; i < result.length; ++i) {
+                let halfLen = result[i].user_id.length / 2;
+                result[i].user_id = result[i].user_id.substr(0,halfLen) + ("*".repeat(halfLen));
+            }
+            
+            mailOptions.subject = "마이디어 펫 아이디 찾기";
+            mailOptions.html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Document</title>
+            </head>
+            <body>`;
+            mailOptions.html += "<div><h3>고객님의 정보와 일치하는 아이디 목록입니다.</h3>";
+            mailOptions.html += "<ul style='width:400px; list-style:none;'>";
+            for(let i = 0; i < result.length; ++i) {
+                mailOptions.html += `
+                    <li style="display:flex; justify-content: space-between; font-size:18px;">
+                        <strong>${result[i].user_id}</strong>
+                        <p>가입일 : ${result[i].user_joindate}</p>
+                    </li>
+                `;
+            }
+            mailOptions.html += '</div></body></html>';
+        }
+        else {
+            let result = await userDAO.selectForgotPWQuery(forgotInfo.user_id, forgotInfo.user_email);
+            if(result.length <= 0)
+                return "일치하는 회원이 없음";
+            
+            // 비밀번호 초기화
+            const randPW = Math.floor(Math.random() * (999999 - 111111 + 1)) + 111111;
+            console.log(randPW);
+            try {
+                result = await userDAO.updateResetPWQuery(encryptSHA256(randPW), forgotInfo.user_id, forgotInfo.user_email);
+            }
+            catch(e) {
+                return false;
+            }
+            
+            mailOptions.subject = "마이디어 펫 비밀번호 찾기";
+            mailOptions.html = `
+                <h2>임시비밀번호 : ${randPW} </h2>
+                <strong>로그인 후 반드시 비밀번호를 수정해주세요.</strong>
+            `;
+        }
+
+        mailOptions.to = forgotInfo.user_email; 
+        const transporter = nodemailer.createTransport({
+            service: 'naver',
+            host: 'smtp.naver.com',  // SMTP 서버명
+            port: 465,  // SMTP 포트
+            auth: {
+                user: NODEMAILER_ID,
+                pass: NODEMAILER_PW
+            }
+        });
+
+        const result = await this.sendMail(transporter, mailOptions);
+        if(result == false) {
+            return false;
+        }
+
+        return true;
     }
 
 

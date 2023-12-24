@@ -70,11 +70,32 @@ userRouter.post('/email-auth', async(req, res) => {
 
 userRouter.post('/email-auth/confirm', async(req, res) => {
     let { email, authcode } = req.body;
-    console.log(email);
     try {
         const userService = new UserSevice();
         let result = await userService.confirmEmailAuth(email,authcode);
         res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
+userRouter.post('/forgot-account', async(req, res) => {
+    let forgotInfo = req.body.forgotInfo;
+    try {
+        const userService = new UserService();
+        let result = await userService.sendForgotAccountInfoMail(forgotInfo);
+        if(result === "일치하는 회원이 없음") {
+            res.status(500).send("일치하는 회원이 없음");
+            return;
+        }
+
+        if(result) {
+            res.status(200).send("OK");
+        }
+        else {
+            res.status(500).send("FAIL");
+        }
     }
     catch(e) {
         console.log(e);
@@ -141,6 +162,7 @@ userRouter.post('/upload', upload.single('image'), (req, res) => {
 // 실제 게시글 등록
 
 const multer2 = require('multer'); 
+const UserService = require('../Service/UserSevice');
 const storage2 = multer2.diskStorage({
     destination: function (req, file, cb) {
         let folderName = '';

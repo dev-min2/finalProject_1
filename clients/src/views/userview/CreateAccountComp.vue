@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container my-5">
         <form @submit.prevent="createAccount">
 		<div class="cont">
 			<div class="input-form-backgroud row">
@@ -109,7 +109,6 @@
 
 <script>
     import axios from 'axios'
-    import sha256 from 'crypto-js/sha256';
 
     export default {
         data() {
@@ -324,7 +323,7 @@
                 
                 const userObj = {
                     user_id : this.userId,
-                    user_pw : sha256(this.userPw).toString(), // 암호화
+                    user_pw : this.$encryptAES256(this.userPw), // 암호화
                     user_name : this.userNickname,
                     user_birth : this.userBirth,
                     user_email : this.userEmail,
