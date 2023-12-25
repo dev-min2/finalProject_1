@@ -44,44 +44,44 @@
 					</nav>
 				</div>
 				<div id="layoutSidenav_content">
-					<main>
-						<div class="container-fluid px-4">
-						<h3 class="mt-4" style= text-align:center>나의 정보</h3>
-		                    <br>
-		                    <hr>
-						<div class="mb-3">
-							<h5>아이디</h5><p class="form-control" id="uid">${vo.userId }</p>
-						</div>
-						<div class="mb-3">
-							<h5>이름</h5><p class="form-control">${vo.nickName }</p>
-						</div>
-						<div class="mb-3" >
-							<h5>이메일</h5><p class="form-control">${vo.userMail }</p>
-						</div>
-						<div class="mb-3">
-						<fmt:formatDate value="${vo.userBirth}" pattern="yyyy년 MM월 dd일" var="formatdDate" />
-							<h5>생년월일</h5><p class="form-control" id="ubt">${formatdDate }</p>
-						</div>
-						<div class="mb-3">
-							<h5>전화번호</h5><p class="form-control">${vo.userPhone }</p>
-						</div>
-						<div class="mb-3">
-							<h5>주소</h5><p class="form-control">${vo.userAddr }</p>
-						</div>
-						</div>
-						<div class="mb-4" style="text-align:center;">
-							<button type="button"  style="margin:10px;padding:8px">내 정보 변경</button>
-							
-								<button type="button" style="margin:10px;padding:8px">비밀번호 변경</button>
-							
-							<button type="button" style="margin:10px;padding:8px">돌아가기</button>
-						</div>
-				</main>
-			</div>
+                    <main>
+                            <div class="container-fluid px-4">
+                            <h3 class="mt-4" style= text-align:center>나의 정보</h3>
+                                <br>
+                                <hr>
+                            <div class="mb-3">
+                                <h5>아이디</h5><p class="form-control" id="uid">${vo.userId }</p>
+                            </div>
+                            <div class="mb-3">
+                                <h5>이름</h5><p class="form-control">${vo.nickName }</p>
+                            </div>
+                            <div class="mb-3" >
+                                <h5>이메일</h5><p class="form-control">${vo.userMail }</p>
+                            </div>
+                            <div class="mb-3">
+                            <fmt:formatDate value="${vo.userBirth}" pattern="yyyy년 MM월 dd일" var="formatdDate" />
+                                <h5>생년월일</h5><p class="form-control" id="ubt">${formatdDate }</p>
+                            </div>
+                            <div class="mb-3">
+                                <h5>전화번호</h5><p class="form-control">${vo.userPhone }</p>
+                            </div>
+                            <div class="mb-3">
+                                <h5>주소</h5><p class="form-control">${vo.userAddr }</p>
+                            </div>
+                            </div>
+                            <div class="mb-4" style="text-align:center;">
+                                <button type="button"  style="margin:10px;padding:8px">내 정보 변경</button>
+                                
+                                    <button type="button" style="margin:10px;padding:8px">비밀번호 변경</button>
+                                
+                                <button type="button" style="margin:10px;padding:8px">돌아가기</button>
+                            </div>
+                    </main>
+			    </div>
+		    </div>
+	        <footer class="my-3 text-center text-small"> </footer>
 		</div>
-	<footer class="my-3 text-center text-small"> </footer>
-			</div>
-		</div>
+	</div>
 </section>
 </template>
 

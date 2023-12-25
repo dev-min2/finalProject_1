@@ -1,6 +1,6 @@
 <template>
 	<div id="layoutSidenav_content">
-				<main>
+		<main>
 						<!--마이페이지 폼-->
 						<div class="container-fluid px-4">
 							<h3 class="mt-4" style= text-align:center>나의 정보</h3>
@@ -37,7 +37,7 @@
                             <button type="button" style="margin:10px;padding:8px">비밀번호 변경</button>
                             <button type="button" style="margin:10px;padding:8px">돌아가기</button>
                         </div>
-				</main>
+		</main>
 	</div>
 
 </template>
