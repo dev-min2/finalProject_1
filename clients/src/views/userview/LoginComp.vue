@@ -63,9 +63,46 @@
         },
         methods : {
             async kakaoLogin() {
-                Kakao.Auth.authorize({
-                    redirectUri: `http://${this.$store.state.curIp}:8080/kakao-login`,
-                });
+                let myThis = this;
+                Kakao.Auth.loginForm({
+                    scope : 'profile_nickname',
+                    success : (authToken) => {
+                        Kakao.API.request({
+                            url: '/v2/user/me',
+                            success: async (res) => {
+                                const kakao_account= res.kakao_account;
+                                const kakao_id = res.id;
+                                this.$store.commit('setSocialId', kakao_id);
+                                this.$store.commit('setAccessToken',authToken.access_token);
+                                this.$store.commit('setRefreshToken',authToken.refresh_token);
+                                // 가입한적이 있는지 체크.
+                                let result = await axios.post('/api/user/checkId',{ id : kakao_id }, {'Content-Type' : 'application/json'});
+                                if(result.data) { 
+                                    myThis.$router.push({name : "join", params : { sellerJoin : "socialjoin" }})
+                                }
+                                else {
+                                    //가입한적o
+                                    this.$showLoading();
+                                    const userObj = {
+                                        userId : String(kakao_id),
+                                        userPw : this.$encryptAES256("kakao")
+                                    };
+                                    
+                                    let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
+                                    if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
+                                        alert('로그인 성공!');
+                                        this.$store.commit('setUserNo', result.data[0].user_no);
+                                        this.$router.push({path : '/main'});
+                                    }
+                                    else {
+                                        console.log('실패?');
+                                    }
+                                    this.$hideLoading();
+                                }
+                            }
+                        });
+                    }
+                })
             },
             async login() {
                 this.$showLoading();

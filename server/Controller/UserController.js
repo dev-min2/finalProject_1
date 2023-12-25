@@ -5,9 +5,10 @@ const UserSevice = require('../Service/UserSevice');
 
 userRouter.post('/join', async(req,res) =>{
     let user = req.body.user;
+    let sns = req.body.sns;
     try {
         const userService = new UserSevice();
-        let result = await userService.createUser(user);
+        let result = await userService.createUser(user,sns);
         res.send(result);
     }
     catch(e) {

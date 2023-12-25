@@ -9,7 +9,7 @@ const store = createStore({
     plugins : [
         createPersistedState({
             storage: window.sessionStorage,
-            paths : ['userNo','curShowPetType','testData','curIp'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
+            paths : ['userNo','curShowPetType','testData','curIp','socialId','accessToken'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
         })
     ],
     state() {
@@ -17,7 +17,10 @@ const store = createStore({
             userNo : -1, // 서버 session이 무효화 or 로그아웃시 -1로 다시
             curShowPetType : '0', // 0 : dog, 1 : cat
             testData : false, // true일경우 이미지 업로드를 http://192.168.0.40으로 함
-            curIp : 'localhost',
+            curIp : 'localhost:8080',
+            socialId : 0, 
+            accessToken : '',
+            refreshToken : '',
         }
     },
     getters : {
@@ -30,6 +33,15 @@ const store = createStore({
         },
         setUserNo(state, payload) {
             state.userNo = payload;
+        },
+        setSocialId(state, payload) {
+            state.socialId = payload;
+        },
+        setAccessToken(state, payload) {
+            state.accessToken = payload;
+        },
+        setRefreshToken(state, payload) {
+            state.refreshToken = payload;
         }
     },
     actions : { // 비동기

@@ -30,6 +30,25 @@ app.listen(12532, () => {
     console.log('server lisening');
 })
 
+// 메인코드가져오는 건 여기서.
+const mainCodeDAO = require('./DAO/MainCodeDAO');
+app.post('/main-code', async(req, res) => {
+    const mainCodeName = req.body.mainCodeName;
+    let result = '';
+    try {
+        result = await mainCodeDAO.selectQuery(mainCodeName);
+    }
+    catch(e) {
+        console.log(e);
+    }
+    if(result.length <= 0) {
+        res.status(404).send('fail');
+    }
+    else {
+        res.status(200).send(result);
+    }
+})
+
 // 메인페이지 처리.
 // 카테고리 정보, 현재 펫타입 정보, 메인 화면 상품리스트등을 받아감.
 // app.get('/main', async (req, res) => {

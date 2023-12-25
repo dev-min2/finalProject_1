@@ -4,8 +4,10 @@
 		<div class="cont">
 			<div class="input-form-backgroud row">
 				<div class="input-form col-md-12 mx-auto">
-					<h4 class="hello">회원가입</h4>
+					<h4 v-if="isSeller === 'socialjoin'" class="hello">추가정보입력</h4>
+                    <h4 v-else class="hello">회원가입</h4>
 					<div class="row">
+                        <template v-if="isSeller !== 'socialjoin'">
 						<div class="col-md-6 mb-3">
 								<label for="id">아이디</label> 
                                 <input v-if="userIdDuplicateCheck == false" type="text" class="form-control" v-model="userId" id="id" name="id" placeholder="아이디" value="" required>
@@ -23,7 +25,7 @@
 								<p class="ml-1" v-if="userPwCheck == false" id='alert' style="color:red;font-size:12px">비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자(!@#$%^)를 사용해 주세요.</p>
                                 <p class="ml-1" v-else id='alert' style="color:green;font-size:12px">통과!</p>
 							<hr>
-                        
+                        </template>
 							<div class="col-md-6 mb-3">
 								<label for="nick">이름</label> 
                                 <input type="text" class="form-control" v-model="userNickname" id="nick" name="nick" placeholder="이름 입력" value="" required>
@@ -113,6 +115,12 @@
     export default {
         data() {
             return {
+                socialAccount : false,
+                socialSubCode : '',
+                accessToken : '',
+                refreshToken : '',
+                subCodes : [],
+                permissionSubcode : '',
                 isSeller : 0,
                 postcode : '',
                 roadAddress : '',
@@ -148,8 +156,51 @@
         },
         created() {
             this.isSeller = this.$route.params.sellerJoin;
+            if(this.isSeller === "socialjoin") {
+                this.userId = this.$store.state.socialId;
+                this.accessToken = this.$store.state.accessToken;
+                this.refreshToken = this.$store.state.refreshToken;
+            }
+            this.getSubCode();
         },
         methods : {
+            async getSubCode() {
+                const result = await axios.post('/api/main-code',{ mainCodeName : "회원권한구분코드"}, { headers : { "Content-Type" : "application/json"}});
+                if(result.status != 200) {
+                    alert('데이터를 불러오는데 실패했습니다.');
+                    this.$router.push({path : "/main"});
+                    return;
+                }
+                this.subCodes = result.data;
+                let findName = '';
+                if(this.isSeller === "socialjoin") {
+                    findName = "일반회원";
+                }
+                else {
+                    if(this.isSeller == 1)  
+                        findName = "판매자";
+                    else
+                        findName = "일반회원";
+                }
+                
+                for(const obj of this.subCodes) {
+                    if(obj.sub_code_name == findName){
+                        this.permissionSubcode = obj.sub_code;
+                        break;
+                    }
+                }
+                
+                // 현재는 카카오밖에없음.
+                if(this.isSeller === "socialjoin") {
+                    const result = await axios.post('/api/main-code',{ mainCodeName : "SNS로그인구분코드"}, { headers : { "Content-Type" : "application/json"}});
+                    for(const obj of result.data) {
+                        if(obj.sub_code_name == "카카오"){
+                            this.socialSubCode = obj.sub_code;
+                            break;
+                        }
+                    }
+                }
+            },
             async checkBusinessNumber() {
                 if(!this.busiCheckReg.test(this.businessNumber)) {
                     alert('사업자 등록번호 양식 확인해주세요.');
@@ -204,8 +255,9 @@
                 this.completedEmailAuth = true;
             },
             updateEmailTimer() {
+                
                 let result = false;
-                if(this.$route.path == '/join/0' || this.$route.path == '/join/1') {
+                if(this.$route.path == '/join/0' || this.$route.path == '/join/1' || this.$route.path == '/join/socialjoin') {
                     result = true;
                 }  
                 
@@ -288,7 +340,6 @@
 
                 this.$showLoading();
                 let result = await axios.post('/api/user/checkId',{ id : this.userId }, {'Content-Type' : 'application/json'});
-                console.log(result);
                 this.$hideLoading();
 
                 if(result.data) {
@@ -300,50 +351,61 @@
                 }
             },
             async createAccount() {
+                let userObj = {
+                };
+                let snsObj = {
+
+                } 
+
                 // 데이터 송신전에 한번더 체크
-                if(!this.userIdDuplicateCheck) {
-                    alert('아이디 중복체크 해주세요');
-                    return;
-                }
-
-                if(!this.pwCheckReg.test(this.userPw)) {
-                    alert('비밀번호 양식 확인해주세요');
-                    return;
-                }
-
-                if(this.confirmEmailAuth == false) {
-                    alert('이메일 인증 해주세요');
-                    return;
-                }
-
-                if(!this.phoneCheckReg.test(this.userPhone)) {
-                    alert('전화번호 양식 확인해주세요');
-                    return;
-                }
-                
-                const userObj = {
-                    user_id : this.userId,
-                    user_pw : this.$encryptAES256(this.userPw), // 암호화
-                    user_name : this.userNickname,
-                    user_birth : this.userBirth,
-                    user_email : this.userEmail,
-                    user_phone : this.userPhone,
-                    user_addr : this.roadAddress + ' ' + this.detailAddress,
-                    user_permission : this.isSeller == true ? '1' : '0',    
-                }
-                
-                if(this.isSeller == 1) {
-                    if(!this.completedBusinessAuth) {
-                        alert('사업자 등록 인증해주세요');
+                if(this.isSeller !== "socialjoin") {
+                    if(!this.userIdDuplicateCheck) {
+                        alert('아이디 중복체크 해주세요');
                         return;
                     }
-                    userObj.company_name = this.companyName;
-                    userObj.business_number = this.businessNumber;
-                    userObj.ceo_name = this.ceoName;
-                }
 
+                    if(!this.pwCheckReg.test(this.userPw)) {
+                        alert('비밀번호 양식 확인해주세요');
+                        return;
+                    }
+
+                    if(this.confirmEmailAuth == false) {
+                        alert('이메일 인증 해주세요');
+                        return;
+                    }
+
+                    if(!this.phoneCheckReg.test(this.userPhone)) {
+                        alert('전화번호 양식 확인해주세요');
+                        return;
+                    }
+
+                    if(this.isSeller == 1) {
+                        if(!this.completedBusinessAuth) {
+                            alert('사업자 등록 인증해주세요');
+                            return;
+                        }
+                        userObj.company_name = this.companyName;
+                        userObj.business_number = this.businessNumber;
+                        userObj.ceo_name = this.ceoName;
+                    }
+                    userObj.user_permission = this.permissionSubcode;
+                }
+                else {
+                    // 소셜회원가입의 경우.
+                    this.userPw = "kakao";
+                    userObj.user_permission = this.socialSubCode;
+                    snsObj.access_token = this.accessToken;
+                    snsObj.refresh_token = this.refreshToken;
+                }
+                userObj.user_id = this.userId;
+                userObj.user_pw = this.$encryptAES256(this.userPw), // 암호화
+                userObj.user_name = this.userNickname,
+                userObj.user_birth = this.userBirth,
+                userObj.user_email = this.userEmail,
+                userObj.user_phone = this.userPhone,
+                userObj.user_addr = this.roadAddress + ' ' + this.detailAddress,  
                 this.$showLoading();
-                let result = await axios.post('/api/user/join',{ user : userObj},{ 'Content-Type' : 'application/json'});
+                let result = await axios.post('/api/user/join',{ user : userObj, sns : snsObj },{ 'Content-Type' : 'application/json'});
                 if(result.status == 200) {
                     alert('계정 생성 성공!');
                     this.$router.push({path : '/login'});
@@ -352,12 +414,13 @@
                     alert('계정 생성에 실패 했습니다.');
                 }
                 this.$hideLoading();
+
             }
         },
         watch : {
             showEmailAuth(newValue, oldValue) {
-                this.showCount = "3:00";
-                this.emailTimerCount = 60 * 3;
+                this.showCount = "2:59";
+                this.emailTimerCount = 179;
                 this.emailInterval = setInterval(this.updateEmailTimer,1000);
             }
         }

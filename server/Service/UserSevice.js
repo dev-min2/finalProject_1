@@ -1,5 +1,6 @@
 const UserDAO = require('../DAO/user/UserDAO');
 const emailAuthDAO = require('../DAO/EmailAuthDAO');
+const snsLoginDAO = require('../DAO/SnsLoginDAO');
 const nodemailer = require('nodemailer');
 const { decryptAES256, encryptSHA256 } = require('../commonModule/commonModule');
 const userDAO = require('../DAO/user/UserDAO');
@@ -9,11 +10,21 @@ class UserService {
 
     }
 
-    async createUser(userObj) {
+    async createUser(userObj,snsObj) {
         const hashPW = encryptSHA256(decryptAES256(userObj.user_pw));
         userObj.user_pw = hashPW;
 
         let result = await UserDAO.insertUserQuery(userObj);
+        if(typeof snsObj !== "undefined") {
+            const sns = {
+                user_no : result.insertId,
+                sns_type : userObj.user_permission,
+                access_token : snsObj.access_token,
+                refresh_token : snsObj.refresh_token
+            }
+            await snsLoginDAO.insertQuery(sns);
+        }
+
         return result;
     }
 
@@ -25,7 +36,7 @@ class UserService {
     async loginUser(userObj) {
         const userId = userObj.userId;
         const userPw = encryptSHA256(decryptAES256(userObj.userPw));
-
+        
         let result = await UserDAO.selectUserQuery(userId,userPw);
         return result;
     }
