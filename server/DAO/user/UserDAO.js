@@ -28,9 +28,10 @@ const userDAO = {
     },
     selectForgotIDQuery : async function(user_name, user_email) {
         const selectForgotIDQuery = `
-            SELECT user_id,DATE_FORMAT(user_joindate, '%Y-%m-%d') as user_joindate
-                FROM user
-                WHERE user_name = ? AND user_email = ?
+        SELECT A.user_id, DATE_FORMAT(A.user_joindate, '%Y-%m-%d') as user_joindate
+            FROM user AS A
+            LEFT JOIN sns_login AS B ON A.user_no = B.user_no
+            WHERE B.user_no IS NULL AND A.user_name = ? AND A.user_email = ?
         `;
 
         return query(selectForgotIDQuery,[user_name, user_email]);
