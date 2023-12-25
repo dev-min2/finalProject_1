@@ -1,6 +1,18 @@
 <template>
-    <div>
-        <h1>관리자 화면</h1>
-        <router-view />
-    </div>
+    <AdminHeader />
+    <router-view />
+    <AdminFooter />
 </template>
+<script>
+import AdminHeader from '../layouts/AdminHeader.vue'
+import AdminFooter from '../layouts/AdminFooter.vue'
+export default {
+  components : {
+    AdminHeader,
+    AdminFooter
+  },
+  created() {
+    this.$router.push( { path : '/admin' });
+  }
+}
+</script>

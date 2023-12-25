@@ -161,6 +161,7 @@
             <a v-else class="nav-link" @click="logout">로그아웃</a>
           </li>
                 <li class="nav-item"><router-link class="nav-link" to="/admin">관리자테스트</router-link></li>
+                <li class="nav-item"><router-link class="nav-link" to="/seller">판매자테스트</router-link></li>
         </ul>
       </div>
     </nav>
