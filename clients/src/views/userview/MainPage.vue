@@ -5,6 +5,7 @@
     <section class="py-5">
       <!-- 상품 카드 데이터 임시 html. 따로 컴포넌트로 뺴두는게 좋음 -->
       <div class="container px-4 px-lg-5 mt-5">
+        <h4>이런 상품 어때요? </h4>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
           <div v-for="product in productList" :key="product.product_no" class="col mb-5">
             <div class="card h-100">
@@ -57,7 +58,7 @@
       async getMainpageProductList() {
         this.$showLoading();
         let result = await axios
-          .get("/api/product/main")
+          .get(`/api/product/main`)
           .catch((err) => console.log(err));
         this.productList = result.data;
         this.$hideLoading();
