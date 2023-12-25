@@ -1,7 +1,18 @@
+const productDAO = require("../DAO/product/ProductDAO");
+
 class ProductService {
     constructor() {
 
     }
+    async getMainpageProductList() {
+        let result = await productDAO.selectMainpageFirstProductQuery();
+        return result;
+
+    }
+
+
+
+
 
     //트랜잭션 예시코드임
     // async completePayment() {

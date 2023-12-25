@@ -55,12 +55,19 @@
           <div class="d-flex gap-3">
             <template v-if="curShowPetType == '0'">
               <button @click="changePetType" class="btn" type="button">
-                <i class="fas fa-cat fa-2x"></i>
+                <!-- <i class="fas fa-cat fa-2x"></i> -->
+                <img
+                  src="../assets/commonResource/catIcon.png"
+                  style="width: 70px"
+                />
               </button>
             </template>
             <template v-else>
               <button @click="changePetType" class="btn" type="button">
-                <i class="fas fa-dog fa-2x"></i>
+                <img
+                  src="../assets/commonResource/dogIcon.png"
+                  style="width: 70px"
+                />
               </button>
             </template>
             <button class="btn" type="button">
@@ -160,7 +167,9 @@
             >
             <a v-else class="nav-link" @click="logout">로그아웃</a>
           </li>
-                <li class="nav-item"><router-link class="nav-link" to="/admin">관리자테스트</router-link></li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/admin">관리자테스트</router-link>
+          </li>
         </ul>
       </div>
     </nav>
@@ -175,7 +184,7 @@ export default {
       return this.$store.state.curShowPetType;
     },
   },
-    
+
   created() {},
   methods: {
     changePetType() {
@@ -212,6 +221,4 @@ $(document).ready(function () {
   });
 });
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

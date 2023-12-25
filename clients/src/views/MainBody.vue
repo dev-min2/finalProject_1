@@ -37,29 +37,27 @@ import Banner from '../layouts/Banner.vue'
 // import { useLoading } from "vue3-loading-overlay/dist/index";
 // import "vue3-loading-overlay/dist/vue3-loading-overlay.css"
 
-export default {
-    components : {
-        Banner
+  export default {
+    components: {
+      Banner,
     },
     data() {
-        return {
-            productList : []
-        }
+      return {
+        productList: [],
+      };
     },
     created() {
-        //this.getMainItemList();
-        
-        
+      this.getMainpageProductList();
     },
     methods: {
-        async getMainItemList() {
-            this.$showLoading();
-            let result = await axios.get('/api/main').catch(err => console.log(err));
-            this.productList = result.data;
-            console.log(this.productList);
-            this.$hideLoading();
-        },
+      async getMainpageProductList() {
+        this.$showLoading();
+        let result = await axios
+          .get("/api/product/main")
+          .catch((err) => console.log(err));
+        this.productList = result.data;
+        this.$hideLoading();
+      },
     },
-}
-
+  };
 </script>
