@@ -63,7 +63,7 @@
                 <i class="fas fa-dog fa-2x"></i>
               </button>
             </template>
-            <button class="btn" type="button">
+            <button @click="$router.push('/orderdetail')" class="btn" type="button">
               <i class="far fa-user fa-2x"></i>
             </button>
             <button @click="$router.push('/cart')" class="btn" type="button">
