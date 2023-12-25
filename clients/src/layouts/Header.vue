@@ -203,8 +203,9 @@ export default {
               'Authorization': `Bearer ${accessToken}`
             }
         });
-        
-        console.log(logoutResult);
+        this.$store.commit('setSocialId',0);
+        this.$store.commit('setAccessToken','');
+        this.$store.commit('setRefreshToken','');
       }
     },
   },
