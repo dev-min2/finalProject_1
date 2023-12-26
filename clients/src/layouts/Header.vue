@@ -201,6 +201,21 @@ export default {
         this.$store.commit("setUserNo", -1);
         this.$router.push({ path: "/" });
       }
+
+      // 카카오로그아웃
+      if(this.$store.state.socialId > 0) {
+        const accessToken = this.$store.state.accessToken;
+        const logoutResult = await axios({
+            method:'post',
+            url:'https://kapi.kakao.com/v1/user/logout',
+            headers:{
+              'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        this.$store.commit('setSocialId',0);
+        this.$store.commit('setAccessToken','');
+        this.$store.commit('setRefreshToken','');
+      }
     },
   },
 };
