@@ -57,11 +57,11 @@
                 this.$showLoading();
                 const result = await axios.post('/api/user/forgot-account', { forgotInfo : sendObj}, { headers : {"Content-Type" : "application/json"}});
                 if(result.status == 200) {
-                    alert('메일 전송완료. 메일을 확인해주세요.');
+                    this.$showSuccessAlert('메일 전송완료. 메일을 확인해주세요.',null);        
                     this.$router.push({path : '/login'});
                 }
                 else {
-                    alert('오류 발생 : ',result.status);
+                    this.$showFailAlert('오류 발생 : ' + result.status,null);
                 }
                 this.$hideLoading();
             }
