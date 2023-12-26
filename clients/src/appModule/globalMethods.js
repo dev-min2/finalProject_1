@@ -1,10 +1,28 @@
 import { useLoading } from "vue3-loading-overlay/dist/index";
 import "vue3-loading-overlay/dist/vue3-loading-overlay.css"
 import cryptoJs from 'crypto-js';
+import Swal from 'sweetalert2'
 
 let loader = null;
 
 const methods = {
+    showBasicAlert(title, text) {
+        if(title == null) {
+            Swal.fire(text);
+        }
+        else {
+            Swal.fire({
+                title : title,
+                text : text
+            })
+        }
+    },
+    showSuccessAlert(title,text) {
+
+    },
+    showFailAlert(title, text) {
+
+    },
     showLoadingOverlay() {
         if(loader == null) {
             loader = useLoading();
