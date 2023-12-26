@@ -128,8 +128,8 @@ class UserService {
                 return "일치하는 회원이 없음";
 
             for(let i = 0; i < result.length; ++i) {
-                let halfLen = result[i].user_id.length / 2;
-                result[i].user_id = result[i].user_id.substr(0,halfLen) + ("*".repeat(halfLen));
+                let halfLen = Math.floor(result[i].user_id.length / 2);
+                result[i].user_id = result[i].user_id.substr(0,halfLen) + ("*".repeat(result[i].user_id.length - halfLen));
             }
             
             mailOptions.subject = "마이디어 펫 아이디 찾기";

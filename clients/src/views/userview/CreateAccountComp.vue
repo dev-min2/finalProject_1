@@ -351,6 +351,7 @@
                 }
             },
             async createAccount() {
+                let sendObj = {};
                 let userObj = {
                 };
                 let snsObj = {
@@ -366,16 +367,6 @@
 
                     if(!this.pwCheckReg.test(this.userPw)) {
                         alert('비밀번호 양식 확인해주세요');
-                        return;
-                    }
-
-                    if(this.confirmEmailAuth == false) {
-                        alert('이메일 인증 해주세요');
-                        return;
-                    }
-
-                    if(!this.phoneCheckReg.test(this.userPhone)) {
-                        alert('전화번호 양식 확인해주세요');
                         return;
                     }
 
@@ -396,7 +387,20 @@
                     userObj.user_permission = this.socialSubCode;
                     snsObj.access_token = this.accessToken;
                     snsObj.refresh_token = this.refreshToken;
+
+                    sendObj.sns = snsObj;
                 }
+
+                if(this.confirmEmailAuth == false) {
+                    alert('이메일 인증 해주세요');
+                    return;
+                }
+
+                if(!this.phoneCheckReg.test(this.userPhone)) {
+                    alert('전화번호 양식 확인해주세요');
+                    return;
+                }
+
                 userObj.user_id = this.userId;
                 userObj.user_pw = this.$encryptAES256(this.userPw), // 암호화
                 userObj.user_name = this.userNickname,
@@ -404,8 +408,9 @@
                 userObj.user_email = this.userEmail,
                 userObj.user_phone = this.userPhone,
                 userObj.user_addr = this.roadAddress + ' ' + this.detailAddress,  
+                sendObj.user = userObj;
                 this.$showLoading();
-                let result = await axios.post('/api/user/join',{ user : userObj, sns : snsObj },{ 'Content-Type' : 'application/json'});
+                let result = await axios.post('/api/user/join',sendObj,{ 'Content-Type' : 'application/json'});
                 if(result.status == 200) {
                     alert('계정 생성 성공!');
                     this.$router.push({path : '/login'});
