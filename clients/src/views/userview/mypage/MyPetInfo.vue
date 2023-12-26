@@ -6,8 +6,6 @@
                     <h2 class="fw-bold mb-3">내 반려동물 정보</h2>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <c:choose>
-                        <c:when test="${!empty pet }">
                             <table class="table w-75">
                                 <tr>
                                     <th>이름</th>
@@ -16,29 +14,15 @@
                                     <th>성별</th>
                                 </tr>
                                 <tr>
-                                    <td>${pet.petName }</td>
+                                    <td>pet.petName</td>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${pet.petType == '0'}">
-                                                강아지
-                                            </c:when>
-                                            <c:otherwise>
-                                                고양이
-                                            </c:otherwise>
-                                        </c:choose>
+                                        강아지/고양이
                                     </td>
                                     <td>
                                         <fmt:formatDate value="${pet.petBirth}" pattern="yyyy-MM-dd"></fmt:formatDate>
                                     </td>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${pet.petGender == '0'}">
-                                                수컷
-                                            </c:when>
-                                            <c:otherwise>
-                                                암컷
-                                            </c:otherwise>
-                                        </c:choose>
+                                        암/수
                                     </td>
                                 </tr>
                                 <tr>
@@ -51,14 +35,11 @@
                                     </td>
                                 </tr>
                             </table>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="px-4 py-1 my-3 text-center">
+
+                            <!-- <div class="px-4 py-1 my-3 text-center">
                                 <h2 class="fw-bold mb-3">아직 등록된 반려동물정보가 없습니다</h2>
                                 <button type="button" onclick="location.href='myPetForm.do'">내 반려동물 등록하기</button>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
+                            </div> -->
 
                 </div>
             </div>
@@ -67,8 +48,29 @@
 </template>
 
 <script>
-    export default {
+    import axios from 'axios';
 
+    export default {
+        data(){
+            return {
+                userNo: '',
+                selectPetQuery : []
+            }
+        },
+        created(){
+            this.userNo = this.$store.state.userNo;
+            console.log(this.userNo);
+            this.getSelectPetQuery();
+        },
+        methods : {
+            async getSelectPetQuery(){
+                let result 
+                    = await axios.get(`/api/user/mypetinfo/${this.userNo}`)
+                                .catch(err => console.log(err));
+                //this.selectPetQuery = result.data;
+                console.log(result);
+            }
+        }
     }
 </script>
 

@@ -5,9 +5,17 @@ const nodemailer = require('nodemailer');
 const { decryptAES256, encryptSHA256 } = require('../commonModule/commonModule');
 const userDAO = require('../DAO/user/UserDAO');
 
+//마이페이지
+const myPetDAO = require('../DAO/user/MyPetDAO');
+
 class UserService {
     constructor() {
 
+    }
+
+    async getPetInfo(userNo){
+        const result = myPetDAO.selectPetQuery(userNo);
+        return result;
     }
 
     async createUser(userObj,snsObj) {

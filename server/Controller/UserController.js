@@ -3,6 +3,21 @@ const userRouter = express.Router();
 
 const UserSevice = require('../Service/UserSevice');
 
+//마이페이지
+userRouter.get('/mypetinfo/:userNo', async(req,res)=>{
+    let userNo = req.params.userNo;
+    try{
+        const userService = new UserService();
+        let result = await userService.getPetInfo(userNo);
+        console.log(result);
+        //res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+});
+
+//user 기본기능
 userRouter.post('/join', async(req,res) =>{
     let user = req.body.user;
     let sns = req.body.sns;
