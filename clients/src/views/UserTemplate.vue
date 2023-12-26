@@ -13,8 +13,20 @@ export default {
     Footer,
     Header,
   },
+  computed : {
+    curPath() {
+      return this.$route.path;
+    }
+  },
   created() {
     this.$router.push( { path : '/main' });
+  },
+  watch : {
+    curPath(newValue,oldValue) {
+      if(newValue == '/') {
+        this.$router.push( {path : '/main'});
+      }
+    }
   }
 }
 </script>
