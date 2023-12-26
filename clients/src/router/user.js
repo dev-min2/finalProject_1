@@ -5,9 +5,12 @@ import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
 import TestView from '../views/userview/TestView.vue'
 import TestCartView from '../views/userview/TestCartView.vue'
+//마이페이지
 import MyPageSide from '../components/common/MyPageSidebar.vue'
 import MyInfo from '../views/userview/mypage/MyInfo.vue'
 import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
+import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
+
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 
 export default {
@@ -51,22 +54,22 @@ export default {
           component: MyPageSide,
           children : [
             {
-              path: "myinfo",
+              path: "/myinfo",
               name: "myinfo",
               component: MyInfo
+            },
+            {
+              path: "/orderdetail",
+              name: "orderdetail",
+              component: OrderDetail
+            },
+            {
+              path: "/mypetinfo",
+              name: "mypetinfo",
+              component: MyPetInfo
             }
           ]
         },
-        {
-          path: "/myinfo",
-          name: "myinfo",
-          component: MyInfo
-        },
-        {
-          path: "/orderdetail",
-          name: "orderdetail",
-          component: OrderDetail
-        }, 
         {
           path: "/forgot-account/:forgot",
           name: "forgotAccount",
