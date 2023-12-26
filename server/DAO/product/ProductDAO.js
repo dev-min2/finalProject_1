@@ -34,12 +34,12 @@ let productDAO = {
         `;
         return query(selectMainpageLastProductQuery);
     },
-    //키워드 검색 + 펫타입 추가해라
-    selectSearchProductQuery: async function (search, pettype) {
+    //키워드 검색 + 펫타입 추가
+    selectSearchProductQuery: async function (search, ptype) {
         const searchquery = "%" + search + "%";
         const selectSearchProductQuery =
             `select * from product where product_name like ? and pet_type=?`;
-        return query(selectSearchProductQuery, searchquery); // 배열로 바꾸기
+        return query(selectSearchProductQuery, [searchquery, ptype]); // 배열로 바꾸기
     }
 };
 
