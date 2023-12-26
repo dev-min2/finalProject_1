@@ -7,21 +7,43 @@ let loader = null;
 
 const methods = {
     showBasicAlert(title, text) {
-        if(title == null) {
-            Swal.fire(text);
-        }
-        else {
-            Swal.fire({
-                title : title,
-                text : text
-            })
-        }
+        Swal.fire({
+            title : title,
+            text : text,
+            confirmButtonText : "확인"
+        });
+    },
+    showInfoAlert(title, text) {
+        Swal.fire({
+            title : title,
+            text : text,
+            icon: 'info',
+            confirmButtonText : "확인"
+        })
     },
     showSuccessAlert(title,text) {
-
+        Swal.fire({
+            title : title,
+            text : text,
+            icon: 'success',
+            confirmButtonText : "확인"
+        })
     },
     showFailAlert(title, text) {
-
+        Swal.fire({
+            title : title,
+            text : text,
+            icon: 'error',
+            confirmButtonText : "확인"
+        })
+    },
+    showWarningAlert(title, text) {
+        Swal.fire({
+            title : title,
+            text : text,
+            icon: 'warning',
+            confirmButtonText : "확인"
+        })
     },
     showLoadingOverlay() {
         if(loader == null) {
@@ -73,5 +95,10 @@ export default {
         Vue.config.globalProperties.$hideLoading = methods.hideLoadingOverlay;
         Vue.config.globalProperties.$encryptAES256 = methods.encryptAES256;
         Vue.config.globalProperties.$decryptAES256 = methods.decryptAES256;
+        Vue.config.globalProperties.$showBasicAlert = methods.showBasicAlert;
+        Vue.config.globalProperties.$showSuccessAlert = methods.showSuccessAlert;
+        Vue.config.globalProperties.$showFailAlert = methods.showFailAlert;
+        Vue.config.globalProperties.$showWarningAlert = methods.showWarningAlert;
+        Vue.config.globalProperties.$showInfoAlert = methods.showInfoAlert;
     }
 }
