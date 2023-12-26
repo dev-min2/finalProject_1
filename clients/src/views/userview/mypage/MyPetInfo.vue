@@ -35,12 +35,10 @@
                                     </td>
                                 </tr>
                             </table>
-
                             <!-- <div class="px-4 py-1 my-3 text-center">
                                 <h2 class="fw-bold mb-3">아직 등록된 반려동물정보가 없습니다</h2>
                                 <button type="button" onclick="location.href='myPetForm.do'">내 반려동물 등록하기</button>
                             </div> -->
-
                 </div>
             </div>
         </main>
@@ -67,8 +65,8 @@
                 let result 
                     = await axios.get(`/api/user/mypetinfo/${this.userNo}`)
                                 .catch(err => console.log(err));
-                //this.selectPetQuery = result.data;
-                console.log(result);
+                this.selectPetQuery = result.data;
+                console.log('MyPetInfo' + this.selectPetQuery);
             }
         }
     }

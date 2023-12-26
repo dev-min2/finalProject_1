@@ -9,8 +9,8 @@ userRouter.get('/mypetinfo/:userNo', async(req,res)=>{
     try{
         const userService = new UserService();
         let result = await userService.getPetInfo(userNo);
-        console.log(result);
-        //res.send(result);
+        console.log('usercontroller'+result);
+        res.send(result);
     }
     catch(e){
         console.log(e);
