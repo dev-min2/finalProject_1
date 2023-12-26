@@ -9,10 +9,28 @@
           오늘출발 상품은 판매자 설정 시점에 따라 오늘출발 여부가 변경될 수
           있으니 주문 시 꼭 다시 확인해 주시기 바랍니다.
         </li>
+        <li>3만원 이상 구매시 무료배송</li>
       </ul>
     </div>
     <div>
       <CartList />
+    </div>
+    <div class="cart_mainbts">
+      <button
+        class="cart_bigorderbtn left"
+        type="button"
+        onclick="location.href='/main'"
+      >
+        쇼핑계속하기
+      </button>
+      <button
+        class="cart_bigorderbtn right"
+        type="button"
+        id="tess"
+        onclick="paymentfunction()"
+      >
+        주문하기
+      </button>
     </div>
   </div>
 </template>
@@ -53,5 +71,29 @@ tbody {
 td {
   padding: 15px 0px;
   border-bottom: 1px solid lightgray;
+}
+.cart_mainbts{
+  width: 420px;
+  height: 200px;
+  padding-top: 40px;
+  display: block;
+  margin: auto;
+}
+.cart_bigorderbtn {
+			width: 200px;
+			height: 50px;
+			font-size: 16px;
+			margin: auto;
+			border-radius: 5px;
+		}
+.cart_bigorderbtn.left{
+  background-color: white;
+  border: 1px lightgray solid;
+  margin-right: 5px;
+}
+.cart_bigorderbtn.right{
+  background-color: pink;
+  color: white;
+  border: none;
 }
 </style>
