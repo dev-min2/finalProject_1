@@ -102,6 +102,10 @@ userRouter.post('/forgot-account', async(req, res) => {
     }
 })
 
+userRouter.get('/carts', async (req, res) => {
+    const userService = new UserService();
+})
+
 // 파일 업로드 테스트용 코드
 const multer = require('multer'); 
 const path = require('path');

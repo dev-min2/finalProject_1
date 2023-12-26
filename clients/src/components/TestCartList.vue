@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <template
-      v-for="(company, companyIndex) in productList" :key="companyIndex"
-    >
+      v-for="(company, companyIndex) in productList" :key="companyIndex">
       <h1>업체명 : {{company[0].company_name}}</h1>
       <table class="cart_list">
         <thead>
@@ -19,14 +18,13 @@
         <tbody>
           <tr
             class="cart_list_detail"
-            v-for="(products, productsIndex) in productList[companyIndex]" :key="productsIndex"
-          >
+            v-for="(products, productsIndex) in productList[companyIndex]" :key="productsIndex">
             <td>
               <input
                 type="checkbox"
                 class="chk"
                 name="product"
-                value="가격"
+                value="상품가격"
                 onclick="checkfunction()"
               />
             </td>
@@ -74,8 +72,7 @@
             </td>
             <td>
               <span class="price">{{
-                products.product_price * products.product_stock
-              }}</span>
+                products.product_price * products.product_stock}}</span>
               <br />
             </td>
             <td>{{ products.delivery_fee }}</td>
@@ -107,6 +104,7 @@
   </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
   name: "CartList",
   data() {
@@ -114,43 +112,62 @@ export default {
       productList: [],
     };
   },
-  mounted() {
-    this.test();
+  created() {
+    //this.test();
+    this.getProductList();
   },
   methods: {
-    async test() {
-      // [ [A업체 상품배열], [B업체 상품배열]]
-      this.productList.push(
-        [
-          {
-            company_name: 'A사',
-            product_no: 11,
-            product_name: "칫솔",
-            product_price: 15000,
-            product_stock: 2,
-            delivery_fee: 3000,
-          },
-          {
-            company_name: 'A사',
-            product_no: 12,
-            product_name: "치약",
-            product_price: 10000,
-            product_stock: 5,
-            delivery_fee: 3000,
-          },
-        ],
-        [
-          {
-            company_name: 'B사',
-            product_no: 13,
-            product_name: "치실",
-            product_price: 5000,
-            product_stock: 15,
-            delivery_fee: 3000,
-          },
-        ]
-      );
+    async getProductList(){
+      let result = await axios
+                        .get('/api/user/carts')
+                        .catch(err => console.log(err));
+      this.productList = result.data;
     },
+    //async test() {
+      // [ [A업체 상품배열], [B업체 상품배열]]
+      // this.productList.push(
+      //   [
+      //     {
+      //       company_name: 'A사',
+      //       product_no: 11,
+      //       product_name: "칫솔",
+      //       product_price: 15000,
+      //       product_stock: 2,
+      //       delivery_fee: 3000,
+      //     },
+      //     {
+      //       company_name: 'A사',
+      //       product_no: 12,
+      //       product_name: "치약",
+      //       product_price: 10000,
+      //       product_stock: 5,
+      //       delivery_fee: 3000,
+      //     },
+      //   ],
+      //   [
+      //     {
+      //       company_name: 'B사',
+      //       product_no: 13,
+      //       product_name: "치실",
+      //       product_price: 5000,
+      //       product_stock: 15,
+      //       delivery_fee: 3000,
+      //     },
+      //   ]
+      // );
+    //},
+    checkfunction: function(){
+
+    },
+    upfunction: function(){
+
+    },
+    downfunction: function(){
+      
+    },
+    delfunction: function(){
+
+    }
   },
 };
 </script>
