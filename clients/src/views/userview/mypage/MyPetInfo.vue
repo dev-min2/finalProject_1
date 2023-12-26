@@ -19,7 +19,7 @@
                                         강아지/고양이
                                     </td>
                                     <td>
-                                        <fmt:formatDate value="${pet.petBirth}" pattern="yyyy-MM-dd"></fmt:formatDate>
+                                        생일
                                     </td>
                                     <td>
                                         암/수
