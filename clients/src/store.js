@@ -15,7 +15,7 @@ const store = createStore({
     state() {
         return {
             userNo : -1, // 서버 session이 무효화 or 로그아웃시 -1로 다시
-            curShowPetType : '0', // 0 : dog, 1 : cat
+            curShowPetType : 'd1', // d1 : dog, d2 : cat
             testData : false, // true일경우 이미지 업로드를 http://192.168.0.40으로 함
             curIp : 'localhost:8080',
             socialId : 0, 

@@ -6,6 +6,7 @@ import TestUploadView from '../views/userview/TestUploadView.vue'
 import TestView from '../views/userview/TestView.vue'
 import TestCartView from '../views/userview/TestCartView.vue'
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
+import SearchPage from '../views/userview/SearchPage.vue'
 
 export default {
     path : '/',
@@ -47,6 +48,11 @@ export default {
           path: "/forgot-account/:forgot",
           name: "forgotAccount",
           component : ForgotAccountComp
+        },
+        {
+          path : '/search/:keyword',
+          name : 'searchPage',
+          component : SearchPage
         }
     ]
 };

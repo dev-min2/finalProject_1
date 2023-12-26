@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand-lg navbar-light">
       <!-- bg-light -->
       <div class="container px-4 px-lg-5">
-        <template v-if="curShowPetType == '0'">
+        <template v-if="curShowPetType == 'd1'">
           <router-link to="/main"><img class="mx-2" src="../assets/commonResource/doglogo.png" alt="dog"
               style="width: 140px" /></router-link>
         </template>
@@ -28,7 +28,7 @@
             </div>
           </div>
           <div class="d-flex gap-3">
-            <template v-if="curShowPetType == '0'">
+            <template v-if="curShowPetType == 'd1'">
               <button @click="changePetType" class="btn" type="button">
                 <!-- <i class="fas fa-cat fa-2x"></i> -->
                 <img src="../assets/commonResource/catIcon.png" style="width: 70px" />
@@ -143,12 +143,21 @@
     created() {},
     methods: {
       searchshow(keyword){
-        
+        if(keyword !== ''){
+          this.$router.push({
+            name : 'searchPage',
+            params : {
+              keyword : this.keyword,
+            }
+            });
+        }else{
+          alert("검색어를 입력하세요!");
+        }
       }
       ,
       changePetType() {
-        if (this.curShowPetType == "0") this.$store.commit("reversePetType", "1");
-        else this.$store.commit("reversePetType", "0");
+        if (this.curShowPetType == "d1") this.$store.commit("reversePetType", "d2");
+        else this.$store.commit("reversePetType", "d1");
       },
       async logout() {
         const userNo = this.$store.state.userNo;

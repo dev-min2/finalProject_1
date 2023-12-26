@@ -2,11 +2,11 @@
     <div class="container-fluid bg-light">
 	<div id="myCarousel" class="carousel slide" data-ride="carousel">
   		<ol class="carousel-indicators">
-    		<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-    		<li data-target="#myCarousel" data-slide-to="1"></li>
+    		<li data-target="#myCarousel" data-slide-to="d1" class="active"></li>
+    		<li data-target="#myCarousel" data-slide-to="d2"></li>
   		</ol>
   	<div class="text-center carousel-inner">
-		<template v-if="$store.state.curShowPetType == '0'">
+		<template v-if="$store.state.curShowPetType == 'd1'">
     		<div class="carousel-item active">
       			<img src="../assets/commonResource/bannerImage/dogBanner1.jpg" width="1230" height="500" alt="First slide">
     		</div>
