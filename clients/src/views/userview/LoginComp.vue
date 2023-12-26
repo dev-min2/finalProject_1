@@ -91,6 +91,7 @@
                                     let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
                                     if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
                                         this.$store.commit('setUserNo', result.data[0].user_no);
+                                        this.$store.commit('setUserPermission', result.data[0].user_permission);
                                         this.$router.push({path : '/main'});
                                     }
                                     else {
@@ -122,6 +123,7 @@
                     }
 
                     this.$store.commit('setUserNo', result.data[0].user_no);
+                    this.$store.commit('setUserPermission', result.data[0].user_permission);
                     this.$router.push({path : '/main'});
                 }
                 else {
