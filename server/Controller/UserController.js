@@ -158,12 +158,7 @@ userRouter.post("/upload", upload.single("image"), (req, res) => {
 
 // 실제 게시글 등록
 
-<<<<<<< HEAD
-const multer2 = require("multer");
-=======
 const multer2 = require('multer'); 
-const UserService = require('../Service/UserSevice');
->>>>>>> develop
 const storage2 = multer2.diskStorage({
   destination: function (req, file, cb) {
     let folderName = "";
