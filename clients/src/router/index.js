@@ -1,43 +1,11 @@
-import { createRouter, createWebHistory } from "vue-router";
-import MainBody from "../views/MainBody.vue";
-import LoginComp from "../views/userview/LoginComp.vue";
-import CreateAccountComp from "../views/userview/CreateAccountComp.vue";
-import TestUploadView from "../views/userview/TestUploadView.vue";
-import TestView from "../views/userview/TestView.vue";
-import TestCartView from "../views/userview/TestCartView.vue";
+import { createRouter, createWebHistory } from 'vue-router'
+import user from './user'
+import admin from './admin'
 
 const routes = [
-  {
-    path: "/",
-    name: "main",
-    component: MainBody,
-  },
-  {
-    path: "/login",
-    name: "login",
-    component: LoginComp,
-  },
-  {
-    path: "/join/:sellerJoin",
-    name: "join",
-    component: CreateAccountComp,
-  },
-  {
-    path: "/upload",
-    name: "upload",
-    component: TestUploadView,
-  },
-  {
-    path: "/uploadView",
-    name: "uploadView",
-    component: TestView,
-  },
-  {
-    path: "/cart",
-    name: "cart",
-    component: TestCartView,
-  },
-];
+  user, // 일반 회원관련 작업은 user라우터에서
+  admin
+]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

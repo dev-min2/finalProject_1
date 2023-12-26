@@ -1,6 +1,6 @@
 <template>
-  <hr />
   <div class="cart">
+    <hr />
     <div class="cart_information">
       <ul>
         <li>장바구니 상품은 최대 30일간 저장됩니다.</li>

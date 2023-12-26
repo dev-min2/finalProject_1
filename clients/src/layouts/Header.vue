@@ -4,7 +4,7 @@
       <!-- bg-light -->
       <div class="container px-4 px-lg-5">
         <template v-if="curShowPetType == '0'">
-          <router-link to="/"
+          <router-link to="/main"
             ><img
               class="mx-2"
               src="../assets/commonResource/doglogo.png"
@@ -13,7 +13,7 @@
           /></router-link>
         </template>
         <template v-else>
-          <router-link to="/"
+          <router-link to="/main"
             ><img
               class="mx-2"
               src="../assets/commonResource/catlogo.png"
@@ -160,6 +160,7 @@
             >
             <a v-else class="nav-link" @click="logout">로그아웃</a>
           </li>
+                <li class="nav-item"><router-link class="nav-link" to="/admin">관리자테스트</router-link></li>
         </ul>
       </div>
     </nav>
@@ -174,6 +175,7 @@ export default {
       return this.$store.state.curShowPetType;
     },
   },
+    
   created() {},
   methods: {
     changePetType() {
@@ -189,6 +191,21 @@ export default {
         alert("로그아웃 완료");
         this.$store.commit("setUserNo", -1);
         this.$router.push({ path: "/" });
+      }
+
+      // 카카오로그아웃
+      if(this.$store.state.socialId > 0) {
+        const accessToken = this.$store.state.accessToken;
+        const logoutResult = await axios({
+            method:'post',
+            url:'https://kapi.kakao.com/v1/user/logout',
+            headers:{
+              'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        this.$store.commit('setSocialId',0);
+        this.$store.commit('setAccessToken','');
+        this.$store.commit('setRefreshToken','');
       }
     },
   },
