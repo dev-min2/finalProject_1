@@ -11,7 +11,6 @@
           <router-link to="/main"><img class="mx-2" src="../assets/commonResource/catlogo.png" alt="cat"
               style="width: 140px" /></router-link>
         </template>
-
         <!-- 검색창 -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,7 +109,7 @@
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">공지사항</a>
+            <router-link class="nav-link" aria-current="page" to="/notice">공지사항</router-link>
           </li>
           <li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
           <li class="nav-item">
@@ -134,12 +133,12 @@
         keyword : ''
       }
     },
+
     computed: {
       curShowPetType() {
         return this.$store.state.curShowPetType;
       },
     },
-
     created() {},
     methods: {
       searchshow(keyword){
@@ -151,13 +150,18 @@
             }
             });
         }else{
-          alert("검색어를 입력하세요!");
+          this.$showBasicAlert('검색어를 입력하세요!');
         }
       }
       ,
       changePetType() {
         if (this.curShowPetType == "d1") this.$store.commit("reversePetType", "d2");
         else this.$store.commit("reversePetType", "d1");
+      },
+      async logout() {
+        const userNo = this.$store.state.userNo;
+        if (this.$store.state.userNo < 0) return;
+
       },
       async logout() {
         const userNo = this.$store.state.userNo;
@@ -205,5 +209,9 @@
       }
     });
   });
+
 </script>
-<style scoped></style>
+<style scoped>
+</style>
+
+

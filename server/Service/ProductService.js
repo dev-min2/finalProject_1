@@ -9,8 +9,9 @@ class ProductService {
         return result;
 
     }
-    async getSearchProductList(search){
-        let result = await productDAO.selectSearchProductQuery(search);
+    async getSearchProductList(search, ptype) {
+        let result = await productDAO.selectSearchProductQuery(search, ptype);
+        console.log(search, ptype);
         return result;
     }
 
