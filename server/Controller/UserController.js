@@ -17,29 +17,31 @@ userRouter.post('/join', async(req,res) =>{
     } 
 });
 
-userRouter.post("/checkId", async (req, res) => {
-  let id = req.body.id;
-  try {
-    const userService = new UserSevice();
-    let result = await userService.checkDuplicateUserId(id);
-    res.send(result);
-  } catch (e) {
-    console.log(e);
-  }
-});
-
-userRouter.post("/login", async (req, res) => {
-  let user = req.body.user;
-  try {
-    const userService = new UserSevice();
-    let result = await userService.loginUser(user);
-    if (result.length > 0) {
-      req.session.userNo = result[0].user_no; //session저장
+userRouter.post('/checkId', async (req, res) => {
+    let id = req.body.id;
+    try {
+        const userService = new UserSevice();
+        let result = await userService.checkDuplicateUserId(id);
+        res.send(result);
     }
-    res.send(result);
-  } catch (e) {
-    console.log(e);
-  }
+    catch(e) {
+        console.log(e);
+    }
+})
+
+userRouter.post('/login', async(req,res) =>{
+    let user = req.body.user;
+    try {
+        const userService = new UserSevice();
+        let result = await userService.loginUser(user);
+        if(result.length > 0) {
+            req.session.userNo = result[0].user_no; //session저장
+        }
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }  
 });
 
 userRouter.get("/logout", async (req, res) => {
