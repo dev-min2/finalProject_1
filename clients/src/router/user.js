@@ -8,7 +8,7 @@ import TestCartView from '../views/userview/TestCartView.vue'
 import MyPageSide from '../components/common/MyPageSidebar.vue'
 import MyInfo from '../views/userview/mypage/MyInfo.vue'
 import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
-
+import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 
 export default {
     path : '/',
@@ -67,5 +67,10 @@ export default {
           name: "orderdetail",
           component: OrderDetail
         }, 
+        {
+          path: "/forgot-account/:forgot",
+          name: "forgotAccount",
+          component : ForgotAccountComp
+        }
     ]
 };
