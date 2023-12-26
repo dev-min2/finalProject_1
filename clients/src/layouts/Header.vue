@@ -3,7 +3,11 @@
     <nav class="navbar navbar-expand-lg navbar-light">
       <!-- bg-light -->
       <div class="container px-4 px-lg-5">
+<<<<<<< HEAD
         <template v-if="curShowPetType == 'd1'">
+=======
+        <template v-if="curShowPetType == '0'">
+>>>>>>> develop
           <router-link to="/main"><img class="mx-2" src="../assets/commonResource/doglogo.png" alt="dog"
               style="width: 140px" /></router-link>
         </template>
@@ -12,15 +16,23 @@
               style="width: 140px" /></router-link>
         </template>
 
+<<<<<<< HEAD
         <!-- 검색창 -->
+=======
+>>>>>>> develop
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarSupportedContent">
           <div class="input-group w-50">
+<<<<<<< HEAD
             <input type="text" class="form-control" placeholder="검색어를 입력하세요" v-model="keyword" aria-label="Username"
               aria-describedby="basic-addon1" id="searchBar" @keyup.enter="searchshow(keyword)"/>
+=======
+            <input type="text" class="form-control" placeholder="Search" aria-label="Username"
+              aria-describedby="basic-addon1" id="searchBar" />
+>>>>>>> develop
             <div class="input-group-append">
               <button class="input-group-text" id="searchBtn">
                 <i class="fa fa-search pt-2"></i>
@@ -110,7 +122,7 @@
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">공지사항</a>
+            <router-link class="nav-link" aria-current="page" to="/notice">공지사항</router-link>
           </li>
           <li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
           <li class="nav-item">
@@ -129,16 +141,20 @@
 <script>
   import axios from "axios";
   export default {
+<<<<<<< HEAD
     data(){
       return{
         keyword : ''
       }
     },
+=======
+>>>>>>> develop
     computed: {
       curShowPetType() {
         return this.$store.state.curShowPetType;
       },
     },
+<<<<<<< HEAD
 
     created() {},
     methods: {
@@ -163,6 +179,19 @@
         const userNo = this.$store.state.userNo;
         if (this.$store.state.userNo < 0) return;
 
+=======
+
+    created() {},
+    methods: {
+      changePetType() {
+        if (this.curShowPetType == "0") this.$store.commit("reversePetType", "1");
+        else this.$store.commit("reversePetType", "0");
+      },
+      async logout() {
+        const userNo = this.$store.state.userNo;
+        if (this.$store.state.userNo < 0) return;
+
+>>>>>>> develop
         let result = await axios.get("/api/user/logout");
         if (result.status == 200 && result.data == "OK") {
           alert("로그아웃 완료");
@@ -205,5 +234,9 @@
       }
     });
   });
+<<<<<<< HEAD
 </script>
 <style scoped></style>
+=======
+</script>
+>>>>>>> develop

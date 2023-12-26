@@ -6,7 +6,11 @@ import TestUploadView from '../views/userview/TestUploadView.vue'
 import TestView from '../views/userview/TestView.vue'
 import TestCartView from '../views/userview/TestCartView.vue'
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
+<<<<<<< HEAD
 import SearchPage from '../views/userview/SearchPage.vue'
+=======
+import NoticeList from '../views/userview/NoticeList.vue'
+>>>>>>> develop
 
 export default {
     path : '/',
@@ -50,9 +54,15 @@ export default {
           component : ForgotAccountComp
         },
         {
+<<<<<<< HEAD
           path : '/search/:keyword',
           name : 'searchPage',
           component : SearchPage
+=======
+          path: "/notice",
+          name: "notice",
+          component: NoticeList
+>>>>>>> develop
         }
     ]
 };
