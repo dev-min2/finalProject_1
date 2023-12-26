@@ -28,7 +28,6 @@ userRouter.post('/checkId', async (req, res) => {
     }
 })
 
-
 userRouter.post('/login', async(req,res) =>{
     let user = req.body.user;
     try {
