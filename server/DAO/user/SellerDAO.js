@@ -2,7 +2,12 @@ let { pool,query } = require('../../config/dbPool');
 
 // 쿼리문 만들기
 let sellerDAO = {
-    selectQuery : async function() {
+    productRank : async function() {
+        const productRank = `
+        SELECT 
+        
+        `;
+        return query(productRank,productNo)
     }
 };
 

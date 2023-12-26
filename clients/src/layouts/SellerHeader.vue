@@ -15,7 +15,8 @@
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-             <router-link class="nav-link" to="/main"><b>디어 마이 펫</b></router-link>
+            
+            <router-link class="nav-link" to="/main"><b class="navbar-brand ps-3">디어 마이 펫</b></router-link>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -97,6 +98,7 @@
                                 배송 관리
                             </a>
                             <router-link class="nav-link" to="/upload">업로드테스트</router-link>
+                            <li class="nav-item"><router-link class="nav-link" to="/ProductResearchBar">차트테스트</router-link></li>
             
               
                             
