@@ -11,6 +11,7 @@ export default {
     path : '/',
     name : 'tmpMain',
     component : UserTemplate,
+    redirect : '/main',
     children : [ // 자식에다가 컴포넌트 추가하면 됩니다.
         {
             path: '/main',
