@@ -1,7 +1,15 @@
+const ProductDAO = require('../DAO/product/ProductDAO');
+
 class ProductService {
     constructor() {
 
     }
+
+    async myProductRank(userNo) {
+        let result = await ProductDAO.selectQuery(userNo);
+        return result;
+    }
+
 
     //트랜잭션 예시코드임
     // async completePayment() {

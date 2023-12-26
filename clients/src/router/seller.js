@@ -1,8 +1,8 @@
 // 판매자
 import SellerTemplate from '../views/SellerTemplate.vue'
-import SellerTestUploadView from '../components/sellerview/SellerTestUploadView.vue'
-import SellCharts from '../components/sellerview/SellCharts.vue'
-import ProductResearchBar from '../components/sellerview/ProductResearchBar.vue'
+import SellerTestUploadView from '../views/sellerview/SellerTestUploadView.vue'
+import SellCharts from '../views/sellerview/SellCharts.vue'
+import ProductResearchBar from '../views/sellerview/ProductResearchBar.vue'
 import sellerMain from '../views/sellerview/sellerMain.vue'
 
 export default {
