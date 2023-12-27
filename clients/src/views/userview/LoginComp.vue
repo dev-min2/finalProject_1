@@ -90,7 +90,6 @@
                                     
                                     let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
                                     if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
-                                        alert('로그인 성공!');
                                         this.$store.commit('setUserNo', result.data[0].user_no);
                                         this.$router.push({path : '/main'});
                                     }
@@ -115,7 +114,6 @@
                 let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
                 console.log(result);
                 if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
-                    alert('로그인 성공!');
                     if(this.idSaveChecked) {
                         localStorage.setItem("userId", this.userId);
                     }
@@ -127,7 +125,7 @@
                     this.$router.push({path : '/main'});
                 }
                 else {
-                    alert('아이디와 비밀번호를 확인해주세요');
+                    this.$showWarningAlert('아이디와 비밀번호를 확인해주세요',null);        
                 }
                 this.$hideLoading();
             }

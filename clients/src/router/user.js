@@ -6,6 +6,7 @@ import TestUploadView from '../views/userview/TestUploadView.vue'
 import TestView from '../views/userview/TestView.vue'
 import TestCartView from '../views/userview/TestCartView.vue'
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
+import NoticeList from '../views/userview/NoticeList.vue'
 
 export default {
     path : '/',
@@ -47,6 +48,11 @@ export default {
           path: "/forgot-account/:forgot",
           name: "forgotAccount",
           component : ForgotAccountComp
+        },
+        {
+          path: "/notice",
+          name: "notice",
+          component: NoticeList
         }
     ]
 };
