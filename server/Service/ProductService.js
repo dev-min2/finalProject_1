@@ -10,6 +10,11 @@ class ProductService {
         return result;
     }
 
+    async myProductPayRank(userNo) {
+        let result = await ProductDAO.selectQuery2(userNo);
+        return result;
+    }
+
 
     //트랜잭션 예시코드임
     // async completePayment() {

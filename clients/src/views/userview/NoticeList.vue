@@ -12,7 +12,7 @@
             }
         },
         created() {
-            console.log('박경석바보');
+            console.log('전민교바보');
         },
     }
 </script>
