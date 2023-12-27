@@ -16,4 +16,18 @@ productRouter.get('/seller-main/:userNo',async(req,res)=>{
         }
 })
 
+productRouter.get('/seller-main2/:userNo',async(req,res)=>{
+    let userNo = req.params.userNo;
+    try {
+        console.log('하이여2');
+        const productService = new ProductService();
+        let result = await productService.myProductPayRank(userNo);
+        console.log(result);
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
 module.exports = productRouter;
