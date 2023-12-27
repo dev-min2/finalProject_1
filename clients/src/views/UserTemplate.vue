@@ -13,8 +13,5 @@ export default {
     Footer,
     Header,
   },
-  created() {
-    this.$router.push( { path : '/main' });
-  }
 }
 </script>

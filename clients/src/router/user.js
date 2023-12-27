@@ -4,11 +4,15 @@ import LoginComp from '../views/userview/LoginComp.vue'
 import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
 import TestView from '../views/userview/TestView.vue'
+import TestCartView from '../views/userview/TestCartView.vue'
+import ForgotAccountComp from '../views/userview/ForgotAccountComp'
+import NoticeList from '../views/userview/NoticeList.vue'
 
 export default {
     path : '/',
     name : 'tmpMain',
     component : UserTemplate,
+    redirect : '/main',
     children : [ // 자식에다가 컴포넌트 추가하면 됩니다.
         {
             path: '/main',
@@ -34,6 +38,21 @@ export default {
           path: '/uploadView',
           name: 'uploadView',
           component : TestView
+        },
+        {
+          path: "/cart",
+          name: "cart",
+          component: TestCartView,
+        },
+        {
+          path: "/forgot-account/:forgot",
+          name: "forgotAccount",
+          component : ForgotAccountComp
+        },
+        {
+          path: "/notice",
+          name: "notice",
+          component: NoticeList
         }
     ]
 };
