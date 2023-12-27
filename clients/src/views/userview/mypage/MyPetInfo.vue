@@ -24,7 +24,7 @@
                                     <td>{{pet.pet_gender}}</td>
                                     <td><button type="button" class="btn text-white" style="background-color: #9999FF;">수정</button></td>
                                     <td><button type="button" class="btn text-white" style="background-color: #a4a4a4;"
-                                            @click="buttonTest(pet)">삭제</button></td>
+                                            @click="deletePetQuery(pet)">삭제</button></td>
                                 </tr>
                                 <tr>
                                     <td colspan="4">
@@ -58,7 +58,6 @@
         created(){
             this.userNo = this.$store.state.userNo;
             this.getSelectPetQuery();
-            this.petNo = this.$route.query.petNo;
         },
         methods : {
             async getSelectPetQuery(){
@@ -70,13 +69,14 @@
             petInsert() {
                 this.$router.push({ path: '/mypetform'});
             },
-            async buttonTest(pet){
-                console.log(pet.pet_no);
-            },
             //삭제
-            async deletePetQuery(petNo){
+            async deletePetQuery(pet){
+                console.log('petNo: ', pet.pet_no);
+                let petNo = pet.pet_no;
                 let result 
-                    = await axios.delete(`/api/user/mypetinfo/${this.petNo}`)
+                    = await axios.delete(`/api/user/mypetinfo/${petNo}`)
+                                        .catch(err=>console.log(err));
+                console.log(result.data);
             
             }
             // async deleteInfo(userNo){

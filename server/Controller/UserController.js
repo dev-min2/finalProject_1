@@ -31,7 +31,7 @@ userRouter.post('/mypetform', async(req, res)=>{
 
 userRouter.delete('/mypetform/:petNo', async(req, res)=>{
     let data = req.params.petNo;
-
+    console.log('usercontroll',data);
     try{
         const userService = new UserService();
         console.log('usercontroll petNo',data);
