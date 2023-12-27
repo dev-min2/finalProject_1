@@ -172,6 +172,9 @@
                     return;
                 }
                 this.subCodes = result.data;
+                for(let i = 0; i < this.subCodes.length; ++i) {
+                    console.log(this.subCodes[i].sub_code);
+                }
                 let findName = '';
                 if(this.isSeller === "socialjoin") {
                     findName = "일반회원";

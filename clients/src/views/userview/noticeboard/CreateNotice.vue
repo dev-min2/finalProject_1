@@ -31,6 +31,12 @@
 							</div>
 						</td>
 					</tr>
+					<template v-if="fileCount > 0">
+						<tr>
+							<th>추가된파일</th>
+							<td ref="uploadFile"></td>
+						</tr>
+					</template>
 					<tr>
 						<th>파일추가하기</th>
 						<td><input ref="prImg" type="file" name="productImage" class="form-control" @change="uploadMultipleFile($event.target)"></td>
@@ -60,6 +66,9 @@ export default {
 			fileCount : 0,
             subCodes : {},
             sel : '',
+			randNoticeValue : 0,
+			curTimeVal : 0,
+			descFileCount : 0,
         }
     },
     created() {
@@ -68,6 +77,10 @@ export default {
             this.$router.push({path : "/main"});
         }
         this.getSubcode();
+		
+		// 111111 ~ 999999 랜덤 값.
+		this.randNoticeValue = Math.floor(Math.random() * (999999 - 111111 + 1)) + 111111;
+		this.curTimeVal = new Date().getTime();
     },
     computed : {
         showDate() {
@@ -91,7 +104,7 @@ export default {
             
             const formData = new FormData(this.$refs.uploadForm);
             console.log(this.$refs.uploadForm);
-            let result = await axios.post('/api/user/upload', formData);
+            let result = await axios.post('/api/board/notice/uploadDescImg', formData);
             console.log(result);
         },
 		async uploadProduct() {
@@ -116,7 +129,6 @@ export default {
 			}
 			inputTag.files = newFiles.files;
 
-			
 			let trTag = document.createElement('tr');
 			let thTag = document.createElement('th');
 			let tdTag = document.createElement('td');
@@ -148,22 +160,21 @@ export default {
 				hooks: {
 					// 이미지가 올라오면 해당 이미지가 blob매개변수에 담김
 					addImageBlobHook: async (blob, callback) => {
-						console.log('?');
 						const formData = new FormData();
+
+						// 파일명 
+						const sendFileName = String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++);
+						formData.append('fileName',sendFileName);
 						formData.append('image', blob);
 
-						let result = await axios.post('/api/user/upload',formData,{"Content-Type": "multipart/form-data"});
-						const fileName = result.data;
-						console.log(result);
+						console.log(formData);
+						let result = await axios.post('/api/board/notice/uploadDescImg',formData,{"Content-Type": "multipart/form-data"});
+						
 						
 						let imageUrl = '';
-						if(this.$store.state.testData) {
-							imageUrl = `http://192.168.0.40:12532/uploads/productDescInImg/${fileName}`;
-						}
-						else {
-							imageUrl = `http://localhost:12532/uploads/productDescInImg/${fileName}`;
-						}
-
+						// 경로접근은 이렇게
+						imageUrl = `${this.$store.state.curIp + result.data}`;
+						console.log(imageUrl);
 						callback(imageUrl, 'image alt attribute');
 					}
 				},
