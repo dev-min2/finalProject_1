@@ -156,6 +156,9 @@
             parentCategory.push(this.categoryList[i]);
          }
         }
+        
+        
+
         console.log(parentCategory);
       },
       searchshow(keyword) {
