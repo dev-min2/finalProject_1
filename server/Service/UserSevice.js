@@ -204,10 +204,9 @@ class UserService {
         let stock = await myCartDAO.selectProductStockQuery(product_no);
         console.log(stock[0].product_stock);
         console.log(stock[0].product_sel_cnt);
-        if (stock.product_stock <= (stock.product_sel_cnt + 1) ) {
+        if ((stock.product_stock - stock.product_sel_cnt) == 1) {
             return null;
         }
-
         let result = await myCartDAO.upCntQuery(product_no);
         return result;
     }
