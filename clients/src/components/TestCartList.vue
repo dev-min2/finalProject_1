@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <template
-      v-for="(company, companyIndex) in productList" :key="companyIndex">
+      v-for="(company, companyIndex) in cartList" :key="companyIndex">
       <h1>업체명 : {{company[0].company_name}}</h1>
       <table class="cart_list">
         <thead>
@@ -18,10 +18,11 @@
         <tbody>
           <tr
             class="cart_list_detail"
-            v-for="(products, productsIndex) in productList[companyIndex]" :key="productsIndex">
+            v-for="(products, productsIndex) in cartList[companyIndex]" :key="productsIndex">
             <td>
               <input
                 type="checkbox"
+                checked="checked"
                 class="chk"
                 name="product"
                 value="상품가격"
@@ -36,7 +37,7 @@
                 value="상품번호"
                 style="display: none"
               />
-              <!--{{ productsIndex + 1 }}.{{ products.product_no }}-->
+              
             </td>
             <td>
               <a href=""><img src="" /></a>
@@ -45,17 +46,19 @@
               <a href="">상품설명</a
               ><span class="cart_list_smartstore">스마트스토어</span>
               <br />
-              <span class="price">{{ products.product_price }}</span>
+              <span class="price">가격 : {{ products.product_price }}</span>
+              <br />
+              <span class="stock">재고 : {{products.product_stock}}</span>
             </td>
             <td class="cart_list_option">
               <p>모델명 : {{ products.product_name }}</p>
-              <p>수량 : {{ products.product_stock }}</p>
+              <p>선택수량 : {{ products.product_sel_cnt }}</p>
               <p>업체명 : {{products.company_name}}</p>
               <input
                 type="button"
                 value="▲"
                 class="cart_list_optionbtn"
-                onclick="upfunction()"
+                @click="upfunction(products)"
               />
               <input
                 type="button"
@@ -72,7 +75,7 @@
             </td>
             <td>
               <span class="price">{{
-                products.product_price * products.product_stock}}</span>
+                products.product_price * products.product_sel_cnt}}</span>
               <br />
             </td>
             <td>{{ products.delivery_fee }}</td>
@@ -109,64 +112,59 @@ export default {
   name: "CartList",
   data() {
     return {
-      productList: [],
+      cartList: [],
     };
   },
   created() {
-    //this.test();
-    this.getProductList();
+    if(this.$store.state.userNo <= 0) {
+      this.$showWarningAlert('로그인 먼저 해주세요.');
+      this.$router.push({path: '/login'});
+      return;
+    }
+    
+    this.getCartList();
   },
   methods: {
-    async getProductList(){
+    async getCartList(){
+      this.$showLoading();
       let result = await axios
-                        .get('/api/user/carts')
+                        .get(`/api/user/carts/${this.$store.state.userNo}`)
                         .catch(err => console.log(err));
-      this.productList = result.data;
+      this.cartList = result.data;
+      console.log(result.data);
+      this.cartList = this.groupBy(this.cartList, 'company_name');
+      this.$hideLoading();
     },
-    //async test() {
-      // [ [A업체 상품배열], [B업체 상품배열]]
-      // this.productList.push(
-      //   [
-      //     {
-      //       company_name: 'A사',
-      //       product_no: 11,
-      //       product_name: "칫솔",
-      //       product_price: 15000,
-      //       product_stock: 2,
-      //       delivery_fee: 3000,
-      //     },
-      //     {
-      //       company_name: 'A사',
-      //       product_no: 12,
-      //       product_name: "치약",
-      //       product_price: 10000,
-      //       product_stock: 5,
-      //       delivery_fee: 3000,
-      //     },
-      //   ],
-      //   [
-      //     {
-      //       company_name: 'B사',
-      //       product_no: 13,
-      //       product_name: "치실",
-      //       product_price: 5000,
-      //       product_stock: 15,
-      //       delivery_fee: 3000,
-      //     },
-      //   ]
-      // );
-    //},
+    
     checkfunction: function(){
 
     },
-    upfunction: function(){
-
+    async upfunction(products){
+      console.log(products);
+      this.$showLoading();
+      let result = await axios
+                        .put(`/api/user/carts/${products.product_no}`)
+                        .catch(err => console.log(err));
+      if(result.data.changedRows > 0){
+        products.product_sel_cnt++;
+      }
+      this.$hideLoading();
     },
     downfunction: function(){
       
     },
     delfunction: function(){
 
+    },
+    groupBy: function(data, key){
+      return data.reduce(function (carry, el){
+        var group = el[key];
+        if(carry[group] === undefined){
+          carry[group] = []
+        }
+        carry[group].push(el)
+        return carry
+      },{})
     }
   },
 };

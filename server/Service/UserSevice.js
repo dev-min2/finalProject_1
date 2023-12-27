@@ -4,6 +4,7 @@ const snsLoginDAO = require('../DAO/SnsLoginDAO');
 const nodemailer = require('nodemailer');
 const { decryptAES256, encryptSHA256 } = require('../commonModule/commonModule');
 const userDAO = require('../DAO/user/UserDAO');
+const myCartDAO = require('../DAO/user/MyCartDAO');
 
 class UserService {
     constructor() {
@@ -32,7 +33,7 @@ class UserService {
         let result = await UserDAO.selectUserIdQuery(userId);
         return result.length <= 0 ? true : false;
     }
-
+    
     async loginUser(userObj) {
         const userId = userObj.userId;
         const userPw = encryptSHA256(decryptAES256(userObj.userPw));
@@ -194,7 +195,22 @@ class UserService {
 
         return true;
     }
+    //하랑
+    async showCart(user_no) {
+        let result = await myCartDAO.showCartQuery(user_no);
+        return result;
+    }
+    async UpCnt(product_no) {
+        let stock = await myCartDAO.selectProductStockQuery(product_no);
+        console.log(stock[0].product_stock);
+        console.log(stock[0].product_sel_cnt);
+        if (stock.product_stock <= (stock.product_sel_cnt + 1) ) {
+            return null;
+        }
 
+        let result = await myCartDAO.upCntQuery(product_no);
+        return result;
+    }
 
     // 테스트용
     async testUpload(deschtml, fileName) {

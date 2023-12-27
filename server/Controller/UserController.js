@@ -101,9 +101,31 @@ userRouter.post('/forgot-account', async(req, res) => {
         console.log(e);
     }
 })
+//하랑
+userRouter.get('/carts/:userNo', async (req, res) => {
+    let userNo = req.params.userNo;
+    try {
+        const userService = new UserService();
+        let result = await userService.showCart(userNo);
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+    }
+})
 
-userRouter.get('/carts', async (req, res) => {
-    const userService = new UserService();
+userRouter.put('/carts/:productNo', async (req, res) => {
+    let productNo = req.params.productNo;
+    try {
+        console.log(productNo);
+        const userService = new UserService();
+        let result = await userService.UpCnt(productNo);
+        if (result == null) {
+            res.send("재고없음");
+        }
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 // 파일 업로드 테스트용 코드
