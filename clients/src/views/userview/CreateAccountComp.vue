@@ -167,7 +167,7 @@
             async getSubCode() {
                 const result = await axios.post('/api/main-code',{ mainCodeName : "회원권한구분코드"}, { headers : { "Content-Type" : "application/json"}});
                 if(result.status != 200) {
-                    alert('데이터를 불러오는데 실패했습니다.');
+                    this.$showFailAlert("데이터를 불러오는데 실패했습니다.",null);
                     this.$router.push({path : "/main"});
                     return;
                 }
@@ -203,7 +203,7 @@
             },
             async checkBusinessNumber() {
                 if(!this.busiCheckReg.test(this.businessNumber)) {
-                    alert('사업자 등록번호 양식 확인해주세요.');
+                    this.$showWarningAlert('사업자 등록번호 양식 확인해주세요.',null);
                     return;
                 }
                 let busi = this.businessNumber.replaceAll('-','');
@@ -219,16 +219,16 @@
                 this.$hideLoading();
                 
                 if(result.data.data[0].tax_type === '국세청에 등록되지 않은 사업자등록번호입니다.') {
-                    alert(result.data.data[0].tax_type);
+                    this.$showWarningAlert(result.data.data[0].tax_type,null);
                     return;
                 }
 
                 this.completedBusinessAuth = true;
-                alert('사업자 인증 성공');
+                this.$showSuccessAlert('사업자 인증 성공',null);
             },
             async sendEmailAuthMail() {
                 if(!this.emailCheckReg.test(this.userEmail)) {
-                    alert('이메일 양식 확인해주세요');
+                    this.$showWarningAlert('이메일 양식 확인해주세요',null);
                     return;
                 }
 
@@ -237,7 +237,7 @@
                     this.showEmailAuth = true;
                 }
                 else {
-                    alert('이메일 인증값 생성에 실패했습니다. 다시 시도해주세요');
+                    this.$showFailAlert('이메일 인증값 생성에 실패했습니다. 다시 시도해주세요',null);
                 }
             },
             async confirmEmailAuth() {
@@ -247,11 +247,11 @@
 
                 const result = await axios.post('/api/user/email-auth/confirm', {email : this.userEmail, authcode : this.authCode}, {'Content-Type' : 'application/json'});
                 if(!result.data) {
-                    alert('인증실패');
+                    this.$showFailAlert('인증실패',null);
                     return;
                 }
                 
-                alert('인증성공!');
+                this.$showSuccessAlert('인증성공!',null);
                 this.completedEmailAuth = true;
             },
             updateEmailTimer() {
@@ -282,7 +282,7 @@
 
                 if(this.emailTimerCount <= 0) {
                     clearInterval(this.emailInterval);
-                    alert('다시 인증시도 해주세요.');
+                    this.$showWarningAlert('다시 인증시도 해주세요.',null);
                     this.showEmailAuth = false;
                     this.completedEmailAuth = false;
                 }
@@ -334,7 +334,7 @@
             },
             async checkDuplicateId() {
                 if(!this.userIdReg.test(this.userId)) {
-                    alert('아이디 양식 확인해주세요');
+                    this.$showWarningAlert('아이디 양식 확인해주세요',null);
                     return;
                 }
 
@@ -342,12 +342,13 @@
                 let result = await axios.post('/api/user/checkId',{ id : this.userId }, {'Content-Type' : 'application/json'});
                 this.$hideLoading();
 
+                
                 if(result.data) {
-                    alert('사용할 수 있는 아이디입니다!');
+                    this.$showSuccessAlert("사용할 수 있는 아이디입니다!",null);
                     this.userIdDuplicateCheck = true;
                 }
                 else {
-                    alert('사용할 수 없는 아이디입니다.');
+                    this.$showFailAlert("사용할 수 있는 아이디입니다!",null);
                 }
             },
             async createAccount() {
@@ -361,18 +362,18 @@
                 // 데이터 송신전에 한번더 체크
                 if(this.isSeller !== "socialjoin") {
                     if(!this.userIdDuplicateCheck) {
-                        alert('아이디 중복체크 해주세요');
+                        this.$showWarningAlert('아이디 중복체크 해주세요',null);
                         return;
                     }
 
                     if(!this.pwCheckReg.test(this.userPw)) {
-                        alert('비밀번호 양식 확인해주세요');
+                        this.$showWarningAlert('비밀번호 양식 확인해주세요',null);
                         return;
                     }
 
                     if(this.isSeller == 1) {
                         if(!this.completedBusinessAuth) {
-                            alert('사업자 등록 인증해주세요');
+                            this.$showWarningAlert('사업자 등록 인증해주세요',null);
                             return;
                         }
                         userObj.company_name = this.companyName;
@@ -392,12 +393,12 @@
                 }
 
                 if(this.confirmEmailAuth == false) {
-                    alert('이메일 인증 해주세요');
+                    this.$showWarningAlert('이메일 인증 해주세요',null);
                     return;
                 }
 
                 if(!this.phoneCheckReg.test(this.userPhone)) {
-                    alert('전화번호 양식 확인해주세요');
+                    this.$showWarningAlert('전화번호 양식 확인해주세요',null);
                     return;
                 }
 
@@ -412,11 +413,11 @@
                 this.$showLoading();
                 let result = await axios.post('/api/user/join',sendObj,{ 'Content-Type' : 'application/json'});
                 if(result.status == 200) {
-                    alert('계정 생성 성공!');
+                    this.$showSuccessAlert('계정 생성 성공!',null);                    
                     this.$router.push({path : '/login'});
                 }
                 else {
-                    alert('계정 생성에 실패 했습니다.');
+                    this.$showFailAlert('계정 생성에 실패 했습니다.',null);
                 }
                 this.$hideLoading();
 
