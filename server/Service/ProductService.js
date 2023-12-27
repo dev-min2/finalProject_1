@@ -1,4 +1,5 @@
 const productDAO = require("../DAO/product/ProductDAO");
+const categoryDAO = require("../DAO/product/CategoryDAO");
 
 class ProductService {
     constructor() {
@@ -7,6 +8,10 @@ class ProductService {
     async getMainpageProductList() {
         let result = await productDAO.selectMainpageFirstProductQuery();
         return result;
+        // let result2 = await productDAO.selectMainpageSecondProductQuery();
+        // return result2;
+        // let result3 = await productDAO.selectMainpageLastProductQuery();
+        // return result3;
 
     }
     async getSearchProductList(search, ptype) {
@@ -15,9 +20,12 @@ class ProductService {
         return result;
     }
 
-
-
-
+    async getCategoryData(){
+        let result = await categoryDAO.selectCategoryDataQuery();
+        console.log(result);
+        return result;
+    }
+    
     //트랜잭션 예시코드임
     // async completePayment() {
     //     const connection = await getConnection();

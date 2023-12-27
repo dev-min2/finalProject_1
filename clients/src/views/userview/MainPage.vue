@@ -1,12 +1,38 @@
 <template>
   <div>
     <Banner />
-    <h4>이런 상품 어때요? </h4>
-<!-- 한줄에 컴포넌트 4개 띄우기 먼저 하기 -->
-    <Product /> 
-    <Product />
-    <Product />
-    <Product />
+    <section class="py-3">
+            <div class="container px-4 px-lg-5 mt-5">
+              <h4>이 상품 어때요? </h4>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div v-for="(product2,idx) in productList" :key="idx">
+                      <Product :product="product2" />
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <section class="py-3">
+            <div class="container px-4 px-lg-5 mt-5">
+              <h4>💜 구매후기 BEST 상품! </h4>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div v-for="(product2,idx) in productList" :key="idx">
+                      <Product :product="product2" />
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <section class="py-3">
+            <div class="container px-4 px-lg-5 mt-5">
+              <h4>⭐ 별점 TOP 상품! </h4>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div v-for="(product2,idx) in productList" :key="idx">
+                      <Product :product="product2" />
+                    </div>
+                </div>
+            </div>
+    </section>
   </div>
 </template>
 
@@ -25,10 +51,12 @@
     data() {
       return {
         productList: [],
+        productList2: [],
+        productList3: [],
       };
     },
     created() {
-      //this.getMainpageProductList();
+      this.getMainpageProductList();
     },
     methods: {
       async getMainpageProductList() {
@@ -37,6 +65,7 @@
           .get(`/api/product/main`)
           .catch((err) => console.log(err));
         this.productList = result.data;
+        
         this.$hideLoading();
       },
     },

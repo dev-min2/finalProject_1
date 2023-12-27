@@ -39,8 +39,9 @@ let productDAO = {
         const searchquery = "%" + search + "%";
         const selectSearchProductQuery =
             `select * from product where product_name like ? and pet_type=?`;
-        return query(selectSearchProductQuery, [searchquery, ptype]); // 배열로 바꾸기
-    }
+        return query(selectSearchProductQuery, [searchquery, ptype]);
+    },
+
 };
 
 module.exports = productDAO;

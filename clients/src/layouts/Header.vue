@@ -19,7 +19,7 @@
         <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarSupportedContent">
           <div class="input-group w-50">
             <input type="text" class="form-control" placeholder="검색어를 입력하세요" v-model="keyword" aria-label="Username"
-              aria-describedby="basic-addon1" id="searchBar" @keyup.enter="searchshow(keyword)"/>
+              aria-describedby="basic-addon1" id="searchBar" @keyup.enter="searchshow(keyword)" />
             <div class="input-group-append">
               <button class="input-group-text" id="searchBtn">
                 <i class="fa fa-search pt-2"></i>
@@ -59,9 +59,9 @@
             <i class="fas fa-bars custom-padding"></i>
             <a class="nav-link dropdown-toggle" id="multiDropdown" href="#" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">카테고리</a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <ul class="dropdown-menu" v-for="(category, idx) in categoryList" :key="idx" aria-labelledby="navbarDropdown">
               <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">사료</a>
+                <a class="dropdown-item dropdown-toggle" href="#">{{ category.category_name }}</a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">건식사료</a></li>
                   <li><a class="dropdown-item" href="#">습식사료</a></li>
@@ -128,9 +128,11 @@
 <script>
   import axios from "axios";
   export default {
-    data(){
-      return{
-        keyword : ''
+    data() {
+      return {
+        keyword: '',
+        categoryList : []
+
       }
     },
 
@@ -139,21 +141,35 @@
         return this.$store.state.curShowPetType;
       },
     },
-    created() {},
+    created() {
+      this.getCategoryData();
+    },
     methods: {
-      searchshow(keyword){
-        if(keyword !== ''){
-          this.$router.push({
-            name : 'searchPage',
-            params : {
-              keyword : this.keyword,
-            }
-            });
-        }else{
-          this.$showBasicAlert('검색어를 입력하세요!');
+      async getCategoryData() {
+        // 서버에 요청
+        const result = await axios.get(`/api/product/category`).catch((err)=> console.log(err));
+        this.categoryList = result.data; //저장
+        let parentCategory = [];
+        console.log(this.categoryList.Target);
+        for(let i = 0; i < this.categoryList.length; ++i) {
+         if(this.categoryList[i].category_pno == null){
+            parentCategory.push(this.categoryList[i]);
+         }
         }
-      }
-      ,
+        console.log(parentCategory);
+      },
+      searchshow(keyword) {
+        if (keyword !== '') {
+          this.$router.push({
+            name: 'searchPage',
+            params: {
+              keyword: this.keyword,
+            }
+          });
+        } else {
+          this.$showBasicAlert(null, '검색어를 입력하세요!');
+        }
+      },
       changePetType() {
         if (this.curShowPetType == "d1") this.$store.commit("reversePetType", "d2");
         else this.$store.commit("reversePetType", "d1");
@@ -209,9 +225,6 @@
       }
     });
   });
-
 </script>
 <style scoped>
 </style>
-
-
