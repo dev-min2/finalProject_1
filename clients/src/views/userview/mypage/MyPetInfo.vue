@@ -13,17 +13,11 @@
                                     <th>반려동물생일</th>
                                     <th>성별</th>
                                 </tr>
-                                <tr>
-                                    <td>pet.petName</td>
-                                    <td>
-                                        강아지/고양이
-                                    </td>
-                                    <td>
-                                        생일
-                                    </td>
-                                    <td>
-                                        암/수
-                                    </td>
+                                <tr :key="i" v-for="(pet, i) in selectPetQuery">
+                                    <td>{{pet.pet_name}}</td>
+                                    <td>{{pet.pet_type}}</td>
+                                    <td>{{pet.pet_birth}}</td>
+                                    <td>{{pet.pet_gender}}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4">
@@ -66,7 +60,7 @@
                     = await axios.get(`/api/user/mypetinfo/${this.userNo}`)
                                 .catch(err => console.log(err));
                 this.selectPetQuery = result.data;
-                console.log('MyPetInfo' + this.selectPetQuery);
+                console.log('MyPetInfo', this.selectPetQuery);
             }
         }
     }
