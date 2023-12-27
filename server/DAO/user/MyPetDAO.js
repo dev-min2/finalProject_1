@@ -4,14 +4,23 @@ let { pool,query } = require('../../config/dbPool');
 let myPetDAO = {
     selectPetQuery : async function(userNo) {
         const selectPetQuery = 
-            `SELECT p.pet_name, s1.sub_code_name as pet_type, p.pet_birth, s2.sub_code_name as pet_gender
+            `SELECT p.pet_no, p.pet_name, s1.sub_code_name as pet_type, p.pet_birth, s2.sub_code_name as pet_gender
             FROM pet p 
             LEFT JOIN sub_code_tbl s1
             ON p.pet_type = s1.sub_code
             LEFT JOIN sub_code_tbl s2
             ON p.pet_gender = s2.sub_code
             WHERE user_no = ?`;
-            return query(selectPetQuery, userNo);
+        return query(selectPetQuery, userNo);
+    },
+    insertPetQuery : async function(petObj){
+        const insertPetQuery = `INSERT INTO pet SET ?`;
+        return query(insertPetQuery, petObj);
+
+    },
+    deletePetQuery : async function(petNo){
+        const deletePetQuery = `DELETE FROM pet WHERE pet_no=?`;
+        return query(deletePetQuery, petNo);
     }
 };
 

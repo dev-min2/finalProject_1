@@ -3,7 +3,7 @@ const userRouter = express.Router();
 
 const UserSevice = require('../Service/UserSevice');
 
-//마이페이지
+//마이페이지-내 반려동물관리
 userRouter.get('/mypetinfo/:userNo', async(req,res)=>{
     let userNo = req.params.userNo;
     try{
@@ -16,6 +16,38 @@ userRouter.get('/mypetinfo/:userNo', async(req,res)=>{
         console.log(e);
     }
 });
+
+userRouter.post('/mypetform', async(req, res)=>{
+    let data = req.body.param;
+    try{
+        const userService = new UserService();
+        let result = await userService.createPet(data);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+
+})
+
+userRouter.delete('/mypetform/:petNo', async(req, res)=>{
+    let data = req.params.petNo;
+
+    try{
+        const userService = new UserService();
+        console.log('usercontroll petNo',data);
+        let result = await userService.deletePet(data);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+
+})
+
+// app.delete('/api/users/:user_no', async(req, res)=>{
+//     let data = req.params.user_no;
+//     let result = await mysql.query('userDelete', data);
+//     res.send(result);
+// })
 
 //user 기본기능
 userRouter.post('/join', async(req,res) =>{

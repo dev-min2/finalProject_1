@@ -10,6 +10,7 @@ import MyPageSide from '../components/common/MypageSidebar.vue'
 import MyInfo from '../views/userview/mypage/MyInfo.vue'
 import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
+import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import NoticeList from '../views/userview/NoticeList.vue'
@@ -69,6 +70,11 @@ export default {
               path: "/mypetinfo",
               name: "mypetinfo",
               component: MyPetInfo
+            },
+            {
+              path: "/mypetform",
+              name: "mypetform",
+              component: MyPetForm
             }
           ]
         },
