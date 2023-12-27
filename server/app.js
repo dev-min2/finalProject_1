@@ -5,6 +5,7 @@ require('dotenv').config({ path : './config/commonENV.env' });
 const express = require('express');
 const app = new express();
 const session = require('express-session');
+const fxExtra = require('fs-extra');
 
 app.use('/uploads', express.static('uploads'));
 app.use(express.json({limit : '50mb'}));
@@ -20,13 +21,20 @@ app.use(express.urlencoded({extended : false}));
 const userController = require('./Controller/UserController');
 const boardController = require('./Controller/BoardController');
 const productController = require('./Controller/ProductController');
+const fileController = require('./Controller/FileController');
 
 app.use('/user', userController);
 app.use('/board', boardController);
 app.use('/product', productController);
+app.use('/file', fileController);
 //
 
 app.listen(12532, () => {
+    // temp 폴더내 파일들 삭제처리코드 여기서 삽입.
+    fxExtra.emptyDirSync('./uploads/notice/tempAttachFile');
+    fxExtra.emptyDirSync('./uploads/notice/temp');
+
+    
     console.log('server lisening');
 })
 

@@ -116,7 +116,7 @@
                 console.log(result);
                 if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
                     if(this.idSaveChecked) {
-                        localStorage.setItem("userId", this.userId);
+                        localStorage.setItem("userId", this.userId);    
                     }
                     else {
                         localStorage.setItem("userId", "");

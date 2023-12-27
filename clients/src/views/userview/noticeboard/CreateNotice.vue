@@ -31,21 +31,27 @@
 							</div>
 						</td>
 					</tr>
-					<template v-if="fileCount > 0">
 						<tr>
-							<th>추가된파일</th>
-							<td ref="uploadFile"></td>
+							<th>파일 첨부</th>
+							<td>
+								<ul class="scroll_ul">
+									<li v-for="(attachFile,idx) in fileList" :key="idx" style="height:30px;">
+										{{attachFile.displayName}}
+										<button style="float:right;" @click="deleteAttachFile(attachFile.originName)">삭제</button>
+									</li>
+								</ul>
+							</td>
 						</tr>
-					</template>
+					
 					<tr>
 						<th>파일추가하기</th>
-						<td><input ref="prImg" type="file" name="productImage" class="form-control" @change="uploadMultipleFile($event.target)"></td>
+						<td><input ref="prImg" type="file" name="noticeFile" class="form-control" @change="uploadMultipleFile($event.target)"></td>
 					</tr>
 					<input type="hidden" ref="deschtml" name="deschtml">
 					<tr>
-						<td colspan="2">
-							<input type="submit" value="저장" class="btn btn-primary"> 
-							<input type="reset" value="초기화" class="btn btn-warning">
+						<td colspan="2" style="text-align:center;">
+							<input type="submit" value="저장" class="btn btn-primary mx-3"> 
+							<router-link class="btn btn-warning" to="/notice">작성취소</router-link>
 						</td>
 					</tr>
 				</table>
@@ -58,17 +64,23 @@
 import Editor from '@toast-ui/editor'; /* ES6 모듈 방식 */
 import '@toast-ui/editor/dist/toastui-editor.css'; // Editor 스타일
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 let editor = null;
 export default {
     data() {
         return {
-			fileCount : 0,
+			attachFileCount : 0,
             subCodes : {},
             sel : '',
-			randNoticeValue : 0,
-			curTimeVal : 0,
+			randNoticeValue : '',
+			curTimeVal : '',
 			descFileCount : 0,
+			fileList : [],
+			file : { // 이런형태로 넣으란 의미로 선언
+				originName : '',
+				displayName : '',
+			}
         }
     },
     created() {
@@ -76,11 +88,12 @@ export default {
             this.$showWarningAlert('권한이 없습니다.');
             this.$router.push({path : "/main"});
         }
-        this.getSubcode();
 		
+        this.getSubcode();
 		// 111111 ~ 999999 랜덤 값.
 		this.randNoticeValue = Math.floor(Math.random() * (999999 - 111111 + 1)) + 111111;
 		this.curTimeVal = new Date().getTime();
+		
     },
     computed : {
         showDate() {
@@ -96,61 +109,48 @@ export default {
                 return;
             }
             this.subCodes = result.data;
-            console.log(this.subCodes);
         },
-        async uploadFile() {
-            this.$refs.prImg.name = `productImage/${this.petType}`;
-            this.$refs.prDeImg.name = `productDetailImage/${this.petType}`;
-            
-            const formData = new FormData(this.$refs.uploadForm);
-            console.log(this.$refs.uploadForm);
-            let result = await axios.post('/api/board/notice/uploadDescImg', formData);
-            console.log(result);
-        },
-		async uploadProduct() {
-			this.$refs.deschtml.value = editor.getHTML(); // html값 넣어주고
-			this.$refs.prImg.name = `productImage/${this.petType}`;
-			const formData = new FormData(this.$refs.uploadForm);
-			let result = await axios.post('/api/user/uploadProduct', formData);
-			console.log(result);
-		},
 		async uploadMultipleFile(file) {
-			// 화면에 추가하기.(파일 첨부도 따로할려면 업로드할때마다 처리해줘야할듯?)
-			// 이건조금 고민해봐야함.
-			let inputTag = document.createElement('input');
-			inputTag.setAttribute('type','hidden');
-			inputTag.setAttribute('name',`uploadFile${this.fileCount}`);
-			inputTag.setAttribute('class','form-control');
-
-			// 파일복사
+			// 파일복사(이렇게 해야 파일 전송이댐)
 			const newFiles = new DataTransfer();
 			for (let i = 0; i < file.files.length; i++) {
 				newFiles.items.add(file.files[i]);
 			}
-			inputTag.files = newFiles.files;
+			file.value = '';
+			let realFile = newFiles.files;
+			const curFileName = realFile[0].name;
+			
+			const formData = new FormData();
+						
+			const sendFileName = String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.attachFileCount++) + '_' + curFileName;
+			const boardType = "notice";
+			formData.append('fileName',sendFileName);
+			formData.append('board',boardType);
+			formData.append('attachFile', realFile[0]);
 
-			let trTag = document.createElement('tr');
-			let thTag = document.createElement('th');
-			let tdTag = document.createElement('td');
-			let tdTag2 = document.createElement('td');
-			let btnTag = document.createElement('button');
-
-			trTag.appendChild(thTag);
-			trTag.appendChild(tdTag);
-			trTag.appendChild(tdTag2);
-			tdTag2.appendChild(btnTag);
-			thTag.innerHTML = `추가된파일`
-			tdTag.innerHTML = file.value.substr(file.value.lastIndexOf('\\') + 1,file.value.length);
-			btnTag.innerHTML = '삭제';
-			btnTag.addEventListener('click',this.deleteUploadFile(inputTag.files));
-
-			file.value ='';	
-			this.$refs.target.insertAdjacentElement('afterend',trTag);
+			let result = await axios.post('/api/file/uploadAttachFile',formData,{"Content-Type": "multipart/form-data"});
+			
+			this.fileList.push({
+				originName : sendFileName,
+				displayName : curFileName
+			});
 		},
-		deleteUploadFile(target) {
-			console.log(target);
-		}
+		async deleteAttachFile(fileOriginName) {
+			const result = await axios.delete(`/api/file/uploadAttachFile/notice/${fileOriginName}`);
+			if(result.data == "OK") {
+				for(let i = 0; i < this.fileList.length; ++i) {
+					if(this.fileList[i].originName == fileOriginName) {
+						this.fileList.splice(i,1);
+						break;
+					}
+				}
+			}
+		},
     },
+	// 해당 라우트 뷰를 벗어날 때.
+	beforeRouteLeave() {
+		axios.delete(`/api/file/uploadAttachFile/notice/-1`);
+	},
 	mounted() {
 			editor = new Editor({
 				el: document.querySelector('#editor'),
@@ -161,18 +161,24 @@ export default {
 					// 이미지가 올라오면 해당 이미지가 blob매개변수에 담김
 					addImageBlobHook: async (blob, callback) => {
 						const formData = new FormData();
-
-						// 파일명 
-						const sendFileName = String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++);
+						
+						const sendFileName = String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
+						const boardType = "notice";
 						formData.append('fileName',sendFileName);
+						formData.append('board',boardType);
 						formData.append('image', blob);
 
-						console.log(formData);
-						let result = await axios.post('/api/board/notice/uploadDescImg',formData,{"Content-Type": "multipart/form-data"});
-						
+						let result = await axios.post('/api/file/uploadDescImg',formData,{"Content-Type": "multipart/form-data"});
+						const fileName = result.data;
+						console.log(result);
 						
 						let imageUrl = '';
-						// 경로접근은 이렇게
+						// if(this.$store.state.testData) {
+						// 	imageUrl = `http://192.168.0.40:12532/uploads/productDescInImg/${fileName}`;
+						// }
+						// else {
+						// 	imageUrl = `http://localhost:12532/uploads/productDescInImg/${fileName}`;
+						// }
 						imageUrl = `${this.$store.state.curIp + result.data}`;
 						console.log(imageUrl);
 						callback(imageUrl, 'image alt attribute');
@@ -182,3 +188,12 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+	.scroll_ul {
+		border : 1px solid black;
+		overflow-y:scroll;
+		list-style: none;
+		height : 100px;
+	}
+</style>
