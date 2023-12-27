@@ -108,7 +108,7 @@
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">공지사항</a>
+            <router-link class="nav-link" aria-current="page" to="/notice">공지사항</router-link>
           </li>
           <li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
           <li class="nav-item">

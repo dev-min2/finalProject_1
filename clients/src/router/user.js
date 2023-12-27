@@ -12,6 +12,7 @@ import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
+import NoticeList from '../views/userview/NoticeList.vue'
 
 export default {
     path : '/',
@@ -75,6 +76,11 @@ export default {
           path: "/forgot-account/:forgot",
           name: "forgotAccount",
           component : ForgotAccountComp
+        },
+        {
+          path: "/notice",
+          name: "notice",
+          component: NoticeList
         }
     ]
 };
