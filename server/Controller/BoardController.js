@@ -52,4 +52,8 @@ boardRouter.post('/notice/regist', async(req, res) => {
 
 });
 
+boardRouter.post('/notice/cancle', async(req, res) => {
+    // 여기에서는 에디터에서 업로드한 이미지를 제거하는 로직이 필요.
+});
+
 module.exports = boardRouter;
