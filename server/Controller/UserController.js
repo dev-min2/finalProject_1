@@ -4,18 +4,31 @@ const userRouter = express.Router();
 const UserSevice = require('../Service/UserSevice');
 
 //마이페이지-내 반려동물관리
-userRouter.get('/mypetinfo/:userNo', async(req,res)=>{
+userRouter.get('/mypetinfo/:userNo', async(req,res)=>{ //전체조회
     let userNo = req.params.userNo;
     try{
         const userService = new UserService();
-        let result = await userService.getPetInfo(userNo);
-        //console.log('test',result);
+        let result = await userService.getPetList(userNo);
+        console.log('test',result);
         res.send(result);
     }
     catch(e){
         console.log(e);
     }
 });
+
+userRouter.get('/mypetform/:petNo', async(req,res)=>{ //단건조회
+    let petNo = req.params.petNo;
+    try{
+        const userService = new UserService();
+        let result = await userService.getPetInfo(petNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+});
+
 
 userRouter.post('/mypetform', async(req, res)=>{
     let data = req.body.param;
@@ -28,15 +41,23 @@ userRouter.post('/mypetform', async(req, res)=>{
     }
 })
 
-userRouter.delete('/mypetform/:petNo', async(req, res)=>{
-    let data = req.params.petNo;
-<<<<<<< HEAD
-=======
-    console.log('usercontroll',data);
->>>>>>> f3a0d78148a0f75c28f5cf90b7a87d5bc6a01865
+
+userRouter.put('/mypetform/:petNo', async(req, res)=>{
+    let data = req.body.param;
+    let petNo = req.params.petNo;
     try{
         const userService = new UserService();
-        console.log('usercontroll petNo',data);
+        let result = await userService.updatePet(data,petNo);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+})
+
+userRouter.delete('/mypetinfo/:petNo', async(req, res)=>{
+    let data = req.params.petNo;
+    try{
+        const userService = new UserService();
         let result = await userService.deletePet(data);
         res.send(result);
     }catch(e){
@@ -44,12 +65,6 @@ userRouter.delete('/mypetform/:petNo', async(req, res)=>{
     }
 
 })
-
-// app.delete('/api/users/:user_no', async(req, res)=>{
-//     let data = req.params.user_no;
-//     let result = await mysql.query('userDelete', data);
-//     res.send(result);
-// })
 
 //user 기본기능
 userRouter.post('/join', async(req,res) =>{

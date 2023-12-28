@@ -36,7 +36,7 @@
 							</tr>
 							<tr>
 								<td colspan="4" align="center">
-                                    <input type="submit" value="저장" class="btn text-white" style="background-color: #9999FF;" @click="insertPetQuery()"> 
+                                    <input type="submit" value="저장" class="btn text-white" style="background-color: #9999FF;" @click="isUpdated? updatePetQuery() : insertPetQuery()"> 
                                     <input type="reset" value="초기화" class="btn btn-warning">
                                 </td>
 							</tr>
@@ -49,26 +49,46 @@
 </template>
 
 <script>
-
 import axios from 'axios';
+
 export default {
     data(){
         return {
             userNo : '',
+            petNo : '',
             petInfo: {
                 user_no : '', 
                 pet_name : '', 
                 pet_type : '', 
                 pet_birth : '', 
                 pet_gender : ''
-            }
+            },
+            isUpdated : false
         };
     },
     created(){
         this.userNo = this.$store.state.userNo;
+        this.petNo = this.$route.query.petNo;
+        //this.infoPetQuery();
+        if(this.petNo > 0){
+            //수정
+            this.infoPetQuery();
+            this.isUpdated = true;
+        }
     },
     methods : {
-        async insertPetQuery(){
+        //단건조회
+        async infoPetQuery(){
+            let result = await axios.get(`/api/user/mypetform/${this.petNo}`)
+                                    .catch(err => console.log(err));
+            //console.log(';-;나와줘', result.data);
+            this.petInfo = result.data[0];
+            this.petInfo.pet_birth = this.$dateFormat(this.petInfo.pet_birth);
+        },
+        //수정
+        async updatePetQuery(){
+            if(!this.validation()) return;
+
             let petObj = {
                 param : {
                     user_no : this.userNo, 
@@ -78,16 +98,50 @@ export default {
                     pet_gender : this.petInfo.pet_gender
                 }
             }
-            console.log(petObj);
-            let result = await axios.post("/api/user/mypetform", petObj)
-                                    .catch(err=>console.log(err));
-            if(result.data.insertId > 0){
-                alert('등록되었습니다');
+             let result = await axios.put(`/api/user/mypetform/${this.petNo}`, petObj)
+                                     .catch(err=>console.log(err));
+            if(result.data.changedRows > 0){
+                this.$showSuccessAlert('수정되었습니다');
+            }else{
+                this.$showErrorAlert('수정에 실패했습니다. ');
             }
             this.$router.push({ path: '/mypetinfo'});
-            console.log(petObj);
+        },
+        //등록
+        async insertPetQuery(){
+            if(!this.validation()) return; //입력안된 값 없는지 확인
+
+            let petObj = {
+                param : {
+                    user_no : this.userNo, 
+                    pet_name : this.petInfo.pet_name, 
+                    pet_type : this.petInfo.pet_type, 
+                    pet_birth : this.petInfo.pet_birth, 
+                    pet_gender : this.petInfo.pet_gender
+                }
+            }
+            let result = await axios.post("/api/user/mypetform", petObj)
+                                    .catch(err=>console.log(err));
+            console.log(result.data);
+            if(result.data.insertId > 0){
+                this.$showSuccessAlert('등록되었습니다');
+            }else{
+               this.$showErrorAlert('등록에 실패했습니다. ');
+            }
+            this.$router.push({ path: '/mypetinfo'});
             console.log('펫 등록되나확인\'~\'*');
         },
+        //유효성검사
+        validation(){ 
+            if(this.petInfo.pet_name == '' || 
+                this.petInfo.pet_type == '' ||
+                this.petInfo.pet_birth == '' ||
+                this.petInfo.pet_gender == '' ){
+                this.$showWarningAlert('값을 입력해주세요. ');
+                return false;
+            }
+            return true;
+        }
     }
 }
 </script>

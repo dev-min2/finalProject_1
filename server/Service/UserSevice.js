@@ -13,13 +13,23 @@ class UserService {
 
     }
     //마이페이지-내반려동물정보
-    async getPetInfo(userNo){
+    async getPetList(userNo){
         const result = myPetDAO.selectPetQuery(userNo);
+        return result;
+    }
+
+    async getPetInfo(petNo){
+        const result = myPetDAO.infoPetQuery(petNo);
         return result;
     }
 
     async createPet(petObj){
         let result = await myPetDAO.insertPetQuery(petObj);
+        return result;
+    }
+
+    async updatePet(petObj,petNo){
+        let result = await myPetDAO.updatePetQuery(petObj,petNo);
         return result;
     }
 
@@ -118,7 +128,6 @@ class UserService {
         if(result.length > 0) {
             return true;
         }
-
         return false;
     }
 

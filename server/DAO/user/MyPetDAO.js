@@ -13,10 +13,18 @@ let myPetDAO = {
             WHERE user_no = ?`;
         return query(selectPetQuery, userNo);
     },
+    infoPetQuery : async function (petNo){
+        const infoPetQuery = 
+            `SELECT * FROM pet WHERE pet_no = ?`
+        return query(infoPetQuery, petNo);
+    },
     insertPetQuery : async function(petObj){
         const insertPetQuery = `INSERT INTO pet SET ?`;
         return query(insertPetQuery, petObj);
-
+    },
+    updatePetQuery : async function(petObj,petNo){
+        const updatePetQuery = `UPDATE pet SET ? WHERE pet_no=? `;
+        return query(updatePetQuery,[petObj,petNo]);
     },
     deletePetQuery : async function(petNo){
         const deletePetQuery = `DELETE FROM pet WHERE pet_no=?`;
