@@ -30,6 +30,10 @@ userRouter.post('/mypetform', async(req, res)=>{
 
 userRouter.delete('/mypetform/:petNo', async(req, res)=>{
     let data = req.params.petNo;
+<<<<<<< HEAD
+=======
+    console.log('usercontroll',data);
+>>>>>>> f3a0d78148a0f75c28f5cf90b7a87d5bc6a01865
     try{
         const userService = new UserService();
         console.log('usercontroll petNo',data);
