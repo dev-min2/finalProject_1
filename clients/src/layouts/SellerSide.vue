@@ -4,7 +4,7 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">menu</div>
-                            <router-link class="nav-link" to="/charts">
+                            <router-link class="nav-link" to="/sellerMain">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Charts
                             </router-link>

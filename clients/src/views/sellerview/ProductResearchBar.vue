@@ -1,46 +1,168 @@
 <template>
-  <section class="pt-2 pb-4">
-    <div class="container px-4 px-lg-5 mt-3">
-      <label for="datetimes">날짜 선택</label>
-      <input type="date" name="datetimes" v-model="datetimes" />
-      <button @click="searchByDate">조회</button>
+  <div id="search-options">
+    <!-- 기간 선택 -->
+    <div>
+      <table>
+        <tr class>
+          <td class="A">
+            <span>기간</span>
+          </td>
+          <td class="B">
+            <div class = "labels">
+            <label :class="{ active: selectedPeriod === 'today' }" @click="changePeriod(0)">
+              오늘
+            </label>
+            <label :class="{ active: selectedPeriod === '1week' }" @click="changePeriod(1)">
+              7일
+            </label>
+            <label :class="{ active: selectedPeriod === '1month' }" @click="changePeriod(2)">
+              1개월
+            </label>
+            <label :class="{ active: selectedPeriod === '3month' }" @click="changePeriod(3)">
+              3개월
+            </label>
+            <label :class="{ active: selectedPeriod === '6month' }" @click="changePeriod(4)">
+              6개월
+            </label>
+            </div>
+            <div class = "date">
+            <input type="date" v-model="date1">~<input type="date" v-model="date2">
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="A">
+            <div>
+              <span>상품 판매가격</span>
+            </div>
+          </td>
+          <td class="B">
+            <input type="text" v-model="minPrice"  style="width: 80px" placeholder="최소 가격" /> ~
+            <input type="text" v-model="maxPrice"  style="width: 80px" placeholder="최대 가격"/>
+            
+          </td>
+        </tr>
+      </table>
+      <button @click="search">검색</button>
     </div>
-  </section>
+  
+  </div>
+  
 </template>
 
 <script>
+import Datepicker from 'vue-datepicker';
 export default {
+  components: {
+    Datepicker,
+  },
   data() {
     return {
-      datetimes: "", // 선택한 날짜를 저장할 데이터
+      selectedPeriod: '1month',
+     date1:'',
+     date2:'',
+     minPrice:'',
+     maxPrice:''
+     
     };
   },
-
+  
   methods: {
-    getDurationDays(start_date, end_date) {
-      // yyyymmdd 형식의 날짜를 받아서 일 수 차이를 계산하는 함수
-      let s_time = new Date(
-        start_date.substring(0, 4),
-        start_date.substring(4, 6) - 1,
-        start_date.substring(6, 8)
-      );
-      let e_time = new Date(
-        end_date.substring(0, 4),
-        end_date.substring(4, 6) - 1,
-        end_date.substring(6, 8)
-      );
+    changePeriod(period) {
+      if(period == 0) {
+        this.selectedPeriod = 'today'
+      }
+      else if(period == 1){
+        this.selectedPeriod = '1week'
+      }
+      else if(period == 2){
+        this.selectedPeriod = '1month'
+      }
+      else if(period == 3){
+        this.selectedPeriod = '3month'
+      }
+      else if(period == 4){
+       this.selectedPeriod = '6month'
+      }
+      this.$emit('emit-name',period);
+      this.$emit('emit2-name',period);
 
-      let days = (e_time - s_time) / 60 / 60 / 24 / 1000;
-
-      return days;
     },
-
-    searchByDate() {
-      // 조회 버튼 클릭 시 실행될 함수
-      // this.datetimes에 선택한 날짜가 저장되어 있음
-      // 이를 활용하여 조회 로직을 구현
-      console.log("Selected Date:", this.datetimes);
+    // 검색버튼 동작
+    search() {
+      this.$showSuccessAlert('검색','검색123');
+      
     },
   },
 };
 </script>
+
+<style scoped>
+#search-options {
+  margin-top: 10px;
+  display: inline-block;
+  width: 1200px;
+}
+
+.A {
+  width: 180px;
+  text-align: center;
+  background-color: #d1d1d1;
+}
+
+.B {
+  text-align: left;
+  background-color: #eeeded;
+}
+
+
+label {
+  display: inline-block;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-right: 10px;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 4px;
+}
+
+.labels{
+  display: inline-block;
+  margin: 10px;
+  padding-top: 8px;
+  padding-left: 10px;
+  border: 2px solid;
+  margin: 0px;
+  
+ 
+  
+}
+
+label.active {
+  background-color: rgb(0, 68, 146);
+  color: rgb(255, 255, 255);
+}
+
+button {
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #dfdfdf;
+  color: rgb(0, 0, 0);
+  border: 0.5px solid;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #b6b6b6;
+}
+
+.date{
+  margin-left: 30px;
+  display: inline-block;
+}
+
+</style>

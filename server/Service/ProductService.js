@@ -15,6 +15,31 @@ class ProductService {
         return result;
     }
 
+    async selectTodayQuery(userNo) {
+        let result = await ProductDAO.selectTodayQuery(userNo);
+        return result;
+    }
+
+    async select1weekQuery(userNo) {
+        let result = await ProductDAO.select1weekQuery(userNo);
+        return result;
+    }
+
+    async select1monthQuery(userNo) {
+        let result = await ProductDAO.select1monthQuery(userNo);
+        return result;
+    }
+
+    async select3monthQuery(userNo) {
+        let result = await ProductDAO.select3monthQuery(userNo);
+        return result;
+    }
+
+    async select6monthQuery(userNo) {
+        let result = await ProductDAO.select6monthQuery(userNo);
+        return result;
+    }
+
 
     //트랜잭션 예시코드임
     // async completePayment() {
