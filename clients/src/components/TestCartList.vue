@@ -2,7 +2,7 @@
   <div class="container">
     <template
       v-for="(company, companyIndex) in cartList" :key="companyIndex">
-      <h1>업체명 : {{company[0].company_name}}</h1>
+      <h2>업체명 : {{company[0].company_name}}</h2>
       <table class="cart_list">
         <thead>
           <tr>
@@ -10,9 +10,6 @@
             <td colspan="3">상품정보</td>
             <td>옵션</td>
             <td>상품금액</td>
-            <td>
-              배송비
-            </td>
           </tr>
         </thead>
         <tbody>
@@ -23,16 +20,15 @@
               <input
                 type="checkbox"
                 checked="checked"
-                class="chk"
                 name="product"
                 value="상품가격"
-                onclick="checkfunction()"
+                v-model="products.selected"
+                @change="checkProd($event.target.checked, products)"
               />
             </td>
             <td>
               <input
                 type="checkbox"
-                id="pno"
                 name="pno"
                 value="상품번호"
                 style="display: none"
@@ -40,7 +36,7 @@
               
             </td>
             <td>
-              <a href=""><img src="" /></a>
+              <a href=""><img src="../assets/logo.png" style="width:100px" /></a>
             </td>
             <td>
               <a href="">상품설명</a
@@ -53,7 +49,6 @@
             <td class="cart_list_option">
               <p>모델명 : {{ products.product_name }}</p>
               <p>선택수량 : {{ products.product_sel_cnt }}</p>
-              <p>업체명 : {{products.company_name}}</p>
               <input
                 type="button"
                 value="▲"
@@ -64,46 +59,36 @@
                 type="button"
                 value="▼"
                 class="cart_list_optionbtn"
-                onclick="downfunction()"
+                @click="downfunction(products)"
               />
               <input
                 type="button"
                 value="상품 삭제"
                 class="cart_list_optionbtn"
-                onclick="delfunction()"
+                @click="delfunction(products,cartList[companyIndex])"
               />
             </td>
             <td>
-              <span class="price">{{
-                products.product_price * products.product_sel_cnt}}</span>
+              <span class="price">{{products.product_price * products.product_sel_cnt}}</span>
               <br />
             </td>
-            <td>{{ products.delivery_fee }}</td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <td colspan="3"></td>
-            <td>
-              체크된 상품금액 합계:
-              <h4 id="total"></h4>
-            </td>
-            <td>
-              배송비 :
-              <h4 id="price"></h4>
-            </td>
-            <td>
-              총 금액 = 상품금액 합계 + 배송비 :
-              <h3 id="totalPrice"></h3>
-            </td>
+            <td><h4>체크된 상품금액 합계 : {{checkedPrice}}</h4></td>
             <td></td>
             <td></td>
             <td></td>
           </tr>
           <br>
+          <br>
+          <br>
         </tfoot>
       </table>
     </template>
+    <td class="total"><h4>총 결제 금액 : 총 결제 금액</h4></td>
   </div>
 </template>
 <script>
@@ -113,6 +98,9 @@ export default {
   data() {
     return {
       cartList: [],
+      cartPriceList:[],
+
+      checkedPrice:0,
     };
   },
   created() {
@@ -135,27 +123,60 @@ export default {
       this.cartList = this.groupBy(this.cartList, 'company_name');
       this.$hideLoading();
     },
-    
-    checkfunction: function(){
-
-    },
     async upfunction(products){
       console.log(products);
       this.$showLoading();
       let result = await axios
-                        .put(`/api/user/carts/${products.product_no}`)
+                        .put(`/api/user/carts/${products.product_no}/up`)
                         .catch(err => console.log(err));
+      this.$hideLoading();
+      console.log(result.data);
+      if(result.data == "알림"){
+        this.$showWarningAlert('재고보다 많은 수량을 선택했습니다.');
+        return;
+      }
       if(result.data.changedRows > 0){
         products.product_sel_cnt++;
       }
+    },
+    async downfunction(products){
+      console.log(products);
+      this.$showLoading();
+      let result = await axios
+                          .put(`/api/user/carts/${products.product_no}/down`)
+                          .catch(err => console.log(err));
       this.$hideLoading();
+      console.log(result.data);
+      if(result.data == "알림"){
+        this.$showWarningAlert('상품을 1개 이상 선택해주세요.');
+        return;
+      }
+      if(result.data.changedRows > 0){
+        products.product_sel_cnt--;
+      }
     },
-    downfunction: function(){
+    async delfunction(products, companyPrArray){
+      this.$showLoading();
+      let result = await axios  
+                            .delete(`/api/user/carts/${this.$store.state.userNo}/${products.product_no}`)
+                            .catch(err => console.log(err));
+      this.$hideLoading();
+      console.log(result.data);
+      if(result.data.affectedRows > 0){
+        this.$showSuccessAlert("상품이 삭제되었습니다.");
+      for(let i=0; i< companyPrArray.length; i++){
+        if(companyPrArray[i].product_no == products.product_no){
+            companyPrArray.splice(i,1);
+          break;
+        }
+      }  
+      }
+    },
+    //체크박스
+    // checkProd(checked, products){
       
-    },
-    delfunction: function(){
+    // },
 
-    },
     groupBy: function(data, key){
       return data.reduce(function (carry, el){
         var group = el[key];
@@ -166,7 +187,7 @@ export default {
         return carry
       },{})
     }
-  },
+  }
 };
 </script>
 <style>
@@ -185,6 +206,8 @@ tbody {
 }
 td {
   padding: 15px 0px;
+  text-align: center;
+  border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
 }
 .cart_list_optionbtn {
@@ -192,5 +215,11 @@ td {
     font-size: 10px;
     border: lightgrey solid 1px;
     padding: 7px;
+}
+h4{
+  text-align: right;
+}
+.total{
+  width: 2000px;
 }
 </style>

@@ -113,19 +113,38 @@ userRouter.get('/carts/:userNo', async (req, res) => {
     }
 })
 
-userRouter.put('/carts/:productNo', async (req, res) => {
+userRouter.put('/carts/:productNo/:updown', async (req, res) => {
     let productNo = req.params.productNo;
+    let updownState = req.params.updown;
     try {
         console.log(productNo);
         const userService = new UserService();
-        let result = await userService.UpCnt(productNo);
+        let result = [];
+        if (updownState == "up") {
+            result = await userService.UpCnt(productNo);
+        }
+        else {
+            result = await userService.DownCnt(productNo);
+        }
         if (result == null) {
-            res.send("재고없음");
+            res.send("알림");
+            return;
         }
         res.send(result);
     } catch (err) {
         console.log(err);
     }
+})
+userRouter.delete('/carts/:userNo/:productNo', async (req, res) => {
+    let userNo = req.params.userNo;
+    let productNo = req.params.productNo;
+    try {
+        const userService = new UserService();
+        result = await userService.DelProd(userNo, productNo);
+        res.send(result);
+        }catch(err) {
+            console.log(err);
+        }
 })
 
 // 파일 업로드 테스트용 코드

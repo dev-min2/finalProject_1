@@ -28,6 +28,21 @@ const myCartDAO = {
         WHERE product_no = ?
         `;
         return query(upCntQuery, product_no);
+    },
+    downCntQuery: async function (product_no) {
+        const downCntQuery = `
+        UPDATE cart
+        SET product_sel_cnt = product_sel_cnt - 1
+        WHERE product_no = ?
+        `;
+        return query(downCntQuery, product_no);
+    },
+    deleteProductQuery: async function (user_no, product_no) {
+        const deleteProductQuery = `
+        DELETE from cart
+        WHERE user_no = ? and product_no = ?
+        `;
+        return query(deleteProductQuery, [user_no, product_no]);
     }
 };
 

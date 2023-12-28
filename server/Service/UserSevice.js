@@ -202,12 +202,22 @@ class UserService {
     }
     async UpCnt(product_no) {
         let stock = await myCartDAO.selectProductStockQuery(product_no);
-        console.log(stock[0].product_stock);
-        console.log(stock[0].product_sel_cnt);
-        if ((stock.product_stock - stock.product_sel_cnt) == 1) {
+        if ((stock[0].product_stock - stock[0].product_sel_cnt) <= 0) {
             return null;
         }
         let result = await myCartDAO.upCntQuery(product_no);
+        return result;
+    }
+    async DownCnt(product_no) {
+        let cnt = await myCartDAO.selectProductStockQuery(product_no);
+        if ((cnt[0].product_sel_cnt) <= 1) {
+            return null;
+        }
+        let result = await myCartDAO.downCntQuery(product_no);
+        return result;
+    }
+    async DelProd(user_no, product_no) {
+        let result = await myCartDAO.deleteProductQuery(user_no, product_no);
         return result;
     }
 
