@@ -9,7 +9,7 @@ userRouter.get('/mypetinfo/:userNo', async(req,res)=>{
     try{
         const userService = new UserService();
         let result = await userService.getPetInfo(userNo);
-        console.log('test',result);
+        //console.log('test',result);
         res.send(result);
     }
     catch(e){
@@ -26,12 +26,10 @@ userRouter.post('/mypetform', async(req, res)=>{
     }catch(e){
         console.log(e);
     }
-
 })
 
 userRouter.delete('/mypetform/:petNo', async(req, res)=>{
     let data = req.params.petNo;
-
     try{
         const userService = new UserService();
         console.log('usercontroll petNo',data);
