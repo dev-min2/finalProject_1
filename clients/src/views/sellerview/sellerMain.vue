@@ -2,7 +2,9 @@
 
     <div id="container" class="flex-container">
         <div class="table-header">검색 조건</div>
-        <div class="table-header">통계 차트</div>
+        <product-research-bar @emit-name="getProductList" @emit2-name="getProductList2"/>
+
+        <div class="table-header mt-2">통계 차트</div>
         <div class="chart-container">
             <div id="donutchart" class="chart w-50"></div>
             <div id="BarChart" class="chart w-50"></div>
@@ -35,7 +37,7 @@
                     <td>{{product.product_price}}</td>
                     <td>{{product.product_stock}}</td>
                     <td>{{product.buy_cnt}}</td>
-                    <td>{{product.AllAmount}}</td>
+                    <td>{{product.allamount}}</td>
                 </tr>
 
 
@@ -53,52 +55,64 @@
 
 <script>
     import axios from 'axios';
+    import ProductResearchBar from './ProductResearchBar.vue';
     export default {
+        components: {
+            ProductResearchBar
+        },
         data() {
             return {
                 ProductList: []
             };
         },
         created() {
-            this.getProductList();
+            this.getProductList(2);
             //this.initSellerChart();
-            this.getProductList2();
+            this.getProductList2(2);
+
         },
 
 
         methods: {
-            initSellerChart() {
-
+            asd() {
+                console.log('하이하이');
             },
+            // initSellerChart() {
 
-            async getProductList() {
+            // },
+
+            async getProductList(period) {
+                console.log('1번함수 호출됨');
                 let result = '';
                 try {
-                    result = await axios.get(`/api/product/seller-main/1`);
+                    result = await axios.get(`/api/product/seller-main/${period}`);
+                   // let period = req.params.period;
+
                 } catch (e) {
                     console.log(e);
                 }
 
                 this.ProductList = result.data;
 
-            
-                
+
+
 
                 google.charts.load("current", {
                     packages: ["corechart"]
                 });
                 google.charts.setOnLoadCallback(drawChart);
-            
+
                 //myThis를 선언해주는 이유 = drawChart 안에서 this.를 쓰면 인식이 안된다 console.log(this)하면 undefined뜸
                 //콜백 경우에 따라 this가 있을수도 있고 없을수도 있다
                 //const myThis = this    => 이 시점의 this를 myThis라는 변수에 담아주고 밑 함수에서 그걸 쓴다
-                
+
                 const myThis = this;
+
                 function drawChart() {
                     let table = [];
                     table.push(['상품', '판매량']);
-                  
-                    for(let i = 0; i < myThis.ProductList.length; ++i) {
+
+                    for (let i = 0; i < myThis.ProductList.length; ++i) {
                         let row = [];
                         //console.log(myThis.ProductList[i]);
                         row.push(myThis.ProductList[i].product_name);
@@ -116,15 +130,13 @@
                     var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
                     chart.draw(data, options);
                 }
-
-                
-                },
-                
-                async getProductList2() {
+            },
+            async getProductList2(period) {
+                console.log('2번함수 호출됨');
                 const myThis2 = this;
                 let result = '';
                 try {
-                    result = await axios.get(`/api/product/seller-main2/1`);
+                    result = await axios.get(`/api/product/seller-main/${period}`);
                 } catch (e) {
                     console.log(e);
                 }
@@ -139,10 +151,10 @@
                 google.charts.setOnLoadCallback(drawChart1);
 
                 function drawChart1() {
-                    let table=[];
-                    table.push(['상품','판매액']);
+                    let table = [];
+                    table.push(['상품', '판매액']);
 
-                    for(let i = 0; i<myThis2.ProductList.length; ++i){
+                    for (let i = 0; i < myThis2.ProductList.length; ++i) {
                         let row = [];
                         row.push(myThis2.ProductList[i].product_name);
                         row.push(myThis2.ProductList[i].allamount);
@@ -150,20 +162,20 @@
                         table.push(row);
                     }
                     console.log(table);
-                
+
                     var data = google.visualization.arrayToDataTable(table);
                     var options = {
                         title: '상품 판매액',
-                        colors:['#5b83b5','']
+                        colors: ['#5b83b5', '']
 
                     };
 
                     var chart = new google.visualization.BarChart(document.getElementById('BarChart'));
                     chart.draw(data, options);
                 }
-                }
+            }
         }
-       
+
     }
 </script>
 
@@ -173,6 +185,8 @@
         color: rgb(255, 255, 255);
         padding: 10px;
         margin-bottom: 10px;
+        margin-top: 5px;
+        margin-left: 5px;
         font-weight: bold;
         font-size: 18px;
         text-shadow: -1px 0px rgb(0, 0, 0), 0px 1px rgb(0, 0, 0), 1px 0px rgb(0, 0, 0), 0px -1px rgb(0, 0, 0);

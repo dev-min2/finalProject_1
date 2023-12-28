@@ -2,26 +2,66 @@ const express = require('express');
 const productRouter = express.Router();
 const ProductService = require('../Service/ProductService');
 
-productRouter.get('/seller-main/:userNo',async(req,res)=>{
-        let userNo = req.params.userNo;
-        try {
-            console.log('하이여');
-            const productService = new ProductService();
-            let result = await productService.myProductRank(userNo);
-            console.log(result);
-            res.send(result);
-        }
-        catch(e) {
-            console.log(e);
-        }
-})
+// productRouter.get('/seller-main/:userNo',async(req,res)=>{
+//         let userNo = req.params.userNo;
+//         try {
+//             console.log('하이여');
+//             const productService = new ProductService();
+//             let result = await productService.myProductRank(userNo);
+//             console.log(result);
+//             res.send(result);
+//         }
+//         catch(e) {
+//             console.log(e);
+//         }
+// })
 
-productRouter.get('/seller-main2/:userNo',async(req,res)=>{
-    let userNo = req.params.userNo;
+// productRouter.get('/seller-main2/:userNo',async(req,res)=>{
+//     let userNo = req.params.userNo;
+//     try {
+//         console.log('하이여2');
+//         const productService = new ProductService();
+//         let result = await productService.myProductPayRank(userNo);
+//         console.log(result);
+//         res.send(result);
+//     }
+//     catch(e) {
+//         console.log(e);
+//     }
+// })
+
+
+//판매자 기간지정 상품조회
+//오늘 날짜 조회
+productRouter.get('/seller-main/:period',async(req,res)=>{
+    let period = req.params.period;
+    
+    const userNo = 1;
+    //req.session.userNo;
     try {
-        console.log('하이여2');
+        console.log('==1일조회==');
+        
         const productService = new ProductService();
-        let result = await productService.myProductPayRank(userNo);
+        //1일조회
+        if(period == "0") {
+            result = await productService.selectTodayQuery(userNo);
+        }
+        //1주조회
+        else if(period == "1") {
+            result = await productService.select1weekQuery(userNo);
+        }
+        //1달조회
+        else if(period == "2") {
+            result = await productService.select1monthQuery(userNo);
+        }
+        //3달조회
+        else if(period == "3") {
+            result = await productService.select3monthQuery(userNo);
+        }
+        //6달조회
+        else if(period == "4") {
+            result = await productService.select6monthQuery(userNo);
+        }
         console.log(result);
         res.send(result);
     }
