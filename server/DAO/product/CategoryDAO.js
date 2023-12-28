@@ -9,7 +9,9 @@ let categoryDAO = {
     // 카테고리 정보 가져오기
     selectCategoryDataQuery: async function () {
         const selectCategoryDataQuery = 
-        `select * from category`;
+        `select a.category_no as parent_no , a.category_name as parent_category_name, b.category_no as children_no , b.category_name as children_category_name
+        from category as a
+        join category as b on a.category_no = b.category_pno`;
         return query(selectCategoryDataQuery);
     }
 };

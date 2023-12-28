@@ -59,15 +59,15 @@
             <i class="fas fa-bars custom-padding"></i>
             <a class="nav-link dropdown-toggle" id="multiDropdown" href="#" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">카테고리</a>
-            <ul class="dropdown-menu" v-for="(category, idx) in categoryList" :key="idx" aria-labelledby="navbarDropdown">
-              <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">{{ category.category_name }}</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li class="dropdown-submenu dropend" v-for="(category, idx) in categoryList" :key="idx">
+                <a class="dropdown-item dropdown-toggle" href="#">{{ category[0].parent_category_name }}</a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">건식사료</a></li>
-                  <li><a class="dropdown-item" href="#">습식사료</a></li>
+                  <li v-for="(category2, idx2) in categoryList[idx]" :key="idx2"><a class="dropdown-item" href="#">{{ category2.children_category_name}}</a></li>
+                  <!-- <li><a class="dropdown-item" href="#">습식사료</a></li> -->
                 </ul>
               </li>
-              <li class="dropdown-submenu dropend">
+              <!-- <li class="dropdown-submenu dropend">
                 <a class="dropdown-item dropdown-toggle" href="#">간식</a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">수제간식</a></li>
@@ -90,7 +90,7 @@
                   <li><a class="dropdown-item" href="#">브러쉬</a></li>
                   <li><a class="dropdown-item" href="#">발톱/발관리</a></li>
                 </ul>
-              </li>
+              </li> -->
             </ul>
           </li>
           <li class="nav-item">
@@ -131,10 +131,11 @@
     data() {
       return {
         keyword: '',
-        categoryList : []
+        categoryList: []
 
       }
     },
+
 
     computed: {
       curShowPetType() {
@@ -147,20 +148,26 @@
     methods: {
       async getCategoryData() {
         // 서버에 요청
-        const result = await axios.get(`/api/product/category`).catch((err)=> console.log(err));
+        const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));
         this.categoryList = result.data; //저장
-        let parentCategory = [];
-        console.log(this.categoryList.Target);
-        for(let i = 0; i < this.categoryList.length; ++i) {
-         if(this.categoryList[i].category_pno == null){
-            parentCategory.push(this.categoryList[i]);
-         }
-        }
-        
-        
 
-        console.log(parentCategory);
+        const groupBy = function (data, key) {
+          return data.reduce(function (carry, el) {
+            var group = el[key];
+            if (carry[group] === undefined) {
+              carry[group] = []
+            }
+            carry[group].push(el)
+            return carry
+          }, {})
+        }
+
+        this.categoryList = groupBy(this.categoryList, "parent_no");
+        console.log(this.categoryList);
+
       },
+
+
       searchshow(keyword) {
         if (keyword !== '') {
           this.$router.push({
