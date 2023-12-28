@@ -9,7 +9,7 @@ userRouter.get('/mypetinfo/:userNo', async(req,res)=>{ //전체조회
     try{
         const userService = new UserService();
         let result = await userService.getPetList(userNo);
-        console.log('test',result);
+        //console.log('test',result);
         res.send(result);
     }
     catch(e){
@@ -29,7 +29,6 @@ userRouter.get('/mypetform/:petNo', async(req,res)=>{ //단건조회
     }
 });
 
-
 userRouter.post('/mypetform', async(req, res)=>{
     let data = req.body.param;
     try{
@@ -41,13 +40,14 @@ userRouter.post('/mypetform', async(req, res)=>{
     }
 })
 
-
 userRouter.put('/mypetform/:petNo', async(req, res)=>{
     let data = req.body.param;
     let petNo = req.params.petNo;
+    console.log(req.body,req.params);
     try{
         const userService = new UserService();
         let result = await userService.updatePet(data,petNo);
+        console.log('controller',result);
         res.send(result);
     }catch(e){
         console.log(e);

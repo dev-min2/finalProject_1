@@ -8,19 +8,20 @@
 				<div class="d-flex justify-content-center">
 					<form @submit.prevent>
 						<table class="table w-85">
-							<tr>
-								<th>이름</th>
+							<tr align="center">
+								<th>이 름</th>
 								<th>반려동물종류</th>
 								<th>반려동물생일</th>
-								<th>성별</th>
+								<th>성 별</th>
 							</tr>
 							<tr>
 								<td>
                                     <input type="text" name="petName" class="form-control" v-model="petInfo.pet_name">
                                  </td>
 								<td>
-                                    <select class="form-select" name="petType" v-model="petInfo.pet_type" aria-label="Default select example">
-										<option selected value="d1">강아지</option>
+                                    <select class="form-select" name="petType" v-model="petInfo.pet_type">
+                                        <option value="" selected disabled hidden>선택</option>
+										<option value="d1">강아지</option>
 										<option value="d2">고양이</option>
 								    </select>
                                 </td>
@@ -28,16 +29,17 @@
                                   <input type="date" name="petBirth" v-model="petInfo.pet_birth" class="form-control">
                                 </td>
 								<td>
-                                     <select class="form-select" name="petGender" v-model="petInfo.pet_gender" aria-label="Default select example">
-										<option selected value="e1">수컷</option>
+                                    <select class="form-select" name="petGender" v-model="petInfo.pet_gender"  style="width:90px">
+                                        <option value="" selected disabled hidden>선택</option>
+										<option value="e1">수컷</option>
 										<option value="e2">암컷</option>
 								    </select>
                                 </td>
 							</tr>
 							<tr>
 								<td colspan="4" align="center">
-                                    <input type="submit" value="저장" class="btn text-white" style="background-color: #9999FF;" @click="isUpdated? updatePetQuery() : insertPetQuery()"> 
-                                    <input type="reset" value="초기화" class="btn btn-warning">
+                                    <input type="submit" value="저장" class="btn text-white" style="background-color: #fc97bf; margin : 10px;" @click="isUpdated? updatePetQuery() : insertPetQuery()">
+                                    <input type="reset" value="초기화" class="btn text-white" style="background-color: #a4a4a4;">
                                 </td>
 							</tr>
 						</table>
@@ -79,11 +81,13 @@ export default {
     methods : {
         //단건조회
         async infoPetQuery(){
+            this.$showLoading();
             let result = await axios.get(`/api/user/mypetform/${this.petNo}`)
                                     .catch(err => console.log(err));
             //console.log(';-;나와줘', result.data);
             this.petInfo = result.data[0];
             this.petInfo.pet_birth = this.$dateFormat(this.petInfo.pet_birth);
+            this.$hideLoading();
         },
         //수정
         async updatePetQuery(){
@@ -98,13 +102,16 @@ export default {
                     pet_gender : this.petInfo.pet_gender
                 }
             }
-             let result = await axios.put(`/api/user/mypetform/${this.petNo}`, petObj)
+            this.$showLoading();
+            let result = await axios.put(`/api/user/mypetform/${this.petNo}`, petObj)
                                      .catch(err=>console.log(err));
-            if(result.data.changedRows > 0){
+            console.log('수정test',result.data.affectedRows);
+            if(result.data.affectedRows > 0){
                 this.$showSuccessAlert('수정되었습니다');
             }else{
-                this.$showErrorAlert('수정에 실패했습니다. ');
+                this.$showFailAlert('수정에 실패했습니다. ');
             }
+            this.$hideLoading();
             this.$router.push({ path: '/mypetinfo'});
         },
         //등록
@@ -120,6 +127,7 @@ export default {
                     pet_gender : this.petInfo.pet_gender
                 }
             }
+            this.$showLoading();
             let result = await axios.post("/api/user/mypetform", petObj)
                                     .catch(err=>console.log(err));
             console.log(result.data);
@@ -128,8 +136,8 @@ export default {
             }else{
                this.$showErrorAlert('등록에 실패했습니다. ');
             }
+            this.$hideLoading();
             this.$router.push({ path: '/mypetinfo'});
-            console.log('펫 등록되나확인\'~\'*');
         },
         //유효성검사
         validation(){ 
