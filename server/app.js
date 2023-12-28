@@ -32,7 +32,6 @@ app.use('/file', fileController);
 app.listen(12532, () => {
     // temp 폴더내 파일들 삭제처리코드 여기서 삽입.
     fxExtra.emptyDirSync('./uploads/notice/tempAttachFile');
-    fxExtra.emptyDirSync('./uploads/notice/temp');
 
     
     console.log('server lisening');

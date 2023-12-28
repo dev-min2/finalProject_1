@@ -11,8 +11,8 @@
 					<tr>
 						<th>중요도</th>
 						<td colspan="2">
-							<select v-model="sel" class="form-select" aria-label="Default select example">
-                                <option v-for="sub in subCodes" :value="sub.sub_code_name" :key="sub.sub_code" >{{sub.sub_code_name}}</option>
+							<select v-model="noticeBoardInfo.sel" class="form-select" aria-label="Default select example">
+                                <option v-for="sub in subCodes" :value="sub.sub_code" :key="sub.sub_code" >{{sub.sub_code_name}}</option>
 							</select>
 						</td>
 					</tr>
@@ -78,11 +78,11 @@ export default {
 				title : '',
 				startDate : null,
 				endDate : null,
-				html : ''
+				html : '',
+				sel : ''
 			},
 			attachFileCount : 0,
             subCodes : {},
-            sel : '',
 			randNoticeValue : '',
 			curTimeVal : '',
 			descFileCount : 0,
@@ -90,7 +90,8 @@ export default {
 			file : { // 이런형태로 넣으란 의미로 선언
 				originName : '',
 				displayName : '',
-			}
+			},
+			editorImageFileList : [],
         }
     },
     created() {
@@ -107,7 +108,7 @@ export default {
     },
     computed : {
         showDate() {
-            return this.sel == "상";
+            return this.noticeBoardInfo.sel == "J1";
         }
     },
     methods : {
@@ -131,19 +132,21 @@ export default {
 			const curFileName = realFile[0].name;
 			
 			const formData = new FormData();
-						
-			const sendFileName = 'notice_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.attachFileCount++) + '_' + curFileName;
 			const boardType = "notice";
-			formData.append('fileName',sendFileName);
 			formData.append('board',boardType);
 			formData.append('attachFile', realFile[0]);
 
 			let result = await axios.post('/api/file/uploadAttachFile',formData,{"Content-Type": "multipart/form-data"});
-			
-			this.fileList.push({
-				originName : sendFileName,
-				displayName : curFileName
-			});
+			if(result.status == 200) {
+				this.fileList.push({
+					originName : result.data,
+					displayName : curFileName
+				});
+			}
+			else {
+				this.$showFailAlert('파일첨부에 실패했습니다.','메인화면으로 돌아갑니다.');
+				this.$router.push({path : '/main'});
+			}
 		},
 		async deleteAttachFile(fileOriginName) {
 			const result = await axios.delete(`/api/file/uploadAttachFile/notice/${fileOriginName}`);
@@ -158,6 +161,7 @@ export default {
 		},
 		async registPost() {
 			this.noticeBoardInfo.html = editor.getHTML();
+			this.noticeBoardInfo.importanceLevel = this.noticeBoardInfo.sel == '상' ? 'J1' : 'J2';
 			const sendObj = {
 				param : {
 					randNoticeValue : this.randNoticeValue,
@@ -170,6 +174,16 @@ export default {
 				this.$showSuccessAlert('등록성공',null);
 				this.$router.push({path : '/notice'});
 			}
+		},
+
+		checkValidation() {
+			if(
+				this.noticeBoardInfo.title != '' &&
+				(this.noticeBoardInfo.sel == '상' || this.noticeBoardInfo == '하')
+			) {
+
+			}
+
 		}
     },
 	// 해당 라우트 뷰를 벗어날 때.
@@ -185,28 +199,40 @@ export default {
 				hooks: {
 					// 이미지가 올라오면 해당 이미지가 blob매개변수에 담김
 					addImageBlobHook: async (blob, callback) => {
-						const formData = new FormData();
+						const fileType = blob.name.substr(blob.name.indexOf('.') + 1, blob.name.length);
+						if(fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png' || fileType == 'gif') {
+							const formData = new FormData();
 						
-						const sendFileName = 'notice_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
-						const boardType = "notice";
-						formData.append('fileName',sendFileName);
-						formData.append('board',boardType);
-						formData.append('image', blob);
+							const sendFileName = 'notice_' + this.$store.state.userNo + '_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
+							const boardType = "notice";
+							formData.append('sendFileName',sendFileName);
+							formData.append('board',boardType);
+							formData.append('image', blob);
 
-						let result = await axios.post('/api/file/uploadDescImg',formData,{"Content-Type": "multipart/form-data"});
-						const fileName = result.data;
-						console.log(result);
+							let result = await axios.post('/api/file/uploadDescImg',formData,{"Content-Type": "multipart/form-data"});
+							const fileName = result.data;
 						
-						let imageUrl = '';
-						// if(this.$store.state.testData) {
-						// 	imageUrl = `http://192.168.0.40:12532/uploads/productDescInImg/${fileName}`;
-						// }
-						// else {
-						// 	imageUrl = `http://localhost:12532/uploads/productDescInImg/${fileName}`;
-						// }
-						imageUrl = `${this.$store.state.curIp + result.data}`;
-						console.log(imageUrl);
-						callback(imageUrl, 'image alt attribute');
+							const imageUrl = `${this.$store.state.curIp + result.data}`;
+							const imageAlt = 'image_detect_10954321';
+							this.editorImageFileList.push({
+								imageURL : `![${imageAlt}](${imageUrl})`,
+								imageName : `${sendFileName}`
+							}
+								
+							);
+							callback(imageUrl, imageAlt);
+						}
+					},
+					// 글한번칠때마다 발생하는 함수
+					change : async () => {
+						const markdown = editor.getMarkdown();
+						for(let i = 0; i < this.editorImageFileList.length; ++i) {
+							// 없는게있다면 삭제 요청한다.
+							if(!markdown.includes(this.editorImageFileList[i].imageURL)) {
+								const result = await axios.delete(`/api/file/uploadDescImg/notice/${this.editorImageFileList[i].imageName}`);
+								this.editorImageFileList.splice(i,1);
+							}
+						}
 					}
 				},
         });

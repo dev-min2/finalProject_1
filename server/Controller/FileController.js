@@ -18,10 +18,14 @@ const fxExtra = require('fs-extra');
 
 // 텍스트 에디터의 이미지 업로드
 fileRouter.post('/uploadDescImg', multipart(), async(req,res) => {
+    if(typeof req.session.userNo === "undefined") {
+        res.status(403).send("FAIL");
+        return;
+    }
+
     const {body, files} = req;
-    let fileName = req.body.fileName;
+    let fileName = body.sendFileName;
     const board = req.body.board;
-    console.log(files);
 
     fs.readFile(req.files.image.path, (err,data) => {
         const tempSavePath = __dirname + `/../uploads/${board}/editorImg/` + fileName;
@@ -34,19 +38,51 @@ fileRouter.post('/uploadDescImg', multipart(), async(req,res) => {
     })
 });
 
+// 텍스트 에디터의 이미지 삭제
+fileRouter.delete('/uploadDescImg/:boardType/:fileName', multipart(), async(req,res) => {
+    if(typeof req.session.userNo === "undefined") {
+        res.status(403).send("FAIL");
+        return;
+    }
+
+    const { boardType, fileName } = req.params;
+
+    const tempPath = __dirname + `/../uploads/${boardType}/editorImg/` + fileName;
+    fs.unlink(tempPath, (err) => {
+        if(err) {
+            // 빨리지우면 여러번 요청들어올수있는듯함.
+            // 그래서 no such file or directory 에러인 errno -4058의 경우에는 무시한다.
+            if(err.errno == -4058) {
+                res.status(200).send("OK");
+            }
+            else {
+                res.status(500).send("Fail");
+            }
+        }
+        else {
+            res.status(200).send("OK");
+        }
+    });
+});
+
 // 첨부파일 업로드요청
 fileRouter.post('/uploadAttachFile', multipart(), async(req,res) => {
+    if(typeof req.session.userNo === "undefined") {
+        res.status(403).send("FAIL");
+        return;
+    }
     const {body, files} = req;
-    const fileName = req.body.fileName;
     const board = req.body.board;
     
+    const fileName = String(req.session.userNo) + '_' + files.attachFile.name;
     fs.readFile(req.files.attachFile.path, (err,data) => {
         const tempSavePath = __dirname + `/../uploads/${board}/tempAttachFile/` + fileName;
         fs.writeFile(tempSavePath, data, (err) => {
             if(err) {
                 console.log(err);
+                res.status(500).send("FAIL");
             }
-            res.send("OK");
+            res.status(200).send(fileName);
         })
     })
 });
@@ -57,7 +93,6 @@ fileRouter.delete('/uploadAttachFile/:boardType/:fileName', async(req, res) => {
 
     if(fileName == -1) {
         fxExtra.emptyDirSync(`./uploads/${boardType}/tempAttachFile`);
-        fxExtra.emptyDirSync(`./uploads/${boardType}/temp`);
         res.status(200).send("OK");
     }
     else {
