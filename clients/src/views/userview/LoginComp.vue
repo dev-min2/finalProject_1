@@ -4,7 +4,7 @@
 		<div class="container my-5">
 			<div class="input-form-backgroud row">
 				<div class="input-form col-md-12 mx-auto">
-					<h4 class="mb-5" style="text-align: center;font-size:50px;color:pink">마이디어 펫</h4>
+					<h4 class="mb-5" style="text-align: center;font-size:50px;color:pink">디어마이 펫</h4>
 					<div class="row">
 						<div class="mb-3">
 							<label for="userId">아이디</label> 

@@ -6,34 +6,39 @@
 				<table class="table">
 					<tr>
 						<th>제목</th>
-						<td colspan="3"><input type="text" name="productName" class="form-control"></td>
+						<td colspan="2"><input type="text" name="productName" class="form-control" v-model="noticeBoardInfo.title"></td>
 					</tr>
 					<tr>
 						<th>중요도</th>
-						<td>
+						<td colspan="2">
 							<select v-model="sel" class="form-select" aria-label="Default select example">
                                 <option v-for="sub in subCodes" :value="sub.sub_code_name" :key="sub.sub_code" >{{sub.sub_code_name}}</option>
 							</select>
 						</td>
-                        <template v-if="showDate">
-                            <th>노출기간</th>
-                            <td>
-                                <input type="date" name="productName" class="form-control">
-                            </td>
-                        </template>
 					</tr>
+					<template v-if="showDate">
+						<tr>
+							<th>노출기간</th>
+							<td>
+								<input type="date" name="productName" class="form-control" v-model="noticeBoardInfo.startDate">
+							</td>
+							<td>
+								<input type="date" name="productName" class="form-control" v-model="noticeBoardInfo.endDate">
+							</td>
+						</tr>
+                    </template>
 					<tr ref="target">
 						<th>내용</th>
 						<!-- <td colspan="3"><textarea cols="100" rows="6" name="productDesc"
 								class="form-control"></textarea></td> -->
-						<td>
+						<td colspan="2">
 							<div id="editor">
 							</div>
 						</td>
 					</tr>
 						<tr>
 							<th>파일 첨부</th>
-							<td>
+							<td colspan="2">
 								<ul class="scroll_ul">
 									<li v-for="(attachFile,idx) in fileList" :key="idx" style="height:30px;">
 										{{attachFile.displayName}}
@@ -45,12 +50,12 @@
 					
 					<tr>
 						<th>파일추가하기</th>
-						<td><input ref="prImg" type="file" name="noticeFile" class="form-control" @change="uploadMultipleFile($event.target)"></td>
+						<td colspan="2"><input ref="prImg" type="file" name="noticeFile" class="form-control" @change="uploadMultipleFile($event.target)"></td>
 					</tr>
 					<input type="hidden" ref="deschtml" name="deschtml">
 					<tr>
 						<td colspan="2" style="text-align:center;">
-							<input type="submit" value="저장" class="btn btn-primary mx-3"> 
+							<input type="submit" value="저장" class="btn btn-primary mx-3" @click="registPost"> 
 							<router-link class="btn btn-warning" to="/notice">작성취소</router-link>
 						</td>
 					</tr>
@@ -64,12 +69,17 @@
 import Editor from '@toast-ui/editor'; /* ES6 모듈 방식 */
 import '@toast-ui/editor/dist/toastui-editor.css'; // Editor 스타일
 import axios from 'axios'
-import Swal from 'sweetalert2'
 
 let editor = null;
 export default {
     data() {
         return {
+			noticeBoardInfo : {
+				title : '',
+				startDate : null,
+				endDate : null,
+				html : ''
+			},
 			attachFileCount : 0,
             subCodes : {},
             sel : '',
@@ -122,7 +132,7 @@ export default {
 			
 			const formData = new FormData();
 						
-			const sendFileName = String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.attachFileCount++) + '_' + curFileName;
+			const sendFileName = 'notice_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.attachFileCount++) + '_' + curFileName;
 			const boardType = "notice";
 			formData.append('fileName',sendFileName);
 			formData.append('board',boardType);
@@ -146,6 +156,21 @@ export default {
 				}
 			}
 		},
+		async registPost() {
+			this.noticeBoardInfo.html = editor.getHTML();
+			const sendObj = {
+				param : {
+					randNoticeValue : this.randNoticeValue,
+					curTimeVal : this.curTimeVal,
+					noticeBoardInfo : this.noticeBoardInfo
+				}
+			}
+			const result = await axios.post('/api/board/notice', sendObj, { headers : {"Content-Type" : "application/json"}});
+			if(result.status == 200) {
+				this.$showSuccessAlert('등록성공',null);
+				this.$router.push({path : '/notice'});
+			}
+		}
     },
 	// 해당 라우트 뷰를 벗어날 때.
 	beforeRouteLeave() {
@@ -162,7 +187,7 @@ export default {
 					addImageBlobHook: async (blob, callback) => {
 						const formData = new FormData();
 						
-						const sendFileName = String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
+						const sendFileName = 'notice_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
 						const boardType = "notice";
 						formData.append('fileName',sendFileName);
 						formData.append('board',boardType);

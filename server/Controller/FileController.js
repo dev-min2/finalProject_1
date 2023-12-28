@@ -21,16 +21,15 @@ fileRouter.post('/uploadDescImg', multipart(), async(req,res) => {
     const {body, files} = req;
     let fileName = req.body.fileName;
     const board = req.body.board;
-    const typeStr = files.image.type;
     console.log(files);
 
     fs.readFile(req.files.image.path, (err,data) => {
-        const tempSavePath = __dirname + `/../uploads/${board}/temp/` + fileName;
+        const tempSavePath = __dirname + `/../uploads/${board}/editorImg/` + fileName;
         fs.writeFile(tempSavePath,data, (err) => {
             if(err) {
                 console.log(err);
             }
-            res.send(`/uploads/${board}/temp/` + fileName);
+            res.send(`/uploads/${board}/editorImg/` + fileName);
         })
     })
 });
@@ -55,8 +54,7 @@ fileRouter.post('/uploadAttachFile', multipart(), async(req,res) => {
 // 첨부파일 삭제요청(만약 fileName을 -1로 보내는경우 모두 첨부파일 및 에디터 모두 삭제처리)
 fileRouter.delete('/uploadAttachFile/:boardType/:fileName', async(req, res) => {
     const { boardType, fileName } = req.params;
-    console.log(fileName);
-    console.log(boardType);
+
     if(fileName == -1) {
         fxExtra.emptyDirSync(`./uploads/${boardType}/tempAttachFile`);
         fxExtra.emptyDirSync(`./uploads/${boardType}/temp`);

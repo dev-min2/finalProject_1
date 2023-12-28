@@ -2,7 +2,7 @@
     <div class="container py-3">
         <h1 class="py-4" style="text-align:center;">공지사항</h1>
         <button v-if="$store.state.userPermission == 'F3'" 
-            class="btn btn-primary my-2 float-right" style="text-align:right;"
+            class="btn btn-primary my-2 float-right" style="text-align:right; background-color:#fc97bf; border:0;"
             @click="goWriteNotice"
             >
             글쓰기
