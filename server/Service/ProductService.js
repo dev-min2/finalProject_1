@@ -25,6 +25,13 @@ class ProductService {
         console.log(result);
         return result;
     }
+
+    async getCategorySearch(cno, ptype){
+        let result = await categoryDAO.selectCategorySearchQuery(cno,ptype);
+        console.log(cno,ptype);
+        return result;
+    }
+
     
     //트랜잭션 예시코드임
     // async completePayment() {

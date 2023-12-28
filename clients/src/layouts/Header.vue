@@ -63,41 +63,21 @@
               <li class="dropdown-submenu dropend" v-for="(category, idx) in categoryList" :key="idx">
                 <a class="dropdown-item dropdown-toggle" href="#">{{ category[0].parent_category_name }}</a>
                 <ul class="dropdown-menu">
-                  <li v-for="(category2, idx2) in categoryList[idx]" :key="idx2"><a class="dropdown-item" href="#">{{ category2.children_category_name}}</a></li>
-                  <!-- <li><a class="dropdown-item" href="#">습식사료</a></li> -->
+                  <li v-for="(category2, idx2) in categoryList[idx]" :key="idx2"><a class="dropdown-item"
+                      href="#"  @click="getCategorySearch(category2.children_no)" >{{ category2.children_category_name}}</a></li>
                 </ul>
               </li>
-              <!-- <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">간식</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">수제간식</a></li>
-                  <li><a class="dropdown-item" href="#">캔/파우치</a></li>
-                  <li><a class="dropdown-item" href="#">통살</a></li>
-                </ul>
-              </li>
-              <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">건강관리</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">종합영양제</a></li>
-                  <li><a class="dropdown-item" href="#">피부/모질</a></li>
-                  <li><a class="dropdown-item" href="#">뼈/관절</a></li>
-                </ul>
-              </li>
-              <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">미용/목욕</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">샴푸/린스</a></li>
-                  <li><a class="dropdown-item" href="#">브러쉬</a></li>
-                  <li><a class="dropdown-item" href="#">발톱/발관리</a></li>
-                </ul>
-              </li> -->
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">신상품</a>
+            <router-link class="nav-link" aria-current="page" to="/">신상품</router-link>
           </li>
-          <li class="nav-item"><a class="nav-link" href="#">베스트상품</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">추천상품</a></li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/">베스트상품</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/">추천상품</router-link>
+          </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/upload">업로드테스트</router-link>
           </li>
@@ -144,8 +124,11 @@
     },
     created() {
       this.getCategoryData();
+      //this.getCategorySearch();
+
     },
     methods: {
+  
       async getCategoryData() {
         // 서버에 요청
         const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));
@@ -166,14 +149,18 @@
         console.log(this.categoryList);
 
       },
-
-
+      async getCategorySearch(cno) {
+        // 카테고리넘버
+        console.log(cno);
+        this.$router.push({path : '/search', query : { categoryNo : cno, action : "categorySearch"} })
+      },
       searchshow(keyword) {
         if (keyword !== '') {
           this.$router.push({
-            name: 'searchPage',
-            params: {
+            path: 'search',
+            query: {
               keyword: this.keyword,
+              action : "Keywordsearch"
             }
           });
         } else {

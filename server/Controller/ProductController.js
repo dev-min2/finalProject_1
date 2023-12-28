@@ -37,5 +37,20 @@ productRouter.get('/category', async(req, res)=>{
     catch(e){
         console.log(e);
     }
-})
+});
+
+// 카테고리 -> 검색으로 넘어가는 라우터(카테고리 번호를 받아와야함)
+productRouter.get('/search/category', async(req, res)=>{
+    try{
+        const productService = new ProductService();
+        let data = req.query.cno;
+        let ptype = req.query.type;
+        let result = await productService.getCategorySearch(data,ptype);
+        console.log(result);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+});
 module.exports = productRouter;

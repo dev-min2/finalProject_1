@@ -52,7 +52,7 @@ export default {
       component: ForgotAccountComp
     },
     {
-      path: '/search/:keyword',
+      path: '/search',
       name: 'searchPage',
       component: SearchPage
     },

@@ -13,6 +13,11 @@ let categoryDAO = {
         from category as a
         join category as b on a.category_no = b.category_pno`;
         return query(selectCategoryDataQuery);
+    },
+    selectCategorySearchQuery : async function(cno, ptype){
+        const selectCategorySearchQuery = 
+        `select * from product where category_no=? and pet_type=?`;
+        return query(selectCategorySearchQuery,[cno,ptype]);
     }
 };
 

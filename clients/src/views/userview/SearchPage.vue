@@ -18,16 +18,28 @@ export default {
     },
     data() {
         return {
-            myKeyword : '',
             productList : []
         }
     },
     created() {
-        this.myKeyword = this.$route.params.keyword;
-        this.getProductList(this.myKeyword);
-        console.log(this.myKeyword);
+        let action = this.$route.query.action;
+
+        if(action == "categorySearch") {
+            this.getCategoryProductList(this.$route.query.categoryNo)
+        }
+        else {
+            this.getProductList(this.$route.query.keyword);
+        }
     },
     methods : {
+        
+        async getCategoryProductList(cno) {
+            console.log('카테고리 검색');
+            console.log(cno);
+            const result = await axios.get(`/api/product/search/category?cno=${cno}&type=${this.$store.state.curShowPetType}`);
+            this.productList = result.data; //저장
+            console.log(result);
+        },
         async getProductList(keyword) {
             const result = await axios.get(`/api/product/search?q=${keyword}&type=${this.$store.state.curShowPetType}`);
             this.productList = result.data; //저장
