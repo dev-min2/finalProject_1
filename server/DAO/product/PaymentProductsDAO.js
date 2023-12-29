@@ -14,7 +14,7 @@ let paymentProductsDAO = {
         }
         // 커넥션풀에 있는 커넥션중 하나가 쿼리처리
         return query(insertQuery, paymentData);
-    }
+    },
 };
 
 module.exports = paymentProductsDAO;

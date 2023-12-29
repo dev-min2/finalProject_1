@@ -15,6 +15,10 @@ import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import NoticeList from '../views/userview/NoticeList.vue'
 
+//결제
+import PaymentForm from '../views/userview/payment/PaymentForm.vue'
+import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
+
 export default {
     path : '/',
     name : 'tmpMain',
@@ -87,6 +91,17 @@ export default {
           path: "/notice",
           name: "notice",
           component: NoticeList
-        }
+        },
+        {
+          path: "/paymentform",
+          name: "paymentform",
+          component: PaymentForm
+        },
+        {
+          path: "/paymentcomplete",
+          name: "paymentcomplete",
+          component: PaymentComplete
+        },
+        
     ]
 };

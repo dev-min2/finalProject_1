@@ -1,5 +1,13 @@
+const paymentDAO = require('../DAO/product/PaymentDAO')
+
 class ProductService {
     constructor() {
+     
+    }
+    //결제 폼
+    async getCartList(userNo){ //장바구니 정보 가져오기
+        const result = await paymentDAO.selectCartQuery(userNo);
+        return result;
 
     }
 

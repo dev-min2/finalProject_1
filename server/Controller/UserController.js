@@ -17,7 +17,7 @@ userRouter.get('/mypetinfo/:userNo', async(req,res)=>{ //전체조회
     }
 });
 
-userRouter.get('/mypetform/:petNo', async(req,res)=>{ //단건조회
+userRouter.get('/mypetform/:petNo', async(req,res)=>{ //해당유저 전체조회
     let petNo = req.params.petNo;
     try{
         const userService = new UserService();
