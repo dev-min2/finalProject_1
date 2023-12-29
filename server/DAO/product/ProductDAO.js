@@ -35,12 +35,22 @@ let productDAO = {
         return query(selectMainpageLastProductQuery);
     },
     //키워드 검색 + 펫타입 추가
-    selectSearchProductQuery: async function (search, ptype) {
+    selectSearchProductQuery: async function (search, ptype, pageno) {
         const searchquery = "%" + search + "%";
+        const startpageList = (pageno - 1) * 8;
+        const endpageList = pageno * 8;
         const selectSearchProductQuery =
-            `select * from product where product_name like ? and pet_type=?`;
-        return query(selectSearchProductQuery, [searchquery, ptype]);
+            `select * from product where product_name like ? and pet_type=? order by product_registdate desc
+            limit  ?,?`;
+        return query(selectSearchProductQuery, [searchquery, ptype, startpageList, endpageList]);
     },
+    //검색에 대한 결과 개수
+    selectSearchResultProductQuery : async function(search, ptype){
+        const searchcntquery = "%" + search + "%";
+        const selectSearchResultProductQuery = 
+        `select count(*) as cnt from product where product_name like ? and pet_type=?`;
+        return query(selectSearchResultProductQuery,[searchcntquery,ptype]);
+    }
 
 };
 

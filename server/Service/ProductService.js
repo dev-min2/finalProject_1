@@ -5,6 +5,7 @@ class ProductService {
     constructor() {
 
     }
+    // 상품리스트 가져오기
     async getMainpageProductList() {
         let result = await productDAO.selectMainpageFirstProductQuery();
         return result;
@@ -14,24 +15,32 @@ class ProductService {
         // return result3;
 
     }
-    async getSearchProductList(search, ptype) {
-        let result = await productDAO.selectSearchProductQuery(search, ptype);
-        console.log(search, ptype);
+    //검색한 상품리스트
+    async getSearchProductList(search, ptype,pageno) {
+        let result = await productDAO.selectSearchProductQuery(search, ptype,pageno);
+        console.log(search, ptype,pageno);
         return result;
     }
-
+    //카테고리 정보
     async getCategoryData(){
         let result = await categoryDAO.selectCategoryDataQuery();
         console.log(result);
         return result;
     }
-
-    async getCategorySearch(cno, ptype){
-        let result = await categoryDAO.selectCategorySearchQuery(cno,ptype);
-        console.log(cno,ptype);
+    // 카테고리 검색한 리스트
+    async getCategorySearch(cno, ptype, pageno){
+        let result = await categoryDAO.selectCategorySearchQuery(cno,ptype,pageno);
+        console.log(cno,ptype,pageno);
         return result;
     }
+    //검색한 상품 결과 개수
+    async getSearchResultCnt(search,ptype){
 
+    }
+    // 카테고리 상품 개수
+    async getCategoryProductCnt(cno, ptype){
+        
+    }
     
     //트랜잭션 예시코드임
     // async completePayment() {
