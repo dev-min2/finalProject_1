@@ -163,7 +163,7 @@ export default {
 		},
 		async registPost() {
 			this.noticeBoardInfo.html = editor.getHTML();
-			this.noticeBoardInfo.importanceLevel = this.noticeBoardInfo.sel == '상' ? 'J1' : 'J2';
+			this.noticeBoardInfo.importanceLevel = this.noticeBoardInfo.sel;
 			const sendObj = {
 				param : {
 					randNoticeValue : this.randNoticeValue,

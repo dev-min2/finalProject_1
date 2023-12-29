@@ -21,4 +21,18 @@ boardRouter.post('/notice', async(req,res) => {
     }
 });
 
+boardRouter.get('/notice', async(req, res) => { 
+    const pageNo = req.query.pg;
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.getNoticeBoardList(pageNo);
+        console.log(result);
+        res.status(200).send(result);
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500).send("FAIL");
+    }
+});
+
 module.exports = boardRouter;

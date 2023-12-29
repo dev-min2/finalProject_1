@@ -2,6 +2,7 @@ const fxExtra = require('fs-extra');
 const path = require('path');
 const fs = require('fs');
 const noticeBoardDAO = require('../DAO/board/NoticeBoardDAO');
+const PageDTO = require('../commonModule/PageDTO');
 
 class BoardService {
     constructor() {
@@ -37,9 +38,10 @@ class BoardService {
             user_no : userNo,
             importance_level : noticeBoardInfo.importanceLevel,
             notice_start_date : noticeBoardInfo.startDate,
-            notice_end_date : noticeBoardInfo.endDate
+            notice_end_date : noticeBoardInfo.endDate,
+            created_date : new Date()
         }
-
+        
         const result = await noticeBoardDAO.insertNoticeBoardQuery(noticeVO);
         if(result == null && result.affectedRows <= 0) {
             return null;
@@ -52,6 +54,19 @@ class BoardService {
 
         return result;
     } 
+
+    async getNoticeBoardList(pageNo) {
+        const result = await noticeBoardDAO.selectNoticeBoardQuery(pageNo);
+        const countResult = await noticeBoardDAO.selectNoticeBoardCountQuery(); // 총 카운트.
+
+        const pageDTO = new PageDTO(countResult[0].CNT, pageNo, 10);
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+
+        return resResult;
+    }
 }
 
 module.exports = BoardService;

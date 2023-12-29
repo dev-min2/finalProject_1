@@ -18,23 +18,46 @@
                 </tr>
             </thead>
             <tbody>
-                
+                <tr v-for="(notice) in noticeList" :key="notice.notice_board_no">
+                    <td>{{notice.notice_board_no}}</td>
+                    <td>{{notice.title}}</td>
+                    <td>관리자</td>
+                    <td>{{notice.created_date}}</td>
+                    <td>{{notice.view_cnt}}</td>
+                </tr>
             </tbody>
         </table>
+        <PagingComp v-bind:pageDTO="pageDTO" />
+        
     </div>
 </template>
 
 <script>
+    import PagingComp from '../../../components/common/PagingComp.vue'
+    import axios from 'axios'
     export default {
         data() {
             return {
-
+                noticeList : [],
+                pageDTO : {}
             }
         },
+        components : [
+            PagingComp,
+        ],
         created() {
-            console.log(this.$store.state.userPermission);
+            this.getNoticeBoardList(1);
         },
         methods : {
+            async getNoticeBoardList(pageNo) {
+                this.$showLoading();
+                const result = await axios.get(`/api/board/notice?pg=${pageNo}`);
+                if(result.status == 200) {
+                    this.noticeList = result.data.selectResult;
+                    this.pageDTO = result.data.pageDTO;
+                }
+                this.$hideLoading();
+            },
             goWriteNotice() {
                 if(this.$store.state.userPermission != 'F3')
                     return;
@@ -46,5 +69,7 @@
 </script>
 
 <style scoped>
-
+    tbody tr {
+        cursor : pointer;
+    }
 </style>
