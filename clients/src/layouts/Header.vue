@@ -38,7 +38,10 @@
                 <img src="../assets/commonResource/dogIcon.png" style="width: 70px" />
               </button>
             </template>
-            <button class="btn" type="button">
+            <button v-if="$store.state.userNo == -1" @click="$router.push('/login')" class="btn" type="button"> 
+              <i class="far fa-user fa-2x"></i>
+            </button>
+            <button v-else @click="$router.push('/myinfo')" class="btn" type="button">
               <i class="far fa-user fa-2x"></i>
             </button>
             <button @click="$router.push('/cart')" class="btn" type="button">
