@@ -5,7 +5,7 @@ let {
 
 // 판매자 쿼리
 let productDAO = {
-    selectQueryByPeriod: async function (userNo, period,minPrice,maxPrice) {
+    selectQueryByPeriod: async function (userNo,period,minPrice,maxPrice) {
                 let dateFilter = '';
                 switch (period) {
                     case '0':
@@ -26,30 +26,33 @@ let productDAO = {
                    
                 }
 
-                let minPriceFilter = '';
-                switch(minPrice){
-                    case `${minPrice}`:
-                        minPriceFilter = `AND product_price BETWEEN ${minPrice}`
-                        break; 
+                let priceFilter = '';
+
+                if(minPrice > 0 && maxPrice > 0) {
+                    priceFilter = `AND product_price BETWEEN ${minPrice} AND ${maxPrice}`
+                } 
+                else if(minPrice > 0 && maxPrice=='') {
+                    priceFilter = `AND product_price >= ${minPrice}`;
+                }
+                else if(minPrice =='' && maxPrice>0){
+                    priceFilter = `AND product_price <= ${maxPrice}`
+                }
+                else if(minPrice =='' && maxPrice==''){
+                    priceFilter = ''
                 }
 
-                let maxPriceFilter = '';
-                switch(maxPrice){
-                    case `${maxPrice}`:
-                        maxPriceFilter=`AND ${maxPrice}`
-                        break; 
-                }
+                
         
                 const SellerProductListQuery = `
-                SELECT A.product_no,A.product_name,A.product_price,A.product_stock,B.buy_cnt,(B.real_payment_amount * B.buy_cnt) as 'allamount', payment_date 
-                FROM product AS A
-                JOIN payment_product AS B ON A.product_no = B.product_no 
-                JOIN payment C ON B.payment_no = C.payment_no
-                WHERE A.user_no = ?
-                ${dateFilter}
-                ${minPriceFilter} ${maxPriceFilter}
-                ORDER BY payment_date
-                `;
+                    SELECT A.product_no,A.product_name,A.product_price,A.product_stock,B.buy_cnt,(B.real_payment_amount * B.buy_cnt) as 'allamount', payment_date 
+                        FROM product AS A
+                        JOIN payment_product AS B ON A.product_no = B.product_no 
+                        JOIN payment C ON B.payment_no = C.payment_no
+                        WHERE A.user_no = ?
+                        ${dateFilter}
+                        ${priceFilter}
+                        ORDER BY allamount desc
+                    `;
         
                 return query(SellerProductListQuery, userNo);
             },
