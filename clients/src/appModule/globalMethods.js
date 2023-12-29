@@ -85,6 +85,14 @@ const methods = {
         })
     
         return decipher.toString(cryptoJs.enc.Utf8);
+    },
+    dateFormat(val){
+        let date = val == '' ? new Date() : new Date(val);
+        let year = date.getFullYear();
+        let month = ('0' + (date.getMonth() + 1)).slice(-2);
+        let day = ('0' + date.getDate()).slice(-2);
+
+        return `${year}-${month}-${day}`;
     }
 }
 
@@ -100,5 +108,6 @@ export default {
         Vue.config.globalProperties.$showFailAlert = methods.showFailAlert;
         Vue.config.globalProperties.$showWarningAlert = methods.showWarningAlert;
         Vue.config.globalProperties.$showInfoAlert = methods.showInfoAlert;
+        Vue.config.globalProperties.$dateFormat = methods.dateFormat;
     }
 }
