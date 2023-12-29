@@ -1,12 +1,20 @@
 <template>
   <div class="container">
     <template
-      v-for="(company, companyIndex) in cartList" :key="companyIndex">
+      v-for="(company, companyIndex, idx) in cartList" :key="companyIndex">
       <h2>업체명 : {{company[0].company_name}}</h2>
       <table class="cart_list">
         <thead>
           <tr>
-            <td><input type="checkbox" id="allcheck" /></td>
+            <td>
+              <input 
+              type="checkbox" 
+              name="company"
+              id="allcheck" 
+              v-model="companyChecked[companyIndex]"
+              @change="checkComp($event.target.checked, companyIndex, idx)"
+              />
+              </td>
             <td colspan="2">상품이미지</td>
             <td>상품정보</td>
             <td>옵션</td>
@@ -23,8 +31,7 @@
                 name="product"
                 value="products.product_price"
                 id="products.product_no"
-                v-model="products.selected"
-                @change="checkProd($event.target.checked, products)"
+                @change="checkProd($event.target, products, idx)"
               />
             </td>
             <td>
@@ -78,7 +85,7 @@
         <tfoot>
           <tr>
             <td colspan="3"></td>
-            <td><h4>체크된 상품금액 합계 : 업체별</h4></td>
+            <td><h4>체크된 상품금액 합계 : {{companyPriceList[idx]}}원</h4></td>
             <td></td>
             <td></td>
             <td></td>
@@ -102,6 +109,10 @@ export default {
       cartPriceList:[],
 
       checkedPrice:0,
+      companyPrice:0,
+
+      companyChecked : [],
+      companyPriceList : []
     };
   },
   created() {
@@ -121,8 +132,14 @@ export default {
                         .get(`/api/user/carts/${this.$store.state.userNo}`)
                         .catch(err => console.log(err));
       this.cartList = result.data;
-      console.log(result.data);
       this.cartList = this.groupBy(this.cartList, 'company_name');
+      
+      for(const object in this.cartList) {
+          object;
+          this.companyPriceList.push(0);
+      }
+
+      console.log(this.cartList);
       this.$hideLoading();
     },
     //상품선택수량증가
@@ -140,8 +157,11 @@ export default {
       }
       if(result.data.changedRows > 0){
         products.product_sel_cnt++;
-        this.checkedPrice += products.product_price;
       }
+      // if(target.checked){
+      //   this.checkedPrice += products.product_price;
+      //   this.companyPriceList[idx] += products.product_price * products.product_sel_cnt ;
+      // }
     },
     //상품선택수량감소
     async downfunction(products){
@@ -158,7 +178,7 @@ export default {
       }
       if(result.data.changedRows > 0){
         products.product_sel_cnt--;
-        this.checkedPrice -= products.product_price;
+        // this.checkedPrice -= products.product_price;
       }
     },
     //상품삭제
@@ -171,6 +191,7 @@ export default {
       console.log(result.data);
       if(result.data.affectedRows > 0){
         this.$showSuccessAlert("상품이 삭제되었습니다.");
+      
       for(let i=0; i< companyPrArray.length; i++){
         if(companyPrArray[i].product_no == products.product_no){
             companyPrArray.splice(i,1);
@@ -178,15 +199,53 @@ export default {
         }
       }  
       }
+      this.checkedPrice -= products.product_price * products.product_sel_cnt;
     },
     //체크박스
     //상품별
-    checkProd(checked, products){
-      if(checked){
-        this.checkedPrice += products.product_price * products.product_sel_cnt;
-        return;
-      }this.checkedPrice -= products.product_price * products.product_sel_cnt;
-      return;
+    checkProd(target, products,idx){
+      if(target.checked) {
+        this.companyPriceList[idx] += products.product_price * products.product_sel_cnt ;
+        this.checkedPrice += products.product_price * products.product_sel_cnt ;
+      }
+      else {
+        this.companyPriceList[idx] -= products.product_price * products.product_sel_cnt;
+        this.checkedPrice -= products.product_price * products.product_sel_cnt ;
+      }
+    },
+    //그룹별
+    checkComp(checked, companyIndex, idx){
+      if(checked) {
+          const productArray = this.cartList[companyIndex];
+          let sum = 0;
+          for(let i = 0; i < productArray.length; ++i) {
+            sum += productArray[i].product_price * productArray[i].product_sel_cnt;
+          }
+          // console.log(sum);
+          // console.log(idx);
+          this.companyPriceList[idx] = sum;
+          this.checkedPrice += sum;
+      }
+      else {
+          const productArray = this.cartList[companyIndex];
+          let sum = 0;
+          for(let i = 0; i < productArray.length; ++i) {
+            sum += productArray[i].product_price * productArray[i].product_sel_cnt;
+          }
+          this.companyPriceList[idx] = 0;
+          this.checkedPrice -= sum;
+      }
+      
+      // for(let i in this.cartList[companyIndex]){
+      //     let item = this.cartList[companyIndex][i]; 
+      //     if(this.checkProd != checked){  
+      //      if(checked){
+      //         this.companyPrice += item.product_price * item.product_sel_cnt;
+      //        return;
+      //       }this.companyPrice -= item.product_price * item.product_sel_cnt;
+      //       return;
+      //     }
+      //   }
     },
     //함수
     groupBy: function(data, key){
