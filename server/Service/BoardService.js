@@ -1,4 +1,5 @@
 const fxExtra = require('fs-extra');
+const path = require('path');
 const fs = require('fs');
 const noticeBoardDAO = require('../DAO/board/NoticeBoardDAO');
 
@@ -9,7 +10,7 @@ class BoardService {
 
     // 게시판 타입의 tempAttachFolder에 있는 파일들을 전부 옮김.
     // 옮기는 경로는 uploads/게시판타입/pk/~
-    moveAttachFile(boardType, pkValue, randValue, curTimeVal) {
+    moveAttachFile(boardType, userNo, pkValue, randValue, curTimeVal) {
         const sourceDir = __dirname + `/../uploads/${boardType}/tempAttachFile/`;
         const destDir = __dirname + `/../uploads/${boardType}/${pkValue}/`;
         if(!fs.existsSync(destDir)) {
@@ -18,11 +19,11 @@ class BoardService {
 
         const files = fs.readdirSync(sourceDir)
         files.forEach((file) => {
-            if(file.includes(`${boardType}_` + `${randValue}_` + `${curTimeVal}`)) {
+            console.log(file);
+            if(file.includes(`${boardType}_${userNo}_${randValue}_${curTimeVal}`)) {
                 const sourceFilePath = path.join(sourceDir, file);
                 const destinationFilePath = path.join(destDir, file);
                 fs.renameSync(sourceFilePath, destinationFilePath);
-                fs.unlinkSync(path.join(sourceDir, file));
             }
         });
 
@@ -44,7 +45,7 @@ class BoardService {
             return null;
         }
         // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
-        const moveResult = this.moveAttachFile('notice', result.insertId, randNoticeValue, curTimeVal);
+        const moveResult = this.moveAttachFile('notice', userNo, result.insertId, randNoticeValue, curTimeVal);
         if(!moveResult) {
             return null;
         }

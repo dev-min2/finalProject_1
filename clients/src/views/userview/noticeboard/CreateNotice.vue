@@ -133,6 +133,8 @@ export default {
 			
 			const formData = new FormData();
 			const boardType = "notice";
+			const sendFileName = 'notice_' + this.$store.state.userNo + '_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.attachFileCount++) + '_' + curFileName;
+			formData.append('sendFileName', sendFileName);
 			formData.append('board',boardType);
 			formData.append('attachFile', realFile[0]);
 
@@ -188,7 +190,7 @@ export default {
     },
 	// 해당 라우트 뷰를 벗어날 때.
 	beforeRouteLeave() {
-		axios.delete(`/api/file/uploadAttachFile/notice/-1`);
+		//axios.delete(`/api/file/uploadAttachFile/notice/-1`);
 	},
 	mounted() {
 			editor = new Editor({

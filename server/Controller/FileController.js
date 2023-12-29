@@ -73,16 +73,16 @@ fileRouter.post('/uploadAttachFile', multipart(), async(req,res) => {
     }
     const {body, files} = req;
     const board = req.body.board;
+    const sendFileName = req.body.sendFileName;
     
-    const fileName = String(req.session.userNo) + '_' + files.attachFile.name;
     fs.readFile(req.files.attachFile.path, (err,data) => {
-        const tempSavePath = __dirname + `/../uploads/${board}/tempAttachFile/` + fileName;
+        const tempSavePath = __dirname + `/../uploads/${board}/tempAttachFile/` + sendFileName;
         fs.writeFile(tempSavePath, data, (err) => {
             if(err) {
                 console.log(err);
                 res.status(500).send("FAIL");
             }
-            res.status(200).send(fileName);
+            res.status(200).send(sendFileName);
         })
     })
 });
