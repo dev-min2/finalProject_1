@@ -18,6 +18,9 @@
 										<a class="nav-link">
 											<div class="sb-nav-link-icon"><i class="bi bi-upc-scan"></i></div> 내 쿠폰
 										</a> 
+										<a class="nav-link">
+											<div class="sb-nav-link-icon"><i class="fas fa-heart"></i></div> 찜 목록
+										</a> 
 										<a class="nav-link" >
 											<div class="sb-nav-link-icon"><i class="bi bi-box-seam"></i></div> 상품문의
 										</a> 

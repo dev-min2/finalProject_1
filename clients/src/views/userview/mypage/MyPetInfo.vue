@@ -5,7 +5,27 @@
                 <div class="px-4 py-1 my-3 text-center">
                     <h2 class="fw-bold mb-3">내 반려동물 정보</h2>
                 </div>
-                <div class="d-flex justify-content-center">
+
+                <div v-if="selectPetQuery == ''" class="d-flex justify-content-center">
+                    <!--테이블 시작-->
+                    <table class="table w-75">
+                        <tr align="center">
+                            <br>
+                            <td>아직 등록된 반려동물정보가 없습니다</td>
+                            <br>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn text-white" style="background-color: #fc97bf;"
+                                      @click="goToPetInsert()">내 반려동물 등록하기</button>
+                                </div>
+                            </td>
+                        </tr>  
+                    </table> 
+                </div> 
+
+                <div v-else class="d-flex justify-content-center">
                     <table class="table w-75">
                         <tr align="center">
                             <th style = "display:none;">test</th>
@@ -16,7 +36,6 @@
                             <th>수정</th>
                             <th>삭제</th>
                         </tr>
-                        
                         <tr :key="i" v-for="(pet, i) in selectPetQuery" align="center">
                             <td style = "display:none;">{{pet.pet_no}}</td>
                             <td>{{pet.pet_name}}</td>
@@ -28,22 +47,14 @@
                             <td><button type="button" class="btn text-white" style="background-color: #a4a4a4;"
                                      @click="deletePetQuery(pet)">삭제</button></td>
                         </tr>
-                        
-                        <!--<div v-if="selectPetQuery == ''" class="px-4 py-1 my-3 text-center">
-                            <h4>아직 등록된 반려동물정보가 없습니다</h4>
-                        </div>-->
                         <tr>
                             <td colspan="6">
                                 <div class="d-grid gap-2">
                                     <button type="button" class="btn text-white" style="background-color: #fc97bf;"
-                                       @click="goToPetInsert()">내 반려동물 등록하기</button>
+                                       @click="goToPetInsert()">내 반려동물 추가 등록하기</button>
                                 </div>
                             </td>
                         </tr>
-
-                        <!--<div class="px-4 py-1 my-3 text-center">
-                              <h2 class="fw-bold mb-3">아직 등록된 반려동물정보가 없습니다</h2>
-                            </div> -->
                     </table>
                 </div>
             </div>
