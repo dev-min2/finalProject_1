@@ -33,34 +33,33 @@ const ProductService = require('../Service/ProductService');
 
 //판매자 기간지정 상품조회
 //오늘 날짜 조회
-productRouter.get('/seller-main/:period',async(req,res)=>{
+productRouter.get('/seller-main/:userNo/:period/:minprice/:maxprice',async(req,res)=>{
+    //let userNo = req.params.userNo;
     let period = req.params.period;
     
     const userNo = 1;
     //req.session.userNo;
-    try {
-        console.log('==1일조회==');
-        
+    try {     
         const productService = new ProductService();
         //1일조회
         if(period == "0") {
-            result = await productService.selectTodayQuery(userNo);
+            result = await productService.selectQueryByPeriod(userNo,period);
         }
         //1주조회
         else if(period == "1") {
-            result = await productService.select1weekQuery(userNo);
+            result = await productService.selectQueryByPeriod(userNo,period);
         }
         //1달조회
         else if(period == "2") {
-            result = await productService.select1monthQuery(userNo);
+            result = await productService.selectQueryByPeriod(userNo,period);
         }
         //3달조회
         else if(period == "3") {
-            result = await productService.select3monthQuery(userNo);
+            result = await productService.selectQueryByPeriod(userNo,period);
         }
         //6달조회
         else if(period == "4") {
-            result = await productService.select6monthQuery(userNo);
+            result = await productService.selectQueryByPeriod(userNo,period);
         }
         console.log(result);
         res.send(result);

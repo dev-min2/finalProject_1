@@ -74,18 +74,13 @@
 
 
         methods: {
-            asd() {
-                console.log('하이하이');
-            },
-            // initSellerChart() {
-
-            // },
-
             async getProductList(period) {
-                console.log('1번함수 호출됨');
+                console.log('1번함수 호출됨ㅇ');
                 let result = '';
+                //const userNo = this.$store.state.userNo;
+                const userNo = 1; // 나중에 위코드로 수저해야함.
                 try {
-                    result = await axios.get(`/api/product/seller-main/${period}`);
+                    result = await axios.get(`/api/product/seller-main/${userNo}/${period}`);
                    // let period = req.params.period;
 
                 } catch (e) {
@@ -93,9 +88,6 @@
                 }
 
                 this.ProductList = result.data;
-
-
-
 
                 google.charts.load("current", {
                     packages: ["corechart"]
@@ -125,6 +117,7 @@
                     var options = {
                         title: '상품 판매량',
                         pieHole: 0.4,
+                       
                     };
 
                     var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
@@ -132,15 +125,19 @@
                 }
             },
             async getProductList2(period) {
-                console.log('2번함수 호출됨');
+                console.log('2번함수 호출됨dd');
                 const myThis2 = this;
                 let result = '';
+                //const userNo = this.$store.state.userNo;
+                const userNo = 1; // 나중에 위코드로 수저해야함.
                 try {
-                    result = await axios.get(`/api/product/seller-main/${period}`);
+                    console.log('ddddd')    
+                    result = await axios.get(`/api/product/seller-main/${userNo}/${period}`);
+                    
                 } catch (e) {
                     console.log(e);
                 }
-
+                console.log('ddsfsf')
                 this.ProductList = result.data;
 
 
