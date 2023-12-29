@@ -7,7 +7,8 @@
         <thead>
           <tr>
             <td><input type="checkbox" id="allcheck" /></td>
-            <td colspan="3">상품정보</td>
+            <td colspan="2">상품이미지</td>
+            <td>상품정보</td>
             <td>옵션</td>
             <td>상품금액</td>
           </tr>
@@ -19,9 +20,9 @@
             <td>
               <input
                 type="checkbox"
-                checked="checked"
                 name="product"
-                value="상품가격"
+                value="products.product_price"
+                id="products.product_no"
                 v-model="products.selected"
                 @change="checkProd($event.target.checked, products)"
               />
@@ -77,7 +78,7 @@
         <tfoot>
           <tr>
             <td colspan="3"></td>
-            <td><h4>체크된 상품금액 합계 : {{checkedPrice}}</h4></td>
+            <td><h4>체크된 상품금액 합계 : 업체별</h4></td>
             <td></td>
             <td></td>
             <td></td>
@@ -88,7 +89,7 @@
         </tfoot>
       </table>
     </template>
-    <td class="total"><h4>총 결제 금액 : 총 결제 금액</h4></td>
+    <td class="total"><h4>총 결제 금액 : {{checkedPrice}}</h4></td>
   </div>
 </template>
 <script>
@@ -113,6 +114,7 @@ export default {
     this.getCartList();
   },
   methods: {
+    //전체리스트
     async getCartList(){
       this.$showLoading();
       let result = await axios
@@ -123,6 +125,7 @@ export default {
       this.cartList = this.groupBy(this.cartList, 'company_name');
       this.$hideLoading();
     },
+    //상품선택수량증가
     async upfunction(products){
       console.log(products);
       this.$showLoading();
@@ -137,8 +140,10 @@ export default {
       }
       if(result.data.changedRows > 0){
         products.product_sel_cnt++;
+        this.checkedPrice += products.product_price;
       }
     },
+    //상품선택수량감소
     async downfunction(products){
       console.log(products);
       this.$showLoading();
@@ -153,8 +158,10 @@ export default {
       }
       if(result.data.changedRows > 0){
         products.product_sel_cnt--;
+        this.checkedPrice -= products.product_price;
       }
     },
+    //상품삭제
     async delfunction(products, companyPrArray){
       this.$showLoading();
       let result = await axios  
@@ -173,10 +180,15 @@ export default {
       }
     },
     //체크박스
-    // checkProd(checked, products){
-      
-    // },
-
+    //상품별
+    checkProd(checked, products){
+      if(checked){
+        this.checkedPrice += products.product_price * products.product_sel_cnt;
+        return;
+      }this.checkedPrice -= products.product_price * products.product_sel_cnt;
+      return;
+    },
+    //함수
     groupBy: function(data, key){
       return data.reduce(function (carry, el){
         var group = el[key];
