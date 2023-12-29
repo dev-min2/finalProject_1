@@ -5,11 +5,40 @@ const nodemailer = require('nodemailer');
 const { decryptAES256, encryptSHA256 } = require('../commonModule/commonModule');
 const userDAO = require('../DAO/user/UserDAO');
 
+//마이페이지
+const myPetDAO = require('../DAO/user/MyPetDAO');
+
 class UserService {
     constructor() {
 
     }
+    //마이페이지-내반려동물정보
+    async getPetList(userNo){
+        const result = myPetDAO.selectPetQuery(userNo);
+        return result;
+    }
 
+    async getPetInfo(petNo){
+        const result = myPetDAO.infoPetQuery(petNo);
+        return result;
+    }
+
+    async createPet(petObj){
+        let result = await myPetDAO.insertPetQuery(petObj);
+        return result;
+    }
+
+    async updatePet(petObj,petNo){
+        let result = await myPetDAO.updatePetQuery(petObj,petNo);
+        return result;
+    }
+
+    async deletePet(petNo){
+        let result = await myPetDAO.deletePetQuery(petNo);
+        return result;
+    }
+
+    //user 기본기능
     async createUser(userObj,snsObj) {
         const hashPW = encryptSHA256(decryptAES256(userObj.user_pw));
         userObj.user_pw = hashPW;
@@ -99,7 +128,6 @@ class UserService {
         if(result.length > 0) {
             return true;
         }
-
         return false;
     }
 
