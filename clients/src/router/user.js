@@ -13,7 +13,8 @@ import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
-import NoticeList from '../views/userview/NoticeList.vue'
+import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
+import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 
 export default {
     path : '/',
@@ -87,6 +88,11 @@ export default {
           path: "/notice",
           name: "notice",
           component: NoticeList
+        },
+        {
+          path: "/notice/write",
+          name: "noticeWrite",
+          component : CreateNotice
         }
     ]
 };
