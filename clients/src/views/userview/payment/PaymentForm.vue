@@ -5,7 +5,7 @@
             <div class="col-md-5 col-lg-4 order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-primary">장바구니</span>
-                    <span class="badge bg-primary rounded-pill">총 개수</span>
+                    <span class="badge bg-primary rounded-pill">{{totalCount}}</span>
                 </h4>
                 <ul class="list-group mb-3" id="pList">
                     <div :key="i" v-for="(cart, i) in selectCartQuery">
@@ -29,7 +29,7 @@
                     <!-- </c:if> -->
                     <li class="list-group-item d-flex justify-content-between">
                         <span>총 결제금액</span>
-                        <strong id="priceTag">{{ total }}원</strong>
+                        <strong id="priceTag">{{ totalPrice }}원</strong>
                     </li>
                 </ul>
 
@@ -181,24 +181,25 @@
             return {
                 userNo : '',
                 selectCartQuery : [],
-                total : '',
+                totalPrice : '',
+                totalCount: 0,
                 //test
                 price : 0,
                 count : 0
             }
         },
-        created(){
+        async created(){
             this.userNo = this.$store.state.userNo;
-            this.getSelectCartQuery();
-            this.totlaPrice();
+            await this.getSelectCartQuery();
+            this.totalCnt();
             
         },
-          computed : {
-            total(){
-                //test
-                return this.total - 10;
-            }
-        },
+        // computed : {
+        //     total(){
+        //         //test
+        //         return this.total;
+        //     }
+        // },
         methods: {
             //장바구니 가져오기
             async getSelectCartQuery(){
@@ -209,15 +210,20 @@
                                 .catch(err => console.log(err));
                 this.selectCartQuery = result.data;
                 this.$hideLoading();
+                return 1;
             },
-             totlaPrice() {
-                this.total = 0;
-
+             totalCnt() {
+                this.totalPrice = 0;
+                this.totalCount = 0;
                 console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
 
                 for (let i = 0; i< this.selectCartQuery.length; i++){  
-                    this.total += this.selectCartQuery[i].price_sum;
+                    this.totalPrice += this.selectCartQuery[i].price_sum;
+                    this.totalCount += this.selectCartQuery[i].product_sel_cnt;
+
                 }
+                
+
              }
             
 
