@@ -5,7 +5,7 @@
             <div class="col-md-5 col-lg-4 order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-primary">장바구니</span>
-                    <span class="badge bg-primary rounded-pill">총금액</span>
+                    <span class="badge bg-primary rounded-pill">총 개수</span>
                 </h4>
                 <ul class="list-group mb-3" id="pList">
                     <div :key="i" v-for="(cart, i) in selectCartQuery">
@@ -15,7 +15,7 @@
                                 <h6 class="my-0">{{cart.product_name}}</h6>
                                 <small class="prSel">{{cart.product_sel_cnt}}</small><small>개</small>
                             </div>
-                            <span class="text-muted">$ {{cart.price_sum}}</span>
+                            <span class="text-muted">{{cart.price_sum}}원</span>
                         </li>
                     </div>
                     <!-- 
@@ -29,7 +29,7 @@
                     <!-- </c:if> -->
                     <li class="list-group-item d-flex justify-content-between">
                         <span>총 결제금액</span>
-                        <strong id="priceTag">$총가격 원</strong>
+                        <strong id="priceTag">{{ total }}원</strong>
                     </li>
                 </ul>
 
@@ -180,24 +180,46 @@
         data(){
             return {
                 userNo : '',
-                selectCartQuery : []
+                selectCartQuery : [],
+                total : '',
+                //test
+                price : 0,
+                count : 0
             }
         },
         created(){
             this.userNo = this.$store.state.userNo;
             this.getSelectCartQuery();
+            this.totlaPrice();
+            
+        },
+          computed : {
+            total(){
+                //test
+                return this.total - 10;
+            }
         },
         methods: {
             //장바구니 가져오기
             async getSelectCartQuery(){
-                console.log('할수잇다 ',this.userNo);
-                //this.$showLoading();
+                console.log('회원번호: ',this.userNo);
+                this.$showLoading();
                 let result 
                     = await axios.get(`/api/product/paymentform/${this.userNo}`)
                                 .catch(err => console.log(err));
                 this.selectCartQuery = result.data;
-                //this.$hideLoading();
-            }
+                this.$hideLoading();
+            },
+             totlaPrice() {
+                this.total = 0;
+
+                console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
+
+                for (let i = 0; i< this.selectCartQuery.length; i++){  
+                    this.total += this.selectCartQuery[i].price_sum;
+                }
+             }
+            
 
         }
     }
