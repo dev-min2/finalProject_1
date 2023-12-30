@@ -18,7 +18,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(notice) in noticeList" :key="notice.notice_board_no">
+                <tr v-for="(notice) in noticeList" :key="notice.notice_board_no" @click="goNoticeBoard(notice.notice_board_no)" >
                     <td>{{notice.notice_board_no}}</td>
                     <td>{{notice.title}}</td>
                     <td>관리자</td>
@@ -65,6 +65,9 @@
                 
                 this.$router.push({path : "/notice/write"});
             },
+            goNoticeBoard(boardNo) {
+                this.$router.push({path : `/notice/${boardNo}`});
+            }
         }
     }
 </script>
