@@ -66,7 +66,7 @@
                 this.$router.push({path : "/notice/write"});
             },
             goNoticeBoard(boardNo) {
-                this.$router.push({path : `/notice/${boardNo}`});
+                this.$router.push({name : `noticeInfo`, params : { no : `${boardNo}`}});
             }
         }
     }
