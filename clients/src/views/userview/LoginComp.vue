@@ -4,7 +4,7 @@
 		<div class="container my-5">
 			<div class="input-form-backgroud row">
 				<div class="input-form col-md-12 mx-auto">
-					<h4 class="mb-5" style="text-align: center;font-size:50px;color:pink">마이디어 펫</h4>
+					<h4 class="mb-5" style="text-align: center;font-size:50px;color:pink">디어마이 펫</h4>
 					<div class="row">
 						<div class="mb-3">
 							<label for="userId">아이디</label> 
@@ -91,6 +91,7 @@
                                     let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
                                     if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
                                         this.$store.commit('setUserNo', result.data[0].user_no);
+                                        this.$store.commit('setUserPermission', result.data[0].user_permission);
                                         this.$router.push({path : '/main'});
                                     }
                                     else {
@@ -115,13 +116,14 @@
                 console.log(result);
                 if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
                     if(this.idSaveChecked) {
-                        localStorage.setItem("userId", this.userId);
+                        localStorage.setItem("userId", this.userId);    
                     }
                     else {
                         localStorage.setItem("userId", "");
                     }
 
                     this.$store.commit('setUserNo', result.data[0].user_no);
+                    this.$store.commit('setUserPermission', result.data[0].user_permission);
                     this.$router.push({path : '/main'});
                 }
                 else {
