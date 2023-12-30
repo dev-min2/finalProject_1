@@ -9,28 +9,17 @@
           </td>
           <td class="B">
             <div class = "labels">
-            <label :class="{ active: selectedPeriod === 'today' }" @click="changePeriod(0)">
-              오늘
-            </label>
-            <label :class="{ active: selectedPeriod === '1week' }" @click="changePeriod(1)">
-              7일
-            </label>
-            <label :class="{ active: selectedPeriod === '1month' }" @click="changePeriod(2)">
-              1개월
-            </label>
-            <label :class="{ active: selectedPeriod === '3month' }" @click="changePeriod(3)">
-              3개월
-            </label>
-            <label :class="{ active: selectedPeriod === '6month' }" @click="changePeriod(4)">
-              6개월
-            </label>
+            <label :class="{ active: selectedPeriod === 'today' }" @click="changePeriod(0)">오늘</label>
+            <label :class="{ active: selectedPeriod === '1week' }" @click="changePeriod(1)">7일</label>
+            <label :class="{ active: selectedPeriod === '1month' }" @click="changePeriod(2)">1개월</label>
+            <label :class="{ active: selectedPeriod === '3month' }" @click="changePeriod(3)">3개월</label>
+            <label :class="{ active: selectedPeriod === '6month' }" @click="changePeriod(4)">6개월</label>
             </div>
             <div class = "date">
             <input type="date" v-model="date1">~<input type="date" v-model="date2">
             </div>
           </td>
         </tr>
-
         <tr>
           <td class="A">
             <div>
@@ -52,22 +41,23 @@
 </template>
 
 <script>
-import Datepicker from 'vue-datepicker';
+
 export default {
   components: {
-    Datepicker,
+  
   },
   data() {
     return {
-      selectedPeriod: '1month',
+     selectedPeriod: '1month',
      date1:'',
      date2:'',
-     minPrice:'',
+     period : 2,
+     minPrice:'', 
      maxPrice:''
-     
+    
     };
   },
-  
+
   methods: {
     changePeriod(period) {
       if(period == 0) {
@@ -85,16 +75,32 @@ export default {
       else if(period == 4){
        this.selectedPeriod = '6month'
       }
-      this.$emit('emit-name',period);
-      this.$emit('emit2-name',period);
+      this.period = period
+      // this.$emit('emit-name',period);
+      // this.$emit('emit2-name',period);
 
     },
+
     // 검색버튼 동작
     search() {
-      this.$showSuccessAlert('검색','검색123');
-      
+      const sendObject = {
+        period : this.period,
+        minPrice : this.minPrice == '' ? 0.1 : this.minPrice,
+        maxPrice : this.maxPrice == '' ? 99999999999999 : this.maxPrice
+      }
+
+      this.$emit('send-period-price',sendObject);
+   
     },
   },
+  watch : {
+    minPrice(newVal, o) {
+      console.log(newVal);
+    },
+    maxPrice(newVal, o) {
+      console.log(newVal);
+    }
+  }
 };
 </script>
 

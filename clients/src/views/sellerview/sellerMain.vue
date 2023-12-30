@@ -2,7 +2,7 @@
 
     <div id="container" class="flex-container">
         <div class="table-header">검색 조건</div>
-        <product-research-bar @emit-name="getProductList" @emit2-name="getProductList2"/>
+        <product-research-bar @send-period-price="getProductList"/>
 
         <div class="table-header mt-2">통계 차트</div>
         <div class="chart-container">
@@ -66,26 +66,27 @@
             };
         },
         created() {
-            this.getProductList(2);
+            const sendObject = {
+                period : 2,
+                minPrice : 0,
+                maxPrice : 0
+            }
+            this.getProductList(sendObject);
             //this.initSellerChart();
-            this.getProductList2(2);
+           
 
         },
 
 
         methods: {
-            asd() {
-                console.log('하이하이');
-            },
-            // initSellerChart() {
-
-            // },
-
-            async getProductList(period) {
-                console.log('1번함수 호출됨');
+            async getProductList(obj) {
+                console.log(obj);
+               
                 let result = '';
+                //const userNo = this.$store.state.userNo;
+                const userNo = 1; // 나중에 위코드로 수저해야함.
                 try {
-                    result = await axios.get(`/api/product/seller-main/${period}`);
+                    result = await axios.get(`/api/product/seller-main/${userNo}/${obj.period}/${obj.minPrice}/${obj.maxPrice}`);
                    // let period = req.params.period;
 
                 } catch (e) {
@@ -93,9 +94,6 @@
                 }
 
                 this.ProductList = result.data;
-
-
-
 
                 google.charts.load("current", {
                     packages: ["corechart"]
@@ -120,44 +118,31 @@
 
                         table.push(row);
                     }
-                    console.log(table);
                     var data = google.visualization.arrayToDataTable(table);
                     var options = {
                         title: '상품 판매량',
                         pieHole: 0.4,
+                       
                     };
-
                     var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
                     chart.draw(data, options);
                 }
-            },
-            async getProductList2(period) {
-                console.log('2번함수 호출됨');
-                const myThis2 = this;
-                let result = '';
-                try {
-                    result = await axios.get(`/api/product/seller-main/${period}`);
-                } catch (e) {
-                    console.log(e);
-                }
-
-                this.ProductList = result.data;
-
-
-                //막대그래프
                 google.charts.load("current", {
                     packages: ["corechart"]
                 });
+                
                 google.charts.setOnLoadCallback(drawChart1);
 
                 function drawChart1() {
                     let table = [];
                     table.push(['상품', '판매액']);
-
-                    for (let i = 0; i < myThis2.ProductList.length; ++i) {
+                    console.log('asdasdasd: '+ myThis.ProductList)
+                    console.log('날짜선택 : '+myThis.selectedPeriod)
+                    console.log('최소 : '+obj.minPrice+'최대 : '+obj.maxPrice)
+                    for (let i = 0; i < myThis.ProductList.length; ++i) {
                         let row = [];
-                        row.push(myThis2.ProductList[i].product_name);
-                        row.push(myThis2.ProductList[i].allamount);
+                        row.push(myThis.ProductList[i].product_name);
+                        row.push(myThis.ProductList[i].allamount);
 
                         table.push(row);
                     }
@@ -173,7 +158,8 @@
                     var chart = new google.visualization.BarChart(document.getElementById('BarChart'));
                     chart.draw(data, options);
                 }
-            }
+            },
+         
         }
 
     }

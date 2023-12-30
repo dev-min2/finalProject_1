@@ -2,6 +2,6 @@
   <router-view/>
 </template>
 
-<style >
-
+<style>
+  @import "./assets/css/styles.css";
 </style>
