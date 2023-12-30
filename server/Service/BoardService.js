@@ -55,17 +55,28 @@ class BoardService {
         return result;
     } 
 
-    async getNoticeBoardList(pageNo) {
-        const result = await noticeBoardDAO.selectNoticeBoardQuery(pageNo);
-        const countResult = await noticeBoardDAO.selectNoticeBoardCountQuery(); // 총 카운트.
+    async getNoticeBoardList(pageNo,keyword) {
+        const result = await noticeBoardDAO.selectNoticeBoardListQuery(pageNo,keyword);
+        const countResult = await noticeBoardDAO.selectNoticeBoardCountQuery(keyword); // 총 카운트.
+        const importanceNoticeResult = await noticeBoardDAO.selectImportanceNoticeBoardListQuery();
 
         const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
         const resResult = {
             selectResult : result,
-            pageDTO : pageDTO
+            pageDTO : pageDTO,
+            selectImportance : importanceNoticeResult
         }
 
         return resResult;
+    }
+
+    async getNoticeBoardInfo(boardNo) {
+        const result = await noticeBoardDAO.selectNoticeBoardQuery(boardNo);
+        return result[0];
+    }
+
+    async updateNoticeBoardViewCnt(boardNo) {
+        const result = await noticeBoardDAO.updateNoticeViewCntQuery(boardNo);
     }
 }
 

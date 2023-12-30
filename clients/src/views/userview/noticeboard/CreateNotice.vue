@@ -32,7 +32,7 @@
 						<!-- <td colspan="3"><textarea cols="100" rows="6" name="productDesc"
 								class="form-control"></textarea></td> -->
 						<td colspan="2">
-							<div id="editor">
+							<div ref="editor">
 							</div>
 						</td>
 					</tr>
@@ -188,55 +188,52 @@ export default {
 
 		}
     },
-	// 해당 라우트 뷰를 벗어날 때.
-	beforeRouteLeave() {
-		//axios.delete(`/api/file/uploadAttachFile/notice/-1`);
-	},
 	mounted() {
-			editor = new Editor({
-				el: document.querySelector('#editor'),
-				height: '600px',
-				initialEditType: 'wysiwyg',
-				previewStyle: 'vertical',
-				hooks: {
-					// 이미지가 올라오면 해당 이미지가 blob매개변수에 담김
-					addImageBlobHook: async (blob, callback) => {
-						const fileType = blob.name.substr(blob.name.indexOf('.') + 1, blob.name.length);
-						if(fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png' || fileType == 'gif') {
-							const formData = new FormData();
-						
-							const sendFileName = 'notice_' + this.$store.state.userNo + '_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
-							const boardType = "notice";
-							formData.append('sendFileName',sendFileName);
-							formData.append('board',boardType);
-							formData.append('image', blob);
+		const myThis = this;
+		editor = new Editor({
+			el: myThis.$refs.editor,
+			height: '600px',
+			initialEditType: 'wysiwyg',
+			previewStyle: 'vertical',
+			hooks: {
+				// 이미지가 올라오면 해당 이미지가 blob매개변수에 담김
+				addImageBlobHook: async (blob, callback) => {
+					const fileType = blob.name.substr(blob.name.indexOf('.') + 1, blob.name.length);
+					if(fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png' || fileType == 'gif') {
+						const formData = new FormData();
+					
+						const sendFileName = 'notice_' + this.$store.state.userNo + '_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
+						const boardType = "notice";
+						formData.append('sendFileName',sendFileName);
+						formData.append('board',boardType);
+						formData.append('image', blob);
 
-							let result = await axios.post('/api/file/uploadDescImg',formData,{"Content-Type": "multipart/form-data"});
-							const fileName = result.data;
-						
-							const imageUrl = `${this.$store.state.curIp + result.data}`;
-							const imageAlt = 'image_detect_10954321';
-							this.editorImageFileList.push({
-								imageURL : `![${imageAlt}](${imageUrl})`,
-								imageName : `${sendFileName}`
-							}
-								
-							);
-							callback(imageUrl, imageAlt);
+						let result = await axios.post('/api/file/uploadDescImg',formData,{"Content-Type": "multipart/form-data"});
+						const fileName = result.data;
+					
+						const imageUrl = `${this.$store.state.curIp + result.data}`;
+						const imageAlt = 'image_detect_10954321';
+						this.editorImageFileList.push({
+							imageURL : `![${imageAlt}](${imageUrl})`,
+							imageName : `${sendFileName}`
 						}
-					},
-					// 글한번칠때마다 발생하는 함수
-					change : async () => {
-						const markdown = editor.getMarkdown();
-						for(let i = 0; i < this.editorImageFileList.length; ++i) {
-							// 없는게있다면 삭제 요청한다.
-							if(!markdown.includes(this.editorImageFileList[i].imageURL)) {
-								const result = await axios.delete(`/api/file/uploadDescImg/notice/${this.editorImageFileList[i].imageName}`);
-								this.editorImageFileList.splice(i,1);
-							}
-						}
+							
+						);
+						callback(imageUrl, imageAlt);
 					}
 				},
+				// 글한번칠때마다 발생하는 함수
+				change : async () => {
+					const markdown = editor.getMarkdown();
+					for(let i = 0; i < this.editorImageFileList.length; ++i) {
+						// 없는게있다면 삭제 요청한다.
+						if(!markdown.includes(this.editorImageFileList[i].imageURL)) {
+							const result = await axios.delete(`/api/file/uploadDescImg/notice/${this.editorImageFileList[i].imageName}`);
+							this.editorImageFileList.splice(i,1);
+						}
+					}
+				}
+			},
         });
 	}
 }

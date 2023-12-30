@@ -23,9 +23,10 @@ boardRouter.post('/notice', async(req,res) => {
 
 boardRouter.get('/notice', async(req, res) => { 
     const pageNo = req.query.pg;
+    const keyword = req.query.keyword;
     try {
         const boardService = new BoardService();
-        const result = await boardService.getNoticeBoardList(pageNo);
+        const result = await boardService.getNoticeBoardList(pageNo,keyword);
         res.status(200).send(result);
     }
     catch(e) {
@@ -33,5 +34,32 @@ boardRouter.get('/notice', async(req, res) => {
         res.status(500).send("FAIL");
     }
 });
+
+
+boardRouter.get('/notice/:no', async(req, res) => {
+    const boardNo = req.params.no;
+
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.getNoticeBoardInfo(boardNo);
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
+boardRouter.put('/notice/:no', async(req, res) => {
+    const boardNo = req.params.no;
+
+    try {
+        const boardService = new BoardService();
+        boardService.updateNoticeBoardViewCnt(boardNo);
+        res.status(200).send("OK");
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
 
 module.exports = boardRouter;
