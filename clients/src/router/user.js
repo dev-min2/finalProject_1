@@ -13,7 +13,8 @@ import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
-import NoticeList from '../views/userview/NoticeList.vue'
+import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
+import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 
 //결제
 import PaymentForm from '../views/userview/payment/PaymentForm.vue'
@@ -93,6 +94,11 @@ export default {
           component: NoticeList
         },
         {
+          path: "/notice/write",
+          name: "noticeWrite",
+          component : CreateNotice
+        },
+        {
           path: "/paymentform",
           name: "paymentform",
           component: PaymentForm
@@ -102,6 +108,5 @@ export default {
           name: "paymentcomplete",
           component: PaymentComplete
         },
-        
     ]
 };

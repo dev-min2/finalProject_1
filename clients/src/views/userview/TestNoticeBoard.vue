@@ -92,7 +92,6 @@ export default {
 			}
 			inputTag.files = newFiles.files;
 
-			
 			let trTag = document.createElement('tr');
 			let thTag = document.createElement('th');
 			let tdTag = document.createElement('td');
