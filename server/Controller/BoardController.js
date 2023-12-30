@@ -26,7 +26,6 @@ boardRouter.get('/notice', async(req, res) => {
     try {
         const boardService = new BoardService();
         const result = await boardService.getNoticeBoardList(pageNo);
-        console.log(result);
         res.status(200).send(result);
     }
     catch(e) {

@@ -59,7 +59,7 @@ class BoardService {
         const result = await noticeBoardDAO.selectNoticeBoardQuery(pageNo);
         const countResult = await noticeBoardDAO.selectNoticeBoardCountQuery(); // 총 카운트.
 
-        const pageDTO = new PageDTO(countResult[0].CNT, pageNo, 10);
+        const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
         const resResult = {
             selectResult : result,
             pageDTO : pageDTO

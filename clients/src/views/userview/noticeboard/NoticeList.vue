@@ -27,24 +27,25 @@
                 </tr>
             </tbody>
         </table>
-        <PagingComp v-bind:pageDTO="pageDTO" />
-        
+
+        <!-- 서버에 비동기 통신으로 데이터 요청 응답이 오기전에 컴포넌트에 prop이 전달될 수 있으므로 null 이 아닐때만 전달되게끔 해야함.-->
+        <PaginationComp v-if="page !== null" :page="page" @go-page="getNoticeBoardList" />
     </div>
 </template>
 
 <script>
-    import PagingComp from '../../../components/common/PagingComp.vue'
+    import PaginationComp from '../../../components/common/PaginationComp.vue'
     import axios from 'axios'
     export default {
         data() {
             return {
                 noticeList : [],
-                pageDTO : {}
+                page : null
             }
         },
-        components : [
-            PagingComp,
-        ],
+        components : {
+            PaginationComp,
+        },
         created() {
             this.getNoticeBoardList(1);
         },
@@ -54,7 +55,7 @@
                 const result = await axios.get(`/api/board/notice?pg=${pageNo}`);
                 if(result.status == 200) {
                     this.noticeList = result.data.selectResult;
-                    this.pageDTO = result.data.pageDTO;
+                    this.page = result.data.pageDTO;
                 }
                 this.$hideLoading();
             },
@@ -63,7 +64,7 @@
                     return;
                 
                 this.$router.push({path : "/notice/write"});
-            }
+            },
         }
     }
 </script>
