@@ -23,10 +23,10 @@
                         <h3>댓글 작성</h3>
                         <div>
                             <div class="form-group">
-                            <textarea v-model="replyContent" class="form-control" id="comment" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                            <textarea v-model="commentReply[idx]" class="form-control" id="comment" rows="3" placeholder="댓글을 입력하세요"></textarea>
                         </div>
                         <div class="text-right">
-                            <button @click="registReply(reply[0].parent_reply_no)" class="btn btn-primary" style="background-color:pink;">댓글 작성</button>
+                            <button @click="registReply(reply[0].parent_reply_no,idx)" class="btn btn-primary" style="background-color:pink;">댓글 작성</button>
                         </div>
                     </div>
                 </div>
@@ -52,10 +52,10 @@
         <h3>댓글 작성</h3>
         <div>
             <div class="form-group">
-                <textarea v-model="replyContent" class="form-control" id="comment" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                <textarea v-model="comment" class="form-control" id="comment" rows="3" placeholder="댓글을 입력하세요"></textarea>
             </div>
             <div class="text-right">
-                <button @click="registReply(null)" class="btn btn-primary" style="background-color:pink;">댓글 작성</button>
+                <button @click="registReply(null,-1)" class="btn btn-primary" style="background-color:pink;">댓글 작성</button>
             </div>
         </div>
     </div>
@@ -64,7 +64,42 @@
 
 <script>
     export default {
-        
+        data() {
+            return {
+                comment : '',
+                commentReply : [],
+            }
+        },
+        props : {
+            noticeReply : Object,
+            noticeReplyCount : Number,
+            showContent : Array            
+        },
+        created() {
+            for(const obj in this.noticeReply) {
+                this.showContent.push(false);
+                this.commentReply.push('');
+            }
+        },
+        methods : {
+            registReply(pno,idx) {
+                if(this.$store.state.userNo < 0) {
+                    this.$showWarningAlert('로그인 후 이용가능합니다.');
+                    return;
+                }
+                
+                const comment = pno != null ? this.commentReply[idx] : this.comment;
+                this.$emit('registReply', pno, comment);
+
+                if(idx >= 0) {
+                    this.commentReply[idx] = '';
+                    this.showContent[idx] = !this.showContent[idx];
+                }
+                else {
+                    this.comment = '';
+                }
+            }
+        }
     }
 </script>
 
