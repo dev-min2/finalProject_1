@@ -31,6 +31,22 @@ class BoardService {
         return true;
     }
 
+    // 게시판 첨부파일 리스트 이름값들 불러오기
+    getAttachFileList(boardType, pkValue) {
+        const sourceDir = __dirname + `/../uploads/${boardType}/${pkValue}/`;
+        if(!fs.existsSync(sourceDir)) {
+            return false;
+        }
+
+        let attachFileList = [];
+        const files = fs.readdirSync(sourceDir)
+        files.forEach((file) => {
+            attachFileList.push(file);
+        })
+
+        return attachFileList;
+    }
+
     async registNoticeBoard(userNo, randNoticeValue, curTimeVal, noticeBoardInfo) {
         let noticeVO = {
             title : noticeBoardInfo.title,
@@ -76,10 +92,13 @@ class BoardService {
         const replyCountResult = await noticeBoardDAO.selectNoticeBoardReplyCountQuery(boardNo);
         replyResult = groupBy(replyResult, 'parent_reply_no');
 
+        const attachList = this.getAttachFileList('notice', result[0].notice_board_no);
+
         const resResult = {
             noticeBoard : result[0],
             reply : replyResult,
-            replyCount : replyCountResult[0].CNT
+            replyCount : replyCountResult[0].CNT,
+            attachFileList : attachList
         }
 
         return resResult;

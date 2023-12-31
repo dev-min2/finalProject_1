@@ -1,6 +1,7 @@
 // 파일처리를 위한 컨트롤러
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const multipart = require('connect-multiparty')
 const fileRouter = express.Router();
 
@@ -108,6 +109,18 @@ fileRouter.delete('/uploadAttachFile/:boardType/:fileName', async(req, res) => {
         });
     }
 });
+
+fileRouter.post('/download-file', async(req, res) => {
+    const { boardType, pk, fileName } = req.body;
+
+    const filePath = __dirname + `/../uploads/${boardType}/${pk}/${fileName}`;
+    res.download(filePath, fileName, (err) => {
+        if(err) {
+            console.log(err);
+            res.status(500).send("FAIL");
+        }
+    });
+})
 
 
 fileRouter.post('/notice/regist', async(req, res) => {

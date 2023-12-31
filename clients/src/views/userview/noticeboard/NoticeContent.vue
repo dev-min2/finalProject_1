@@ -19,12 +19,17 @@
                         </div>
                     </div>
                     <div class="card-footer text-muted">
-                        작성일 : {{boardInfo.created_date}}
+                        <h5 class="card-title">첨부파일 목록</h5>
+							<ul class="scroll_ul">
+								<li v-for="(attachFile,idx) in showAttachFileNameList" :key="idx">
+									<a href="#" @click="downloadFile(realAttachFileNameList[idx])">{{attachFile}}</a>
+								</li>
+							</ul>
                     </div>
                 </div>
             </div>
         </div>
-        <BoardReply v-if="noticeReply !== null" :noticeReply="noticeReply" :noticeReplyCount="noticeReplyCount" :showContent="showContent" @regist-reply="registReply"/>
+        <BoardReply v-if="noticeReply !== null" :noticeReply="noticeReply" :noticeReplyCount="noticeReplyCount"  @regist-reply="registReply"/>
     </div>
 </template>
 
@@ -43,9 +48,11 @@
             return {
                 boardNo : 0,
                 boardInfo : null,
-                noticeReply : null, // 이건 props로 건내야함.
-                noticeReplyCount : 0, // 마찬가지.
-                showContent : [], // 이건 내부에만 있으면 될듯.
+                noticeReply : null, // 댓글 데이터를 가지는 데이터
+                noticeReplyCount : 0,  // 댓글 갯수
+                showAttachFileNameList : [], // 실제파일 이름이 담긴 첨부파일 리스트
+                realAttachFileNameList : [], // 서버에서 고유한 처리를 위해 변경한 파일이름이 담긴 리스트
+
             }
         },
         async created() {
@@ -65,10 +72,11 @@
                 const result = await axios.get(`/api/board/notice/${this.boardNo}`);
                 if(result.status == 200) {
                     this.boardInfo = result.data.noticeBoard;
-                    this.boardInfo.created_date = this.$dateTimeFormat(this.boardInfo.created_date);
                     this.noticeReply = result.data.reply;
                     this.noticeReplyCount = result.data.replyCount;
-
+                    this.realAttachFileNameList = result.data.attachFileList;
+                    this.showAttachFileNameList = this.$convertAttachFileNameList(this.realAttachFileNameList);
+                    
                     await axios.put(`/api/board/notice/${this.boardNo}`)
                 }
                 else {
@@ -95,6 +103,28 @@
                 else {
                     this.$showFailAlert('댓글등록에 실패했습니다. 사유 : ', result.status);
                 }
+            },
+            async downloadFile(attachFileName) {
+                const pkValue = this.boardNo;
+                const boardType = 'notice';
+                const fileName = attachFileName;
+
+                const sendObj = {
+                    boardType : boardType,
+                    pk : pkValue,
+                    fileName : fileName
+                }
+
+                const result = await axios.post(`/api/file/download-file`,sendObj,{headers : {'Content-Type' : 'application/json'}, responseType : 'blob'});
+
+                // 파일처리법
+                const url = window.URL.createObjectURL(new Blob([result.data]));
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
             }
         }
     }
@@ -103,5 +133,15 @@
 <style scoped>
     textarea {
         resize: none;
+    }
+
+    .scroll_ul {
+		overflow-y:scroll;
+		list-style: none;
+		height : 100px;
+	}
+
+    a {
+        text-decoration-line: none;
     }
 </style>

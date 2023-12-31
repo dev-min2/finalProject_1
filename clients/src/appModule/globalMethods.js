@@ -102,6 +102,31 @@ const methods = {
             ('0' + date.getHours()).slice(-2) + ':' +
             ('0' + date.getMinutes()).slice(-2) + ":" +
             ('0' + date.getSeconds()).slice(-2);
+    },
+    convertAttachFileNameList(attachList) {
+        if(attachList == null || attachList.length <= 0) {
+            return null;
+        }
+        
+        console.log(attachList);
+        let fileNameList = [];        
+        for(let i = 0; i < attachList.length; ++i) {
+            let startRealFileNameIdx = 0;   
+            let underlineCount = 0; // 5개.
+            for(let j = 0; j < attachList[i].length; ++j) {
+                if(attachList[i][j] === '_') {
+                    ++underlineCount;
+                }
+    
+                ++startRealFileNameIdx;
+                if(underlineCount >= 5) 
+                    break;
+            }
+    
+            fileNameList.push(attachList[i].substr(startRealFileNameIdx, attachList[i].length));
+        }
+
+        return fileNameList;
     }
 }
 
@@ -119,5 +144,6 @@ export default {
         Vue.config.globalProperties.$showInfoAlert = methods.showInfoAlert;
         Vue.config.globalProperties.$dateFormat = methods.dateFormat;
         Vue.config.globalProperties.$dateTimeFormat = methods.dateTimeFormat;
+        Vue.config.globalProperties.$convertAttachFileNameList = methods.convertAttachFileNameList;
     }
 }

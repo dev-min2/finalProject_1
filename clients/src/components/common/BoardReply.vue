@@ -1,3 +1,5 @@
+<!-- 게시판 댓글 컴포넌트 -->
+<!-- noticeReply 객체의 프로퍼티명에 맞춰서 데이터를 넣어줘야함. noticeBoardDAO코드 참고.-->
 <template>
 <div>
     <div class="conatiner mt-5">
@@ -68,12 +70,12 @@
             return {
                 comment : '',
                 commentReply : [],
+                showContent : []
             }
         },
         props : {
             noticeReply : Object,
-            noticeReplyCount : Number,
-            showContent : Array            
+            noticeReplyCount : Number       
         },
         created() {
             for(const obj in this.noticeReply) {
@@ -83,6 +85,16 @@
         },
         methods : {
             registReply(pno,idx) {
+                if(idx >= 0 && this.commentReply[idx] == '') {
+                    this.$showWarningAlert('빈 내용은 작성이 불가능합니다.');
+                    return;
+                }
+
+                if(idx < 0 && this.comment == '') {
+                    this.$showWarningAlert('빈 내용은 작성이 불가능합니다.');
+                    return;
+                }
+
                 if(this.$store.state.userNo < 0) {
                     this.$showWarningAlert('로그인 후 이용가능합니다.');
                     return;
