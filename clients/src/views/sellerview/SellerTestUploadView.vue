@@ -42,10 +42,14 @@
 						<td colspan="3"><input type="text" name="productName" class="form-control"></td>
 					</tr>
 					<tr>
+						<th>상품 상세 정보</th>
+						<td colspan="3"><textarea name="productDetailDesc" class="form-control" ></textarea></td>
+					</tr>
+					<tr>
 						<th>가격</th>
 						<td><input type="text" name="productPrice" class="form-control"></td>
 						<th>상품수량</th>
-						<td><input type="text" name="productStock" class="form-control"></td>
+						<td><input type="number" name="productStock" class="form-control"></td>
 					</tr>
 					<tr>
 						<th>상품설명</th>

@@ -58,6 +58,7 @@
                             </a>
                             <router-link class="nav-link" to="/upload">업로드테스트</router-link>
                             <li class="nav-item"><router-link class="nav-link" to="/ProductResearchBar">차트테스트</router-link></li>
+                            <li class="nav-item"><router-link class="nav-link" to="/SellerProductList">판매상품목록</router-link></li>
             
               
                             

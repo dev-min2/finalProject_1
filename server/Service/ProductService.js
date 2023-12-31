@@ -12,6 +12,12 @@ class ProductService {
         return result;
     }
 
+    async getMyProductList(userNo) {
+        let result = await SellerDAO.getMyProductList(userNo);
+        console.log(result)
+        return result;
+    }
+
 
     //트랜잭션 예시코드임
     // async completePayment() {

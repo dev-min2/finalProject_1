@@ -44,6 +44,20 @@ productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice',async(req,r
     }
 })
 
+//판매자-내 상품 전체 조회
+productRouter.get('/sellerProductList/:userNo',async(req,res)=>{
+   // let userNo = req.params.userNo;
+    const userNo = 1;
+ try{
+    const productService = new ProductService();
+    result = await productService.getMyProductList(userNo);
+    res.send(result);
+ }
+ catch(e){
+    console.log(e)
+ }
+})
+
 //판매자-상품 등록
 productRouter.post
 
