@@ -24,8 +24,9 @@
                             <div class="text-success">
                                 <h6 class="my-0" id="fee">배송비</h6>
                             </div>
-                            <span class="text-success">2500원</span>
+                            <span class="text-success"> {{delivery}} 원 </span>
                         </li>
+                    
                     <!-- </c:if> -->
                     <li class="list-group-item d-flex justify-content-between">
                         <span>총 결제금액</span>
@@ -165,7 +166,7 @@
 
                     <hr class="my-4">
 
-                    <button class="w-100 btn btn-primary btn-lg" id="paymentBtn">결제하기</button>
+                    <button @click="PaymentBtn" class="w-100 btn btn-primary btn-lg" id="paymentBtn" >결제하기</button>
                 </form>
             </div>
             <!--주문 폼 끝-->
@@ -180,18 +181,17 @@
         data(){
             return {
                 userNo : '',
-                selectCartQuery : [],
-                totalPrice : '',
-                totalCount: 0,
-                //test
-                price : 0,
-                count : 0
+                selectCartQuery : [], //장바구니 목록
+                totalPrice : 0, //총 금액
+                totalCount: 0, //총 수량
+                delivery : 0, //배송비
+                
             }
         },
         async created(){
             this.userNo = this.$store.state.userNo;
             await this.getSelectCartQuery();
-            this.totalCnt();
+            this.total();
             
         },
         // computed : {
@@ -212,7 +212,8 @@
                 this.$hideLoading();
                 return 1;
             },
-             totalCnt() {
+            //총 금액, 총 수량, 배송비
+             total() {
                 this.totalPrice = 0;
                 this.totalCount = 0;
                 console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
@@ -220,13 +221,39 @@
                 for (let i = 0; i< this.selectCartQuery.length; i++){  
                     this.totalPrice += this.selectCartQuery[i].price_sum;
                     this.totalCount += this.selectCartQuery[i].product_sel_cnt;
-
                 }
-                
+                if(this.totalPrice < 30000) { //배송비 3만원 이상 무료배송
+                    this.delivery = 2500 ; 
+                    this.totalPrice += this.delivery;
+                    }
+             },
+             //결제 버튼 클릭
+             PaymentBtn: function(){
+                console.log('버튼연결확인', this.totalPrice);
+                //const { IMP } = window;
+                var IMP = window.IMP;
+                IMP.init('imp04630170');
 
-             }
-            
-
+                IMP.request_pay({ // param
+                    pg: "kakaopay", //상점 ID
+                    pay_method: "card",
+                    merchant_uid: "ORD20180131-0000012",
+                    name: "주문품목",
+                    amount: this.totalPrice,
+                    buyer_email: "funidea_woo@naver.com",
+                    buyer_name: "테스터",
+                    buyer_tel: "010-8832-4280",
+                    buyer_addr: "서울특별시 영등포구 당산동",
+                }, rsp => { // callback
+                    console.log(rsp);
+                    if (rsp.success) {
+                    console.log("결제 성공");
+                    //DB저장 요청?
+                    } else {
+                    console.log("결제 실패");
+                    }
+                });
+            }
         }
     }
 </script>
