@@ -36,11 +36,12 @@ class ProductService {
     }
     //검색한 상품 결과 개수
     async getSearchResultCnt(pageno) {
-        const result = await productDAO.selectSearchProductQuery(pageno);
-        const countResult = await productDAO.selectSearchResultProductQuery();
+        let result = await productDAO.selectSearchProductQuery(pageno);
+        let countResult = await productDAO.selectSearchResultProductQuery();
 
-        const pageDTO = new pageDTO(countResult[0].CNT, Number(pageno), 10);
-        const resResult = {
+        let pageDTO = new pageDTO(countResult[0].cnt, Number(pageno), 10);
+        console.log(pageDTO);
+        let resResult = {
             selectResult: result,
             pageDTO: pageDTO
         }
@@ -48,27 +49,17 @@ class ProductService {
     }
     // 카테고리 상품 개수
     async getCategoryProductCnt(pageno) {
+        let result = await categoryDAO.selectCategorySearchQuery(pageno);
+        let countResult = await categoryDAO.selectCategoryProductCntQuery();
 
+        let pageDTO = new pageDTO(countResult[0].cnt, Number(pageno), 10);
+        console.log(pageDTO);
+        let resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+        return resResult;
     }
-
-    //트랜잭션 예시코드임
-    // async completePayment() {
-    //     const connection = await getConnection();
-    //     // 트랜잭션 시작
-    //     try {
-    //         await connection.beginTransaction(); // 트랜잭션 시작
-    //         let result = await paymentDAO.결제정보삽입(data);
-    //         let result2 = await paymentProductsDAO.결제상품들삽입(data);
-    //         let result3 = await MyCartDAO.장바구니삭제(data);
-    //         await connection.commit(); // 트랜잭션 끝(성공)
-    //     }
-    //     catch(e) {
-    //         await connection.rollback(); // 트랜잭션 끝(실패)
-    //     }
-    //     finally {
-    //         connection.release(); // 사용한 커넥션은 다시 풀에 반납
-    //     }
-    // }
 }
 
 module.exports = ProductService;

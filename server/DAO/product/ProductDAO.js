@@ -52,6 +52,7 @@ let productDAO = {
         return query(selectSearchResultProductQuery, [searchcntquery, ptype]);
     }
 
+
 };
 
 module.exports = productDAO;
