@@ -47,7 +47,7 @@
             <!--주문 폼-->
             <div class="col-md-7 col-lg-8">
                 <h3 class="mb-5">주문하기</h3>
-                <form class="needs-validation" novalidate>
+                <div class="needs-validation" novalidate>
                     <!--주문자정보-->
                     <div class="row g-3">
                         <div class="col-12">
@@ -132,27 +132,24 @@
                     </div>
                     <hr class="my-4">
 
-                    <!--결제수단-->
+                    <!--결제수단 선택-->
                     <h4 class="mb-3">결제수단</h4>
-
                     <div class="my-3">
                         <div class="form-check">
-                            <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked
+                            <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="credit" name="paymentMethod" class="form-check-input" checked
                                 required>
                             <label class="form-check-label" for="credit">신용카드</label>
                         </div>
                     </div>
-
                     <div class="my-3">
                         <div class="form-check">
-                            <input id="toss" name="paymentMethod" type="radio" class="form-check-input" required>
+                            <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="toss" name="paymentMethod" class="form-check-input" required>
                             <label class="form-check-label" for="credit">토스페이</label>
                         </div>
                     </div>
-
                     <div class="my-3">
                         <div class="form-check">
-                            <input id="kakao" name="paymentMethod" type="radio" class="form-check-input" required>
+                            <input type="radio"  v-model="selectPayment"  @change="Paymentmethod" value="kakao" name="paymentMethod" class="form-check-input" required>
                             <label class="form-check-label" for="credit">카카오페이</label>
                         </div>
                     </div>
@@ -160,14 +157,15 @@
                     <hr class="my-4">
 
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="confirmPayment">
+                        <input type="checkbox" class="form-check-input" v-model="orderCheck">
                         <label class="form-check-label" for="confirmPayment">위 주문 내용을 확인하였으며 결제에 동의합니다.</label>
                     </div>
 
                     <hr class="my-4">
-
                     <button @click="PaymentBtn" class="w-100 btn btn-primary btn-lg" id="paymentBtn" >결제하기</button>
-                </form>
+                    <hr><!--테스트버튼 나중에 지우기-->
+                    <button @click="TestBtn" class="w-100 btn btn-primary btn-lg" id="test" >Test</button> 
+                </div>
             </div>
             <!--주문 폼 끝-->
         </div>
@@ -176,30 +174,39 @@
 
 <script>
     import axios from 'axios';
+    
+    var IMP = window.IMP;  //결제 IMP
+    IMP.init('imp04630170'); //가맹점 식별코드
 
     export default {
         data(){
             return {
                 userNo : '',
+                selectPayment : '', //결제방식
+                orderCheck:'', //주문동의 확인
                 selectCartQuery : [], //장바구니 목록
                 totalPrice : 0, //총 금액
                 totalCount: 0, //총 수량
                 delivery : 0, //배송비
-                
+                couponPrice : 0, //쿠폰 사용금액
+                orderNo: 0, //주문번호
+                orderDate : '', //주문날짜
+
+
+
+
             }
         },
         async created(){
             this.userNo = this.$store.state.userNo;
             await this.getSelectCartQuery();
             this.total();
-            
         },
-        // computed : {
-        //     total(){
-        //         //test
-        //         return this.total;
-        //     }
-        // },
+        watch:{
+            orderCheck(){
+                console.log('watch',this.orderCheck);
+            }
+        },
         methods: {
             //장바구니 가져오기
             async getSelectCartQuery(){
@@ -218,26 +225,44 @@
                 this.totalCount = 0;
                 console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
 
-                for (let i = 0; i< this.selectCartQuery.length; i++){  
+                for (let i = 0; i< this.selectCartQuery.length; i++){  // 총 금액, 총 수량
                     this.totalPrice += this.selectCartQuery[i].price_sum;
                     this.totalCount += this.selectCartQuery[i].product_sel_cnt;
                 }
-                if(this.totalPrice < 30000) { //배송비 3만원 이상 무료배송
+                if(this.totalPrice < 30000) { //배송비: 3만원 이상 무료배송
                     this.delivery = 2500 ; 
                     this.totalPrice += this.delivery;
                     }
              },
+             //결제방식 선택
+             Paymentmethod: function(){
+                if(this.selectPayment == "kakao"){
+                    this.selectPayment = 'kakaopay';
+                }else if(this.selectPayment == "credit"){
+                    this.selectPayment = 'html5_inicis';
+                }else {
+                     this.selectPayment = 'tosspay';
+                }
+                console.log('function',this.selectPayment);
+                console.log(this.confirmPayment);
+             },
+             TestBtn: function(){
+                console.log('홧팅（っ ‘ ᵕ ‘ ｃ）');
+                console.log(this.orderCheck);
+             },
              //결제 버튼 클릭
-             PaymentBtn: function(){
-                console.log('버튼연결확인', this.totalPrice);
-                //const { IMP } = window;
-                var IMP = window.IMP;
-                IMP.init('imp04630170');
+             PaymentBtn: function(){  //결제 동의 체크박스 확인
+                 if( this.orderCheck == false ) { 
+                        this.$showWarningAlert('결제 동의란을 확인하고 체크해주세요. ');
+                        return;
+                }
+
+                console.log('결제수단선택', this.selectPayment);
 
                 IMP.request_pay({ // param
-                    pg: "kakaopay", //상점 ID
+                    pg: this.selectPayment, //결제방식
                     pay_method: "card",
-                    merchant_uid: "ORD20180131-0000012",
+                    merchant_uid: "ORD20180131-0000011",
                     name: "주문품목",
                     amount: this.totalPrice,
                     buyer_email: "funidea_woo@naver.com",
@@ -247,10 +272,12 @@
                 }, rsp => { // callback
                     console.log(rsp);
                     if (rsp.success) {
-                    console.log("결제 성공");
-                    //DB저장 요청?
+                        this.$router.push({ path : '/paymentcomplete' }); //주문완료 페이지 이동
+                        //주문 DB저장 여기서 해야할듯?
+                        console.log("결제 성공");
                     } else {
-                    console.log("결제 실패");
+                        this.$showWarningAlert('결제 실패');
+                        console.log("결제 실패");
                     }
                 });
             }
