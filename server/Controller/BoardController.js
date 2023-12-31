@@ -42,7 +42,7 @@ boardRouter.get('/notice/:no', async(req, res) => {
     try {
         const boardService = new BoardService();
         const result = await boardService.getNoticeBoardInfo(boardNo);
-        res.send(result);
+        res.status(200).send(result);
     }
     catch(e) {
         console.log(e);
@@ -61,5 +61,22 @@ boardRouter.put('/notice/:no', async(req, res) => {
         console.log(e);
     }
 })
+
+boardRouter.post('/notice-reply', async(req, res) => {
+    const body = req.body;
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.registNoticeReply(body.param);
+        if(result) {
+            res.status(200).send(result);
+        }
+        else {
+            res.status(500).send('FAIL');
+        }
+    }
+    catch(e) {
+        console.log(e);
+    }
+});
 
 module.exports = boardRouter;

@@ -2,6 +2,7 @@ const fxExtra = require('fs-extra');
 const path = require('path');
 const fs = require('fs');
 const noticeBoardDAO = require('../DAO/board/NoticeBoardDAO');
+const { groupBy } = require('../commonModule/commonModule');
 const PageDTO = require('../commonModule/PageDTO');
 
 class BoardService {
@@ -72,11 +73,29 @@ class BoardService {
 
     async getNoticeBoardInfo(boardNo) {
         const result = await noticeBoardDAO.selectNoticeBoardQuery(boardNo);
-        return result[0];
+        let replyResult = await noticeBoardDAO.selectNoticeBoardReplyQuery(boardNo);
+        const replyCountResult = await noticeBoardDAO.selectNoticeBoardReplyCountQuery(boardNo);
+        replyResult = groupBy(replyResult, 'parent_reply_no');
+        console.log(replyCountResult[0]);
+
+        const resResult = {
+            noticeBoard : result[0],
+            reply : replyResult,
+            replyCount : replyCountResult[0].CNT
+        }
+
+        return resResult;
     }
 
     async updateNoticeBoardViewCnt(boardNo) {
         const result = await noticeBoardDAO.updateNoticeViewCntQuery(boardNo);
+        return result;
+    }
+
+    async registNoticeReply(replyObj) {
+        replyObj.reply_date = new Date();
+        const result = await noticeBoardDAO.insertNoticeReplyQuery(replyObj);
+        return result;
     }
 }
 
