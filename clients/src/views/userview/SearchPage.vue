@@ -4,15 +4,7 @@
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                 <Product v-for="(product2,idx) in productList" :key="idx" :product="product2" />
             </div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <li class="page-item active"><a class="page-link" v-for="(pageno2, idx) in pageNo" :key="idx"
-                                @click="nextPage(pageno)" style="background-color:#fc97bf; border-color:#dee2e6;"></a></li>
-                        <li class="page-item"><a class="page-link" style="color:black"></a></li>
-                    </li>
-                </ul>
-            </nav>
+            <PaginationComp v-if="page !== null" :page="page" @go-page="getSearchPageList()" />
         </div>
     </section>
 </template>
@@ -20,14 +12,17 @@
 <script>
     import axios from 'axios'
     import Product from '../../components/userview/Product.vue';
+    import PagenationComp from '../../components/common/PaginationComp.vue';
 
     export default {
         components: {
             Product,
+            PagenationComp
         },
         data() {
             return {
-                productList: []
+                productList: [],
+                page: null
             }
         },
         created() {
@@ -46,21 +41,25 @@
                 const result = await axios.get(
                     `/api/product/search/category?cno=${cno}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
-                this.productList = result.data; //저장
+                this.productList = result.data;
+                this.page = result.data.pageDTO;
                 console.log(result);
             },
             async getProductList(keyword, pageno) {
                 const result = await axios.get(
                     `/api/product/search?q=${keyword}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
-                this.productList = result.data; //저장
+                this.productList = result.data;
+                this.page = result.data.pageDTO;
                 console.log(result);
             },
-            async nextPage(pageno) {
-                this.pageno += 1;
-            },
-            async prevPage(pageno) {
-                this.pageno -= 1;
+            async getSearchPageList() {
+                let action = this.$route.query.action;
+                if (action == "categorySearch") {
+                    this.getCategoryProductList(this.$route.query.categoryNo, 1)
+                } else {
+                    this.getProductList(this.$route.query.keyword, 1);
+                }
             }
         }
     }

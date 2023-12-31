@@ -45,11 +45,11 @@ let productDAO = {
         return query(selectSearchProductQuery, [searchquery, ptype, startpageList, endpageList]);
     },
     //검색에 대한 결과 개수
-    selectSearchResultProductQuery : async function(search, ptype){
+    selectSearchResultProductQuery: async function (search, ptype) {
         const searchcntquery = "%" + search + "%";
-        const selectSearchResultProductQuery = 
-        `select count(*) as cnt from product where product_name like ? and pet_type=?`;
-        return query(selectSearchResultProductQuery,[searchcntquery,ptype]);
+        const selectSearchResultProductQuery =
+            `select count(*) as cnt from product where product_name like ? and pet_type=?`;
+        return query(selectSearchResultProductQuery, [searchcntquery, ptype]);
     }
 
 };
