@@ -10,7 +10,7 @@
                             <p class="card-text" style="text-align='right'; display:inline-block;">관리자 | {{boardInfo.created_date}}</p>
                         </div>
                         <div style="float:right">
-                            <p class="card-text" style="text-align='right'; display:inline-block;">조회 {{boardInfo.view_cnt + 1}} | 댓글 {{0}} </p>
+                            <p class="card-text" style="text-align='right'; display:inline-block;">조회 {{boardInfo.view_cnt + 1}} | 댓글 {{noticeReplyCount}}</p>
                         </div>
                     </div>
                     <div class="card-body">
@@ -50,7 +50,7 @@
                                 <textarea v-model="replyContent" class="form-control" id="comment" rows="3" placeholder="댓글을 입력하세요"></textarea>
                             </div>
                             <div class="text-right">
-                                <button @click="registReply(reply[0].parent_reply_no)" class="btn btn-primary" style="background-color:pink;">댓글 작성</button>
+                                <button @click="registReply(reply[0].parent_reply_no,idx)" class="btn btn-primary" style="background-color:pink;">댓글 작성</button>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                     <textarea v-model="replyContent" class="form-control" id="comment" rows="3" placeholder="댓글을 입력하세요"></textarea>
                 </div>
                 <div class="text-right">
-                    <button @click="registReply(null)" class="btn btn-primary" style="background-color:pink;">댓글 작성</button>
+                    <button @click="registReply(null,-1)" class="btn btn-primary" style="background-color:pink;">댓글 작성</button>
                 </div>
             </div>
         </div>
@@ -96,11 +96,11 @@
         data() {
             return {
                 boardNo : 0,
-                boardInfo : null,
-                replyContent : '',
-                noticeReply : [],
-                noticeReplyCount : 0,
-                showContent : [],
+                boardInfo : null, 
+                replyContent : '', // reply 컴포넌트 내부에만 있으면 됨. 그리고 송신할 떄 보내주기만하면 끝
+                noticeReply : [], // 이건 props로 건내야함.
+                noticeReplyCount : 0, // 마찬가지.
+                showContent : [], // 이건 내부에만 있으면 될듯.
             }
         },
         async created() {
@@ -119,7 +119,6 @@
                 this.$showLoading();
                 const result = await axios.get(`/api/board/notice/${this.boardNo}`);
                 if(result.status == 200) {
-                    console.log(result.data);
                     this.boardInfo = result.data.noticeBoard;
                     this.boardInfo.created_date = this.$dateTimeFormat(this.boardInfo.created_date);
                     this.noticeReply = result.data.reply;
@@ -137,12 +136,11 @@
                 this.$hideLoading();
                 return 1;
             },
-            async registReply(pno) {
+            async registReply(pno,idx) {
                 if(this.$store.state.userNo < 0) {
                     this.$showWarningAlert('로그인 후 이용가능합니다.');
                     return;
                 }
-                this.$showLoading();
                 const myThis = this;
                 const sendObj = {
                     param : {
@@ -155,12 +153,12 @@
                 const result = await axios.post('/api/board/notice-reply',sendObj,{headers : {'ContentType' : 'application/json'}})
                 if(result.status == 200) {
                     this.replyContent = '';
-                    // 일반댓글인경우 마지막에추가.
+                    this.showContent[idx] = !this.showContent[idx];
+                    await this.getNoticeData();
                 }
                 else {
                     this.$showFailAlert('댓글등록에 실패했습니다. 사유 : ', result.status);
                 }
-                this.$hideLoading();
             }
         }
     }

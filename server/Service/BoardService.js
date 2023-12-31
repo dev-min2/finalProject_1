@@ -21,7 +21,6 @@ class BoardService {
 
         const files = fs.readdirSync(sourceDir)
         files.forEach((file) => {
-            console.log(file);
             if(file.includes(`${boardType}_${userNo}_${randValue}_${curTimeVal}`)) {
                 const sourceFilePath = path.join(sourceDir, file);
                 const destinationFilePath = path.join(destDir, file);
@@ -76,7 +75,6 @@ class BoardService {
         let replyResult = await noticeBoardDAO.selectNoticeBoardReplyQuery(boardNo);
         const replyCountResult = await noticeBoardDAO.selectNoticeBoardReplyCountQuery(boardNo);
         replyResult = groupBy(replyResult, 'parent_reply_no');
-        console.log(replyCountResult[0]);
 
         const resResult = {
             noticeBoard : result[0],

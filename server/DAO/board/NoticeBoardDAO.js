@@ -80,7 +80,7 @@ let noticeBoardDAO = {
             LEFT JOIN notice_reply AS B ON A.notice_reply_no = B.notice_reply_pno
             JOIN user AS C ON A.user_no = C.user_no
             WHERE A.notice_board_no = ? AND A.notice_reply_pno IS NULL
-            ORDER BY A.reply_date asc
+            ORDER BY A.reply_date asc, child_reply_date asc
         `
         return query(selectNoticeBoardReplyQuery, boardNo);
     },
