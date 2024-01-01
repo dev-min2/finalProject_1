@@ -24,10 +24,12 @@ let categoryDAO = {
         return query(selectCategorySearchQuery, [cno, ptype, startpageList, endpageList]);
     },
     //카테고리에 해당하는 상품수
-    selectCategoryProductCntQuery: async function (cno, ptype) {
-        const selectCategoryProductCntQuery =
-            `select count(*) as cnt from category where category_no=? and pet_type=?`;
-        return query(selectCategoryProductCntQuery, [cno, ptype]);
+    selectCategorySearchCntQuery: async function (cno, ptype, pageno) {
+        const startpageList = (pageno - 1) * 8;
+        const endpageList = pageno * 8;
+        const selectCategorySearchCntQuery =
+            `select count(*) as cnt from product where category_no=? and pet_type=?`;
+        return query(selectCategorySearchCntQuery, [cno, ptype, startpageList, endpageList]);
     },
 
 };

@@ -35,26 +35,26 @@ class ProductService {
         return result;
     }
     //검색한 상품 결과 개수
-    async getSearchResultCnt(pageno) {
-        let result = await productDAO.selectSearchProductQuery(pageno);
-        let countResult = await productDAO.selectSearchResultProductQuery();
+    async getSearchResultCnt(search, pytpe, pageno) {
+        const result = await productDAO.selectSearchProductQuery(search, pytpe, pageno);
+        const countResult = await productDAO.selectSearchProductCntQuery(search);
 
-        let pageDTO = new pageDTO(countResult[0].cnt, Number(pageno), 10);
-        console.log(pageDTO);
-        let resResult = {
+        console.log(countResult);
+        const pageDTO = new pageDTO(countResult[0].cnt, Number(pageno), 8);
+        const resResult = {
             selectResult: result,
             pageDTO: pageDTO
         }
         return resResult;
     }
     // 카테고리 상품 개수
-    async getCategoryProductCnt(pageno) {
-        let result = await categoryDAO.selectCategorySearchQuery(pageno);
-        let countResult = await categoryDAO.selectCategoryProductCntQuery();
+    async getCategoryProductCnt(cno, ptype, pageno) {
+        const result = await categoryDAO.selectCategorySearchQuery(cno, ptype, pageno);
+        const countResult = await categoryDAO.selectCategorySearchCntQuery();
 
-        let pageDTO = new pageDTO(countResult[0].cnt, Number(pageno), 10);
+        const pageDTO = new pageDTO(countResult[0].cnt, Number(pageno), 8);
         console.log(pageDTO);
-        let resResult = {
+        const resResult = {
             selectResult: result,
             pageDTO: pageDTO
         }

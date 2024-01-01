@@ -4,7 +4,7 @@
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                 <Product v-for="(product2,idx) in productList" :key="idx" :product="product2" />
             </div>
-            <PaginationComp v-if="page !== null" :page="page" @go-page="getSearchPageList()" />
+            <PaginationComp v-if="page !== null" :page="page" @go-page="getSearchPageList" />
         </div>
     </section>
 </template>
@@ -12,12 +12,12 @@
 <script>
     import axios from 'axios'
     import Product from '../../components/userview/Product.vue';
-    import PagenationComp from '../../components/common/PaginationComp.vue';
+    import PaginationComp from '../../components/common/PaginationComp.vue';
 
     export default {
         components: {
             Product,
-            PagenationComp
+            PaginationComp
         },
         data() {
             return {
@@ -31,36 +31,36 @@
             if (action == "categorySearch") {
                 this.getCategoryProductList(this.$route.query.categoryNo, 1)
             } else {
-                this.getProductList(this.$route.query.keyword, 1);
+                this.getProductList(this.$route.query.keyword, );
             }
         },
         methods: {
-
             async getCategoryProductList(cno, pageno) {
                 console.log(cno, pageno);
                 const result = await axios.get(
                     `/api/product/search/category?cno=${cno}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
-                this.productList = result.data;
+                console.log(productList);
+                this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
-                console.log(result);
             },
             async getProductList(keyword, pageno) {
                 const result = await axios.get(
                     `/api/product/search?q=${keyword}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
-                this.productList = result.data;
+                console.log(productList);
+                this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
-                console.log(result);
             },
-            async getSearchPageList() {
+            async getSearchPageList(pageno) {
                 let action = this.$route.query.action;
                 if (action == "categorySearch") {
-                    this.getCategoryProductList(this.$route.query.categoryNo, 1)
+                    this.getCategoryProductList(this.$route.query.categoryNo, pageno)
                 } else {
-                    this.getProductList(this.$route.query.keyword, 1);
+                    this.getProductList(this.$route.query.keyword, pageno);
                 }
-            }
+            },
+
         }
     }
 </script>

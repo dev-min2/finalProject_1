@@ -20,7 +20,7 @@ productRouter.get('/search', async (req, res) => {
         let data = req.query.q;
         let ptype = req.query.type;
         let pageno = req.query.pageno;
-        let result = await productService.getSearchProductList(data, ptype, pageno);
+        const result = await productService.getSearchResultCnt(data, ptype, pageno);
         res.send(result);
     } catch (e) {
         console.log(e);
@@ -45,7 +45,7 @@ productRouter.get('/search/category', async (req, res) => {
         let data = req.query.cno;
         let ptype = req.query.type;
         let pageno = req.query.pageno;
-        let result = await productService.getCategorySearch(data, ptype, pageno);
+        const result = await productService.getCategoryProductCnt(data, ptype, pageno);
         console.log(result);
         res.send(result);
     } catch (e) {

@@ -14,14 +14,14 @@ class BoardService {
     moveAttachFile(boardType, userNo, pkValue, randValue, curTimeVal) {
         const sourceDir = __dirname + `/../uploads/${boardType}/tempAttachFile/`;
         const destDir = __dirname + `/../uploads/${boardType}/${pkValue}/`;
-        if(!fs.existsSync(destDir)) {
+        if (!fs.existsSync(destDir)) {
             fs.mkdirSync(destDir);
         }
 
         const files = fs.readdirSync(sourceDir)
         files.forEach((file) => {
             console.log(file);
-            if(file.includes(`${boardType}_${userNo}_${randValue}_${curTimeVal}`)) {
+            if (file.includes(`${boardType}_${userNo}_${randValue}_${curTimeVal}`)) {
                 const sourceFilePath = path.join(sourceDir, file);
                 const destinationFilePath = path.join(destDir, file);
                 fs.renameSync(sourceFilePath, destinationFilePath);
@@ -33,27 +33,27 @@ class BoardService {
 
     async registNoticeBoard(userNo, randNoticeValue, curTimeVal, noticeBoardInfo) {
         let noticeVO = {
-            title : noticeBoardInfo.title,
-            content : noticeBoardInfo.html,
-            user_no : userNo,
-            importance_level : noticeBoardInfo.importanceLevel,
-            notice_start_date : noticeBoardInfo.startDate,
-            notice_end_date : noticeBoardInfo.endDate,
-            created_date : new Date()
+            title: noticeBoardInfo.title,
+            content: noticeBoardInfo.html,
+            user_no: userNo,
+            importance_level: noticeBoardInfo.importanceLevel,
+            notice_start_date: noticeBoardInfo.startDate,
+            notice_end_date: noticeBoardInfo.endDate,
+            created_date: new Date()
         }
-        
+
         const result = await noticeBoardDAO.insertNoticeBoardQuery(noticeVO);
-        if(result == null && result.affectedRows <= 0) {
+        if (result == null && result.affectedRows <= 0) {
             return null;
         }
         // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
         const moveResult = this.moveAttachFile('notice', userNo, result.insertId, randNoticeValue, curTimeVal);
-        if(!moveResult) {
+        if (!moveResult) {
             return null;
         }
 
         return result;
-    } 
+    }
 
     async getNoticeBoardList(pageNo) {
         const result = await noticeBoardDAO.selectNoticeBoardQuery(pageNo);
@@ -61,8 +61,8 @@ class BoardService {
 
         const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
         const resResult = {
-            selectResult : result,
-            pageDTO : pageDTO
+            selectResult: result,
+            pageDTO: pageDTO
         }
 
         return resResult;

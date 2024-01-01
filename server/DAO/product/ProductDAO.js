@@ -41,16 +41,17 @@ let productDAO = {
         const endpageList = pageno * 8;
         const selectSearchProductQuery =
             `select * from product where product_name like ? and pet_type=? order by product_registdate desc
-            limit  ?,?`;
+            limit ?, ?`;
         return query(selectSearchProductQuery, [searchquery, ptype, startpageList, endpageList]);
     },
     //검색에 대한 결과 개수
-    selectSearchResultProductQuery: async function (search, ptype) {
+    selectSearchProductCntQuery: async function (search, ptype) {
         const searchcntquery = "%" + search + "%";
-        const selectSearchResultProductQuery =
+        const selectSearchProductCntQuery =
             `select count(*) as cnt from product where product_name like ? and pet_type=?`;
-        return query(selectSearchResultProductQuery, [searchcntquery, ptype]);
+        return query(selectSearchProductCntQuery, [searchcntquery, ptype]);
     }
+
 
 
 };
