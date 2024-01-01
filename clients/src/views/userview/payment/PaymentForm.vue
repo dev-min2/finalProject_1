@@ -94,8 +94,8 @@
 
                         <div class="col-12">
                             <label for="firstName" class="form-label">이름</label>
-                            <input type="text" class="form-control" id="firstName" placeholder=""
-                                value="${userInfo.nickName }" required>
+                            <input type="text" v-model= "receiverName" class="form-control" id="firstName" placeholder="userName불러오기"
+                                value="name" required>
                             <div class="invalid-feedback">
                                 이름 입력해주세요.
                             </div>
@@ -103,8 +103,8 @@
 
                         <div class="col-12">
                             <label for="address" class="form-label">주소</label>
-                            <input type="text" class="form-control" id="address" placeholder=""
-                                value="${userInfo.userAddr }" required>
+                            <input type="text" v-model= "receiverAddr" class="form-control" id="address" placeholder="userAddr불러오기"
+                                value="" required>
                             <div class="invalid-feedback">
                                 주소 입력해주세요.
                             </div>
@@ -112,8 +112,8 @@
 
                         <div class="col-12">
                             <label for="phone" class="form-label">연락처</label>
-                            <input type="text" class="form-control" id="phone" placeholder=""
-                                value="${userInfo.userPhone }" required>
+                            <input type="text" v-model= "receiverPhone" class="form-control" id="phone" placeholder="userTel불러오기"
+                                value="c" required>
                             <div class="invalid-feedback">
                                 연락처 입력해주세요.
                             </div>
@@ -121,8 +121,8 @@
 
                         <div class="col-12">
                             <label for="requestDelivery" class="form-label">배송 요청사항</label>
-                            <select name="delivery" class="form-control" id="requestDelivery">
-                                <option value="" disabled selected>배송 요청 사항을 선택하세요</option>
+                            <select name="delivery" v-model= "deliveryRequest" class="form-select">
+                                <option disabled value="">배송 요청 사항을 선택하세요</option>
                                 <option value="배송 전 연락바랍니다.">배송 전 연락바랍니다.</option>
                                 <option value="부재시 휴대전화로 연락주세요.">부재시 휴대전화로 연락주세요.</option>
                                 <option value="부재시 경비실에 맡겨주세요.">부재시 경비실에 맡겨주세요.</option>
@@ -141,6 +141,7 @@
                             <label class="form-check-label" for="credit">신용카드</label>
                         </div>
                     </div>
+                    
                     <div class="my-3">
                         <div class="form-check">
                             <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="toss" name="paymentMethod" class="form-check-input" required>
@@ -182,7 +183,7 @@
         data(){
             return {
                 userNo : '',
-                selectPayment : '', //결제방식
+                selectPayment : 'html5_inicis', //결제방식
                 orderCheck:'', //주문동의 확인
                 selectCartQuery : [], //장바구니 목록
                 totalPrice : 0, //총 금액
@@ -191,8 +192,7 @@
                 couponPrice : 0, //쿠폰 사용금액
                 orderNo: 0, //주문번호
                 orderDate : '', //주문날짜
-
-
+                orderProduct : '', //주문품목
 
 
             }
@@ -202,11 +202,11 @@
             await this.getSelectCartQuery();
             this.total();
         },
-        watch:{
-            orderCheck(){
-                console.log('watch',this.orderCheck);
-            }
-        },
+        // watch:{
+        //     orderCheck(newValue,oldValue){
+        //         console.log('watch',newValue);
+        //     }
+        // },
         methods: {
             //장바구니 가져오기
             async getSelectCartQuery(){
@@ -220,7 +220,7 @@
                 return 1;
             },
             //총 금액, 총 수량, 배송비
-             total() {
+            total() {
                 this.totalPrice = 0;
                 this.totalCount = 0;
                 console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
@@ -233,9 +233,9 @@
                     this.delivery = 2500 ; 
                     this.totalPrice += this.delivery;
                     }
-             },
+            },
              //결제방식 선택
-             Paymentmethod: function(){
+            Paymentmethod: function(){
                 if(this.selectPayment == "kakao"){
                     this.selectPayment = 'kakaopay';
                 }else if(this.selectPayment == "credit"){
@@ -244,37 +244,57 @@
                      this.selectPayment = 'tosspay';
                 }
                 console.log('function',this.selectPayment);
-                console.log(this.confirmPayment);
-             },
-             TestBtn: function(){
+            },
+            //데이터 만들기 테스트용 (html 버튼과 함수 둘 다 삭제할 것!!!)
+            TestBtn: function(){
                 console.log('홧팅（っ ‘ ᵕ ‘ ｃ）');
-                console.log(this.orderCheck);
-             },
+                console.log(this.receiverName, '/', this.receiverAddr,'/', this.receiverPhone,'/' ,this.deliveryRequest );
+
+                //주문품목 테스트
+                console.log('졸리당: ', 
+                    this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건');
+                console.log('쫌만더하고자기: ', this.orderProduct);
+
+            },
              //결제 버튼 클릭
-             PaymentBtn: function(){  //결제 동의 체크박스 확인
-                 if( this.orderCheck == false ) { 
+            PaymentBtn: function(){ 
+                //결제 동의 체크박스 확인
+                if( this.orderCheck == false ) { 
                         this.$showWarningAlert('결제 동의란을 확인하고 체크해주세요. ');
                         return;
                 }
+                //console.log('결제수단선택', this.selectPayment);
 
-                console.log('결제수단선택', this.selectPayment);
+                //주문번호, 주문날짜 생성
+                this.orderNo = String(new Date().getTime()) + this.userNo;
+                this.orderDate = this.$dateFormat(new Date());
+
+                //주문품목 생성 (~포함 총 n건)
+                if(this.selectCartQuery.length > 1 ){
+                    this.orderProduct = this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건';
+                } else { 
+                    this.orderProduct = this.selectCartQuery[0].product_name;
+                }
 
                 IMP.request_pay({ // param
                     pg: this.selectPayment, //결제방식
                     pay_method: "card",
-                    merchant_uid: "ORD20180131-0000011",
-                    name: "주문품목",
+                    merchant_uid: this.orderNo, //주문번호
+                    name: this.orderProduct, //주문품목
                     amount: this.totalPrice,
                     buyer_email: "funidea_woo@naver.com",
-                    buyer_name: "테스터",
-                    buyer_tel: "010-8832-4280",
-                    buyer_addr: "서울특별시 영등포구 당산동",
+                    buyer_name: this.receiverName,
+                    buyer_tel: this.receiverPhone,
+                    buyer_addr: this.receiverAddr,
                 }, rsp => { // callback
                     console.log(rsp);
                     if (rsp.success) {
                         this.$router.push({ path : '/paymentcomplete' }); //주문완료 페이지 이동
                         //주문 DB저장 여기서 해야할듯?
+                        //장바구니 비워주기
                         console.log("결제 성공");
+                        console.log(this.selectPayment,'/',this.orderNo,'/',
+                            this.totalPrice,'/',this.receiverName,'/',this.receiverPhone,'/',this.receiverAddr);
                     } else {
                         this.$showWarningAlert('결제 실패');
                         console.log("결제 실패");
