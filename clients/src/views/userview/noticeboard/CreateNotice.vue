@@ -34,7 +34,6 @@
 						<!-- <td colspan="3"><textarea cols="100" rows="6" name="productDesc"
 								class="form-control"></textarea></td> -->
 						<td colspan="2">
-							
 							<TextEditor v-if="curModifyForm == false" 
 								:boardType="'notice'" :userNo="$store.state.userNo" :randBoardValue="randNoticeValue" :curTimeVal="curTimeVal" ref="editor"/>
 							<TextEditor v-else-if="curModifyForm == true && noticeBoardInfo.html !== null" 
@@ -45,7 +44,7 @@
 							<th>파일 첨부</th>
 							<td colspan="2">
 								<InsertAttachFileList v-if="curModifyForm == false" 
-									:attachFileList="null" :boardNo="-1" :boardType="'notice'" :userNo="$store.state.userNo" :randBoardValue="randNoticeValue" :curTimeVal="curTimeVal" />
+									:attachFileList="null" :boardNo="''" :boardType="'notice'" :userNo="$store.state.userNo" :randBoardValue="randNoticeValue" :curTimeVal="curTimeVal" />
 								<InsertAttachFileList v-else-if="curModifyForm == true && realAttachFileNameList !== null" 
 									:attachFileList="realAttachFileNameList" :boardNo="boardNo" :boardType="'notice'" :userNo="$store.state.userNo" :randBoardValue="randNoticeValue" :curTimeVal="curTimeVal" />
 							</td>
@@ -80,7 +79,7 @@ export default {
 				startDate : null,
 				endDate : null,
 				html : null,
-				sel : ''
+				sel : 'J2'
 			},
             subCodes : {},
 
@@ -91,7 +90,7 @@ export default {
 			// 수정폼에서 쓰이는변수
 			curModifyForm : false,
 			realAttachFileNameList : null,
-			boardNo : -1,
+			boardNo : '',
         }
     },
     created() {
