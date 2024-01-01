@@ -82,14 +82,17 @@
             },
             
         //배송상태 회원이름으로 검색
-             async searchSellerDelivery(search) {
+             async searchSellerDelivery() {
                 let result = '';
-                const userNo = 1;
+                //const userNo = 1;
                 try {
-                    result = await axios.get(`/api/product/SellerDelivery/${userNo}/${search}`)
+                    result = await axios.get(`/api/product/sellerDeliverySearchUserName/${this.search}`)
+                    console.log('배송조회검색 :' + result);
+                    
                 } catch (e) {
                     console.log(e);
                 }
+                
                 this.sellerDeliveryList = result.data;
             },
         }

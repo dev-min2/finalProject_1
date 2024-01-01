@@ -49,10 +49,14 @@ class ProductService {
     }
 
     //판매자-배송관리-회원이름으로 검색
-    async sellerDeliverySearchUserName(userNo,search){
-        let result = await DeliveryDAO.sellerDeliverySearchUserName(userNo,search);
+    async sellerDeliverySearchUserName(search){
+       
+        let result = await DeliveryDAO.sellerDeliverySearchUserName(search);
+        console.log('asdasd', result)
         return result;
+        
     }
+    
 
 
     //트랜잭션 예시코드임

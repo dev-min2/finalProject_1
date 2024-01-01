@@ -135,17 +135,20 @@ productRouter.get('/SellerDelivery/:userNo',async(req,res)=>{
  })
 
  //판매자 - 배송 조회-회원이름으로 검색
-productRouter.get('/sellerDeliverySearchUserName/:userNo/:search',async(req,res)=>{
+productRouter.get('/sellerDeliverySearchUserName/:search',async(req,res)=>{
     // let userNo = req.params.userNo;
-     const userNo = 1;
+    // const userNo = 1;
+    const search = req.params.search;
   try{
      const productService = new ProductService();
-     result = await productService.sellerDeliverySearchUserName(userNo,search);
+     result = await productService.sellerDeliverySearchUserName(search);
      res.send(result)
+     
   }
   catch(e){
      console.log(e)
   }
+ 
  })
 
 
