@@ -16,14 +16,28 @@ let productDAO = {
     //메인페이지 첫 라인(최신 등록순)
     selectMainpageFirstProductQuery: async function () {
         const selectMainpageFirstProductQuery =
-            `select * from product order by product_registdate limit 0,4`;
+            `select p.product_no, p.product_name, p.product_price, p.product_stock, p.category_no, a.avg_cnt
+            from
+                (
+                select p.product_no, truncate(avg(r.star_cnt),0) as avg_cnt 
+                    from product as p
+                    left join review as r on p.product_no = r.product_no
+                    group by p.product_registdate
+                    order by p.product_registdate desc limit 0,4
+                ) as a
+                join product as p on a.product_no = p.product_no
+                WHERE p.pet_type =?`;
         return query(selectMainpageFirstProductQuery);
     },
     //메인페이지 두번째라인(리뷰 많은순)
     selectMainpageSecondProductQuery: async function () {
         const selectMainpageSecondProductQuery =
-            `select * from product order by product_registdate limit 0,5
-        `;
+            `select p.product_no, count(*) as cnt from
+            (select p.product_name, p.product_price, count(*) as cnt, truncate(avg(r.star_cnt),0) as avg_cnt from product p left join review r on p.product_no = r.product_no
+            group by p.product_no
+            order by cnt desc limit 0,4) p
+            left join review r on p.product_no = r.product_no
+            where p.pet_type=?`;
         return query(selectMainpageSecondProductQuery);
     },
     //세번재 라인(별점 높은순)
