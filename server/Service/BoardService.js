@@ -33,12 +33,12 @@ class BoardService {
 
     // 게시판 첨부파일 리스트 이름값들 불러오기
     getAttachFileList(boardType, pkValue) {
+        let attachFileList = [];
         const sourceDir = __dirname + `/../uploads/${boardType}/${pkValue}/`;
         if(!fs.existsSync(sourceDir)) {
-            return false;
+            return attachFileList;
         }
 
-        let attachFileList = [];
         const files = fs.readdirSync(sourceDir)
         files.forEach((file) => {
             attachFileList.push(file);
@@ -112,6 +112,28 @@ class BoardService {
     async registNoticeReply(replyObj) {
         replyObj.reply_date = new Date();
         const result = await noticeBoardDAO.insertNoticeReplyQuery(replyObj);
+        return result;
+    }
+
+    async modifyNotice(userNo, boardNo, randNoticeValue, curTimeVal, noticeBoardInfo) {
+        let noticeVO = {
+            title : noticeBoardInfo.title,
+            content : noticeBoardInfo.html,
+            importance_level : noticeBoardInfo.importanceLevel,
+            notice_start_date : noticeBoardInfo.startDate,
+            notice_end_date : noticeBoardInfo.endDate
+        };
+
+        const result = await noticeBoardDAO.updateNoticeBoardQuery(noticeVO,boardNo);
+        if(result == null && result.affectedRows <= 0) {
+            return null;
+        }
+        // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
+        const moveResult = this.moveAttachFile('notice', userNo, boardNo, randNoticeValue, curTimeVal);
+        if(!moveResult) {
+            return null;
+        }
+
         return result;
     }
 }

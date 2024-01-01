@@ -23,11 +23,25 @@
                 }
             }
         },
-        props : {
+        props : {            
             boardType : String,
             userNo : Number,
             randBoardValue : Number,
-            curTimeVal : Number
+            curTimeVal : Number,
+            attachFileList : Array, // (수정폼에서만 쓰임)
+            boardNo : String, // (수정폼에서만 쓰임)
+        },
+        created() {
+            if(this.attachFileList !== null) {
+                for(let i = 0; i < this.attachFileList.length; ++i) {
+                    const file = {
+                        originName : this.attachFileList[i],
+                        displayName : this.$convertAttachFileName(this.attachFileList[i])
+                    };
+
+                    this.fileList.push(file);
+                }
+            }
         },
         methods : {
             async uploadMultipleFile(file) {
@@ -59,6 +73,25 @@
                 }
 		},
             async deleteAttachFile(fileOriginName) {
+                // 기존에 있던 파일인 경우. -> temp폴더가 아닌 이미 pk폴더로 옮겨졌으므로 다르게 요청해야함.
+                if(this.attachFileList !== null) {
+                    for(let i = 0; i < this.attachFileList.length; ++i) {
+                        if(this.attachFileList[i] == fileOriginName) {
+                            const result = await axios.delete(`/api/file/uploadAttachFile/${this.boardNo}/${this.boardType}/${fileOriginName}`);
+                            if(result.data == "OK") {
+                                for(let i = 0; i < this.fileList.length; ++i) {
+                                    if(this.fileList[i].originName == fileOriginName) {
+                                        this.fileList.splice(i,1);
+                                        break;
+                                    }
+                                }
+                            }
+                            return;
+                        }
+                    }
+                }
+
+                // 그 외 새롭게 추가한 파일(서버의 temp에 저장)을 삭제하는경우
                 const result = await axios.delete(`/api/file/uploadAttachFile/${this.boardType}/${fileOriginName}`);
                 if(result.data == "OK") {
                     for(let i = 0; i < this.fileList.length; ++i) {

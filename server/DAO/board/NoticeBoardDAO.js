@@ -11,6 +11,12 @@ let noticeBoardDAO = {
         `
         return query(insertNoticeBoardQuery, noticeVO);
     },
+    updateNoticeBoardQuery : async function(noticeVO, boardNo) {
+        const updateNoticeBoardQuery = `
+            UPDATE notice SET ? WHERE notice_board_no = ?
+        `
+        return query(updateNoticeBoardQuery, [noticeVO, boardNo]);
+    },
     deleteNoticeBoardQuery : async function(pkValue) {
         const deleteNoticeBoardQuery = `
             DELETE FROM notice WHERE notice_board_no = ?
@@ -97,6 +103,7 @@ let noticeBoardDAO = {
             SELECT *
             FROM notice
             WHERE importance_level = 'J1' AND current_date() Between notice_start_date AND notice_end_date
+            ORDER BY created_date DESC
         `
         return query(selectQuery);
     },

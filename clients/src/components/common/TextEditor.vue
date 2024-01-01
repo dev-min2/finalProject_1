@@ -22,18 +22,21 @@
             boardType : String,
             userNo : Number,
             randBoardValue : Number,
-            curTimeVal : Number
+            curTimeVal : Number,
+            html : String // 수정폼인경우에만 유효
         },
         methods : {
             
         },
         mounted() {
             const myThis = this;
+            
             this.editor = new Editor({
                 el: myThis.$refs.editor,
                 height: '600px',
                 initialEditType: 'wysiwyg',
                 previewStyle: 'vertical',
+                initialValue: myThis.html, // 수정폼인경우에만 유효
                 hooks: {
                     // 이미지가 올라오면 해당 이미지가 blob매개변수에 담김
                     addImageBlobHook: async (blob, callback) => {
@@ -41,7 +44,7 @@
                         if(fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png' || fileType == 'gif') {
                             const formData = new FormData();
 
-                            const sendFileName = `${this.boardType}_` + String(this.userNo) + '_' + String(this.randNoticeValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
+                            const sendFileName = `${this.boardType}_` + String(this.userNo) + '_' + String(this.randBoardValue) +'_'+ String(this.curTimeVal) + '_' + (this.descFileCount++) + '_' + blob.name;
                             
                             formData.append('sendFileName',sendFileName);
                             formData.append('board', this.boardType);

@@ -17,7 +17,7 @@
         props : {
             realAttachFileNameList : Array,
             boardType : String,
-            pk : Number
+            pk : String
         },
         created() {
             this.showAttachFileNameList = this.$convertAttachFileNameList(this.realAttachFileNameList);

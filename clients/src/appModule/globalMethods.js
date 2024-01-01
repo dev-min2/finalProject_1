@@ -108,7 +108,6 @@ const methods = {
             return null;
         }
         
-        console.log(attachList);
         let fileNameList = [];        
         for(let i = 0; i < attachList.length; ++i) {
             let startRealFileNameIdx = 0;   
@@ -127,6 +126,25 @@ const methods = {
         }
 
         return fileNameList;
+    },
+    convertAttachFileName(attachFile) {
+        if(attachFile == null || attachFile.length <= 0) {
+            return null;
+        }
+
+        let startRealFileNameIdx = 0;   
+        let underlineCount = 0; // 5개.
+        for(let i = 0; i < attachFile.length; ++i) {
+            if(attachFile[i] === '_') {
+                ++underlineCount;
+            }
+
+            ++startRealFileNameIdx;
+            if(underlineCount >= 5)
+                break;
+        }
+
+        return attachFile.substr(startRealFileNameIdx, attachFile.length);
     }
 }
 
@@ -145,5 +163,6 @@ export default {
         Vue.config.globalProperties.$dateFormat = methods.dateFormat;
         Vue.config.globalProperties.$dateTimeFormat = methods.dateTimeFormat;
         Vue.config.globalProperties.$convertAttachFileNameList = methods.convertAttachFileNameList;
+        Vue.config.globalProperties.$convertAttachFileName = methods.convertAttachFileName;
     }
 }

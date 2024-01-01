@@ -79,4 +79,23 @@ boardRouter.post('/notice-reply', async(req, res) => {
     }
 });
 
+boardRouter.put('/notice', async(req, res) => {
+    const { notice_board_no, noticeBoardInfo, randNoticeValue, curTimeVal } = req.body.param;
+    if(typeof req.session.userNo === "undefined") {
+        res.status(403).send("FAIL");
+        return;
+    }
+
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.modifyNotice(req.session.userNo, 
+                        notice_board_no,randNoticeValue,curTimeVal,noticeBoardInfo);
+        
+        res.send("OK");
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
 module.exports = boardRouter;
