@@ -1,4 +1,7 @@
+const productDAO = require('../DAO/product/ProductDAO');
 const ProductDAO = require('../DAO/product/ProductDAO');
+const ReviewDAO = require('../DAO/user/ReviewDAO');
+const DeliveryDAO = require('../DAO/user/DeliveryDAO');
 
 class ProductService {
     constructor() {
@@ -13,8 +16,41 @@ class ProductService {
     }
 
     async getMyProductList(userNo) {
-        let result = await SellerDAO.getMyProductList(userNo);
+        let result = await ProductDAO.getMyProductList(userNo);
         console.log(result)
+        return result;
+    }
+
+    async uploadProduct(productInfo){
+            let result = await ProductDAO.uploadProduct(productInfo);
+            return result;
+        }
+    //판매자-리뷰조회
+    async getSellerReview(userNo){
+        let result = await ReviewDAO.getSellerReview(userNo);
+        return result;
+    }
+    //판매자-리뷰검색
+    async searchSellerReview(search){
+        let result = await ReviewDAO.searchSellerReview(search);
+        return result;
+    }
+
+    //판매자-리뷰삭제
+    async removeSellerReview(reviewNo){
+        let result = await ReviewDAO.removeSellerReview(reviewNo);
+        return result;
+    }
+
+    //판매자-배송관리
+    async sellerDelivery(userNo){
+        let result = await DeliveryDAO.sellerDelivery(userNo);
+        return result;
+    }
+
+    //판매자-배송관리-회원이름으로 검색
+    async sellerDeliverySearchUserName(userNo,search){
+        let result = await DeliveryDAO.sellerDeliverySearchUserName(userNo,search);
         return result;
     }
 

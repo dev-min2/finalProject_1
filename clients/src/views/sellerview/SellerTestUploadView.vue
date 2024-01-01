@@ -8,13 +8,13 @@
 						<th class="col-md-2">애완동물타입</th>
 						<td class="col-md-4">
 							<select class="form-select" name="petType" v-model="petType" aria-label="Default select example">
-                                <option selected value="dog">강아지</option>
-                                <option value="cat">고양이</option>
+                                <option selected value="d1">강아지</option>
+                                <option value="d2">고양이</option>
 							</select>
 						</td>
 						<th class="col-md-2">카테고리</th>
 						<td class="col-md-4">
-							<select class="form-select" name="categoryNo" aria-label="Default select example">
+							<select class="form-select" name="categoryNo" v-model="productInfo.category_no" aria-label="Default select example">
                                 <optgroup label="사료">
                                     <option value="5">건식사료</option>
                                     <option value="6">습식사료</option>
@@ -39,17 +39,17 @@
 					</tr>
 					<tr>
 						<th>상품명</th>
-						<td colspan="3"><input type="text" name="productName" class="form-control"></td>
+						<td colspan="3"><input type="text" v-model="productInfo.product.name" name="productName" class="form-control"></td>
 					</tr>
 					<tr>
 						<th>상품 상세 정보</th>
-						<td colspan="3"><textarea name="productDetailDesc" class="form-control" ></textarea></td>
+						<td colspan="3"><textarea name="productDetailDesc" class="form-control" v-model="productInfo.product_detail_desc"></textarea></td>
 					</tr>
 					<tr>
 						<th>가격</th>
-						<td><input type="text" name="productPrice" class="form-control"></td>
+						<td><input type="text" name="productPrice" class="form-control" v-model="productInfo.product_price"></td>
 						<th>상품수량</th>
-						<td><input type="number" name="productStock" class="form-control"></td>
+						<td><input type="number" name="productStock" class="form-control" v-model="productInfo.product_stock"></td>
 					</tr>
 					<tr>
 						<th>상품설명</th>
@@ -62,12 +62,12 @@
 					</tr>
 					<tr>
 						<th>메인이미지</th>
-						<td><input ref="prImg" type="file" name="productImage" class="form-control"></td>
+						<td><input ref="prImg" type="file" name="productImage" class="form-control" ></td>
 					</tr>
 					<input type="hidden" ref="deschtml" name="deschtml">
 					<tr>
 						<td colspan="2">
-							<input type="submit" value="저장" class="btn btn-primary"> 
+							<input type="submit" value="저장" class="btn btn-primary" @click="uploadProduct()"> 
 							<input type="reset" value="초기화" class="btn btn-warning">
 						</td>
 					</tr>
@@ -86,9 +86,29 @@ let editor = null;
 export default {
     data() {
         return {
-            petType : 'dog',
+			productInfo:{			
+ 			 product_no : '',
+             pet_type : '',
+             product_name : '',
+             product_price : '',
+             product_detail_desc : '',
+             product_image : '',
+             product_stock : '',
+             category_no : '',
+             product_desc : '',
+             product_public_state : '',
+             user_no : ''
+			},
+
+           
+
         }
     },
+
+	created(){
+		
+	},
+
     methods : {
         async uploadFile() {
             this.$refs.prImg.name = `productImage/${this.petType}`;

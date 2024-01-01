@@ -5,6 +5,8 @@ import SellCharts from '../views/sellerview/SellCharts.vue'
 import ProductResearchBar from '../views/sellerview/ProductResearchBar.vue'
 import sellerMain from '../views/sellerview/sellerMain.vue'
 import SellerProductList from '../views/sellerview/SellerProductList.vue'
+import SellerReviewList from '../views/sellerview/SellerReviewList.vue'
+import SellerDelivery from '../views/sellerview/SellerDelivery.vue'
 
 export default {
     path : '/seller',
@@ -36,6 +38,16 @@ export default {
           path: '/sellerProductList',
           name: 'sellerProductList',
           component : SellerProductList
+        },
+        {
+          path : '/sellerReviewList',
+          name : 'sellerReviewList',
+          component : SellerReviewList
+        },
+        {
+          path : '/sellerDelivery',
+          name : 'sellerDelivery',
+          component : SellerDelivery
         }
     ]
 }

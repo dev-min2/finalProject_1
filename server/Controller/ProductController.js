@@ -45,13 +45,15 @@ productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice',async(req,r
 })
 
 //판매자-내 상품 전체 조회
-productRouter.get('/sellerProductList/:userNo',async(req,res)=>{
+productRouter.get('/SellerProductList/:userNo',async(req,res)=>{
    // let userNo = req.params.userNo;
     const userNo = 1;
  try{
     const productService = new ProductService();
     result = await productService.getMyProductList(userNo);
+    console.log(result);
     res.send(result);
+    
  }
  catch(e){
     console.log(e)
@@ -59,7 +61,93 @@ productRouter.get('/sellerProductList/:userNo',async(req,res)=>{
 })
 
 //판매자-상품 등록
-productRouter.post
+productRouter.post('/uploadProduct',async(req,res)=>{
+    let data=request.body.param
+     
+    try{
+        const productService = new ProductService();
+        result = await productService.uploadProduct(data);
+            res.send(result);
+    }catch(e){
+        console.log(e)
+    }
+})
+
+//판매자 - 리뷰 조회
+productRouter.get('/SellerReviewList/:userNo',async(req,res)=>{
+    // let userNo = req.params.userNo;
+     const userNo = 1;
+  try{
+     const productService = new ProductService();
+     result = await productService.getSellerReview(userNo);
+     console.log(result);
+     res.send(result);
+     
+  }
+  catch(e){
+     console.log(e)
+  }
+ })
+
+ //판매자-리뷰 삭제
+ productRouter.get('/SellerReviewList/:reviewNo',async(req,res)=>{
+     let reviewNo = req.params.reviewNo;
+  try{
+     const productService = new ProductService();
+     result = await productService.removeSellerReview(reviewNo);
+     
+     res.send(result);
+     
+  }
+  catch(e){
+     console.log(e)
+  }
+ })
+
+ //판매자 - 리뷰 검색
+ productRouter.get('/SellerReviewList/:userNo/:search',async(req,res)=>{
+    let search = req.params.search;
+ try{
+    const productService = new ProductService();
+    result = await productService.searchSellerReview(search);
+    
+    res.send(result);
+    
+ }
+ catch(e){
+    console.log(e)
+ }
+})
+
+//판매자 - 배송 조회
+productRouter.get('/SellerDelivery/:userNo',async(req,res)=>{
+    // let userNo = req.params.userNo;
+     const userNo = 1;
+  try{
+     const productService = new ProductService();
+     result = await productService.sellerDelivery(userNo);
+     res.send(result);
+     
+  }
+  catch(e){
+     console.log(e)
+  }
+ })
+
+ //판매자 - 배송 조회-회원이름으로 검색
+productRouter.get('/sellerDeliverySearchUserName/:userNo/:search',async(req,res)=>{
+    // let userNo = req.params.userNo;
+     const userNo = 1;
+  try{
+     const productService = new ProductService();
+     result = await productService.sellerDeliverySearchUserName(userNo,search);
+     res.send(result)
+  }
+  catch(e){
+     console.log(e)
+  }
+ })
+
 
 
 module.exports = productRouter;

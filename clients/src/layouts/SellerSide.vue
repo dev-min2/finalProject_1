@@ -20,11 +20,7 @@
                                     <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
                                 </nav>
                             </div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                리뷰 조회
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
+                            <li class="nav-item"><router-link class="nav-link" to="/SellerReviewList">리뷰 조회</router-link></li>
                             <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
@@ -59,6 +55,7 @@
                             <router-link class="nav-link" to="/upload">업로드테스트</router-link>
                             <li class="nav-item"><router-link class="nav-link" to="/ProductResearchBar">차트테스트</router-link></li>
                             <li class="nav-item"><router-link class="nav-link" to="/SellerProductList">판매상품목록</router-link></li>
+                            <li class="nav-item"><router-link class="nav-link" to="/SellerDelivery">배송 관리</router-link></li>
             
               
                             

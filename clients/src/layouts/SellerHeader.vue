@@ -1,6 +1,6 @@
 <template>
 <div>
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" >
             <!-- Navbar Brand-->
             <router-link class="nav-link" to="/main"><b class="navbar-brand ps-3">디어마이 펫</b></router-link>
                        <!-- Navbar Search-->
