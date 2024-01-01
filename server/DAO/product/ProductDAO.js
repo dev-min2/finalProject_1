@@ -16,8 +16,7 @@ let productDAO = {
     //메인페이지 첫 라인(최신 등록순)
     selectMainpageFirstProductQuery: async function () {
         const selectMainpageFirstProductQuery =
-            `select * from product order by product_registdate limit 0,5
-        `;
+            `select * from product order by product_registdate limit 0,4`;
         return query(selectMainpageFirstProductQuery);
     },
     //메인페이지 두번째라인(리뷰 많은순)
@@ -28,11 +27,20 @@ let productDAO = {
         return query(selectMainpageSecondProductQuery);
     },
     //세번재 라인(별점 높은순)
-    selectMainpageLastProductQuery: async function () {
+    selectMainpageLastProductQuery: async function (ptype) {
         const selectMainpageLastProductQuery =
-            `select * from product order by product_registdate limit 0,5
+            `SELECT p.product_no, p.product_name, p.product_price, p.product_stock, p.category_no, a.avg_cnt
+            FROM
+                (
+                SELECT p.product_no, TRUNCATE(avg(r.star_cnt),0) as avg_cnt 
+                    FROM product AS p
+                    LEFT JOIN review AS r on p.product_no = r.product_no
+                    Group by p.product_no
+                ) as a
+                JOIN product as p on a.product_no = p.product_no
+                WHERE p.pet_type =?
         `;
-        return query(selectMainpageLastProductQuery);
+        return query(selectMainpageLastProductQuery, ptype);
     },
     //키워드 검색 + 펫타입 추가
     selectSearchProductQuery: async function (search, ptype, pageno) {

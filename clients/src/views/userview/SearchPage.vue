@@ -31,7 +31,7 @@
             if (action == "categorySearch") {
                 this.getCategoryProductList(this.$route.query.categoryNo, 1)
             } else {
-                this.getProductList(this.$route.query.keyword, );
+                this.getProductList(this.$route.query.keyword, 1);
             }
         },
         methods: {
@@ -40,15 +40,16 @@
                 const result = await axios.get(
                     `/api/product/search/category?cno=${cno}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
-                console.log(productList);
+                console.log(this.productList);
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
             },
+
             async getProductList(keyword, pageno) {
                 const result = await axios.get(
                     `/api/product/search?q=${keyword}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
-                console.log(productList);
+                console.log(this.productList);
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
             },

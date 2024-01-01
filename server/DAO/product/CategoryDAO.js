@@ -16,8 +16,11 @@ let categoryDAO = {
     },
     //카테고리 상품 가져오기
     selectCategorySearchQuery: async function (cno, ptype, pageno) {
+        console.log(pageno);
         const startpageList = (pageno - 1) * 8;
         const endpageList = pageno * 8;
+        console.log(startpageList);
+        console.log(endpageList);
         const selectCategorySearchQuery =
             `select * from product where category_no=? and pet_type=? order by product_registdate desc
         limit ?,?`;

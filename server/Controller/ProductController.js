@@ -45,6 +45,10 @@ productRouter.get('/search/category', async (req, res) => {
         let data = req.query.cno;
         let ptype = req.query.type;
         let pageno = req.query.pageno;
+        console.log(data);
+        console.log(ptype);
+        console.log(pageno);
+
         const result = await productService.getCategoryProductCnt(data, ptype, pageno);
         console.log(result);
         res.send(result);
