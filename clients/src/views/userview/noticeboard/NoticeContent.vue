@@ -20,11 +20,7 @@
                     </div>
                     <div class="card-footer text-muted">
                         <h5 class="card-title">첨부파일 목록</h5>
-							<ul class="scroll_ul">
-								<li v-for="(attachFile,idx) in showAttachFileNameList" :key="idx">
-									<a href="#" @click="downloadFile(realAttachFileNameList[idx])">{{attachFile}}</a>
-								</li>
-							</ul>
+						<DownloadAttachFile :realAttachFileNameList="realAttachFileNameList" :boardType="'notice'" :pk="boardNo" />
                     </div>
                 </div>
             </div>
@@ -38,11 +34,13 @@
     import '@toast-ui/editor/dist/toastui-editor.css'; // Editor 스타일
     import axios from 'axios'
     import BoardReply from '../../../components/common/BoardReply.vue'
+    import DownloadAttachFile from '../../../components/common/DownloadAttachFile.vue'
 
     let toastViewer = null;
     export default {
         components : {
-            BoardReply
+            BoardReply,
+            DownloadAttachFile
         },
         data() {
             return {
@@ -50,9 +48,7 @@
                 boardInfo : null,
                 noticeReply : null, // 댓글 데이터를 가지는 데이터
                 noticeReplyCount : 0,  // 댓글 갯수
-                showAttachFileNameList : [], // 실제파일 이름이 담긴 첨부파일 리스트
                 realAttachFileNameList : [], // 서버에서 고유한 처리를 위해 변경한 파일이름이 담긴 리스트
-
             }
         },
         async created() {
@@ -75,7 +71,6 @@
                     this.noticeReply = result.data.reply;
                     this.noticeReplyCount = result.data.replyCount;
                     this.realAttachFileNameList = result.data.attachFileList;
-                    this.showAttachFileNameList = this.$convertAttachFileNameList(this.realAttachFileNameList);
                     
                     await axios.put(`/api/board/notice/${this.boardNo}`)
                 }
@@ -104,28 +99,6 @@
                     this.$showFailAlert('댓글등록에 실패했습니다. 사유 : ', result.status);
                 }
             },
-            async downloadFile(attachFileName) {
-                const pkValue = this.boardNo;
-                const boardType = 'notice';
-                const fileName = attachFileName;
-
-                const sendObj = {
-                    boardType : boardType,
-                    pk : pkValue,
-                    fileName : fileName
-                }
-
-                const result = await axios.post(`/api/file/download-file`,sendObj,{headers : {'Content-Type' : 'application/json'}, responseType : 'blob'});
-
-                // 파일처리법
-                const url = window.URL.createObjectURL(new Blob([result.data]));
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            }
         }
     }
 </script>
