@@ -47,7 +47,6 @@ userRouter.put('/mypetform/:petNo', async(req, res)=>{
     try{
         const userService = new UserService();
         let result = await userService.updatePet(data,petNo);
-        console.log('controller',result);
         res.send(result);
     }catch(e){
         console.log(e);

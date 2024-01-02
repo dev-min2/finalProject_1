@@ -16,4 +16,21 @@ productRouter.get('/paymentform/:userNo', async(req, res)=>{
     }
  });
 
+ //결제 완료 처리
+ //(1) 결제 정보 넣기
+ productRouter.post('/paymentform', async(req, res) => {
+    let data = req.body.param;
+    try{
+        const productService = new ProductService();
+        let result 
+            = await productService.completePayment(paymentObj, paymentData, userNo);
+        console.log('ProController 확인!!', result);
+        //res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+ })
+ 
+
 module.exports = productRouter;

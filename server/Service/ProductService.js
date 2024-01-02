@@ -1,4 +1,6 @@
-const paymentDAO = require('../DAO/product/PaymentDAO')
+const paymentDAO = require('../DAO/product/PaymentDAO');
+const paymentProductsDAO = require('../DAO/product/PaymentProductsDAO');
+const { getConnection } = require('../config/dbPool');
 
 class ProductService {
     constructor() {
@@ -10,25 +12,26 @@ class ProductService {
         return result;
 
     }
-
-    //트랜잭션 예시코드임
-    // async completePayment() {
-    //     const connection = await getConnection();
-    //     // 트랜잭션 시작
-    //     try {
-    //         await connection.beginTransaction(); // 트랜잭션 시작
-    //         let result = await paymentDAO.결제정보삽입(data);
-    //         let result2 = await paymentProductsDAO.결제상품들삽입(data);
-    //         let result3 = await MyCartDAO.장바구니삭제(data);
-    //         await connection.commit(); // 트랜잭션 끝(성공)
-    //     }
-    //     catch(e) {
-    //         await connection.rollback(); // 트랜잭션 끝(실패)
-    //     }
-    //     finally {
-    //         connection.release(); // 사용한 커넥션은 다시 풀에 반납
-    //     }
-    // }
+    
+    //결제 완료 처리
+    async completePayment(paymentObj, paymentData, userNo){ 
+        const connection = await getConnection();
+        try{
+            //트랜잭션 시작
+            await connection.beginTransaction(); 
+            let result = await paymentDAO.insertPaymentQuery(paymentObj,connection); //결제정보 삽입
+            let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData,connection); //개별상품결제정보 삽입
+            let result3 = await paymentProductsDAO.deleteCartQuery(userNo,connection); //장바구니 삭제
+            await connection.commit(); //결제처리 성공
+        }
+        catch(e){ 
+            await connection.rollback(); //결제처리 실패
+        }
+        finally {
+            connection.release(); //사용한 커넥션 다시 풀에 반납
+        }
+        
+    }
 }
 
 module.exports = ProductService;

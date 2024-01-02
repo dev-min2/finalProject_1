@@ -7,11 +7,12 @@
                     <span class="text-primary">장바구니</span>
                     <span class="badge bg-primary rounded-pill">{{totalCount}}</span>
                 </h4>
+                <h4>{{selectCartQuery}}</h4>
                 <ul class="list-group mb-3" id="pList">
                     <div :key="i" v-for="(cart, i) in selectCartQuery">
                         <li class="list-group-item d-flex justify-content-between lh-sm">
                             <div>
-                                <input type="hidden" value="${cart.productNo }" class="prInfo"> <!-- productNo캐싱용 -->
+                                <input type="hidden" value="{{cart.product_no}}" class="prInfo"> <!-- productNo캐싱용 -->
                                 <h6 class="my-0">{{cart.product_name}}</h6>
                                 <small class="prSel">{{cart.product_sel_cnt}}</small><small>개</small>
                             </div>
@@ -225,10 +226,8 @@
                 this.$hideLoading();
                 return 1;
             },
-            //총 금액, 총 수량, 배송비
+            //총 금액, 총 수량, 배송비, 
             total() {
-                this.totalPrice = 0;
-                this.totalCount = 0;
                 console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
 
                 for (let i = 0; i< this.selectCartQuery.length; i++){  // 총 금액, 총 수량
@@ -251,13 +250,41 @@
                 }
             },
             //데이터 만들기 테스트용 (html 버튼과 함수 둘 다 삭제할 것!!!)
-            TestBtn: function(){
+            TestBtn: async function(){
                 console.log('홧팅（っ ‘ ᵕ ‘ ｃ）');
                 console.log('쫌만더하고자기: ', this.receiverName, '/', this.receiverAddr,'/', this.receiverPhone,'/' ,this.deliveryRequest );
 
                 //주문품목 테스트
                 console.log('졸리당: ', 
                     this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건');
+                
+                //결제 완료 데이터 처리 테스트
+                let paymentObj = {
+                    param : {
+                        payment_no: this.orderNo, 
+                        user_no: this.userNo, 
+                        my_coupon_no: 2, 
+                        payment_sub_unique_no: '', //this.rsp.imp_uid,
+                        payment_date: this.orderDate , 
+                        payment_amount: this.totalPrice , 
+                        payment_discount_amount: 0 , 
+                        real_payment_amount: this.totalPrice , 
+                        order_state: 'c1',
+                        total_product: this.totalCount , 
+                        total_delivery_fee: this.delivery, 
+                        receiver_phone: this.receiverPhone , 
+                        receiver_name: this.receiverName, 
+                        receiver_addr: this.receiverAddr, 
+                        delivery_request: this.deliveryRequest
+                    }
+                };
+                let paymentData = {
+                    
+                };
+                console.log(paymentObj); 
+                // let result = await axios.post("/api/user/paymentform", paymentObj, paymentData, this.userNo);
+                // console.log('빠샤', result);
+            
             },
              //결제 버튼 클릭
             PaymentBtn: function(){ 
@@ -288,6 +315,7 @@
                     buyer_tel: this.receiverPhone,
                     buyer_addr: this.receiverAddr,
                 };
+            
 
                 //결제 넘기기
                 const myThis = this;
@@ -301,7 +329,7 @@
                             orderDate: myThis.orderDate
                         }
                         //주문 DB저장 여기서 (payment 추가, payment_product 추가, cart 비우기, coupon 상태 업데이트)
-                        
+
                         console.log('결제폼', rsp); //imp_uid, merchant_uid
                         console.log("결제 성공");
                         myThis.$router.push({ name : 'paymentcomplete', query: paymentDetail }); //주문완료 페이지 이동
