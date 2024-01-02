@@ -47,8 +47,6 @@
               <!-- <span class="cart_list_smartstore">{{products.product_desc}}</span>
               <br /> -->
               <span class="price">가격 : {{ products.product_price }}</span>
-              <br />
-              <span class="stock">재고 : {{products.product_stock}}</span>
             </td>
             <td class="cart_list_option">
               <!-- <p>모델명 : {{ products.product_name }}</p> -->

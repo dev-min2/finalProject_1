@@ -35,7 +35,7 @@
   </div>
 </template>
 <script>
-import CartList from "../../components/TestCartList.vue";
+import CartList from "../../components/CartList.vue";
 export default {
   components: { CartList },
 };
