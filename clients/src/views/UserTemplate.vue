@@ -1,6 +1,6 @@
 <template>
     <Header />
-    <router-view />
+    <router-view :key="$route .fullPath"/>
     <Footer />
 </template>
 
@@ -12,6 +12,6 @@ export default {
   components : {
     Footer,
     Header,
-  },
+  }
 }
 </script>

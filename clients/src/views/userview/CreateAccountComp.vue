@@ -150,7 +150,7 @@
             }
         },
         computed : {
-            userPwCheck() {
+            userPwCheck() {                
                 return this.pwCheckReg.test(this.userPw) == true ? true : false;
             }
         },
@@ -172,6 +172,9 @@
                     return;
                 }
                 this.subCodes = result.data;
+                for(let i = 0; i < this.subCodes.length; ++i) {
+                    console.log(this.subCodes[i].sub_code);
+                }
                 let findName = '';
                 if(this.isSeller === "socialjoin") {
                     findName = "일반회원";
@@ -420,7 +423,6 @@
                     this.$showFailAlert('계정 생성에 실패 했습니다.',null);
                 }
                 this.$hideLoading();
-
             }
         },
         watch : {

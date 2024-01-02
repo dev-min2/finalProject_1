@@ -29,8 +29,22 @@ function encryptSHA256(stringData) {
     return sha256(stringData).toString();
 };
 
+function groupBy(data,key) {
+    return data.reduce(function (carry, el) {
+        var group = el[key];
+
+        if (carry[group] === undefined) {
+            carry[group] = []
+        }
+
+        carry[group].push(el)
+        return carry
+    }, {})
+}
+
 module.exports = {
     encryptAES256,
     decryptAES256,
-    encryptSHA256
+    encryptSHA256,
+    groupBy,
 };
