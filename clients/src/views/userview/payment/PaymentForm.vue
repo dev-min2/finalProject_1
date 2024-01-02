@@ -208,6 +208,7 @@
             this.userNo = this.$store.state.userNo;
             await this.getSelectCartQuery();
             this.total();
+            this.orderInfo();
         },
         // watch:{
         //     orderCheck(newValue,oldValue){
@@ -263,11 +264,11 @@
                     param : {
                         payment_no: this.orderNo, 
                         user_no: this.userNo, 
-                        my_coupon_no: 2, 
+                        my_coupon_no: 2, //쿠폰 생성 후에 수정하기
                         payment_sub_unique_no: '', //this.rsp.imp_uid,
                         payment_date: this.orderDate , 
                         payment_amount: this.totalPrice , 
-                        payment_discount_amount: 0 , 
+                        payment_discount_amount: 0 , //쿠폰 생성 후에 수정하기
                         real_payment_amount: this.totalPrice , 
                         order_state: 'c1',
                         total_product: this.totalCount , 
@@ -278,22 +279,29 @@
                         delivery_request: this.deliveryRequest
                     }
                 };
-                let paymentData = {
-                    
-                };
-                console.log(paymentObj); 
+
+                for (let i = 0; i < this.selectCartQuery.length; i++) {
+                    let paymentData = {
+                    param : {
+                        payment_no: this.orderNo, 
+                        product_no: this.selectCartQuery[i].product_no, 
+                        buy_cnt: this.selectCartQuery[i].product_sel_cnt, 
+                        payment_amount: this.selectCartQuery[i].price_sum, 
+                        payment_discount_amount: '', 
+                        real_payment_amount: this.selectCartQuery[i].price_sum, 
+                        delivery_state: 'c1', 
+                        delivery_fee: this.delivery
+                        }
+                    };
+                    console.log(i,'번입니당:',paymentData);
+                }
+
+                console.log('주문전체',paymentObj); 
                 // let result = await axios.post("/api/user/paymentform", paymentObj, paymentData, this.userNo);
                 // console.log('빠샤', result);
             
             },
-             //결제 버튼 클릭
-            PaymentBtn: function(){ 
-                //결제 동의 체크박스 확인
-                if( this.orderCheck == false ) { 
-                        this.$showWarningAlert('결제 동의란을 확인하고 체크해주세요. ');
-                        return;
-                }
-
+            orderInfo(){
                 //주문번호, 주문날짜 , 주문품목 생성 (~포함 총 n건)
                 this.orderNo = String(new Date().getTime()) + this.userNo;
                 this.orderDate = this.$dateFormat(new Date());
@@ -302,6 +310,19 @@
                 } else { 
                     this.orderProduct = this.selectCartQuery[0].product_name; //단건주문
                 }
+
+
+            },
+
+             //결제 버튼 클릭
+            PaymentBtn: function(){ 
+                //결제 동의 체크박스 확인
+                if( this.orderCheck == false ) { 
+                        this.$showWarningAlert('결제 동의란을 확인하고 체크해주세요. ');
+                        return;
+                }
+                
+                this.orderInfo();
 
                 //IMP 결제정보 담기
                 let paymentInfo = {
