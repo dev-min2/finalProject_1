@@ -150,7 +150,7 @@
             }
         },
         computed : {
-            userPwCheck() {
+            userPwCheck() {                
                 return this.pwCheckReg.test(this.userPw) == true ? true : false;
             }
         },
