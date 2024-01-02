@@ -73,8 +73,6 @@
             }
             this.getProductList(sendObject);
             //this.initSellerChart();
-           
-
         },
 
 

@@ -186,10 +186,10 @@ let productDAO = {
             order by p.product_registdate desc limit ?,?`;
         return query(selectNewProductQuery, [ptype, state, startpageList, endpageList]);
     },
-    selectNewProductCntQuery : async function(ptype){
+    selectNewProductCntQuery: async function (ptype) {
         const state = 'i1';
         const selectNewProductCntQuery =
-        `select count(*) as cnt from product where pet_type=? and product_public_state=?`;
+            `select count(*) as cnt from product where pet_type=? and product_public_state=?`;
         return query(selectNewProductCntQuery, [ptype, state]);
     },
     //베스트상품
@@ -210,10 +210,10 @@ let productDAO = {
             order by cnt desc limit ?,?`;
         return query(selectBestProductQuery, [ptype, state, startpageList, endpageList]);
     },
-    selectBestProductCntQuery : async function(ptype){
+    selectBestProductCntQuery: async function (ptype) {
         const state = 'i1';
         const selectBestProductCntQuery =
-        `select count(*) as cnt from product where pet_type=? and product_public_state=?`;
+            `select count(*) as cnt from product where pet_type=? and product_public_state=?`;
         return query(selectBestProductCntQuery, [ptype, state]);
     },
     //추천상품
@@ -232,12 +232,12 @@ let productDAO = {
                     join product p on a.product_no = p.product_no
                     where p.pet_type=? and p.product_public_state=?
                     order by a.avg_cnt desc limit ?,?`;
-        return query(selectRecProductQuery, [ptype, state,startpageList, endpageList]);
+        return query(selectRecProductQuery, [ptype, state, startpageList, endpageList]);
     },
-    selectRecProductCntQuery : async function(ptype){
+    selectRecProductCntQuery: async function (ptype) {
         const state = 'i1';
         const selectRecProductCntQuery =
-        `select count(*) as cnt from product where pet_type=? and product_public_state=?`;
+            `select count(*) as cnt from product where pet_type=? and product_public_state=?`;
         return query(selectRecProductCntQuery, [ptype, state]);
     },
 };
