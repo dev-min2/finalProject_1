@@ -3,11 +3,76 @@ const userRouter = express.Router();
 
 const UserSevice = require('../Service/UserSevice');
 
+//마이페이지-내 반려동물관리
+userRouter.get('/mypetinfo/:userNo', async(req,res)=>{ //전체조회
+    let userNo = req.params.userNo;
+    try{
+        const userService = new UserService();
+        let result = await userService.getPetList(userNo);
+        //console.log('test',result);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+});
+
+userRouter.get('/mypetform/:petNo', async(req,res)=>{ //단건조회
+    let petNo = req.params.petNo;
+    try{
+        const userService = new UserService();
+        let result = await userService.getPetInfo(petNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+});
+
+userRouter.post('/mypetform', async(req, res)=>{
+    let data = req.body.param;
+    try{
+        const userService = new UserService();
+        let result = await userService.createPet(data);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+})
+
+userRouter.put('/mypetform/:petNo', async(req, res)=>{
+    let data = req.body.param;
+    let petNo = req.params.petNo;
+    console.log(req.body,req.params);
+    try{
+        const userService = new UserService();
+        let result = await userService.updatePet(data,petNo);
+        console.log('controller',result);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+})
+
+userRouter.delete('/mypetinfo/:petNo', async(req, res)=>{
+    let data = req.params.petNo;
+    try{
+        const userService = new UserService();
+        let result = await userService.deletePet(data);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+
+})
+
+//user 기본기능
 userRouter.post('/join', async(req,res) =>{
     let user = req.body.user;
+    let sns = req.body.sns;
     try {
         const userService = new UserSevice();
-        let result = await userService.createUser(user);
+        let result = await userService.createUser(user,sns);
         res.send(result);
     }
     catch(e) {
@@ -26,7 +91,6 @@ userRouter.post('/checkId', async (req, res) => {
         console.log(e);
     }
 })
-
 
 userRouter.post('/login', async(req,res) =>{
     let user = req.body.user;
@@ -53,6 +117,53 @@ userRouter.get('/logout', async(req,res) => {
             res.status(200).send("OK");
         }
     })
+})
+
+userRouter.post('/email-auth', async(req, res) => {
+    let email = req.body.email;
+    console.log(email);
+    try {
+        const userService = new UserSevice();
+        let result = await userService.createEmailAuthInfo(email);
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
+userRouter.post('/email-auth/confirm', async(req, res) => {
+    let { email, authcode } = req.body;
+    try {
+        const userService = new UserSevice();
+        let result = await userService.confirmEmailAuth(email,authcode);
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
+userRouter.post('/forgot-account', async(req, res) => {
+    let forgotInfo = req.body.forgotInfo;
+    try {
+        const userService = new UserService();
+        let result = await userService.sendForgotAccountInfoMail(forgotInfo);
+        if(result === "일치하는 회원이 없음") {
+            res.status(500).send("일치하는 회원이 없음");
+            return;
+        }
+
+        if(result) {
+            res.status(200).send("OK");
+        }
+        else {
+            res.status(500).send("FAIL");
+        }
+    }
+    catch(e) {
+        console.log(e);
+    }
 })
 
 // 파일 업로드 테스트용 코드
@@ -115,6 +226,7 @@ userRouter.post('/upload', upload.single('image'), (req, res) => {
 // 실제 게시글 등록
 
 const multer2 = require('multer'); 
+const UserService = require('../Service/UserSevice');
 const storage2 = multer2.diskStorage({
     destination: function (req, file, cb) {
         let folderName = '';

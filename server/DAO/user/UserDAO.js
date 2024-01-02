@@ -4,7 +4,7 @@ const userDAO = {
     selectUserIdQuery : async function(userId) {
         const selectUserIdQuery = `
             SELECT user_id
-                FROM user_tbl
+                FROM user
                 WHERE user_id = ?
         `;
         return query(selectUserIdQuery, userId);
@@ -12,19 +12,46 @@ const userDAO = {
 
     insertUserQuery : async function(userObj) {
         const insertUserQuery = `
-            INSERT INTO user_tbl SET ?
+            INSERT INTO user SET ?
         `;
         return query(insertUserQuery, userObj);
     },
 
     selectUserQuery : async function(userId, userPw) {
         const selectUserQuery = `
-            SELECT user_no
-                FROM user_tbl
+            SELECT user_no, user_permission
+                FROM user
                 WHERE user_id = ? AND user_pw = ?
         `;
 
         return query(selectUserQuery, [userId, userPw]);
+    },
+    selectForgotIDQuery : async function(user_name, user_email) {
+        const selectForgotIDQuery = `
+        SELECT A.user_id, DATE_FORMAT(A.user_joindate, '%Y-%m-%d') as user_joindate
+            FROM user AS A
+            LEFT JOIN sns_login AS B ON A.user_no = B.user_no
+            WHERE B.user_no IS NULL AND A.user_name = ? AND A.user_email = ?
+        `;
+
+        return query(selectForgotIDQuery,[user_name, user_email]);
+    },
+    selectForgotPWQuery : async function(user_id, user_email) {
+        const selectForgotPWQuery = `
+            SELECT user_no
+                FROM user
+                WHERE user_id = ? AND user_email = ?
+        `;
+
+        return query(selectForgotPWQuery,[user_id, user_email]);
+    },
+    updateResetPWQuery : async function(user_pw, user_id, user_email) {
+        console.log(user_pw);
+        const updateResetPWQuery = `
+            UPDATE user SET user_pw = ? WHERE user_id = ? AND user_email = ?
+        `;
+
+        return query(updateResetPWQuery,[user_pw,user_id,user_email]);
     },
 
     //테스트용 지워야함
