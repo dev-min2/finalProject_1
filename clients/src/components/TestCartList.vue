@@ -11,13 +11,13 @@
               type="checkbox" 
               name="company"
               id="allcheck" 
-              v-model="allcheck"
+              v-model="companyChecked[idx]"
               @change="checkComp($event.target.checked, companyIndex, idx)"
               />
               </td>
-            <td colspan="2">상품이미지</td>
-            <td>상품정보</td>
-            <td>옵션</td>
+            <td>상품이미지</td>
+            <td class="fixedcol1">상품정보</td>
+            <td class="fixedcol2">옵션</td>
             <td>상품금액</td>
           </tr>
         </thead>
@@ -35,7 +35,7 @@
                 @change="checkProd($event.target, products, idx)"
               />
             </td>
-            <td>
+            <!-- <td>
               <input
                 type="checkbox"
                 name="pno"
@@ -43,20 +43,22 @@
                 style="display: none"
               />
               
-            </td>
+            </td> -->
             <td>
+              <!-- <a href=""><img :src=`$store.state.curIp/dog/product.product_image` style="width:100px" /></a> -->
               <a href=""><img src="../assets/logo.png" style="width:100px" /></a>
             </td>
             <td>
-              <a href="">상품설명</a
-              ><span class="cart_list_smartstore">스마트스토어</span>
+              <a href="">{{products.product_name}}</a>
               <br />
+              <!-- <span class="cart_list_smartstore">{{products.product_desc}}</span>
+              <br /> -->
               <span class="price">가격 : {{ products.product_price }}</span>
               <br />
               <span class="stock">재고 : {{products.product_stock}}</span>
             </td>
             <td class="cart_list_option">
-              <p>모델명 : {{ products.product_name }}</p>
+              <!-- <p>모델명 : {{ products.product_name }}</p> -->
               <p>선택수량 : {{ products.product_sel_cnt }}</p>
               <input
                 type="button"
@@ -74,7 +76,7 @@
                 type="button"
                 value="상품 삭제"
                 class="cart_list_optionbtn"
-                @click="delfunction(products,cartList[companyIndex],idx)"
+                @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
               />
             </td>
             <td>
@@ -85,11 +87,10 @@
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="3"></td>
-            <td><h4>체크된 상품금액 합계 : {{companyPriceList[idx]}}원</h4></td>
             <td></td>
             <td></td>
             <td></td>
+            <td colspan="2"><h4>상품금액 합계 : {{companyPriceList[idx]}}원</h4></td>
           </tr>
           <br>
           <br>
@@ -115,7 +116,7 @@ export default {
       companyChecked : [],
       companyPriceList : [],
 
-      allcheck: false
+      //allcheck: false
     };
   },
   created() {
@@ -135,13 +136,15 @@ export default {
                         .get(`/api/user/carts/${this.$store.state.userNo}`)
                         .catch(err => console.log(err));
       this.cartList = result.data;
+      if(result.data.length <= 0){
+        this.$showWarningAlert('장바구니가 비었습니다.');
+      }
       this.cartList = this.groupBy(this.cartList, 'company_name');
-      
+      console.log(result.data);
       for(const object in this.cartList) {
           object;
           this.companyPriceList.push(0);
       }
-
       console.log(this.cartList);
       this.$hideLoading();
     },
@@ -196,7 +199,7 @@ export default {
       }
     },
     //상품삭제
-    async delfunction(products, companyPrArray, idx){
+    async delfunction(products, companyPrArray, idx, companyIndex){
       this.$showLoading();
       let result = await axios  
                             .delete(`/api/user/carts/${this.$store.state.userNo}/${products.product_no}`)
@@ -208,8 +211,12 @@ export default {
       
       for(let i=0; i< companyPrArray.length; i++){
         if(companyPrArray[i].product_no == products.product_no){
-            companyPrArray.splice(i,1);
-          break;
+            if(companyPrArray.length == 1) {
+              delete this.cartList[companyIndex];
+            }
+            else 
+              companyPrArray.splice(i,1);
+            break;
         }
       }  
       }
@@ -241,17 +248,19 @@ export default {
     //그룹별
     checkComp(checked, companyIndex, idx){
       if(checked) {
-      this.allcheck = checked;
+      //this.allcheck = checked;
           const productArray = this.cartList[companyIndex];
           let sum = 0;
           for(let i = 0; i < productArray.length; ++i) {
-            sum += productArray[i].product_price * productArray[i].product_sel_cnt;
-            this.cartList[companyIndex][i].selected = this.allcheck;
+            if(!this.cartList[companyIndex][i].selected) {
+              sum += productArray[i].product_price * productArray[i].product_sel_cnt;
+              this.cartList[companyIndex][i].selected = true;
+            }
           }
-         
+
           // console.log(sum);
           // console.log(idx);
-          this.companyPriceList[idx] = sum;
+          this.companyPriceList[idx] += sum;
           this.checkedPrice += sum;
           
       }
@@ -297,6 +306,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   font-size: 14px;
+  /* table-layout: fixed; */
 }
 thead {
   text-align: center;
@@ -304,6 +314,12 @@ thead {
 }
 tbody {
   font-size: 12px;
+}
+td.fixedcol1{
+  width: 450px;
+}
+td.fixedcol2{
+  width: 400px;
 }
 td {
   padding: 15px 0px;
