@@ -5,7 +5,8 @@ const ProductService = require("../Service/ProductService");
 productRouter.get('/main', async (req, res) => {
     try {
         const productService = new ProductService();
-        let result = await productService.getMainpageProductList();
+        let ptype = req.query.type;
+        let result = await productService.getMainpageProductList(ptype);
         console.log(result);
         res.send(result);
     } catch (e) {

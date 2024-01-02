@@ -8,13 +8,15 @@ class ProductService {
     }
     // 상품리스트 가져오기
     async getMainpageProductList(ptype) {
-        let result = await productDAO.selectMainpageFirstProductQuery();
-        return result;
+        let result = await productDAO.selectMainpageFirstProductQuery(ptype);
         let result2 = await productDAO.selectMainpageSecondProductQuery(ptype);
-        return result2;
         let result3 = await productDAO.selectMainpageLastProductQuery(ptype);
-        return result3;
+        
+        let resResult = [
+            result,result2,result3
+        ];
 
+        return resResult;
     }
     //검색한 상품리스트
     async getSearchProductList(search, ptype, pageno) {
