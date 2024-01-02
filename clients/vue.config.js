@@ -4,7 +4,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave : false,
   devServer : {
-    port : 8081,
+    port : 8080,
     proxy : {
       '/api' : {
         target,
