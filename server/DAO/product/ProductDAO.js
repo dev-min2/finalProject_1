@@ -65,9 +65,8 @@ let productDAO = {
     selectSearchProductQuery: async function (search, ptype, pageno) {
         const searchquery = "%" + search + "%";
         const startpageList = (pageno - 1) * 8;
-        const endpageList = pageno * 8;
+        const endpageList = 8;
         const state = 'i1';
-        const limit = 4;
         const selectSearchProductQuery =
             `select p.product_no, p.product_name, p.product_image, p.pet_type,p.product_price, p.product_registdate, p.product_stock, p.category_no, cnt, a.avg_cnt
             from
@@ -77,8 +76,10 @@ let productDAO = {
             ) as a
             join product as p on a.product_no = p.product_no
             where p.product_name like ? and p.pet_type=? and p.product_public_state=?
-            order by p.product_registdate desc limit ?`;
-        return query(selectSearchProductQuery, [searchquery, ptype, startpageList, endpageList, state, limit]);
+            order by p.product_registdate desc
+            limit ?,?
+            `;
+        return query(selectSearchProductQuery, [searchquery, ptype, state, startpageList, endpageList]);
     },
     //검색에 대한 결과 개수
     selectSearchProductCntQuery: async function (search, ptype) {

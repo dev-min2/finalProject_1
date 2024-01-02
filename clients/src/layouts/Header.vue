@@ -67,7 +67,7 @@ g<template>
                 <a class="dropdown-item dropdown-toggle" href="#">{{ category[0].parent_category_name }}</a>
                 <ul class="dropdown-menu">
                   <li v-for="(category2, idx2) in categoryList[idx]" :key="idx2"><a class="dropdown-item"
-                      href="#"  @click="getCategorySearch(category2.children_no)" >{{ category2.children_category_name}}</a></li>
+                      href="#"  @click="getCategorySearch(category2.children_no,category2.children_category_name)" >{{ category2.children_category_name}}</a></li>
                 </ul>
               </li>
             </ul>
@@ -127,7 +127,6 @@ g<template>
     },
     created() {
       this.getCategoryData();
-      //this.getCategorySearch();
 
     },
     methods: {
@@ -149,13 +148,11 @@ g<template>
         }
 
         this.categoryList = groupBy(this.categoryList, "parent_no");
-        console.log(this.categoryList);
 
       },
-      async getCategorySearch(cno) {
+      async getCategorySearch(cno, category_name) {
         // 카테고리넘버
-        console.log(cno);
-        this.$router.push({path : '/search', query : { categoryNo : cno, action : "categorySearch"} })
+        this.$router.push({path : '/search', query : { categoryNo : cno, action : "categorySearch", category_name : category_name} })
       },
       searchshow(keyword) {
         if (keyword !== '') {

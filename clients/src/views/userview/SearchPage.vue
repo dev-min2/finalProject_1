@@ -1,8 +1,8 @@
 <template>
     <section class="py-3">
         <div>
-            <h3 class="text-center">{{ }}에 대한 검색 결과는</h3>
-            <h3 class="text-center"> {{  }} 건 입니다.</h3>
+            <h3 class="text-center">{{ keyword }}에 대한 검색 결과는</h3>
+            <h3 class="text-center" v-if="page !== null"> {{ page.total }} 건 입니다.</h3>
         </div>
         <div class="container px-4 px-lg-5 mt-5">
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
@@ -26,25 +26,26 @@
         data() {
             return {
                 productList: [],
-                page: null
+                page: null,
+                keyword : '',
             }
         },
         created() {
             let action = this.$route.query.action;
-
+            
             if (action == "categorySearch") {
                 this.getCategoryProductList(this.$route.query.categoryNo, 1)
+                this.keyword = this.$route.query.category_name;
             } else {
+                this.keyword = this.$route.query.keyword;
                 this.getProductList(this.$route.query.keyword, 1);
             }
         },
         methods: {
             async getCategoryProductList(cno, pageno) {
-                console.log(cno, pageno);
                 const result = await axios.get(
                     `/api/product/search/category?cno=${cno}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
-                console.log(this.productList);
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
             },
@@ -53,7 +54,6 @@
                 const result = await axios.get(
                     `/api/product/search?q=${keyword}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
-                console.log(this.productList);
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
             },

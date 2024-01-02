@@ -64,11 +64,9 @@
         let result = await axios
           .get(`/api/product/main?type=${this.$store.state.curShowPetType}`)
           .catch((err) => console.log(err));
-          console.log(result);
         this.productList = result.data[0];
         this.productList2 = result.data[1];
         this.productList3 = result.data[2];
-        
         this.$hideLoading();
       },
     },
