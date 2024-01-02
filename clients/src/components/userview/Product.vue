@@ -1,18 +1,27 @@
 <template>
   <div>
-          <div class="col mb-5">
+          <div class="col mb-5" style="height:433px;">
             <div class="card h-100">
               <!-- Product image-->
               <div class="hoverImg">
-                <img class="card-img-top" src="../../assets/products/dog/ANF 치킨야채 캔 95g.png" alt="..." />
+                <img class="card-img-top" alt="..." v-if="product.pet_type == 'd1'" :src="$store.state.prImg + `dog/` + product.product_image"  />
+                <img class="card-img-top" alt="..." v-else :src="$store.state.prImg + `cat/` + product.product_image"  />
+                
               </div>
               <!-- Product details-->
-              <div class="card-body p-4">
+              <div class="card-body p-4" style="padding:0;">
                 <div class="text-center">
                   <!-- Product name-->
                   <h5 class="fw-bolder">{{product.product_name}}</h5>
                   <!-- Product price-->
-                  {{product.product_price}}
+                  <p>{{product.product_price}}원</p>
+                  <br>
+                  <p v-if="product.avg_cnt !== null">
+                    {{ '★'+ product.avg_cnt }}{{ '(' + product.cnt + ')' }}
+                  </p>
+                  <p v-else>
+                    {{ '★0.0' }}{{ '(' + product.cnt + ')' }}
+                  </p>
                 </div>
               </div>
               <!-- Product actions-->

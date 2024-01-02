@@ -18,9 +18,9 @@ let productDAO = {
         const state = 'i1';
         const limit = 4;
         const selectMainpageFirstProductQuery =
-            `select p.product_no, p.product_name, p.product_price, p.product_registdate, p.product_stock, p.category_no, cnt
+            `select p.product_no, p.product_name, p.product_image, p.pet_type, p.product_price, p.product_registdate, p.product_stock, p.category_no, cnt, a.avg_cnt
             from
-            (select p.product_no, count(review_no) as cnt
+            (select p.product_no, count(review_no) as cnt, truncate(avg(r.star_cnt),1) as avg_cnt 
             from product p left join review r on p.product_no = r.product_no
             group by p.product_no
             ) as a
@@ -34,9 +34,9 @@ let productDAO = {
         const state = 'i1';
         const limit = 4;
         const selectMainpageSecondProductQuery =
-            `select p.product_no, p.product_name, p.product_price, p.product_stock, p.category_no, cnt
+            `select p.product_no, p.product_name, p.product_image, p.pet_type, p.product_price, p.product_stock, p.category_no, cnt, a.avg_cnt
             from 
-            (select p.product_no, count(review_no) as cnt
+            (select p.product_no, count(review_no) as cnt, truncate(avg(r.star_cnt),1) as avg_cnt 
             from product p left join review r on p.product_no = r.product_no
             group by p.product_no
             ) as a
@@ -50,7 +50,7 @@ let productDAO = {
         const state = 'i1';
         const limit = 4;
         const selectMainpageLastProductQuery =
-            `select p.product_no, p.product_name , p.product_price, p.product_stock, p.category_no, a.avg_cnt, cnt
+            `select p.product_no, p.product_name ,p.product_image, p.pet_type, p.product_price, p.product_stock, p.category_no, a.avg_cnt, cnt
             from
                 (select p.product_no, count(star_cnt) as cnt, truncate(avg(r.star_cnt),1) as avg_cnt 
                     from product p left join review r on p.product_no = r.product_no
@@ -66,10 +66,19 @@ let productDAO = {
         const searchquery = "%" + search + "%";
         const startpageList = (pageno - 1) * 8;
         const endpageList = pageno * 8;
+        const state = 'i1';
+        const limit = 4;
         const selectSearchProductQuery =
-            `select * from product where product_name like ? and pet_type=? order by product_registdate desc
-            limit ?, ?`;
-        return query(selectSearchProductQuery, [searchquery, ptype, startpageList, endpageList]);
+            `select p.product_no, p.product_name, p.product_image, p.pet_type,p.product_price, p.product_registdate, p.product_stock, p.category_no, cnt, a.avg_cnt
+            from
+            (select p.product_no, count(review_no) as cnt, truncate(avg(r.star_cnt),1) as avg_cnt 
+            from product p left join review r on p.product_no = r.product_no
+            group by p.product_no
+            ) as a
+            join product as p on a.product_no = p.product_no
+            where p.product_name like ? and p.pet_type=? and p.product_public_state=?
+            order by p.product_registdate desc limit ?`;
+        return query(selectSearchProductQuery, [searchquery, ptype, startpageList, endpageList, state, limit]);
     },
     //검색에 대한 결과 개수
     selectSearchProductCntQuery: async function (search, ptype) {

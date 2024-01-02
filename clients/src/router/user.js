@@ -13,6 +13,7 @@ import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
+import SearchPage from '../views/userview/SearchPage.vue'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
@@ -84,6 +85,11 @@ export default {
           path: "/forgot-account/:forgot",
           name: "forgotAccount",
           component : ForgotAccountComp
+        },
+        {
+          path: '/search',
+          name: 'searchPage',
+          component: SearchPage
         },
         {
           path: "/notice",
