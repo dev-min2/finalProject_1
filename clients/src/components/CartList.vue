@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <template
-      v-for="(company, companyIndex, idx) in cartList" :key="companyIndex">
+      v-for="(company, companyIndex, idx) in cartList" :key="idx">
       <h2>업체명 : {{company[0].company_name}}</h2>
       <table class="cart_list">
         <thead>
@@ -32,7 +32,7 @@
                 value="products.product_price"
                 id="products.product_no"
                 v-model="products.selected"
-                @change="checkProd($event.target, products, idx)"
+                @change="checkProd($event.target, products, idx, companyIndex)"
               />
             </td>
             <td>
@@ -44,12 +44,9 @@
             <td>
               <a href="">{{products.product_name}}</a>
               <br />
-              <!-- <span class="cart_list_smartstore">{{products.product_desc}}</span>
-              <br /> -->
               <span class="price">가격 : {{ products.product_price }}</span>
             </td>
             <td class="cart_list_option">
-              <!-- <p>모델명 : {{ products.product_name }}</p> -->
               <p>선택수량 : {{ products.product_sel_cnt }}</p>
               <input
                 type="button"
@@ -90,7 +87,7 @@
       </table>
     </template>
     <td class="total">
-      <h4 v-if="cartList.length > 0">총 결제 금액 : {{checkedPrice}}</h4>
+      <h4 v-if="cartList && Object.keys(cartList).length > 0">총 결제 금액 : {{checkedPrice}}</h4>
       <h4 v-else style="text-align : center">장바구니가 비어있습니다.</h4>
     </td>
   </div>
@@ -109,8 +106,6 @@ export default {
 
       companyChecked : [],
       companyPriceList : [],
-
-      //allcheck: false
     };
   },
   created() {
@@ -134,24 +129,22 @@ export default {
         this.$showWarningAlert('장바구니가 비었습니다.');
       }
       this.cartList = this.groupBy(this.cartList, 'company_name');
-      console.log(result.data);
+      
       for(const object in this.cartList) {
           object;
           this.companyPriceList.push(0);
       }
-      console.log(this.cartList);
       this.$hideLoading();
     },
     //상품선택수량증가
     async upfunction(products, idx){
-      console.log(products);
-      console.log(idx);
+     
       this.$showLoading();
       let result = await axios
                         .put(`/api/user/carts/${products.product_no}/up`)
                         .catch(err => console.log(err));
       this.$hideLoading();
-      console.log(result.data);
+
       if(result.data == "알림"){
         this.$showWarningAlert('재고보다 많은 수량을 선택했습니다.');
         return;
@@ -160,26 +153,18 @@ export default {
         products.product_sel_cnt++;
         if(products.selected){
           this.checkedPrice += products.product_price;
-          console.log(this.companyPriceList);
-          console.log(this.companyPriceList[idx]);
           this.companyPriceList[idx] += products.product_price ;          
         }
-       
       }
-      // if(target.checked){
-      //   this.checkedPrice += products.product_price;
-      //   this.companyPriceList[idx] += products.product_price * products.product_sel_cnt ;
-      // }
     },
     //상품선택수량감소
     async downfunction(products, idx){
-      console.log(products);
+     
       this.$showLoading();
       let result = await axios
                           .put(`/api/user/carts/${products.product_no}/down`)
                           .catch(err => console.log(err));
       this.$hideLoading();
-      console.log(result.data);
       if(result.data == "알림"){
         this.$showWarningAlert('상품을 1개 이상 선택해주세요.');
         return;
@@ -199,7 +184,6 @@ export default {
                             .delete(`/api/user/carts/${this.$store.state.userNo}/${products.product_no}`)
                             .catch(err => console.log(err));
       this.$hideLoading();
-      console.log(result.data);
       if(result.data.affectedRows > 0){
         this.$showSuccessAlert("상품이 삭제되었습니다.");
       
@@ -215,35 +199,44 @@ export default {
       }  
       }
       if(products.selected){
-      console.log(companyPrArray);
-      console.log(idx);
         this.checkedPrice -= products.product_price * products.product_sel_cnt;
         this.companyPriceList[idx] -= products.product_price * products.product_sel_cnt ;
       }  
     },
     //체크박스
     //상품별
-    checkProd(target, products,idx){
+    checkProd(target, products,idx,companyIndex){
       if(target.checked) {
         this.companyPriceList[idx] += products.product_price * products.product_sel_cnt ;
-        this.checkedPrice += products.product_price * products.product_sel_cnt ;
+        this.checkedPrice += products.product_price * products.product_sel_cnt;
+
+        const productArray = this.cartList[companyIndex];
+        let isAllCheck = true;
+        for(let i = 0; i < productArray.length; ++i) {
+          if(!this.cartList[companyIndex][i].selected) {
+            isAllCheck = false;
+            break;
+          }
+        }
+
+        if(isAllCheck && !this.companyChecked[idx]) {
+          this.companyChecked[idx] = true;
+        }
       }
       else {
-        this.allcheck = false;
         this.companyPriceList[idx] -= products.product_price * products.product_sel_cnt;
-        this.checkedPrice -= products.product_price * products.product_sel_cnt ;
+        this.checkedPrice -= products.product_price * products.product_sel_cnt;
+
+        if(this.companyChecked[idx]) {
+          this.companyChecked[idx] = false;
+        }
         return;
       }
-      console.log(target);
-      console.log(this.cartList);
-
-     
     },
     //그룹별
     checkComp(checked, companyIndex, idx){
+      const productArray = this.cartList[companyIndex];
       if(checked) {
-      //this.allcheck = checked;
-          const productArray = this.cartList[companyIndex];
           let sum = 0;
           for(let i = 0; i < productArray.length; ++i) {
             if(!this.cartList[companyIndex][i].selected) {
@@ -251,34 +244,20 @@ export default {
               this.cartList[companyIndex][i].selected = true;
             }
           }
-
-          // console.log(sum);
-          // console.log(idx);
           this.companyPriceList[idx] += sum;
           this.checkedPrice += sum;
-          
       }
-      else {
-          const productArray = this.cartList[companyIndex];
+      else { // 그룹별 체크가 풀린상태. (기존에 풀린건 냅두고, 선택된것만 풀어야함.)
           let sum = 0;
           for(let i = 0; i < productArray.length; ++i) {
-            sum += productArray[i].product_price * productArray[i].product_sel_cnt;
-            this.cartList[companyIndex][i].selected = false;
+            if(this.cartList[companyIndex][i].selected) {
+              sum += productArray[i].product_price * productArray[i].product_sel_cnt;
+              this.cartList[companyIndex][i].selected = false;
+            }
           }
           this.companyPriceList[idx] = 0;
           this.checkedPrice -= sum;
       }
-      
-      // for(let i in this.cartList[companyIndex]){
-      //     let item = this.cartList[companyIndex][i]; 
-      //     if(this.checkProd != checked){  
-      //      if(checked){
-      //         this.companyPrice += item.product_price * item.product_sel_cnt;
-      //        return;
-      //       }this.companyPrice -= item.product_price * item.product_sel_cnt;
-      //       return;
-      //     }
-      //   }
     },
     //함수
     groupBy: function(data, key){
@@ -294,7 +273,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 table {
   border-top: solid 1.5px black;
   border-collapse: collapse;
