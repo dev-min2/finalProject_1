@@ -13,7 +13,14 @@ let paymentDAO = {
         WHERE c.user_no = ?`;
 
         return query(selectCartQuery, userNo);
-    }
+    },
+    //결제완료 후 결제 테이블에 정보 넣기
+    insertPaymentQuery : async function(orderObj){
+        const insertPaymentQuery = 
+            `INSERT INTO payment SET =?`;
+        return query (insertPaymentQuery, orderObj);
+    },
+
 };
 
 module.exports = paymentDAO;
