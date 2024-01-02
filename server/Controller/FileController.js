@@ -1,6 +1,7 @@
 // 파일처리를 위한 컨트롤러
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const multipart = require('connect-multiparty')
 const fileRouter = express.Router();
 
@@ -108,6 +109,33 @@ fileRouter.delete('/uploadAttachFile/:boardType/:fileName', async(req, res) => {
         });
     }
 });
+
+// 첨부파일 삭제요청. 수정폼에서 삭제요청인 경우 temp폴더가 아닌 pk폴더로 가야함.
+fileRouter.delete('/uploadAttachFile/:pk/:boardType/:fileName', async(req, res) => {
+    const { pk, boardType, fileName } = req.params;
+    const filePath = __dirname + `/../uploads/${boardType}/${pk}/${fileName}`;
+    fs.unlink(filePath, (err) => {
+        if(err) {
+            console.log(err);
+            res.status(500).send("Fail");
+            return;
+        }
+
+        res.status(200).send("OK");
+    });
+});
+
+fileRouter.post('/download-file', async(req, res) => {
+    const { boardType, pk, fileName } = req.body;
+
+    const filePath = __dirname + `/../uploads/${boardType}/${pk}/${fileName}`;
+    res.download(filePath, fileName, (err) => {
+        if(err) {
+            console.log(err);
+            res.status(500).send("FAIL");
+        }
+    });
+})
 
 
 fileRouter.post('/notice/regist', async(req, res) => {

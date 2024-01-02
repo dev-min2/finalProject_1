@@ -9,7 +9,7 @@ const store = createStore({
     plugins : [
         createPersistedState({
             storage: window.sessionStorage,
-            paths : ['userNo','curShowPetType','testData','curIp','socialId','accessToken','userPermission'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
+            paths : ['userNo','curShowPetType','testData','curIp','socialId','accessToken','userPermission','prImg'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
         })
     ],
     state() {
@@ -22,6 +22,7 @@ const store = createStore({
             accessToken : '',
             refreshToken : '',
             userPermission : '',
+            prImg : 'http://localhost:12532/uploads/productImage/'
         }
     },
     getters : {
