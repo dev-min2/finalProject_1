@@ -243,17 +243,15 @@
                 }else {
                      this.selectPayment = 'tosspay';
                 }
-                console.log('function',this.selectPayment);
             },
             //데이터 만들기 테스트용 (html 버튼과 함수 둘 다 삭제할 것!!!)
             TestBtn: function(){
                 console.log('홧팅（っ ‘ ᵕ ‘ ｃ）');
-                console.log(this.receiverName, '/', this.receiverAddr,'/', this.receiverPhone,'/' ,this.deliveryRequest );
+                console.log('쫌만더하고자기: ', this.receiverName, '/', this.receiverAddr,'/', this.receiverPhone,'/' ,this.deliveryRequest );
 
                 //주문품목 테스트
                 console.log('졸리당: ', 
                     this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건');
-                console.log('쫌만더하고자기: ', this.orderProduct);
 
             },
              //결제 버튼 클릭
@@ -263,20 +261,18 @@
                         this.$showWarningAlert('결제 동의란을 확인하고 체크해주세요. ');
                         return;
                 }
-                //console.log('결제수단선택', this.selectPayment);
 
-                //주문번호, 주문날짜 생성
+                //주문번호, 주문날짜 , 주문품목 생성 (~포함 총 n건)
                 this.orderNo = String(new Date().getTime()) + this.userNo;
                 this.orderDate = this.$dateFormat(new Date());
-
-                //주문품목 생성 (~포함 총 n건)
                 if(this.selectCartQuery.length > 1 ){
                     this.orderProduct = this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건';
                 } else { 
-                    this.orderProduct = this.selectCartQuery[0].product_name;
+                    this.orderProduct = this.selectCartQuery[0].product_name; //단건주문
                 }
 
-                IMP.request_pay({ // param
+                //IMP 결제정보
+                let paymentInfo = {
                     pg: this.selectPayment, //결제방식
                     pay_method: "card",
                     merchant_uid: this.orderNo, //주문번호
@@ -286,18 +282,27 @@
                     buyer_name: this.receiverName,
                     buyer_tel: this.receiverPhone,
                     buyer_addr: this.receiverAddr,
-                }, rsp => { // callback
+                };
+
+                const myThis = this;
+                IMP.request_pay(paymentInfo, rsp => { // callback
                     console.log(rsp);
                     if (rsp.success) {
-                        this.$router.push({ path : '/paymentcomplete' }); //주문완료 페이지 이동
-                        //주문 DB저장 여기서 해야할듯?
+                        let paymentDetail = { 
+                            product: myThis.orderProduct,
+                            orderNo: myThis.orderNo,
+                            orderDate: myThis.orderDate
+                        }
+                        //주문 DB저장 여기서
                         //장바구니 비워주기
                         console.log("결제 성공");
-                        console.log(this.selectPayment,'/',this.orderNo,'/',
-                            this.totalPrice,'/',this.receiverName,'/',this.receiverPhone,'/',this.receiverAddr);
+                        console.log('결제폼', rsp); //imp_uid, merchant_uid
+                        console.log('넘어ㄱㅏ주라',paymentDetail)
+                        myThis.$router.push({ name : 'paymentcomplete', query: paymentDetail }); //주문완료 페이지 이동
                     } else {
-                        this.$showWarningAlert('결제 실패');
+                        myThis.$showWarningAlert('결제 실패');
                         console.log("결제 실패");
+                        
                     }
                 });
             }

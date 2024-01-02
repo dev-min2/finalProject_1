@@ -20,7 +20,7 @@
 									<tbody>
 									
 											<tr>
-												<td>test</td>
+												<td></td>
 												<td><a href="">productName</a></td>
 												<td></td>
 												<td></td>
@@ -36,7 +36,7 @@
 
 <script>
 export default {
-
+	
 }
 </script>
 

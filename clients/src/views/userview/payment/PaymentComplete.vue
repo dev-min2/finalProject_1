@@ -10,7 +10,7 @@
         	<h5>상품명</h5>
         </div>
         <div>
-        	<h5>${pName }</h5>
+        	<h5>{{paymentInfo}}</h5>
         </div>
       </div>
       <div class="d-grid gap-6 d-sm-flex justify-content-between py-5">
@@ -18,7 +18,7 @@
         	<h5>주문번호</h5>
         </div>
         <div>
-        	<h5>${orderList[0].merUid}</h5>
+        	<h5>orderList[0].merUid</h5>
         </div>
       </div>
       <div class="d-grid gap-6 d-sm-flex justify-content-between py-5">
@@ -26,8 +26,7 @@
         	<h5>결제일</h5>
         </div>
         <div>
-        	<fmt:formatDate value="${orderList[0].orderDate}" pattern="yyyy-MM-dd HH:mm:ss" var="formattedDate" />
-        	<h5>${formattedDate}</h5>
+        	<h5>Date</h5>
         </div>
       </div>
     </div>    
@@ -46,6 +45,14 @@
 
 <script>
 export default {
+  data() {
+		paymentInfo : {}
+	},
+	created (){
+		this.paymentInfo = this.$route.query;
+    console.log(this.$route.query);
+    console.log('냠',this.paymentInfo);
+	}
 }
 </script>
 
