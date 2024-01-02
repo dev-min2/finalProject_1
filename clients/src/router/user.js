@@ -15,6 +15,7 @@ import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
+import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
 
 export default {
     path : '/',
@@ -93,6 +94,11 @@ export default {
           path: "/notice/write",
           name: "noticeWrite",
           component : CreateNotice
+        },
+        {
+          path: "/notice/:no",
+          name: "noticeInfo",
+          component: NoticeContent
         }
     ]
 };

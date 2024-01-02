@@ -93,6 +93,58 @@ const methods = {
         let day = ('0' + date.getDate()).slice(-2);
 
         return `${year}-${month}-${day}`;
+    },
+    dateTimeFormat(val) {
+        const date = val == '' ? new Date() : new Date(val);
+        return date.getFullYear() + '.' +
+            ('0' + (date.getMonth() +1)).slice(-2) + '.' +
+            ('0' + date.getDate()).slice(-2) + ' ' +
+            ('0' + date.getHours()).slice(-2) + ':' +
+            ('0' + date.getMinutes()).slice(-2) + ":" +
+            ('0' + date.getSeconds()).slice(-2);
+    },
+    convertAttachFileNameList(attachList) {
+        if(attachList == null || attachList.length <= 0) {
+            return null;
+        }
+        
+        let fileNameList = [];        
+        for(let i = 0; i < attachList.length; ++i) {
+            let startRealFileNameIdx = 0;   
+            let underlineCount = 0; // 5개.
+            for(let j = 0; j < attachList[i].length; ++j) {
+                if(attachList[i][j] === '_') {
+                    ++underlineCount;
+                }
+    
+                ++startRealFileNameIdx;
+                if(underlineCount >= 5) 
+                    break;
+            }
+    
+            fileNameList.push(attachList[i].substr(startRealFileNameIdx, attachList[i].length));
+        }
+
+        return fileNameList;
+    },
+    convertAttachFileName(attachFile) {
+        if(attachFile == null || attachFile.length <= 0) {
+            return null;
+        }
+
+        let startRealFileNameIdx = 0;   
+        let underlineCount = 0; // 5개.
+        for(let i = 0; i < attachFile.length; ++i) {
+            if(attachFile[i] === '_') {
+                ++underlineCount;
+            }
+
+            ++startRealFileNameIdx;
+            if(underlineCount >= 5)
+                break;
+        }
+
+        return attachFile.substr(startRealFileNameIdx, attachFile.length);
     }
 }
 
@@ -109,5 +161,8 @@ export default {
         Vue.config.globalProperties.$showWarningAlert = methods.showWarningAlert;
         Vue.config.globalProperties.$showInfoAlert = methods.showInfoAlert;
         Vue.config.globalProperties.$dateFormat = methods.dateFormat;
+        Vue.config.globalProperties.$dateTimeFormat = methods.dateTimeFormat;
+        Vue.config.globalProperties.$convertAttachFileNameList = methods.convertAttachFileNameList;
+        Vue.config.globalProperties.$convertAttachFileName = methods.convertAttachFileName;
     }
 }
