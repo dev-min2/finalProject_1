@@ -6,7 +6,7 @@ let { pool,query } = require('../../config/dbPool');
 let deliveryDAO = {
     sellerDelivery : async function(userNo) {
         const sellerDelivery = `
-        SELECT A.payment_no,C.user_name,C.user_addr,D.product_name,A.buy_cnt,B.payment_date,A.delivery_state
+        SELECT A.payment_no,A.payment_product_no, C.user_name,B.receiver_addr,D.product_name,A.buy_cnt,B.payment_date,A.delivery_number,A.delivery_state
         FROM payment_product A JOIN payment B ON A.payment_no = B.payment_no
         JOIN USER C ON B.user_no = C.user_no
         Join product D ON D.product_no = A.product_no
@@ -20,7 +20,7 @@ let deliveryDAO = {
     sellerDeliverySearchUserName : async function(search) {
         const searchQuery = "%"+search+"%"
         const sellerDeliverySearchUserName = `
-        SELECT A.payment_no,C.user_name,C.user_addr,D.product_name,A.buy_cnt,B.payment_date,A.delivery_state
+        SELECT A.payment_no,A.payment_product_no, C.user_name,B.receiver_addr,D.product_name,A.buy_cnt,B.payment_date,A.delivery_number,A.delivery_state
         FROM payment_product A JOIN payment B ON A.payment_no = B.payment_no
         JOIN USER C ON B.user_no = C.user_no
         Join product D ON D.product_no = A.product_no
@@ -30,22 +30,22 @@ let deliveryDAO = {
  },
 
  //판매자 배송현황-배송상태변경-주소 업데이트
-     sellerDeliveryAddrUpdate : async function(addr,paymentNo) {
-        const sellerDeliveryAddrUpdate = `
-            UPDATE payment
-            set receiver_addr= ?
-            where payment_no = ?    
-        `;
-        return query(sellerDeliveryAddrUpdate,[addr,paymentNo])        
-    },
+    //  sellerDeliveryAddrUpdate : async function(addr,paymentNo) {
+    //     const sellerDeliveryAddrUpdate = `
+    //         UPDATE payment
+    //         set receiver_addr= ?
+    //         where payment_no = ?    
+    //     `;
+    //     return query(sellerDeliveryAddrUpdate,[addr,paymentNo])        
+    // },
     //판매자 배송현황-배송상태변경-운송장 업데이트
-    sellerDeliveryNumberUpdate : async function(deliveryNumber,paymentNo) {
+    sellerDeliveryNumberUpdate : async function(deliveryNumber,paymentProductNo) {
         const sellerDeliveryNumberUpdate = `
             UPDATE payment_product
             set delivery_number = ?
-            where payment_no = ?   
+            where payment_product_no = ?   
         `;
-        return query(sellerDeliveryNumberUpdate,[deliveryNumber,paymentNo])        
+        return query(sellerDeliveryNumberUpdate,[deliveryNumber,paymentProductNo])        
     },
 
 };

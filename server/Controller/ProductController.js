@@ -151,6 +151,34 @@ productRouter.get('/sellerDeliverySearchUserName/:search',async(req,res)=>{
  
  })
 
+  //판매자-배송관리-주소 업데이트
+productRouter.put('/sellerDeliveryUpdate',async(req,res)=>{
+   // let addr = req.params.addr;
+   // let paymentNo = req.params.paymentNo;
+   let { paymentNo,addr, deliveryNumber, paymentProductNo  } = req.body.param;
+
+ try{
+    const productService = new ProductService();
+    result = await productService.sellerDeliveryUpdate(deliveryNumber,paymentProductNo);
+    res.send(result) 
+ }
+ catch(e){
+    console.log(e)
+  }
+})
+
+//판매자-배송관리-운송장 업데이트
+// productRouter.put('/sellerDeliveryNumberUpdate',async(req,res)=>{
+//    let { deliveryNumber, paymentProductNo } = req.body.param;
+//  try{
+//     const productService = new ProductService();
+//     result = await productService.sellerDeliveryNumberUpdate(deliveryNumber,paymentProductNo);
+//     res.send(result) 
+//  }
+//  catch(e){
+//     console.log(e)
+//   }
+// })
 
 
 module.exports = productRouter;

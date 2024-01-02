@@ -56,6 +56,14 @@ class ProductService {
         return result;
         
     }
+
+    //판매자-배송관리-주소 업데이트
+    async sellerDeliveryUpdate(deliveryNumber,paymentProductNo){
+ 
+        let result = await DeliveryDAO.sellerDeliveryNumberUpdate(deliveryNumber,paymentProductNo);
+        return result;
+
+}
     
 
 

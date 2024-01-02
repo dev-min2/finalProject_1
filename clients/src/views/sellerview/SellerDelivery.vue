@@ -22,12 +22,13 @@
             <thead>
                 <tr>
                     <th>결제 번호</th>
+                    <th>결제상품 번호</th>
                     <th>회원 이름</th>
-                    <th>회원 주소</th>
-                    <th>운송장 번호</th>
+                    <th>배송지 주소</th>
                     <th>상품 이름</th>
                     <th>구매 수량</th>
                     <th>주문일</th>
+                    <th>운송장 번호</th>
                     <th>배송 상태</th>
                     <th>배송 상태 변경</th>
                 </tr>
@@ -35,12 +36,13 @@
             <tbody>
                 <tr :key="i" v-for="(delivery, i) in displayedDelivery">
                     <td class = "no">{{delivery.payment_no}}</td>
+                    <td class = "no">{{delivery.payment_product_no}}</td>
                     <td class="name">{{ delivery.user_name }}</td>
-                    <td class="addr">{{ delivery.user_addr }}</td>
-                    <td class="deliveryNo">{{ delivery.delivery_number }}</td>
+                    <td class="addr">{{ delivery.receiver_addr }}</td>
                     <td class="pname">{{ delivery.product_name }}</td>
                     <td class="buycnt">{{ delivery.buy_cnt }}</td>
                     <td class="date">{{delivery.payment_date}}</td>
+                    <td class="deliveryNo">{{ delivery.delivery_number }}</td>
                     <td class="state">{{delivery.delivery_state}}</td>
                     <!--<td><button @click="changeDeliveryState">변경하기</button></td>-->
                     <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -58,16 +60,14 @@
                                     <table>                                
                                             <tr>
                                                 <td>운송장번호</td>
-                                                <td><input type = "text" v-model="deliveryNumber"></td>
+                                                <td><input type = "text" v-model="deliveryNumber" ></td>
                                             </tr>
-                                            <tr>
-                                                <td>주소</td>
-                                                <td><input type="text" v-model="addr"></td>
-                                            </tr>  
+
                                     </table>    
                                   </div>
                                   <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">확인</button>
+                                    <button type="button" class="btn btn-primary" 
+                                    @click="sellerDeliveryUpdate(delivery.payment_no,delivery.payment_product_no)">확인</button>
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                                   </div>
                                 </div>
@@ -86,7 +86,7 @@
     export default {
         data() {
             return {
-                sellerDeliveryList: [],
+                sellerDeliveryList : [],
                 search: '',
                 deliveryPerPage: 5,
                 currentPage: 1,
@@ -105,7 +105,6 @@
             },
         },
         methods: {
-
             async sellerDelivery() {
                 let result = '';
                 const userNo = 1;
@@ -118,8 +117,27 @@
 
                 this.sellerDeliveryList = result.data;
             },
+            async sellerDeliveryUpdate(paymentNo, paymentProductNo) {
+                let result = '';
+                let obj = {
+                    param : {
+                        addr : this.addr,
+                        paymentProductNo : paymentProductNo,
+                        deliveryNumber : this.deliveryNumber,
+                        paymentNo : paymentNo
+                    }
+                }
+                try {
+                    result = await axios.put(
+                        `/api/product/sellerDeliveryUpdate`,obj,{headers:{'Content-Type' : 'application/json'}});
+                } catch (e) {
+                    console.log(e);
+                }
+                this.sellerDeliveryList = result.data;
+            },
             
-        //배송상태 회원이름으로 검색
+ 
+                //배송상태 회원이름으로 검색
              async searchSellerDelivery() {
                 let result = '';
                 //const userNo = 1;
@@ -132,6 +150,9 @@
                 }
                 
                 this.sellerDeliveryList = result.data;
+            },
+            updateDeliveryPerPage() {
+                this.currentPage = 1;
             },
         }
 

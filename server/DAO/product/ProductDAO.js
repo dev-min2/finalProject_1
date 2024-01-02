@@ -69,6 +69,18 @@ let productDAO = {
                 `;
                 return query(getMyProductList,userNo)
             },
+            //판매자 상품검색
+            sellerProductSearchName : async function(search) {
+                const searchQuery = "%"+search+"%"
+                const sellerProductSearchName = `
+                SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
+                FROM product AS A
+                JOIN category AS B ON A.category_no = B.category_no
+                JOIN category AS C ON C.category_no = B.category_pno
+                WHERE A.product_name like ?
+                `;
+                return query(sellerProductSearchName,searchQuery)        
+         },
         
             // 판매자 상품등록
             
