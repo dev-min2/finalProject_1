@@ -211,7 +211,16 @@ export default {
 					this.$showWarningAlert('공지사항 중요도 기간을 선택해주세요.');
 					return false;
 				}
+
+				const startDateValue = new Date(startDate);
+				const endDateValue = new Date(endDate);
+				if(startDateValue > endDateValue) {
+					this.$showWarningAlert('중요도 시작기간은 종료날짜 이후로 설정할 수 없음.')
+					return false;
+				}
 			}
+
+
 
 			const editorLength = this.$refs.editor.editor.getHTML().length;
             if(editorLength >= 8000) {
@@ -233,3 +242,4 @@ export default {
 		height : 100px;
 	}
 </style>
+

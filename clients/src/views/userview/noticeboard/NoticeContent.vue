@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
-                    <button class="btn btn-primary" @click="modifyNotice(boardNo)" >수정하기</button>
+                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="modifyNotice(boardNo)" >수정하기</button>
                 </div>
             </div>
         </div>
