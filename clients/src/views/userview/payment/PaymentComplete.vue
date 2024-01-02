@@ -10,7 +10,7 @@
         	<h5>상품명</h5>
         </div>
         <div>
-        	<h5>{{paymentInfo}}</h5>
+        	<h5>{{paymentInfo.product}}</h5>
         </div>
       </div>
       <div class="d-grid gap-6 d-sm-flex justify-content-between py-5">
@@ -18,7 +18,7 @@
         	<h5>주문번호</h5>
         </div>
         <div>
-        	<h5>orderList[0].merUid</h5>
+        	<h5>{{paymentInfo.orderNo}}</h5>
         </div>
       </div>
       <div class="d-grid gap-6 d-sm-flex justify-content-between py-5">
@@ -26,7 +26,7 @@
         	<h5>결제일</h5>
         </div>
         <div>
-        	<h5>Date</h5>
+        	<h5>{{paymentInfo.orderDate}}</h5>
         </div>
       </div>
     </div>    

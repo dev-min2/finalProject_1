@@ -58,7 +58,7 @@
                         <div class="col-12">
                             <label for="firstName" class="form-label"> 주문자 이름</label>
                             <input type="text" class="form-control" id="firstName" placeholder=""
-                                value="이름넣기" required>
+                                value="이름 불러오기" required>
                             <div class="invalid-feedback">
                                 주문자이름
                             </div>
@@ -67,7 +67,7 @@
                         <div class="col-12">
                             <label for="email" class="form-label"> 주문자 이메일 <span class="text-muted">(Optional)</span></label>
                             <input type="email" class="form-control" id="email" placeholder="you@example.com"
-                                value="${userInfo.userMail }">
+                                value="$userInfo.userMail">
                             <div class="invalid-feedback">
                                 Please enter a valid email address for shipping updates.
                             </div>
@@ -76,7 +76,7 @@
                         <div class="col-12">
                             <label for="phone" class="form-label">주문자 연락처</label>
                             <input type="text" class="form-control" id="phone" placeholder=""
-                                value="${userInfo.userPhone }" required>
+                                value="$userInfo.userPhone" required>
                             <div class="invalid-feedback">
                                 연락처 입력해주세요.
                             </div>
@@ -186,14 +186,20 @@
                 selectPayment : 'html5_inicis', //결제방식
                 orderCheck:'', //주문동의 확인
                 selectCartQuery : [], //장바구니 목록
-                totalPrice : 0, //총 금액
-                totalCount: 0, //총 수량
-                delivery : 0, //배송비
-                couponPrice : 0, //쿠폰 사용금액
+                selectPayment: '', //결제수단
+                //총금액, 수량, 배송비, 쿠폰사용금액
+                totalPrice : 0, 
+                totalCount: 0, 
+                delivery : 0,
+                couponPrice : 0,
+                 //주문정보
+                deliveryRequest : '',
+                receiverName: '',
+                receiverPhone: '',
+                receiverAddr: '',
                 orderNo: 0, //주문번호
                 orderDate : '', //주문날짜
                 orderProduct : '', //주문품목
-
 
             }
         },
@@ -229,7 +235,7 @@
                     this.totalPrice += this.selectCartQuery[i].price_sum;
                     this.totalCount += this.selectCartQuery[i].product_sel_cnt;
                 }
-                if(this.totalPrice < 30000) { //배송비: 3만원 이상 무료배송
+                if(this.totalPrice < 30000) { //배송비 추가: 3만원 이상 무료배송
                     this.delivery = 2500 ; 
                     this.totalPrice += this.delivery;
                     }
@@ -252,7 +258,6 @@
                 //주문품목 테스트
                 console.log('졸리당: ', 
                     this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건');
-
             },
              //결제 버튼 클릭
             PaymentBtn: function(){ 
@@ -271,7 +276,7 @@
                     this.orderProduct = this.selectCartQuery[0].product_name; //단건주문
                 }
 
-                //IMP 결제정보
+                //IMP 결제정보 담기
                 let paymentInfo = {
                     pg: this.selectPayment, //결제방식
                     pay_method: "card",
@@ -284,25 +289,25 @@
                     buyer_addr: this.receiverAddr,
                 };
 
+                //결제 넘기기
                 const myThis = this;
                 IMP.request_pay(paymentInfo, rsp => { // callback
                     console.log(rsp);
                     if (rsp.success) {
+                        //결제완료 페이지에 넘길 정보
                         let paymentDetail = { 
                             product: myThis.orderProduct,
                             orderNo: myThis.orderNo,
                             orderDate: myThis.orderDate
                         }
-                        //주문 DB저장 여기서
-                        //장바구니 비워주기
-                        console.log("결제 성공");
+                        //주문 DB저장 여기서 (payment 추가, payment_product 추가, cart 비우기, coupon 상태 업데이트)
+                        
                         console.log('결제폼', rsp); //imp_uid, merchant_uid
-                        console.log('넘어ㄱㅏ주라',paymentDetail)
+                        console.log("결제 성공");
                         myThis.$router.push({ name : 'paymentcomplete', query: paymentDetail }); //주문완료 페이지 이동
                     } else {
                         myThis.$showWarningAlert('결제 실패');
                         console.log("결제 실패");
-                        
                     }
                 });
             }
