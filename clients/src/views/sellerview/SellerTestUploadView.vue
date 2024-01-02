@@ -7,7 +7,7 @@
 					<tr>
 						<th class="col-md-2">애완동물타입</th>
 						<td class="col-md-4">
-							<select class="form-select" name="petType" v-model="petType" aria-label="Default select example">
+							<select class="form-select" name="petType" v-model="productInfo.pet_type" aria-label="Default select example">
                                 <option selected value="d1">강아지</option>
                                 <option value="d2">고양이</option>
 							</select>
@@ -39,11 +39,11 @@
 					</tr>
 					<tr>
 						<th>상품명</th>
-						<td colspan="3"><input type="text" v-model="productInfo.product.name" name="productName" class="form-control"></td>
+						<td colspan="3"><input type="text" v-model="productInfo.product_name" name="productName" class="form-control"></td>
 					</tr>
 					<tr>
-						<th>상품 상세 정보</th>
-						<td colspan="3"><textarea name="productDetailDesc" class="form-control" v-model="productInfo.product_detail_desc"></textarea></td>
+						<th>상품 간단 정보</th>
+						<td colspan="3"><textarea name="productDetailDesc" class="form-control" v-model="productInfo.product_desc"></textarea></td>
 					</tr>
 					<tr>
 						<th>가격</th>
@@ -56,15 +56,13 @@
 						<!-- <td colspan="3"><textarea cols="100" rows="6" name="productDesc"
 								class="form-control"></textarea></td> -->
 						<td>
-							<div id="editor">
-							</div>
+							<TextEditor :boardType="'productUploads'" :userNo="$store.state.userNo" :randBoardValue="randValue" :curTimeVal="curTimeVal" ref="editor"/>
 						</td>
 					</tr>
 					<tr>
 						<th>메인이미지</th>
 						<td><input ref="prImg" type="file" name="productImage" class="form-control" ></td>
 					</tr>
-					<input type="hidden" ref="deschtml" name="deschtml">
 					<tr>
 						<td colspan="2">
 							<input type="submit" value="저장" class="btn btn-primary" @click="uploadProduct()"> 
@@ -78,15 +76,16 @@
 </template>
 
 <script>
-import Editor from '@toast-ui/editor'; /* ES6 모듈 방식 */
-import '@toast-ui/editor/dist/toastui-editor.css'; // Editor 스타일
+import TextEditor from '../../components/common/TextEditor.vue'
 import axios from 'axios'
 
-let editor = null;
 export default {
+	components : {
+		TextEditor
+	},
     data() {
         return {
-			productInfo:{			
+		productInfo:{			
  			 product_no : '',
              pet_type : '',
              product_name : '',
@@ -99,65 +98,67 @@ export default {
              product_public_state : '',
              user_no : ''
 			},
-
-           
-
+        randValue : '',
+	    curTimeVal : '',
         }
     },
 
 	created(){
-		
+
+        //this.productInfo.user_no = this.$store.state.userNo;
+        this.productInfo.user_no = 1;
+		this.randValue = Math.floor(Math.random() * (999999 - 111111 + 1)) + 111111;
+		this.curTimeVal = new Date().getTime();
 	},
 
     methods : {
-        async uploadFile() {
-            this.$refs.prImg.name = `productImage/${this.petType}`;
-            this.$refs.prDeImg.name = `productDetailImage/${this.petType}`;
-            
-            const formData = new FormData(this.$refs.uploadForm);
-            console.log(this.$refs.uploadForm);
-            let result = await axios.post('/api/user/upload', formData);
-            console.log(result);
-        },
 		async uploadProduct() {
-			this.$refs.deschtml.value = editor.getHTML(); // html값 넣어주고
-			this.$refs.prImg.name = `productImage/${this.petType}`;
 			const formData = new FormData(this.$refs.uploadForm);
-			let result = await axios.post('/api/user/uploadProduct', formData);
+            const html = this.$refs.editor.editor.getHTML();
+            console.log(html);
+            formData.append('product_desc', html);
+            formData.append('user_no', 1);
+            formData.append('product_public_state', 'i1');
+			let result = await axios.post('/api/product/uploadProduct', formData);
 			console.log(result);
 		}
-    },
-	mounted() {
-			editor = new Editor({
-				el: document.querySelector('#editor'),
-				height: '600px',
-				initialEditType: 'wysiwyg',
-				previewStyle: 'vertical',
-				hooks: {
-					// 이미지가 올라오면 해당 이미지가 blob매개변수에 담김
-					addImageBlobHook: async (blob, callback) => {
-						const formData = new FormData();
-						formData.append('image', blob);
-
-						let result = await axios.post('/api/user/upload',formData,{"Content-Type": "multipart/form-data"});
-						const fileName = result.data;
-						console.log(result);
-						
-						let imageUrl = '';
-						if(this.$store.state.testData) {
-							imageUrl = `http://192.168.0.40:12532/uploads/productDescInImg/${fileName}`;
-						}
-						else {
-							imageUrl = `http://localhost:12532/uploads/productDescInImg/${fileName}`;
-						}
-
-						callback(imageUrl, 'image alt attribute');
-					}
-				},
-        });
-	}
+    }
 }
 </script>
 <style scoped>
+ .table-header {
+        background-color: #5f5f5f;
+        color: rgb(255, 255, 255);
+        padding: 10px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+        margin-left: 5px;
+        font-weight: bold;
+        font-size: 18px;
+        text-shadow: -1px 0px rgb(0, 0, 0), 0px 1px rgb(0, 0, 0), 1px 0px rgb(0, 0, 0), 0px -1px rgb(0, 0, 0);
 
+    }
+
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 2px solid #000000;
+       
+        margin-left: 10px;
+    }
+
+    th,
+    td {
+        border-collapse: collapse;
+        padding: 8px;
+       
+        border: 2px solid #000000;
+    }
+
+    th {
+        border: 2px solid #000000;
+        background-color: #f2f2f2;
+
+    }
 </style>

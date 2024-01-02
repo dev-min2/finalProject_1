@@ -8,63 +8,76 @@ class ProductService {
 
     }
 
-    async selectQueryByPeriod(userNo,period,minPrice,maxPrice) {
-        let result = await ProductDAO.selectQueryByPeriod(userNo,period,minPrice,maxPrice);
+    async selectQueryByPeriod(userNo, period, minPrice, maxPrice) {
+        let result = await ProductDAO.selectQueryByPeriod(userNo, period, minPrice, maxPrice);
         console.log('테스트')
         console.log(result)
         return result;
     }
 
     async getMyProductList(userNo) {
+        
         let result = await ProductDAO.getMyProductList(userNo);
         console.log(result)
         return result;
     }
 
-    async uploadProduct(productInfo){
-            let result = await ProductDAO.uploadProduct(productInfo);
-            return result;
-        }
+    async uploadProduct(object) {
+        // const object = {
+        //     pet_type : petType,
+        //     category_no : categoryNo,
+        //     productName: product_name,
+        //     productDetailDesc: product_detail_desc,
+        //     productPrice: product_price,
+        //     productStock: product_stock,
+        //     product_desc: product_desc,
+        //     user_no: user_no,
+        //     product_public_state: product_public_state
+        
+        // }
+        let result = await ProductDAO.uploadProduct(object);
+        return result;
+    }
     //판매자-리뷰조회
-    async getSellerReview(userNo){
+    async getSellerReview(userNo) {
         let result = await ReviewDAO.getSellerReview(userNo);
         return result;
     }
     //판매자-리뷰검색
-    async searchSellerReview(search){
+    async searchSellerReview(search) {
         let result = await ReviewDAO.searchSellerReview(search);
         return result;
     }
 
     //판매자-리뷰삭제
-    async removeSellerReview(reviewNo){
+    async removeSellerReview(reviewNo) {
         let result = await ReviewDAO.removeSellerReview(reviewNo);
         return result;
     }
 
     //판매자-배송관리
-    async sellerDelivery(userNo){
+    async sellerDelivery(userNo) {
         let result = await DeliveryDAO.sellerDelivery(userNo);
         return result;
     }
 
     //판매자-배송관리-회원이름으로 검색
-    async sellerDeliverySearchUserName(search){
-       
+    async sellerDeliverySearchUserName(search) {
+
         let result = await DeliveryDAO.sellerDeliverySearchUserName(search);
         console.log('asdasd', result)
         return result;
-        
+
     }
 
     //판매자-배송관리-주소 업데이트
-    async sellerDeliveryUpdate(deliveryNumber,paymentProductNo){
- 
-        let result = await DeliveryDAO.sellerDeliveryNumberUpdate(deliveryNumber,paymentProductNo);
+    async sellerDeliveryUpdate(deliveryNumber, paymentProductNo) {
+
+        let result = await DeliveryDAO.sellerDeliveryNumberUpdate(deliveryNumber, paymentProductNo);
         return result;
 
-}
-    
+    }
+
 
 
     //트랜잭션 예시코드임

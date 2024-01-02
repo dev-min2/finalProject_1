@@ -159,7 +159,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 .delivery-toolbar {
         display: flex;
         justify-content: space-between;
@@ -185,5 +185,40 @@
     }
     .state{
         width: 120px;
+    }
+     .table-header {
+        background-color: #5f5f5f;
+        color: rgb(255, 255, 255);
+        padding: 10px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+        margin-left: 5px;
+        font-weight: bold;
+        font-size: 18px;
+        text-shadow: -1px 0px rgb(0, 0, 0), 0px 1px rgb(0, 0, 0), 1px 0px rgb(0, 0, 0), 0px -1px rgb(0, 0, 0);
+
+    }
+
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 2px solid #000000;
+        text-align: center;
+        margin-left: 10px;
+    }
+
+    th,
+    td {
+        border-collapse: collapse;
+        padding: 8px;
+        text-align: center;
+        border: 2px solid #000000;
+    }
+
+    th {
+        border: 2px solid #000000;
+        background-color: #f2f2f2;
+
     }
 </style>

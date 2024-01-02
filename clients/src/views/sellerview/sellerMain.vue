@@ -165,7 +165,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     .table-header {
         background-color: #5f5f5f;
         color: rgb(255, 255, 255);
