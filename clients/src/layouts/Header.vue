@@ -1,9 +1,9 @@
-<template>
+g<template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light">
       <!-- bg-light -->
       <div class="container px-4 px-lg-5">
-        <template v-if="curShowPetType == '0'">
+        <template v-if="curShowPetType == 'd1'">
           <router-link to="/main"><img class="mx-2" src="../assets/commonResource/doglogo.png" alt="dog"
               style="width: 140px" /></router-link>
         </template>
@@ -11,30 +11,31 @@
           <router-link to="/main"><img class="mx-2" src="../assets/commonResource/catlogo.png" alt="cat"
               style="width: 140px" /></router-link>
         </template>
-
+        <!-- 검색창 -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarSupportedContent">
           <div class="input-group w-50">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Username"
-              aria-describedby="basic-addon1" id="searchBar" />
+            <input type="text" class="form-control" placeholder="검색어를 입력하세요" v-model="keyword" aria-label="Username"
+              aria-describedby="basic-addon1" id="searchBar" @keyup.enter="searchshow(keyword)"/>
             <div class="input-group-append">
-              <button class="input-group-text" id="searchBtn">
+              <button class="input-group-text" id="searchBtn" @click="searchshow(keyword)">
                 <i class="fa fa-search pt-2"></i>
               </button>
             </div>
           </div>
           <div class="d-flex gap-3">
-            <template v-if="curShowPetType == '0'">
+            <template v-if="curShowPetType == 'd1'">
               <button @click="changePetType" class="btn" type="button">
-                <i class="fas fa-cat fa-2x"></i>
+                <!-- <i class="fas fa-cat fa-2x"></i> -->
+                <img src="../assets/commonResource/catIcon.png" style="width: 70px" />
               </button>
             </template>
             <template v-else>
               <button @click="changePetType" class="btn" type="button">
-                <i class="fas fa-dog fa-2x"></i>
+                <img src="../assets/commonResource/dogIcon.png" style="width: 70px" />
               </button>
             </template>
             <button v-if="$store.state.userNo == -1" @click="$router.push('/login')" class="btn" type="button"> 
@@ -62,44 +63,24 @@
             <a class="nav-link dropdown-toggle" id="multiDropdown" href="#" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">카테고리</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">사료</a>
+              <li class="dropdown-submenu dropend" v-for="(category, idx) in categoryList" :key="idx">
+                <a class="dropdown-item dropdown-toggle" href="#">{{ category[0].parent_category_name }}</a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">건식사료</a></li>
-                  <li><a class="dropdown-item" href="#">습식사료</a></li>
-                </ul>
-              </li>
-              <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">간식</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">수제간식</a></li>
-                  <li><a class="dropdown-item" href="#">캔/파우치</a></li>
-                  <li><a class="dropdown-item" href="#">통살</a></li>
-                </ul>
-              </li>
-              <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">건강관리</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">종합영양제</a></li>
-                  <li><a class="dropdown-item" href="#">피부/모질</a></li>
-                  <li><a class="dropdown-item" href="#">뼈/관절</a></li>
-                </ul>
-              </li>
-              <li class="dropdown-submenu dropend">
-                <a class="dropdown-item dropdown-toggle" href="#">미용/목욕</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">샴푸/린스</a></li>
-                  <li><a class="dropdown-item" href="#">브러쉬</a></li>
-                  <li><a class="dropdown-item" href="#">발톱/발관리</a></li>
+                  <li v-for="(category2, idx2) in categoryList[idx]" :key="idx2"><a class="dropdown-item"
+                      href="#"  @click="getCategorySearch(category2.children_no,category2.children_category_name)" >{{ category2.children_category_name}}</a></li>
                 </ul>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">신상품</a>
+            <a class="nav-link" href="#" aria-current="page" @click="this.getNewProduct()">신상품</a>
           </li>
-          <li class="nav-item"><a class="nav-link" href="#">베스트상품</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">추천상품</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" @click="this.getBestProduct()" >베스트상품</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" @click="this.getRecProduct()">추천상품</a>
+          </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/upload">업로드테스트</router-link>
           </li>
@@ -130,17 +111,85 @@
 <script>
   import axios from "axios";
   export default {
+    data() {
+      return {
+        keyword: '',
+        categoryList: [],
+        productList: [],
+
+      }
+    },
+
+
     computed: {
       curShowPetType() {
         return this.$store.state.curShowPetType;
       },
     },
+    created() {
+      this.getCategoryData();
 
-    created() {},
+    },
     methods: {
+  
+      async getCategoryData() {
+        // 서버에 요청
+        const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));
+        this.categoryList = result.data; //저장
+
+        const groupBy = function (data, key) {
+          return data.reduce(function (carry, el) {
+            var group = el[key];
+            if (carry[group] === undefined) {
+              carry[group] = []
+            }
+            carry[group].push(el)
+            return carry
+          }, {})
+        }
+
+        this.categoryList = groupBy(this.categoryList, "parent_no");
+
+      },
+      //신상품
+      async getNewProduct(){
+        this.$router.push({path : '/search', query : { action : "newProduct" } })
+      },
+      //베스트상품
+      async getBestProduct(){
+        this.$router.push({path : '/search', query : { action : "bestProduct" } })
+      },
+      //추천상품
+      async getRecProduct(){
+        this.$router.push({path : '/search', query : { action : "recProduct" } })
+      },
+      async getCategorySearch(cno, category_name) {
+        // 카테고리넘버
+        this.$router.push({path : '/search', query : { categoryNo : cno, action : "categorySearch", category_name : category_name} })
+      },
+      searchshow(keyword) {
+        if (keyword !== '') {
+          this.$router.push({
+            path: 'search',
+            query: {
+              keyword: this.keyword,
+              action : "Keywordsearch"
+            }
+          });
+        } else {
+          this.$showBasicAlert(null, '검색어를 입력하세요!');
+        }
+      },
       changePetType() {
-        if (this.curShowPetType == "0") this.$store.commit("reversePetType", "1");
-        else this.$store.commit("reversePetType", "0");
+        if (this.curShowPetType == "d1") this.$store.commit("reversePetType", "d2");
+        else this.$store.commit("reversePetType", "d1");
+
+        this.$router.push({path: '/main'});
+      },
+      async logout() {
+        const userNo = this.$store.state.userNo;
+        if (this.$store.state.userNo < 0) return;
+
       },
       async logout() {
         const userNo = this.$store.state.userNo;
@@ -190,3 +239,5 @@
     });
   });
 </script>
+<style scoped>
+</style>
