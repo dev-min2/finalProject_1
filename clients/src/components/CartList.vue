@@ -91,7 +91,7 @@
     </template>
     <td class="total">
       <h4 v-if="cartList.length > 0">총 결제 금액 : {{checkedPrice}}</h4>
-      <h4 v-else>장바구니가 비어있습니다.</h4>
+      <h4 v-else style="text-align : center">장바구니가 비어있습니다.</h4>
     </td>
   </div>
 </template>
