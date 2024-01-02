@@ -51,4 +51,41 @@ productRouter.get('/search/category', async (req, res) => {
         console.log(e);
     }
 });
+
+//신상품
+productRouter.get('/search/newproduct', async (req, res)=>{
+    try{
+        const productService = new ProductService();
+        let ptype = req.query.type;
+        let pageno = req.query.pageno;
+        const result = await productService.getNewProductList(ptype, pageno);
+        res.send(result);
+    } catch (e){
+        console.log(e);
+    }
+});
+//베스트
+productRouter.get('/search/bestproduct', async (req, res)=>{
+    try{
+        const productService = new ProductService();
+        let ptype = req.query.type;
+        let pageno = req.query.pageno;
+        const result = await productService.getBestProductList(ptype, pageno);
+        res.send(result);
+    } catch (e){
+        console.log(e);
+    }
+});
+//추천
+productRouter.get('/search/recproduct', async (req, res)=>{
+    try{
+        const productService = new ProductService();
+        let ptype = req.query.type;
+        let pageno = req.query.pageno;
+        const result = await productService.getRecProductList(ptype, pageno);
+        res.send(result);
+    } catch (e){
+        console.log(e);
+    }
+});
 module.exports = productRouter;

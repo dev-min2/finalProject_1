@@ -19,9 +19,9 @@ g<template>
         <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarSupportedContent">
           <div class="input-group w-50">
             <input type="text" class="form-control" placeholder="검색어를 입력하세요" v-model="keyword" aria-label="Username"
-              aria-describedby="basic-addon1" id="searchBar" @keyup.enter="searchshow(keyword)" />
+              aria-describedby="basic-addon1" id="searchBar" @keyup.enter="searchshow(keyword)"/>
             <div class="input-group-append">
-              <button class="input-group-text" id="searchBtn">
+              <button class="input-group-text" id="searchBtn" @click="searchshow(keyword)">
                 <i class="fa fa-search pt-2"></i>
               </button>
             </div>
@@ -73,13 +73,13 @@ g<template>
             </ul>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" aria-current="page" to="/">신상품</router-link>
+            <a class="nav-link" href="#" aria-current="page" @click="this.getNewProduct()">신상품</a>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/">베스트상품</router-link>
+            <a class="nav-link" href="#" @click="this.getBestProduct()" >베스트상품</a>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/">추천상품</router-link>
+            <a class="nav-link" href="#" @click="this.getRecProduct()">추천상품</a>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/upload">업로드테스트</router-link>
@@ -114,7 +114,8 @@ g<template>
     data() {
       return {
         keyword: '',
-        categoryList: []
+        categoryList: [],
+        productList: [],
 
       }
     },
@@ -150,6 +151,18 @@ g<template>
         this.categoryList = groupBy(this.categoryList, "parent_no");
 
       },
+      //신상품
+      async getNewProduct(){
+        this.$router.push({path : '/search', query : { action : "newProduct" } })
+      },
+      //베스트상품
+      async getBestProduct(){
+        this.$router.push({path : '/search', query : { action : "bestProduct" } })
+      },
+      //추천상품
+      async getRecProduct(){
+        this.$router.push({path : '/search', query : { action : "recProduct" } })
+      },
       async getCategorySearch(cno, category_name) {
         // 카테고리넘버
         this.$router.push({path : '/search', query : { categoryNo : cno, action : "categorySearch", category_name : category_name} })
@@ -170,6 +183,8 @@ g<template>
       changePetType() {
         if (this.curShowPetType == "d1") this.$store.commit("reversePetType", "d2");
         else this.$store.commit("reversePetType", "d1");
+
+        this.$router.push({path: '/main'});
       },
       async logout() {
         const userNo = this.$store.state.userNo;

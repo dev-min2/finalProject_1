@@ -36,6 +36,15 @@
             if (action == "categorySearch") {
                 this.getCategoryProductList(this.$route.query.categoryNo, 1)
                 this.keyword = this.$route.query.category_name;
+            } else if (action == "newProduct"){
+                    this.getNewProductList(1);
+                    this.keyword = "신상품";
+            } else if (action == "bestProduct"){
+                    this.getBestProductList(1);
+                    this.keyword = "베스트상품";
+            } else if (action == "recProduct"){
+                    this.getRecProductList(1);
+                    this.keyword = "추천상품";
             } else {
                 this.keyword = this.$route.query.keyword;
                 this.getProductList(this.$route.query.keyword, 1);
@@ -61,11 +70,35 @@
                 let action = this.$route.query.action;
                 if (action == "categorySearch") {
                     this.getCategoryProductList(this.$route.query.categoryNo, pageno)
-                } else {
+                } 
+                else if (action == "newProduct"){
+                    this.getNewProductList(pageno);
+                }
+                else  {
                     this.getProductList(this.$route.query.keyword, pageno);
                 }
             },
-
+            async getNewProductList(pageno){
+                const result = await axios.get(
+                    `/api/product/search/newproduct?type=${this.$store.state.curShowPetType}&pageno=${pageno}`
+                );
+                this.productList = result.data.selectResult;
+                this.page = result.data.pageDTO;
+            },
+            async getBestProductList(pageno){
+                const result = await axios.get(
+                    `/api/product/search/bestproduct?type=${this.$store.state.curShowPetType}&pageno=${pageno}`
+                );
+                this.productList = result.data.selectResult;
+                this.page = result.data.pageDTO;
+            },
+            async getRecProductList(pageno){
+                const result = await axios.get(
+                    `/api/product/search/recproduct?type=${this.$store.state.curShowPetType}&pageno=${pageno}`
+                );
+                this.productList = result.data.selectResult;
+                this.page = result.data.pageDTO;
+            }
         }
     }
 </script>

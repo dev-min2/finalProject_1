@@ -17,8 +17,12 @@
             <!-- Product name-->
             <p></p>
             <h6 class="fw-bolder">{{product.product_name}}</h6>
+          </div>
+          <div class="text-left">
             <!-- Product price-->
             <p>{{product.product_price}}원</p>
+          </div>
+          <div class="text-left">
             <p v-if="product.avg_cnt !== null">
               {{ '★'+ product.avg_cnt }}{{ '(' + product.cnt + ')' }}
             </p>

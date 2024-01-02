@@ -53,6 +53,40 @@ class ProductService {
         }
         return resResult;
     }
+    //신상품
+    async getNewProductList(ptype,pageno) {
+        const result = await productDAO.selectNewProductQuery(ptype,pageno);
+        const countResult = await productDAO.selectNewProductCntQuery(ptype,pageno);
+        const pageDTO = new PageDTO(countResult[0].cnt, Number(pageno), 8);
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+        return resResult;
+    }
+    //베스트
+    async getBestProductList(ptype,pageno) {
+        const result = await productDAO.selectBestProductQuery(ptype,pageno);
+        //const countResult = await productDAO.selectBestProductCntQuery(ptype,pageno);
+        const pageDTO = new PageDTO(result.length, Number(pageno), 8);
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+        return resResult;
+    }
+
+    // 추천상품
+    async getRecProductList(ptype,pageno) {
+        const result = await productDAO.selectRecProductQuery(ptype,pageno);
+        //const countResult = await productDAO.selectRecProductCntQuery(ptype,pageno);
+        const pageDTO = new PageDTO(result.length, Number(pageno), 8);
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+        return resResult;
+    }
 }
 
 module.exports = ProductService;

@@ -55,6 +55,11 @@
         productList3: [],
       };
     },
+    computed : {
+      petType() {
+        return this.$store.state.curShowPetType;
+      }
+    },
     created() {
       this.getMainpageProductList();
     },
@@ -70,5 +75,12 @@
         this.$hideLoading();
       },
     },
+    watch : {
+      petType(newVal,oldVal) {
+        if(newVal != oldVal) {
+          this.getMainpageProductList();
+        }
+      }
+    }
   };
 </script>
