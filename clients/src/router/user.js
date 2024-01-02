@@ -4,7 +4,7 @@ import LoginComp from '../views/userview/LoginComp.vue'
 import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
 import TestView from '../views/userview/TestView.vue'
-import TestCartView from '../views/userview/TestCartView.vue'
+import CartView from '../views/userview/CartView.vue'
 //마이페이지
 import MyPageSide from '../components/common/MypageSidebar.vue'
 import MyInfo from '../views/userview/mypage/MyInfo.vue'
@@ -52,7 +52,7 @@ export default {
         {
           path: "/cart",
           name: "cart",
-          component: TestCartView,
+          component: CartView,
         }, 
         {
           path: "/mypageside",
