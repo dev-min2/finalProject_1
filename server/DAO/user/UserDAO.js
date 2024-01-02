@@ -46,12 +46,29 @@ const userDAO = {
         return query(selectForgotPWQuery,[user_id, user_email]);
     },
     updateResetPWQuery : async function(user_pw, user_id, user_email) {
-        console.log(user_pw);
         const updateResetPWQuery = `
             UPDATE user SET user_pw = ? WHERE user_id = ? AND user_email = ?
         `;
 
         return query(updateResetPWQuery,[user_pw,user_id,user_email]);
+    },
+
+    selectUserInfoQuery : async function(userNo) {
+        const selectUserInfoQuery = `
+            SELECT *
+                FROM user
+                WHERE user_no = ?
+        `
+        return query(selectUserInfoQuery, userNo);
+    },
+
+    updateUserInfoQuery : async function(userObj) {
+        const user_no = userObj.user_no;
+        delete userObj.user_no;
+        const updateUserInfoQuery = `
+            UPDATE user SET ? where user_no = ?
+        `
+        return query(updateUserInfoQuery, [userObj, user_no]);
     },
 
     //테스트용 지워야함

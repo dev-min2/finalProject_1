@@ -249,6 +249,19 @@ class UserService {
         return result;
     }
 
+    async getUserInfo(userNo) {
+        const result = await userDAO.selectUserInfoQuery(userNo);
+        return result[0];
+    }
+
+    async modifyUserInfo(userObj) {
+        const result = await userDAO.updateUserInfoQuery(userObj);
+        if(result.affectedRows > 0)
+            return true;
+        else
+            return false;
+    }
+
     // 테스트용
     async testUpload(deschtml, fileName) {
         let data = {

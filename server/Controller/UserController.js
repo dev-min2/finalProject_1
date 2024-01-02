@@ -2,6 +2,7 @@ const express = require("express");
 const userRouter = express.Router();
 
 const UserSevice = require("../Service/UserSevice");
+const UserService = require("../Service/UserSevice");
 
 
 //마이페이지-내 반려동물관리
@@ -209,6 +210,36 @@ userRouter.delete('/carts/:userNo/:productNo', async (req, res) => {
         }catch(err) {
             console.log(err);
         }
+})
+
+userRouter.get('/info', async(req, res) => {
+    const userNo = req.query.userNo;
+    try {
+        const userService = new UserService();
+        const result = await userService.getUserInfo(userNo);
+        res.status(200).send(result);
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500).send("FAIL");
+    }
+});
+
+userRouter.put('/info', async(req, res) => {
+    const userObj = req.body;
+    console.log(userObj);
+    try {
+        const userService = new UserService();
+        const result = await userService.modifyUserInfo(userObj);
+        if(result)
+            res.status(200).send("OK");
+        else
+            res.status(403).send("FAIL");
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500).send("FAIL");
+    }
 })
 
 // 파일 업로드 테스트용 코드

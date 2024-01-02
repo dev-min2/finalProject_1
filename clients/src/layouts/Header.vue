@@ -85,10 +85,6 @@ g<template>
             <router-link class="nav-link" to="/upload">업로드테스트</router-link>
           </li>
           <!-- 지워야함-->
-          <li class="nav-item">
-            <router-link class="nav-link" to="/uploadView">상품카드테스트</router-link>
-          </li>
-          <!-- 지워야함-->
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
