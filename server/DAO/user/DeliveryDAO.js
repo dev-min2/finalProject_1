@@ -26,9 +26,28 @@ let deliveryDAO = {
         Join product D ON D.product_no = A.product_no
         where C.user_name LIKE ?
         `;
-        return query(sellerDeliverySearchUserName,searchQuery)
-        
- }
+        return query(sellerDeliverySearchUserName,searchQuery)        
+ },
+
+ //판매자 배송현황-배송상태변경-주소 업데이트
+     sellerDeliveryAddrUpdate : async function(addr,paymentNo) {
+        const sellerDeliveryAddrUpdate = `
+            UPDATE payment
+            set receiver_addr= ?
+            where payment_no = ?    
+        `;
+        return query(sellerDeliveryAddrUpdate,[addr,paymentNo])        
+    },
+    //판매자 배송현황-배송상태변경-운송장 업데이트
+    sellerDeliveryNumberUpdate : async function(deliveryNumber,paymentNo) {
+        const sellerDeliveryNumberUpdate = `
+            UPDATE payment_product
+            set delivery_number = ?
+            where payment_no = ?   
+        `;
+        return query(sellerDeliveryNumberUpdate,[deliveryNumber,paymentNo])        
+    },
+
 };
 
 

@@ -24,10 +24,12 @@
                     <th>결제 번호</th>
                     <th>회원 이름</th>
                     <th>회원 주소</th>
+                    <th>운송장 번호</th>
                     <th>상품 이름</th>
                     <th>구매 수량</th>
                     <th>주문일</th>
                     <th>배송 상태</th>
+                    <th>배송 상태 변경</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,10 +37,44 @@
                     <td class = "no">{{delivery.payment_no}}</td>
                     <td class="name">{{ delivery.user_name }}</td>
                     <td class="addr">{{ delivery.user_addr }}</td>
+                    <td class="deliveryNo">{{ delivery.delivery_number }}</td>
                     <td class="pname">{{ delivery.product_name }}</td>
                     <td class="buycnt">{{ delivery.buy_cnt }}</td>
                     <td class="date">{{delivery.payment_date}}</td>
-                    <td class="state">{{delivery.delivery_state}}<button @click="changeDeliveryState">변경하기</button></td>
+                    <td class="state">{{delivery.delivery_state}}</td>
+                    <!--<td><button @click="changeDeliveryState">변경하기</button></td>-->
+                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                          변경하기
+                        </button>
+                        <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel"> 운송장번호와 주소를 입력해 주세요.</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <table>                                
+                                            <tr>
+                                                <td>운송장번호</td>
+                                                <td><input type = "text" v-model="deliveryNumber"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>주소</td>
+                                                <td><input type="text" v-model="addr"></td>
+                                            </tr>  
+                                    </table>    
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary">확인</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </td>
+                    
                 </tr>
             </tbody>
         </table>
@@ -54,6 +90,8 @@
                 search: '',
                 deliveryPerPage: 5,
                 currentPage: 1,
+                deliveryNumber:'',
+                addr:''
             };
         },
         created() {
@@ -113,7 +151,7 @@
         width: 100px;
     }
     .name{
-        width: 200px;
+        width: 150px;
     }
     .buycnt{
         width: 100px;
@@ -125,6 +163,6 @@
         width: 300px;
     }
     .state{
-        width: 250px;
+        width: 120px;
     }
 </style>
