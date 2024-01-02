@@ -14,97 +14,102 @@ import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
+import SearchPage from '../views/userview/SearchPage.vue'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
 
 export default {
-    path : '/',
-    name : 'tmpMain',
-    component : UserTemplate,
-    redirect : '/main',
-    children : [ // 자식에다가 컴포넌트 추가하면 됩니다.
-        {
-            path: '/main',
-            name: 'main',
-            component: MainBody
+  path: '/',
+  name: 'tmpMain',
+  component: UserTemplate,
+  redirect: '/main',
+  children: [ // 자식에다가 컴포넌트 추가하면 됩니다.
+    {
+      path: '/main',
+      name: 'main',
+      component: MainBody
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginComp
+    },
+    {
+      path: '/join/:sellerJoin',
+      name: 'join',
+      component: CreateAccountComp
+    },
+    {
+      path: '/upload',
+      name: 'upload',
+      component: TestUploadView
+    },
+    {
+      path: '/uploadView',
+      name: 'uploadView',
+      component: TestView
+    },
+    {
+      path: "/cart",
+      name: "cart",
+      component: CartView,
+    },
+    {
+      path: "/productdetail",
+      name: "productdetail",
+      component: TestProductDetailView,
+    },
+    {
+      path: "/mypageside",
+      name: "mypageside",
+      component: MyPageSide,
+      children: [{
+          path: "/myinfo",
+          name: "myinfo",
+          component: MyInfo
         },
         {
-          path: '/login',
-          name: 'login',
-          component: LoginComp
+          path: "/orderdetail",
+          name: "orderdetail",
+          component: OrderDetail
         },
         {
-          path: '/join/:sellerJoin',
-          name: 'join',
-          component: CreateAccountComp
+          path: "/mypetinfo",
+          name: "mypetinfo",
+          component: MyPetInfo
         },
         {
-          path: '/upload',
-          name: 'upload',
-          component : TestUploadView
-        },
-        {
-          path: '/uploadView',
-          name: 'uploadView',
-          component : TestView
-        },
-        {
-          path: "/cart",
-          name: "cart",
-          component: CartView,
-        }, 
-        {
-          path: "/productdetail",
-          name: "productdetail",
-          component: TestProductDetailView,
-        }, 
-        {
-          path: "/mypageside",
-          name: "mypageside",
-          component: MyPageSide,
-          children : [
-            {
-              path: "/myinfo",
-              name: "myinfo",
-              component: MyInfo
-            },
-            {
-              path: "/orderdetail",
-              name: "orderdetail",
-              component: OrderDetail
-            },
-            {
-              path: "/mypetinfo",
-              name: "mypetinfo",
-              component: MyPetInfo
-            },
-            {
-              path: "/mypetform",
-              name: "mypetform",
-              component: MyPetForm
-            }
-          ]
-        },
-        {
-          path: "/forgot-account/:forgot",
-          name: "forgotAccount",
-          component : ForgotAccountComp
-        },
-        {
-          path: "/notice",
-          name: "notice",
-          component: NoticeList
-        },
-        {
-          path: "/notice/write",
-          name: "noticeWrite",
-          component : CreateNotice
-        },
-        {
-          path: "/notice/:no",
-          name: "noticeInfo",
-          component: NoticeContent
+          path: "/mypetform",
+          name: "mypetform",
+          component: MyPetForm
         }
-    ]
+      ]
+    },
+    {
+      path: "/forgot-account/:forgot",
+      name: "forgotAccount",
+      component: ForgotAccountComp
+    },
+    {
+      path: '/search',
+      name: 'searchPage',
+      component: SearchPage
+    },
+    {
+      path: "/notice",
+      name: "notice",
+      component: NoticeList
+    },
+    {
+      path: "/notice/write",
+      name: "noticeWrite",
+      component: CreateNotice
+    },
+    {
+      path: "/notice/:no",
+      name: "noticeInfo",
+      component: NoticeContent
+    }
+  ]
 };
