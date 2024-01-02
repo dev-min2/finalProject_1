@@ -4,7 +4,7 @@ let { pool,query } = require('../../config/dbPool');
 const myCartDAO = {
     showCartQuery: async function (user_no) {
         const showCartQuery = `
-        SELECT p.product_no, c.product_sel_cnt, p.product_name, p.product_desc,
+        SELECT p.product_no, c.product_sel_cnt, p.product_name, p.product_desc, p.pet_type,
         p.product_price, p.product_image, p.product_stock, u.company_name
         FROM product p 
         JOIN cart c ON p.product_no = c.product_no 

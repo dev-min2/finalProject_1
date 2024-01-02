@@ -35,19 +35,12 @@
                 @change="checkProd($event.target, products, idx)"
               />
             </td>
-            <!-- <td>
-              <input
-                type="checkbox"
-                name="pno"
-                value="상품번호"
-                style="display: none"
-              />
-              
-            </td> -->
             <td>
-              <!-- <a href=""><img :src=`$store.state.curIp/dog/product.product_image` style="width:100px" /></a> -->
-              <a href=""><img src="../assets/logo.png" style="width:100px" /></a>
-            </td>
+                <a href="">
+                  <img v-if="products.pet_type == 'd1'" :src="$store.state.prImg + `dog/` + products.product_image" style="width:100px" />
+                  <img v-else :src="$store.state.prImg + `cat/` + products.product_image" style="width:100px" />
+                  </a>
+              </td>
             <td>
               <a href="">{{products.product_name}}</a>
               <br />
@@ -90,7 +83,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td colspan="2"><h4>상품금액 합계 : {{companyPriceList[idx]}}원</h4></td>
+            <td colspan="2"><h4>선택 상품금액 : {{companyPriceList[idx]}}원</h4></td>
           </tr>
           <br>
           <br>
@@ -98,7 +91,10 @@
         </tfoot>
       </table>
     </template>
-    <td class="total"><h4>총 결제 금액 : {{checkedPrice}}</h4></td>
+    <td class="total">
+      <h4 v-if="cartList.length > 0">총 결제 금액 : {{checkedPrice}}</h4>
+      <h4 v-else>장바구니가 비어있습니다.</h4>
+    </td>
   </div>
 </template>
 <script>
