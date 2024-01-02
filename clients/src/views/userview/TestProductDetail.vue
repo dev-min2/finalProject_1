@@ -3,7 +3,13 @@
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="../../../src/assets/products/dog/ANF 치킨야채 캔 95g.png" alt="..." /></div>
+                {{product}}
+                    <div class="col-md-6">
+                    <img class="card-img-top mb-5 mb-md-0" v-if="type == 'd1'"
+                    :src="$store.state.prImg + `dog/` + product.product_image" alt="..." />
+                    <img class="card-img-top mb-5 mb-md-0" v-else
+                    :src="$store.state.prImg + `cat/` + product.product_image" alt="..." />
+                    </div>
                     <div class="col-md-6">
                         <div class="small mb-1">
                             <span style="font-size : 25px">★ 별점</span>
@@ -14,7 +20,7 @@
                             <!-- <span class="text-decoration-line-through">$45.00</span> -->
                             <span style="font-size : 30px">\ 상품가격</span>
                         </div>
-                        <p class="lead">상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명 상품 설명</p>
+                        <p class="lead">상품 설명</p>
                         <br />
                         <div class="d-flex">
                             <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 5rem" />
