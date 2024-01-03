@@ -11,7 +11,14 @@
                     </div>
                     <div class="col-md-6">
                         <div class="small mb-1">
-                            <span style="font-size : 25px">별점 : {{productDetail.star_cnt}}</span>
+                            <span style="font-size : 25px">별점 : {{productDetail.star_cnt}} </span>
+                        </div>
+                        <div class="d-flex justify-content-center small text-warning mb-2" style="font-size : 20px;">
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
                         </div>
                         <h1 class="display-5 fw-bolder">{{productDetail.product_name}}</h1>
                         <br />
