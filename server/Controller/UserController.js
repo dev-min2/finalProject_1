@@ -241,6 +241,7 @@ userRouter.put('/info', async(req, res) => {
     }
 });
 
+//작성한 리뷰 목록
 userRouter.get('/myreview', async(req, res)=>{
     const userNo = req.query.userNo;
     const pageNo = req.query.pageNo;
@@ -252,8 +253,11 @@ userRouter.get('/myreview', async(req, res)=>{
     }catch(e) {
         console.log(e);
     }
+});
 
-})
+//리뷰 작성하기
+
+
 
 // 파일 업로드 테스트용 코드
 const multer = require("multer");
