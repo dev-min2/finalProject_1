@@ -87,6 +87,11 @@ class ProductService {
         }
         return resResult;
     }
+    //하랑
+    async showProdDetail(product_no) {
+        let result = await productDAO.showProductDetailQuery(product_no);
+        return result[0];
+    }
 }
 
 module.exports = ProductService;
