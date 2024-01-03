@@ -14,6 +14,14 @@ class ProductService {
     constructor() {
      
     }
+
+    //쿠폰
+    //내 쿠폰 가져오기
+    async getMyCouponList(userNo){
+        const result = await couponDAO.selectMyCouponQuery(userNo);
+        return result;
+    }
+
     //결제 폼
     async getCartList(userNo){ //장바구니 정보 가져오기
         const result = await paymentDAO.selectCartQuery(userNo);
@@ -28,24 +36,20 @@ class ProductService {
             //트랜잭션 시작
             await connection.beginTransaction(); 
             let result = await paymentDAO.insertPaymentQuery(paymentObj,connection); //결제정보 삽입
-            let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData,connection); //개별상품결제정보 삽입
+            for(let i = 0; i < paymentData.length; ++i) {
+                let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData[i],connection); //개별상품결제정보 삽입
+            }
             let result3 = await paymentProductsDAO.deleteCartQuery(userNo,connection); //장바구니 삭제
             await connection.commit(); //결제처리 성공
         }
         catch(e){ 
+            console.log(e);
             await connection.rollback(); //결제처리 실패
         }
         finally {
             connection.release(); //사용한 커넥션 다시 풀에 반납
         }
         
-    }
-
-    //쿠폰
-    //내 쿠폰 가져오기
-    async getMyCouponList(userNo){
-        const result = await couponDAO.selectMyCouponQuery(userNo);
-        return result;
     }
 
 

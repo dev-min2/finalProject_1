@@ -17,12 +17,16 @@ productRouter.get('/paymentform/coupon/:userNo', async(req, res)=>{
 })
 
 
-//결제폼-장바구니 리스트
+//결제폼- 장바구니 리스트
 productRouter.get('/paymentform/:userNo', async(req, res)=>{ 
     let userNo = req.params.userNo;
     try{
         const productService = new ProductService();
         let result = await productService.getCartList(userNo);
+        //let cartList = await productService.getCartList(userNo);
+        //let couponList = await productService.getMyCouponList(userNo);
+
+        //const result = [cartList,couponList ]
         console.log('ProductControll', result);
         res.send(result);
     }catch(e){
@@ -38,7 +42,7 @@ productRouter.get('/paymentform/:userNo', async(req, res)=>{
     try{
         const productService = new ProductService();
         let result 
-            = await productService.completePayment(paymentObj, paymentData, userNo);
+            = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo);
         console.log('ProController 확인!!', result);
         res.send(result);
     }

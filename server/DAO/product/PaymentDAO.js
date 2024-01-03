@@ -15,7 +15,7 @@ let paymentDAO = {
     //결제완료 후 결제 정보 넣기 (1)
     insertPaymentQuery : async function(paymentObj, conn = null){
         const insertPaymentQuery = 
-            `INSERT INTO payment SET =?`;
+            `INSERT INTO payment SET ?`;
 
         if (conn != null){
             return query (insertPaymentQuery, paymentObj);

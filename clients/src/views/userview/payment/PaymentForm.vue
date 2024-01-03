@@ -276,11 +276,10 @@
                 
                 //결제 완료 데이터 처리 테스트
                 let paymentObj = {
-                    param : {
                         payment_no: this.orderNo, 
                         user_no: this.userNo, 
                         my_coupon_no: 2, //쿠폰 생성 후에 수정하기
-                        payment_sub_unique_no: '', //this.rsp.imp_uid,
+                        payment_sub_unique_no: 0, //this.rsp.imp_uid,
                         payment_date: this.orderDate , 
                         payment_amount: this.totalPrice , 
                         payment_discount_amount: 0 , //쿠폰 생성 후에 수정하기
@@ -292,22 +291,20 @@
                         receiver_name: this.receiverName, 
                         receiver_addr: this.receiverAddr, 
                         delivery_request: this.deliveryRequest
-                    }
+                    
                 };
-                let paymentData = new Array();
+                let paymentData = [];
 
                 for (let i = 0; i < this.selectCartQuery.length; i++) {
                     let cartProduct = {
-                    param : {
                         payment_no: this.orderNo, 
                         product_no: this.selectCartQuery[i].product_no, 
                         buy_cnt: this.selectCartQuery[i].product_sel_cnt, 
                         payment_amount: this.selectCartQuery[i].price_sum, 
-                        payment_discount_amount: '', 
+                        payment_discount_amount: 0, 
                         real_payment_amount: this.selectCartQuery[i].price_sum, 
                         delivery_state: 'c1', 
-                        delivery_fee: this.delivery
-                        }
+                        delivery_fee: this.delivery 
                     };
                     //console.log(i,'번입니당:',cartProduct);
                     paymentData.push(cartProduct);
@@ -334,8 +331,11 @@
                 this.orderDate = this.$dateFormat(new Date());
                 if(this.selectCartQuery.length > 1 ){
                     this.orderProduct = this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건';
-                } else { 
+                } else if (this.selectCartQuery.length == 1){ 
                     this.orderProduct = this.selectCartQuery[0].product_name; //단건주문
+                } else {
+                    //상품정보 없음 > 메인으로 이동
+                    this.orderProduct = '';
                 }
 
 
