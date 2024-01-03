@@ -23,6 +23,12 @@ let paymentDAO = {
         return query (insertPaymentQuery, paymentObj);
     },
 
+    //결제 주문내역 불러오기
+    selectPaymentList : async function(userNo){
+        const selectPaymentList =
+            `SELECT * FROM payment WHERE user_no = ?`;
+            return query(selectPaymentList, userNo);
+    }
 };
 
 module.exports = paymentDAO;

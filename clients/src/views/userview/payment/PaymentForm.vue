@@ -223,20 +223,14 @@
             //회원 장바구니, 쿠폰리스트, 회원정보 가져오기
             async getUserInfo(){
                 let result 
-                    = await axios.get(`/api/product/paymentform/test/${this.userNo}`)
+                    = await axios.get(`/api/product/paymentform/${this.userNo}`)
                                 .catch(err => console.log(err));
                 this.selectUserPaymentQuery = result.data;
                 //0 장바구니, 1 쿠폰, 2 회원정보
-                console.log('할수이따: ',this.selectUserPaymentQuery);
-                console.log('‘ ^ ‘',this.selectUserPaymentQuery[0]);
                 //각각 변수에 담기
-                console.log(this.selectCartQuery);
                 this.selectCartQuery = this.selectUserPaymentQuery[0];
                 this.selectMyCouponQuery = this.selectUserPaymentQuery[1];
                 this.selectUserQuery = this.selectUserPaymentQuery[2];
-                console.log('0',this.selectCartQuery);
-                console.log('1',this.selectMyCouponQuery);
-                console.log('2',this.selectUserQuery);
             },
             //금액 계산 / 총 금액, 총 수량, 배송비
             total() {
@@ -293,7 +287,6 @@
                         receiver_addr: this.receiverAddr, 
                         delivery_request: this.deliveryRequest
                 };
-                console.log('전체입니당',paymentObj);
 
                 //payment_product 테이블
                 let paymentData = [];
@@ -310,8 +303,6 @@
                     };
                     paymentData.push(cartProduct);
                 }
-                
-                console.log('개별상품입니당',paymentData);
 
                 let userNo = this.userNo;
                 const sendObj = {
@@ -353,7 +344,6 @@
                 //결제 넘기기
                 const myThis = this;
                 IMP.request_pay(paymentInfo, rsp => { // callback
-                    console.log('1', rsp);
                     if (rsp.success) {
                         //결제완료 페이지에 넘길 정보
                         let paymentDetail = { 
@@ -365,9 +355,6 @@
                         //주문 DB저장, 장바구니 비우기
                         myThis.impUid = rsp.imp_uid;
                         this.getPaymentInfo();
-
-                        console.log('2. 결제폼 성공', rsp); //imp_uid, merchant_uid
-                        console.log('3. imp uid', rsp.imp_uid);
                         myThis.$router.push({ name : 'paymentcomplete', query: paymentDetail }); //주문완료 페이지 이동
                     } else {
                         myThis.$showWarningAlert('결제 실패');

@@ -36,7 +36,16 @@
 
 <script>
 export default {
-	
+	data() {
+		return {
+			userNo: '',
+			selectPaymentList : []
+		}
+	},
+	method: {
+		
+
+	}
 }
 </script>
 

@@ -4,7 +4,7 @@ const ProductService = require("../Service/ProductService");
 
 
 //결제폼-회원정보,쿠폰,장바구니 같이 불러오기
-productRouter.get('/paymentform/test/:userNo', async(req, res)=>{
+productRouter.get('/paymentform/:userNo', async(req, res)=>{
     let userNo = req.params.userNo;
     try{
         const productService = new ProductService();
@@ -16,24 +16,6 @@ productRouter.get('/paymentform/test/:userNo', async(req, res)=>{
         console.log(e);
     }
 })
-
-
-//결제폼- 장바구니 리스트
-productRouter.get('/paymentform/:userNo', async(req, res)=>{ 
-    let userNo = req.params.userNo;
-    try{
-        const productService = new ProductService();
-        let result = await productService.getCartList(userNo);
-        //let cartList = await productService.getCartList(userNo);
-        //let couponList = await productService.getMyCouponList(userNo);
-
-        //const result = [cartList,couponList ]
-        console.log('ProductControll', result);
-        res.send(result);
-    }catch(e){
-        console.log(e);
-    }
- });
 
  //결제 완료 처리
  //(1) 결제 정보 넣기
@@ -52,7 +34,20 @@ productRouter.get('/paymentform/:userNo', async(req, res)=>{
     }
  })
  
+ //주문내역 불러오기
+ productRouter.get('/orderdetail/:userNo', async(req, res) => {
+    let userNo = req.params.userNo;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getPaymentList(userNo);
+        console.log('prdCont', result);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
 
+ })
 
 
 

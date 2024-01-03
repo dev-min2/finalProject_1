@@ -3,7 +3,6 @@ const paymentDAO = require('../DAO/product/PaymentDAO');
 const paymentProductsDAO = require('../DAO/product/PaymentProductsDAO');
 const { getConnection } = require('../config/dbPool');
 
-
 const productDAO = require("../DAO/product/ProductDAO");
 const categoryDAO = require("../DAO/product/CategoryDAO");
 const couponDAO = require("../DAO/product/CouponDAO");
@@ -30,7 +29,6 @@ class ProductService {
     async getCartList(userNo){ 
         const result = await paymentDAO.selectCartQuery(userNo);
         return result;
-
     }
     
     //결제 완료 처리
@@ -55,7 +53,11 @@ class ProductService {
         }
         
     }
-
+    //주문 내역 가져오기
+    async getPaymentList(userNo){
+        const result = paymentDAO.selectPaymentList(userNo);
+        return result;
+    }
 
     // 상품리스트 가져오기
     async getMainpageProductList(ptype) {
