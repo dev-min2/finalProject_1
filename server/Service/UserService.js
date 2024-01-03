@@ -9,6 +9,8 @@ const myCartDAO = require('../DAO/user/MyCartDAO');
 //마이페이지
 const myPetDAO = require('../DAO/user/MyPetDAO');
 const reviewDAO = require('../DAO/user/ReviewDAO');
+const PageDTO = require("../commonModule/PageDTO");
+
 
 class UserService {
     constructor() {
@@ -263,9 +265,16 @@ class UserService {
             return false;
     }
     // 내 리뷰 내역 조회
-    async getMyReviewList(userNo){
-        const result = await reviewDAO.selectReviewListQuery(userNo);
-        return result;
+    async getMyReviewList(userNo, pageno, productNo){
+        const result = await reviewDAO.selectReviewListQuery(userNo, pageno);
+        const countResult = await reviewDAO.selectReviewCntQuery(userNo, productNo);
+        const pageDTO = new PageDTO(countResult[0].cnt, Number(pageno), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+        console.log(pageDTO);
+        return resResult;
     }
 
     // 테스트용
