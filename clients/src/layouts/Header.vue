@@ -80,7 +80,8 @@ g<template>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" @click="this.getRecProduct()">추천상품</a>
-          </li> 
+          </li>
+
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -188,14 +189,9 @@ g<template>
         const userNo = this.$store.state.userNo;
         if (this.$store.state.userNo < 0) return;
 
-      },
-      async logout() {
-        const userNo = this.$store.state.userNo;
-        if (this.$store.state.userNo < 0) return;
-
         let result = await axios.get("/api/user/logout");
         if (result.status == 200 && result.data == "OK") {
-          alert("로그아웃 완료");
+          this.$showSuccessAlert("로그아웃 완료");
           this.$store.commit("setUserNo", -1);
           this.$store.commit("setUserPermission", '');
           this.$router.push({

@@ -26,7 +26,6 @@ let noticeBoardDAO = {
     selectNoticeBoardListQuery : async function(pageNo,keyword) {
         // 한번에 10개씩 리스트 보여줌
         const pageStartList = (pageNo - 1) * 10;
-        const pageEndList = pageNo * 10;
 
         let selectNoticeBoardQuery = null;
         let inputArray = [];
@@ -39,7 +38,7 @@ let noticeBoardDAO = {
                     LIMIT ?, ?
             `;
             inputArray.push(pageStartList);
-            inputArray.push(pageEndList);
+            inputArray.push(10);
         }
         else {
             const searchquery = "%" + keyword + "%";
@@ -52,7 +51,7 @@ let noticeBoardDAO = {
             `;
             inputArray.push(searchquery);
             inputArray.push(pageStartList);
-            inputArray.push(pageEndList);
+            inputArray.push(10);
         }
         
 
