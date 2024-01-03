@@ -1,7 +1,7 @@
 <template>
     <div id="container">
         <div class="table-header">검색 조건</div>
-        <product-filter-search-bar @send-categoryNo-publicStateNo="getMyProductList"/>
+        <product-filter-search-bar @send-search="getMyProductList"/>
 
         <div class="product-toolbar">
             <div class="display-options">
@@ -76,6 +76,7 @@
         methods: {
 
             async getMyProductList(infoObj) {
+                console.log(infoObj);
                 let result = '';
                 const userNo = 1;
                 try {
