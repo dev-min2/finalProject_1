@@ -52,13 +52,13 @@
                 type="button"
                 value="▲"
                 class="cart_list_optionbtn"
-                @click="upfunction(products, idx)"
+                @click="upfunction($event.target, products, idx, companyIndex)"
               />
               <input
                 type="button"
                 value="▼"
                 class="cart_list_optionbtn"
-                @click="downfunction(products, idx)"
+                @click="downfunction($event.target, products, idx, companyIndex)"
               />
               <input
                 type="button"
@@ -78,7 +78,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td colspan="2"><h4>선택 상품금액 : {{companyPriceList[idx]}}원</h4></td>
+            <td colspan="2"><h4>선택 상품금액 : {{companyPriceList[idx]}}원 <br> 배송비 : {{deliveryPriceList[idx]}}원 <hr>결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
           </tr>
           <br>
           <br>
@@ -87,9 +87,10 @@
       </table>
     </template>
     <td class="total">
-      <h4 v-if="cartList && Object.keys(cartList).length > 0">총 결제 금액 : {{checkedPrice}}</h4>
+      <h4 v-if="cartList && Object.keys(cartList).length > 0">총 선택 상품금액 : {{checkedPrice}}원<br>총 배송비 : {{totalPrice()}}원 <hr>총 결제금액 : {{checkedPrice + totalPrice()}}원</h4> 
       <h4 v-else style="text-align : center">장바구니가 비어있습니다.</h4>
-    </td>
+      
+    </td> 
   </div>
 </template>
 <script>
@@ -100,12 +101,16 @@ export default {
     return {
       cartList: [],
       cartPriceList:[],
+// [(A업체배송비),(B업체배송비),(C업체배송비)]
+// deliveryPriceList[idx] = 0;
 
       checkedPrice:0,
       companyPrice:0,
 
       companyChecked : [],
       companyPriceList : [],
+
+      deliveryPriceList : [],
     };
   },
   created() {
@@ -133,12 +138,13 @@ export default {
       for(const object in this.cartList) {
           object;
           this.companyPriceList.push(0);
+          this.deliveryPriceList.push(0);
       }
       this.$hideLoading();
     },
     //상품선택수량증가
-    async upfunction(products, idx){
-     
+    async upfunction(target, products, idx, companyIndex){
+     companyIndex
       this.$showLoading();
       let result = await axios
                         .put(`/api/user/carts/${products.product_no}/up`)
@@ -153,13 +159,25 @@ export default {
         products.product_sel_cnt++;
         if(products.selected){
           this.checkedPrice += products.product_price;
-          this.companyPriceList[idx] += products.product_price ;          
+          this.companyPriceList[idx] += products.product_price ;
+          if(this.companyPriceList[idx] >= 30000){
+            this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }  
+                    
+        }
+        if(!products.selected) {
+          products.selected = true;
+          target.checked = true;
+          this.checkProd(target,products,idx,companyIndex);
         }
       }
     },
     //상품선택수량감소
-    async downfunction(products, idx){
-     
+    async downfunction(target, products, idx, companyIndex){
       this.$showLoading();
       let result = await axios
                           .put(`/api/user/carts/${products.product_no}/down`)
@@ -174,6 +192,17 @@ export default {
         if(products.selected){
           this.checkedPrice -= products.product_price;
           this.companyPriceList[idx] -= products.product_price ;
+          if(this.companyPriceList[idx] >= 30000){
+            this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }
+        }if(!products.selected) {
+          products.selected = true;
+          target.checked = true;
+          this.checkProd(target,products,idx,companyIndex);
         }
       }
     },
@@ -201,6 +230,13 @@ export default {
       if(products.selected){
         this.checkedPrice -= products.product_price * products.product_sel_cnt;
         this.companyPriceList[idx] -= products.product_price * products.product_sel_cnt ;
+        if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }
       }  
     },
     //체크박스
@@ -209,7 +245,6 @@ export default {
       if(target.checked) {
         this.companyPriceList[idx] += products.product_price * products.product_sel_cnt ;
         this.checkedPrice += products.product_price * products.product_sel_cnt;
-
         const productArray = this.cartList[companyIndex];
         let isAllCheck = true;
         for(let i = 0; i < productArray.length; ++i) {
@@ -222,16 +257,38 @@ export default {
         if(isAllCheck && !this.companyChecked[idx]) {
           this.companyChecked[idx] = true;
         }
+        if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }      
       }
       else {
         this.companyPriceList[idx] -= products.product_price * products.product_sel_cnt;
         this.checkedPrice -= products.product_price * products.product_sel_cnt;
-
         if(this.companyChecked[idx]) {
           this.companyChecked[idx] = false;
         }
+        if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }    
         return;
       }
+    },
+    //총배송비 함수
+    totalPrice() {
+      let sum = 0;
+      for(let i = 0; i < this.deliveryPriceList.length; ++i) {
+        sum += this.deliveryPriceList[i];
+      }
+      
+      return sum;
     },
     //그룹별
     checkComp(checked, companyIndex, idx){
@@ -246,6 +303,13 @@ export default {
           }
           this.companyPriceList[idx] += sum;
           this.checkedPrice += sum;
+          if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }
       }
       else { // 그룹별 체크가 풀린상태. (기존에 풀린건 냅두고, 선택된것만 풀어야함.)
           let sum = 0;
@@ -257,9 +321,17 @@ export default {
           }
           this.companyPriceList[idx] = 0;
           this.checkedPrice -= sum;
+          if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }
       }
+
     },
-    //함수
+    //그룹바이함수
     groupBy: function(data, key){
       return data.reduce(function (carry, el){
         var group = el[key];
