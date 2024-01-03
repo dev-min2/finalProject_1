@@ -1,8 +1,8 @@
 <template>
     <section class="py-3">
         <div>
-            <h3 class="text-center">{{ keyword }}에 대한 검색 결과는</h3>
-            <h3 class="text-center" v-if="page !== null"> {{ page.total }} 건 입니다.</h3>
+            <h3 class="text-center">"{{ keyword }}" 에 대한 상품은</h3>
+            <h3 class="text-center" v-if="page !== null"> 총 {{ page.total }} 건 입니다.</h3>
         </div>
         <div class="container px-4 px-lg-5 mt-5">
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
