@@ -44,14 +44,6 @@ const myCartDAO = {
         `;
         return query(deleteProductQuery, [user_no, product_no]);
     },
-    // showProductDetailQuery: async function (product_no, category_no, pet_type) {
-    //     const showProductDetailQuery = `
-    //     SELECT *
-    //     FROM product
-    //     WHERE product_no = ? and category_no = ? and pet_type = ?
-    //     `;
-    //     return query(showProductDetailQuery, [product_no, category_no, pet_type]);
-    // }
 };
 
 module.exports = myCartDAO;
