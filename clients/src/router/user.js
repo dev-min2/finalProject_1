@@ -12,6 +12,7 @@ import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
 import ChangePassword from '../views/userview/mypage/ChangePassword.vue'
+import MyReview from '../views/userview/mypage/MyReviewList.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
@@ -78,6 +79,11 @@ export default {
           path: "/changeInfo",
           name: "changeInfo",
           component: ChangeMyInfo
+        },
+        {
+          path : "/myreview",
+          name : "myreview",
+          component : MyReview
         }
       ]
     },

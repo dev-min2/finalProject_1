@@ -8,6 +8,7 @@ const myCartDAO = require('../DAO/user/MyCartDAO');
 
 //마이페이지
 const myPetDAO = require('../DAO/user/MyPetDAO');
+const reviewDAO = require('../DAO/user/ReviewDAO');
 
 class UserService {
     constructor() {
@@ -260,6 +261,11 @@ class UserService {
             return true;
         else
             return false;
+    }
+    // 내 리뷰 내역 조회
+    async getMyReviewList(userNo){
+        const result = await reviewDAO.selectReviewListQuery(userNo);
+        return result;
     }
 
     // 테스트용

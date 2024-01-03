@@ -239,6 +239,19 @@ userRouter.put('/info', async(req, res) => {
         console.log(e);
         res.status(500).send("FAIL");
     }
+});
+
+userRouter.get('/myreview/:userNo', async(req, res)=>{
+    const userNo = req.query.userNo;
+    console.log(userNo);
+    try{
+        const userService = new UserService();
+        const result = await userService.getMyReviewList(userNo);
+        res.send(result);
+    }catch(e) {
+        console.log(e);
+    }
+
 })
 
 // 파일 업로드 테스트용 코드
