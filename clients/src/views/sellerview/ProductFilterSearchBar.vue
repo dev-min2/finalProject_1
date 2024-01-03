@@ -5,10 +5,10 @@
         <td>대분류</td>
         <td>
           <template v-if="categoryList !== null">
-            <template  v-for="(category, idx, idx2) in categoryList" :key="idx2">
-              <input class="mr-1" type="radio" id="cate" name="cate" v-model="selectedCategory"
-                @click="radioCheck($event.target,idx2)" :value="category[0].parent_no">
-              <label class="mr-1" for="cate">{{category[0].parent_category_name}}</label>
+            <template v-for="(category, idx, idx2) in categoryList" :key="idx2">
+              <input class="mr-1" type="radio" :id="'cate' + idx2" name="cate" v-model="selectedCategory"
+                @click="radioCheck($event.target, idx2)" :value="category[0].parent_no" />
+              <label :for="'cate' + idx2" class="mr-1">{{ category[0].parent_category_name }}</label>
             </template>
           </template>
         </td>
@@ -18,8 +18,12 @@
         <td>
           <template v-if="categoryList !== null">
             <template v-for="(category, idx) in categoryList[selectedCategory]" :key="idx">
-              <input class="mr-1" type="checkbox" :id="idx" name="subcate" @click="checkMiddle($event.target,selectedCategory, category.children_no)">
-              <label class="mr-1" :for="idx">{{category.children_category_name}}</label>
+              <input class="mr-1" type="checkbox" :id="'subcate' + idx" name="subcate"
+                @click="checkMiddle($event.target, selectedCategory, category.children_no)"
+                :checked="selectedSubCategory.includes(category.children_no)" /><!-- selectedSubCategory.includes(category.children_no)는 selectedSubCategory 배열에 category.children_no 값이 포함되어 있는지 여부를 확인합니다.
+                                                                                  이 값이 true이면 checkbox가 선택된 상태가 되고, false이면 선택되지 않은 상태가 됩니다.
+                                                                                  따라서 이 부분은 특정 category.children_no가 selectedSubCategory에 포함되어 있으면 checkbox가 체크된 상태가 되도록 하는 것입니다. -->
+              <label :for="'subcate' + idx" class="mr-1">{{ category.children_category_name }}</label> 
             </template>
           </template>
         </td>
@@ -27,10 +31,10 @@
       <tr>
         <td>공개 여부</td>
         <td>
-          <input class="mr-1" type="radio" id="visibility" name="visibility" v-model="visibility" :value='"i1"'>
-          <label class="mr-1" for="visibility">공개</label>
-          <input class="mr-1" type="radio" id="visibility" name="visibility" v-model="visibility" :value='"i2"'>
-          <label class="mr-1" for="visibility">비공개</label>
+          <input class="mr-1" type="radio" :id="'visibility'" name="visibility" v-model="visibility" :value="'i1'" />
+          <label :for="'visibility1'" class="mr-1">공개</label> <!-- 수정된 부분 -->
+          <input class="mr-1" type="radio" :id="'visibility'" name="visibility" v-model="visibility" :value="'i2'" />
+          <label :for="'visibility2'" class="mr-1">비공개</label> <!-- 수정된 부분 -->
         </td>
       </tr>
     </table>
@@ -44,21 +48,21 @@
   export default {
     data() {
       return {
-        categoryList : [],
-        selectedCategory : 0,
-        prevSelCategory : 0,
+        categoryList: [],
+        selectedCategory: 0,
+        prevSelCategory: 0,
         showTest: false,
         subCate: '',
         selectedSubCategory: [],
         prevIdx: 0,
         ategoryList: '',
-        visibility: '',
+        visibility: 'i1',
       }
     },
-    watch : {
+    watch: {
       // 선택된 대분류 카테고리가 달라지면 중분류 선택했던 배열들을 초기화한다.
-      selectedCategory(newVal,oldVal) {
-        if(newVal != oldVal) {
+      selectedCategory(newVal, oldVal) {
+        if (newVal != oldVal) {
           this.selectedSubCategory = [];
         }
       }
@@ -68,17 +72,26 @@
     },
     methods: {
       searchProducts() {
-        let categoryNo;
-        if(this.selectedCategory <= 0) {
-          categoryNo = -1;
-        }
-        else {
-          categoryNo = this.selectedSubCategory;
+            console.log('search:', this.visibility, this.selectedSubCategory);
+
+        let categoryNo1;
+        let categoryNo2;
+        let categoryNo3;
+        if (this.selectedCategory <= 0) {
+          categoryNo1 = -1;
+          categoryNo2 = -1;
+          categoryNo3 = -1;
+        } else {
+          categoryNo1 = this.selectedSubCategory[0];
+          categoryNo2 = this.selectedSubCategory[1];
+          categoryNo3 = this.selectedSubCategory[2];
         }
 
         const sendObject = {
-          categoryNo: categoryNo,
-          publicStateNo: this.visibility == true ? 'I1' : 'I2'
+          categoryNo1: categoryNo1,
+          categoryNo2: categoryNo2,
+          categoryNo3: categoryNo3,
+          publicStateNo: this.visibility ? 'I1' : 'I2'
         }
 
         this.$emit('send-search', sendObject)
@@ -92,13 +105,21 @@
         }
         this.prevIdx = curIdx;
       },
-      checkMiddle(target, sel, categoryNo) {
-        if(this.prevSelCategory != sel) {
+      checkMiddle(target, sel, categoryNo1,categoryNo2,categoryNo3) {
+        if (this.prevSelCategory != sel) {
           this.selectedSubCategory = [];
         }
 
-        if(target.checked) {
-          this.selectedSubCategory.push(categoryNo);
+        if (target.checked) {
+          this.selectedSubCategory.push(categoryNo1);
+          this.selectedSubCategory.push(categoryNo2);
+          this.selectedSubCategory.push(categoryNo3);
+        }else {
+        // 중분류를 선택 해제할 때 해당 항목을 배열에서 제거
+        const indexToRemove = this.selectedSubCategory.indexOf(categoryNo1);
+        if (indexToRemove !== -1) {
+            this.selectedSubCategory.splice(indexToRemove, 1);
+        }
         }
         this.prevSelCategory = sel;
       },

@@ -78,7 +78,7 @@
 
         methods: {
             async getProductList(obj) {
-                console.log(obj);
+                console.log('asd123',obj);
                
                 let result = '';
                 //const userNo = this.$store.state.userNo;

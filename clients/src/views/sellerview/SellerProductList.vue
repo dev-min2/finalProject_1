@@ -1,7 +1,7 @@
 <template>
     <div id="container">
         <div class="table-header">검색 조건</div>
-        <product-filter-search-bar @send-search="getMyProductList"/>
+        <product-filter-search-bar @send-search="getMyProductListFilter" />
 
         <div class="product-toolbar">
             <div class="display-options">
@@ -10,6 +10,7 @@
                     <option value="5">5개</option>
                     <option value="10">10개</option>
                     <option value="20">20개</option>
+                    <option value="100">100개</option>
                 </select>
             </div>
             <div class="total-product">
@@ -33,7 +34,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- <tr :key="i" v-for="(product,i) in displayedProduct">
+                <tr :key="i" v-for="(product,i) in displayedProduct">
                     <td>{{product.product_no}}</td>
                     <td>{{product.product_image}}</td>
                     <td>{{product.product_name}}</td>
@@ -41,7 +42,7 @@
                     <td>{{product.product_public_state}}</td>
                     <td>{{product.Parent_category_name}}>>{{product.child_category_name}}</td>
                     <td>{{product.product_registdate}}</td>
-                </tr> -->
+                </tr>
             </tbody>
         </table>
     </div>
@@ -50,7 +51,7 @@
 <script>
     import axios from 'axios';
     import ProductFilterSearchBar from './ProductFilterSearchBar.vue';
-    
+
     export default {
         components: {
             ProductFilterSearchBar
@@ -61,46 +62,69 @@
                 search: '',
                 productsPerPage: 5,
                 currentPage: 1,
+                getMyProductListFilter:[]
             };
         },
         created() {
-            //this.getMyProductList();
-        },
-        // computed: {
-        //     displayedProduct() {
-        //         const startIndex = (this.currentPage - 1) * this.productsPerPage;
-        //         const endIndex = startIndex + this.productsPerPage;
-        //         return this.sellerProductList.slice(startIndex, endIndex);
-        //     },
-        // },
-        methods: {
 
-            async getMyProductList(infoObj) {
-                console.log(infoObj);
+            this.getMyProductList();
+        },
+        computed: {
+            displayedProduct() {
+                const startIndex = (this.currentPage - 1) * this.productsPerPage;
+                const endIndex = startIndex + this.productsPerPage;
+                return this.sellerProductList.slice(startIndex, endIndex);
+            },
+        },
+        methods: {
+            async getMyProductList() {
+
                 let result = '';
                 const userNo = 1;
                 try {
-                    result = await axios.get(
-                        `/api/product/SellerProductList/${userNo}/${infoObj.categoryNo}/${infoObj.publicStateNo}`);
-                   
-
+                    result = await axios.get(`/api/product/SellerProductList/${userNo}`);
+                    console.log(userNo)
                 } catch (e) {
                     console.log(e);
                 }
-
-                this.sellerProductList = result.data;
+                this.sellerProductList = result.data
             },
-            //상품이름으로 검색
-             async sellerProductSearchName() {
-                let result = '';
+            async getMyProductListFilter(userNo, publicStateNo, categoryNo1, categoryNo2, categoryNo3) {
+                 let result = '';
+                
                 try {
-                    result = await axios.get(`/api/product/sellerProductSearchName/${this.search}`)
-                    console.log('상품이름검색 :' + result);
+                    result = await axios.post(
+                        `/api/product/SellerProductList/${userNo}`, {
+                            publicStateNo: publicStateNo,
+                            categoryNo1: categoryNo1,
+                            categoryNo2: categoryNo2,
+                            categoryNo3: categoryNo3
+                        }
+                    );
+
+                    console.log('categoryNo', categoryNo1, categoryNo2, categoryNo3);
+                    console.log('publicStateNo', publicStateNo);
+
+                    
+                    this.sellerProductList = result.data;
                     
                 } catch (e) {
                     console.log(e);
                 }
-                
+
+
+            },
+            //상품이름으로 검색
+            async sellerProductSearchName() {
+                let result = '';
+                try {
+                    result = await axios.get(`/api/product/sellerProductSearchName/${this.search}`)
+                    console.log('상품이름검색 :' + result);
+
+                } catch (e) {
+                    console.log(e);
+                }
+
                 this.sellerProductList = result.data;
             },
 
@@ -112,7 +136,7 @@
 </script>
 
 <style scoped>
-.product-toolbar {
+    .product-toolbar {
         display: flex;
         justify-content: space-between;
         background-color: #363636;
@@ -120,6 +144,7 @@
         color: white;
         margin: 10px;
     }
+
     .table-header {
         background-color: #5f5f5f;
         color: rgb(255, 255, 255);

@@ -89,14 +89,16 @@ class ProductService {
     async getMyProductList(userNo) {
         
         let result = await productDAO.getMyProductList(userNo);
-        console.log(result)
+        
         return result;
     }
 
     //판매자 상품관리-필터검색
-    async getMyProductListFilter(userNo,categoryNo,publicStateNo) {
-        let result = await productDAO.getMyProductListFilter(userNo,categoryNo,publicStateNo);
-        console.log(result)
+    async getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3) {
+        let result = await productDAO.getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3);
+        console.log('categoryNo',categoryNo1,categoryNo2,categoryNo3)
+        console.log('publicStateNo',publicStateNo)
+        
         return result;
     }
 

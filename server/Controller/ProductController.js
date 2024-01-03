@@ -46,10 +46,10 @@ productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice', async (req
 productRouter.get('/SellerProductList/:userNo', async (req, res) => {
    // let userNo = req.params.userNo;
    const userNo = 1;
+   
    try {
       const productService = new ProductService();
       result = await productService.getMyProductList(userNo);
-      console.log(result);
       res.send(result);
 
    } catch (e) {
@@ -58,52 +58,68 @@ productRouter.get('/SellerProductList/:userNo', async (req, res) => {
 })
 
 //판매자 필터검색 - 카테고리 분류 조회
-productRouter.get('/SellerProductList/:userNo/:categoryNo/:publicStateNo', async (req, res) => {
+productRouter.post('/SellerProductList', async (req, res) => {
    //let userNo = req.params.userNo;
+   console.log('categoryNo',categoryNo1,categoryNo2,categoryNo3)
+      console.log(publicStateNo)
    const userNo = 1;
-   let categoryNo = req.params.categoryNo;
-   let publicStateNo = req.params.publicStateNo;
-   
+   let categoryNo1 = req.body.categoryNo1;
+   let categoryNo2 = req.body.categoryNo2;
+   let categoryNo3 = req.body.categoryNo3;
+   let publicStateNo = req.body.publicStateNo;
    //req.session.userNo;
    try {
       const productService = new ProductService();
-      //건식사료 조회
+
       
-      switch (categoryNo) {
+      switch (categoryNo1) {
          case "0": //건식사료
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "1"://습식사료
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "2"://수제간식
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "3"://캔,파우치
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "4"://통살
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "5"://종합영양제
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "6"://피부 모질
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "7"://뼈.관절
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "8"://샴푸.린스
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "9"://브러쉬
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
          case "10"://발톱.발관리
-            result = await productService.getMyProductListFilter(userNo,categoryNo ,publicStateNo);
-            break;
+            result = await productService.getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3);
+            break;    
       }
+
+      switch (categoryNo2) {
+         case "0": //건식사료
+         case "1"://습식사료
+         case "2"://수제간식
+         case "3"://캔,파우치
+         case "4"://통살
+         case "5"://종합영양제
+         case "6"://피부 모질
+         case "7"://뼈.관절
+         case "8"://샴푸.린스
+         case "9"://브러쉬
+         case "10"://발톱.발관리
+            result = await productService.getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3);
+            break;    
+      }
+
+      switch (categoryNo3) {
+         case "0": //건식사료
+         case "1"://습식사료
+         case "2"://수제간식
+         case "3"://캔,파우치
+         case "4"://통살
+         case "5"://종합영양제
+         case "6"://피부 모질
+         case "7"://뼈.관절
+         case "8"://샴푸.린스
+         case "9"://브러쉬
+         case "10"://발톱.발관리
+            result = await productService.getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3);
+            break;    
+      }
+
       res.send(result);
    } catch (e) {
       console.log(e);

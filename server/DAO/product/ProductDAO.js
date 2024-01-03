@@ -68,8 +68,8 @@ let productDAO = {
     },
 
     //판매자 상품 필터 조회
-    getMyProductListFilter: async function (userNo,categoryNo,publicStateNo) {
-        //category_no 1~4는 대분류라서 중분류인 5부터 조회. 중분류 뒤 괄호안의 숫자는 대분류
+    getMyProductListFilter: async function (userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3) {
+        
 
         const getMyProductListFilter = `
                 SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
@@ -77,10 +77,10 @@ let productDAO = {
                 JOIN category AS B ON A.category_no = B.category_no
                 JOIN category AS C ON C.category_no = B.category_pno
                 WHERE user_no = ?
-                AND A.category_no = ?
                 AND A.product_public_state = ?
+                AND A.category_no IN(?,?,?)
                 `;
-        return query(getMyProductListFilter, [userNo,categoryNo,publicStateNo])
+        return query(getMyProductListFilter, [userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3])
     },
 
 
