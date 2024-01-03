@@ -63,9 +63,9 @@ g<template>
             <a class="nav-link dropdown-toggle" id="multiDropdown" href="#" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">카테고리</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li class="dropdown-submenu dropend" v-for="(category, idx) in categoryList" :key="idx">
-                <a class="dropdown-item dropdown-toggle" href="#">{{ category[0].parent_category_name }}</a>
-                <ul class="dropdown-menu">
+              <li class="dropdown-submenu dropend" v-for="(category, idx, index) in categoryList" :key="idx">
+                <a class="dropdown-item dropdown-toggle" href="#" @click.prevent.stop="isSelected(index)">{{ category[0].parent_category_name }}</a>
+                <ul class="dropdown-menu" v-bind:class="{ show : selectedMenu[index] }">
                   <li v-for="(category2, idx2) in categoryList[idx]" :key="idx2"><a class="dropdown-item"
                       href="#"  @click="getCategorySearch(category2.children_no,category2.children_category_name)" >{{ category2.children_category_name}}</a></li>
                 </ul>
@@ -80,11 +80,15 @@ g<template>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" @click="this.getRecProduct()">추천상품</a>
+<<<<<<< HEAD
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/upload">업로드테스트</router-link>
           </li>
           <!-- 지워야함-->
+=======
+          </li> 
+>>>>>>> develop
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -112,7 +116,7 @@ g<template>
         keyword: '',
         categoryList: [],
         productList: [],
-
+        selectedMenu : []
       }
     },
 
@@ -146,6 +150,10 @@ g<template>
 
         this.categoryList = groupBy(this.categoryList, "parent_no");
 
+        for(let category in this.categoryList){
+           this.selectedMenu.push(false);
+        }   
+
       },
       //신상품
       async getNewProduct(){
@@ -164,11 +172,13 @@ g<template>
         this.$router.push({path : '/search', query : { categoryNo : cno, action : "categorySearch", category_name : category_name} })
       },
       searchshow(keyword) {
+        const query = keyword;
         if (keyword !== '') {
+          this.keyword = '';
           this.$router.push({
             path: 'search',
             query: {
-              keyword: this.keyword,
+              keyword: query,
               action : "Keywordsearch"
             }
           });
@@ -216,24 +226,34 @@ g<template>
           this.$store.commit('setRefreshToken', '');
         }
       },
+      isSelected(idx){
+        for(let i = 0 ; i< this.selectedMenu.length; i++){
+          if(i == idx) {
+            this.selectedMenu[i] = !this.selectedMenu[i];
+          }else{
+            this.selectedMenu[i] = false;
+          }
+        }
+        
+      }
     },
   };
   // 카테고리 Dropdown관련
-  $(document).ready(function () {
-    $(".dropdown-submenu a.dropdown-item").on("click", function (e) {
-      var $submenu = $(this).next("ul");
-      $(".dropdown-submenu ul.show").not($submenu).removeClass("show");
-      $submenu.toggleClass("show");
-      e.stopPropagation();
-      e.preventDefault();
-    });
+  // $(document).ready(function () {
+  //   $(".dropdown-submenu a.dropdown-item").on("click", function (e) {
+  //     var $submenu = $(this).next("ul");
+  //     $(".dropdown-submenu ul.show").not($submenu).removeClass("show");
+  //     $submenu.toggleClass("show");
+  //     e.stopPropagation();
+  //     e.preventDefault();
+  //   });
 
-    $(document).on("click", function (e) {
-      if (!$(e.target).closest(".dropdown-submenu").length) {
-        $(".dropdown-submenu ul.show").removeClass("show");
-      }
-    });
-  });
+  //   $(document).on("click", function (e) {
+  //     if (!$(e.target).closest(".dropdown-submenu").length) {
+  //       $(".dropdown-submenu ul.show").removeClass("show");
+  //     }
+  //   });
+  // });
 </script>
 <style scoped>
 </style>
