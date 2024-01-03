@@ -36,13 +36,13 @@
               />
             </td>
             <td>
-                <a href="">
+              <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}">
                   <img v-if="products.pet_type == 'd1'" :src="$store.state.prImg + `dog/` + products.product_image" style="width:100px" />
                   <img v-else :src="$store.state.prImg + `cat/` + products.product_image" style="width:100px" />
-                  </a>
+                  </router-link>               
               </td>
             <td>
-              <a href="">{{products.product_name}}</a>
+              <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}">{{products.product_name}}</router-link>
               <br />
               <span class="price">가격 : {{ products.product_price }}</span>
             </td>
@@ -99,17 +99,15 @@ export default {
   name: "CartList",
   data() {
     return {
+      //전체 상품배열
       cartList: [],
-      cartPriceList:[],
-// [(A업체배송비),(B업체배송비),(C업체배송비)]
-// deliveryPriceList[idx] = 0;
-
+      //총 선택 상품금액
       checkedPrice:0,
-      companyPrice:0,
-
+      //상품 개별 선택할때 업체 그룹체크 확인하는 배열
       companyChecked : [],
+      //업체별 선택한 상품금액 배열
       companyPriceList : [],
-
+      //업체별 선택한 상품 배송비 배열
       deliveryPriceList : [],
     };
   },
@@ -239,8 +237,7 @@ export default {
             }
       }  
     },
-    //체크박스
-    //상품별
+    //상품별 체크박스
     checkProd(target, products,idx,companyIndex){
       if(target.checked) {
         this.companyPriceList[idx] += products.product_price * products.product_sel_cnt ;
@@ -290,7 +287,7 @@ export default {
       
       return sum;
     },
-    //그룹별
+    //그룹별 체크박스
     checkComp(checked, companyIndex, idx){
       const productArray = this.cartList[companyIndex];
       if(checked) {
