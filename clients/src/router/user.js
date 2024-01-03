@@ -3,7 +3,6 @@ import MainBody from '../views/userview/MainPage.vue'
 import LoginComp from '../views/userview/LoginComp.vue'
 import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
-import TestView from '../views/userview/TestView.vue'
 import CartView from '../views/userview/CartView.vue'
 //마이페이지
 import MyPageSide from '../components/common/MypageSidebar.vue'
@@ -11,6 +10,8 @@ import MyInfo from '../views/userview/mypage/MyInfo.vue'
 import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
+import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
+import ChangePassword from '../views/userview/mypage/ChangePassword.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
@@ -49,11 +50,6 @@ export default {
       component: TestUploadView
     },
     {
-      path: '/uploadView',
-      name: 'uploadView',
-      component: TestView
-    },
-    {
       path: "/cart",
       name: "cart",
       component: CartView,
@@ -81,6 +77,11 @@ export default {
           path: "/mypetform",
           name: "mypetform",
           component: MyPetForm
+        },
+        {
+          path: "/changeInfo",
+          name: "changeInfo",
+          component: ChangeMyInfo
         }
       ]
     },
@@ -118,6 +119,11 @@ export default {
       path: "/notice/:no",
       name: "noticeInfo",
       component: NoticeContent
+    },
+    {
+      path: "/user-pass",
+      name: "userPass",
+      component : ChangePassword
     }
   ]
 };
