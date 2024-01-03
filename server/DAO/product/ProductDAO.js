@@ -258,6 +258,15 @@ let productDAO = {
             `select count(*) as cnt from product where pet_type=? and product_public_state=?`;
         return query(selectRecProductCntQuery, [ptype, state]);
     },
+    //하랑
+    showProductDetailQuery: async function (product_no) {
+        const showProductDetailQuery = `
+        SELECT *
+        FROM product p left join review r on p.product_no = r.product_no
+        where p.product_no = ?
+        `;
+        return query(showProductDetailQuery, product_no);
+    }
 };
 
 module.exports = productDAO;

@@ -307,4 +307,15 @@ productRouter.get('/search/recproduct', async (req, res)=>{
         console.log(e);
     }
 });
+//하랑
+productRouter.get('/productDetail', async (req, res) => {
+    let productNo = req.query.pno;
+    try {
+        const productService = new ProductService();
+        let result = await productService.showProdDetail(productNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }
+});
 module.exports = productRouter;
