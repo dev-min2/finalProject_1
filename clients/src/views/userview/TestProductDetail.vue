@@ -3,12 +3,12 @@
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                {{product}}
+                    {{product}}
                     <div class="col-md-6">
-                    <img class="card-img-top mb-5 mb-md-0" v-if="type == 'd1'"
+                    <!-- <img class="card-img-top mb-5 mb-md-0" v-if="type == 'd1'"
                     :src="$store.state.prImg + `dog/` + product.product_image" alt="..." />
                     <img class="card-img-top mb-5 mb-md-0" v-else
-                    :src="$store.state.prImg + `cat/` + product.product_image" alt="..." />
+                    :src="$store.state.prImg + `cat/` + product.product_image" alt="..." /> -->
                     </div>
                     <div class="col-md-6">
                         <div class="small mb-1">

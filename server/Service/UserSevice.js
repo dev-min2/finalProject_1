@@ -248,6 +248,9 @@ class UserService {
         let result = await myCartDAO.deleteProductQuery(user_no, product_no);
         return result;
     }
+    // async ShowProdDetail(product_no, category_no, pet_type) {
+    //     let result = await my
+    // }
 
     // 테스트용
     async testUpload(deschtml, fileName) {
