@@ -120,11 +120,12 @@ userRouter.get("/logout", async (req, res) => {
 });
 
 userRouter.post('/email-auth', async(req, res) => {
-    let email = req.body.email;
+    const email = req.body.email;
+    const isCreateAccount = req.body.isCreateAccount;
     console.log(email);
     try {
         const userService = new UserService();
-        let result = await userService.createEmailAuthInfo(email);
+        let result = await userService.createEmailAuthInfo(email,isCreateAccount);
         res.send(result);
     }
     catch(e) {
@@ -226,7 +227,6 @@ userRouter.get('/info', async(req, res) => {
 
 userRouter.put('/info', async(req, res) => {
     const userObj = req.body;
-    console.log(userObj);
     try {
         const userService = new UserService();
         const result = await userService.modifyUserInfo(userObj);
@@ -235,6 +235,18 @@ userRouter.put('/info', async(req, res) => {
         else
             res.status(403).send("FAIL");
     }
+    catch(e) {
+        console.log(e);
+        res.status(500).send("FAIL");
+    }
+})
+
+userRouter.put('/password', async(req, res) => {
+    try {
+        const userService = new UserService();
+        const result = await userService.changePassword(req.body);
+        res.send(result);
+    }   
     catch(e) {
         console.log(e);
         res.status(500).send("FAIL");

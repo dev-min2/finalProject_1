@@ -88,6 +88,19 @@ const userDAO = {
         `
         return query(selectQuery);
     },
+    selectUserPasswordQuery : async function(prevUserPw, user_no) {
+        const selectUserPasswordQuery = `
+            SELECT * FROM user WHERE user_no = ? AND user_pw = ?
+        `;
+
+        return query(selectUserPasswordQuery, [user_no, prevUserPw]);
+    },
+    updateUserPasswordQuery : async function(prevUserPw, user_no, newUserPw) {
+        const updateUserPasswordQuery = `
+            UPDATE user SET user_pw = ? WHERE user_no = ? AND user_pw = ?
+        `
+        return query(updateUserPasswordQuery, [newUserPw, user_no, prevUserPw]);
+    }
 };
 
 module.exports = userDAO;

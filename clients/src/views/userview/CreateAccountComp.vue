@@ -235,9 +235,12 @@
                     return;
                 }
 
-                const result = await axios.post('/api/user/email-auth', { email : this.userEmail }, {'Content-Type' : 'application/json'});
-                if(result.data) {
+                const result = await axios.post('/api/user/email-auth', { email : this.userEmail, isCreateAccount : true }, {'Content-Type' : 'application/json'});
+                if(result.data == '2') {
                     this.showEmailAuth = true;
+                }
+                else if(result.data == '0') {
+                    this.$showFailAlert(null,'이메일 등록 가능 횟수(5회)를 넘을 수 없습니다.');
                 }
                 else {
                     this.$showFailAlert('이메일 인증값 생성에 실패했습니다. 다시 시도해주세요',null);

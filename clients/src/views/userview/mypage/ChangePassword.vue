@@ -6,13 +6,13 @@
                     <h4 class="mb-3" style="text-align:center">비밀번호를 입력하세요</h4>
                     <div class="row">
                         <div class="mb-3">
-                            <label for="name">회원명</label> <input type="text" v-model="userName" class="form-control" id="name" name="name" value="" required>
+                            <label for="prevPass">기존 비밀번호</label> <input type="password" v-model="prevPassword" class="form-control" id="prevPass" name="prevPass" value="" required>
                         </div>
                         <div class="mb-3">
-                            <label for="email">이메일</label> <input type="email" v-model="email" class="form-control" id="email" name="email" placeholder="abc@naver.com" value="" required>
+                            <label for="newPass">변경할 비밀번호</label> <input type="password" v-model="nextPassword" class="form-control" id="newPass" name="newPass"  value="" required>
                         </div>
                         <div class="mb-4"></div>
-                        <input class="btn btn-primary btn-lg btn-block" @click="sendMail" type="button" value="이메일 전송" style="background-color:pink;border:1px white;width:200px;margin:auto;">
+                        <input class="btn btn-primary btn-lg btn-block" @click="sendMail" type="button" value="비밀번호 변경하기" style="background-color:pink;border:1px white;width:200px;margin:auto;">
                     </div>
                 <footer class="my-3 text-center text-small"> </footer>
                 </div>
@@ -26,31 +26,36 @@
     export default {
         data() {
             return {
-                forgotType : '',
-                email : '',
-                userId : '',
-                userName : ''
+                prevPassword : '',
+                nextPassword : ''
             }
         },
         created() {
-
+            
         },
         methods : {
             async sendMail() {
+                const userNo = this.$store.state.userNo;
                 let sendObj = {
-                    forgotType : this.forgotType,
-                    user_email : this.email,
-                    user_name : this.userName,
-                    user_id : this.userId
+                    user_no : userNo,
+                    prevPassword : this.$encryptAES256(this.prevPassword),
+                    nextPassword : this.$encryptAES256(this.nextPassword)
                 };
                 this.$showLoading();
-                const result = await axios.post('/api/user/forgot-account', { forgotInfo : sendObj}, { headers : {"Content-Type" : "application/json"}});
-                if(result.status == 200) {
-                    this.$showSuccessAlert('메일 전송완료. 메일을 확인해주세요.',null);        
-                    this.$router.push({path : '/login'});
+                const result = await axios.put('/api/user/password', sendObj, { headers : {"Content-Type" : "application/json"}});
+                if(result.data === "FAIL") {
+                    this.$showFailAlert('기존 비밀번호가 일치하지 않습니다.');
                 }
                 else {
-                    this.$showFailAlert('오류 발생 : ' + result.status,null);
+                    if(result.data) {
+                        this.$showSuccessAlert('비밀번호 변경 완료.');
+                        this.$store.commit("setUserNo", -1);
+                        this.$store.commit("setUserPermission", '');
+                        this.$router.push({path : '/login'});
+                    }
+                    else {
+                        this.$showFailAlert('오류 발생 : ' + result.status, null);
+                    }
                 }
                 this.$hideLoading();
             }
