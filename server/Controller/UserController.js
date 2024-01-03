@@ -1,8 +1,7 @@
 const express = require("express");
 const userRouter = express.Router();
 
-const UserSevice = require("../Service/UserSevice");
-const UserService = require("../Service/UserSevice");
+const UserService = require("../Service/UserService");
 
 
 //마이페이지-내 반려동물관리
@@ -73,7 +72,7 @@ userRouter.post('/join', async(req,res) =>{
     let user = req.body.user;
     let sns = req.body.sns;
     try {
-        const userService = new UserSevice();
+        const userService = new UserService();
         let result = await userService.createUser(user,sns);
         res.send(result);
     }
@@ -85,7 +84,7 @@ userRouter.post('/join', async(req,res) =>{
 userRouter.post('/checkId', async (req, res) => {
     let id = req.body.id;
     try {
-        const userService = new UserSevice();
+        const userService = new UserService();
         let result = await userService.checkDuplicateUserId(id);
         res.send(result);
     }
@@ -97,7 +96,7 @@ userRouter.post('/checkId', async (req, res) => {
 userRouter.post('/login', async(req,res) =>{
     let user = req.body.user;
     try {
-        const userService = new UserSevice();
+        const userService = new UserService();
         let result = await userService.loginUser(user);
         if(result.length > 0) {
             req.session.userNo = result[0].user_no; //session저장
@@ -124,7 +123,7 @@ userRouter.post('/email-auth', async(req, res) => {
     let email = req.body.email;
     console.log(email);
     try {
-        const userService = new UserSevice();
+        const userService = new UserService();
         let result = await userService.createEmailAuthInfo(email);
         res.send(result);
     }
@@ -136,7 +135,7 @@ userRouter.post('/email-auth', async(req, res) => {
 userRouter.post('/email-auth/confirm', async(req, res) => {
     let { email, authcode } = req.body;
     try {
-        const userService = new UserSevice();
+        const userService = new UserService();
         let result = await userService.confirmEmailAuth(email,authcode);
         res.send(result);
     }
@@ -210,6 +209,36 @@ userRouter.delete('/carts/:userNo/:productNo', async (req, res) => {
         }catch(err) {
             console.log(err);
         }
+})
+
+userRouter.get('/info', async(req, res) => {
+    const userNo = req.query.userNo;
+    try {
+        const userService = new UserService();
+        const result = await userService.getUserInfo(userNo);
+        res.status(200).send(result);
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500).send("FAIL");
+    }
+});
+
+userRouter.put('/info', async(req, res) => {
+    const userObj = req.body;
+    console.log(userObj);
+    try {
+        const userService = new UserService();
+        const result = await userService.modifyUserInfo(userObj);
+        if(result)
+            res.status(200).send("OK");
+        else
+            res.status(403).send("FAIL");
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500).send("FAIL");
+    }
 })
 
 // 파일 업로드 테스트용 코드
@@ -296,7 +325,7 @@ userRouter.post("/uploadProduct", upload2, async (req, res) => {
   console.log(files);
 
   try {
-    const userService = new UserSevice();
+    const userService = new UserService();
     let filename = "";
     if (typeof files["productImage/dog"][0].originalname != "undefined")
       filename = files["productImage/dog"][0].originalname;
@@ -321,7 +350,7 @@ CREATE TABLE `productTest` (
 
 userRouter.get("/testProductInfo", async (req, res) => {
   try {
-    const userService = new UserSevice();
+    const userService = new UserService();
     console.log("요청옴");
     let result = await userService.testData();
     console.log(result);
