@@ -1,7 +1,7 @@
 const express = require("express");
 const userRouter = express.Router();
 
-const UserSevice = require("../Service/UserSevice");
+const UserService = require("../Service/UserSevice");
 
 
 //마이페이지-내 반려동물관리

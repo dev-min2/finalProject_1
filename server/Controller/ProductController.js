@@ -2,6 +2,20 @@ const express = require('express');
 const productRouter = express.Router();
 const ProductService = require("../Service/ProductService");
 
+//결제폼 -내 쿠폰 결제폼에서 불러오기
+productRouter.get('/paymentform/coupon/:userNo', async(req, res)=>{
+    let userNo = req.params.userNo;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getMyCouponList(userNo);
+        console.log('PrdCont 쿠폰', result);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+})
+
 
 //결제폼-장바구니 리스트
 productRouter.get('/paymentform/:userNo', async(req, res)=>{ 
@@ -20,18 +34,21 @@ productRouter.get('/paymentform/:userNo', async(req, res)=>{
  //(1) 결제 정보 넣기
  productRouter.post('/paymentform', async(req, res) => {
     let data = req.body.param;
+    console.log(data);
     try{
         const productService = new ProductService();
         let result 
             = await productService.completePayment(paymentObj, paymentData, userNo);
         console.log('ProController 확인!!', result);
-        //res.send(result);
+        res.send(result);
     }
     catch(e){
         console.log(e);
     }
  })
  
+
+
 
 
 productRouter.get('/main', async (req, res) => {

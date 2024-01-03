@@ -7,7 +7,7 @@
                     <span class="text-primary">장바구니</span>
                     <span class="badge bg-primary rounded-pill">{{totalCount}}</span>
                 </h4>
-                <h4>{{selectCartQuery}}</h4>
+                <h6>{{selectMyCouponQuery}}</h6>
                 <ul class="list-group mb-3" id="pList">
                     <div :key="i" v-for="(cart, i) in selectCartQuery">
                         <li class="list-group-item d-flex justify-content-between lh-sm">
@@ -187,6 +187,7 @@
                 selectPayment : 'html5_inicis', //결제방식
                 orderCheck:'', //주문동의 확인
                 selectCartQuery : [], //장바구니 목록
+                selectMyCouponQuery : [], //내 쿠폰 목록
                 selectPayment: '', //결제수단
                 //총금액, 수량, 배송비, 쿠폰사용금액
                 totalPrice : 0, 
@@ -206,7 +207,11 @@
         },
         async created(){
             this.userNo = this.$store.state.userNo;
+            //장바구니, 쿠폰
             await this.getSelectCartQuery();
+            await this.getMyCouponQuery();
+
+            //결제 데이터
             this.total();
             this.orderInfo();
         },
@@ -216,9 +221,19 @@
         //     }
         // },
         methods: {
+            //쿠폰 가져오기
+            async getMyCouponQuery(){
+                console.log('쿠폰 회원번호: ',this.userNo);
+                //this.$showLoading();
+                let result 
+                    = await axios.get(`/api/product/paymentform/coupon/${this.userNo}`) 
+                                .catch(err => console.log(err));
+                this.selectMyCouponQuery = result.data;
+                //this.$hideLoading();
+                console.log('할수이따: ',this.selectMyCouponQuery);
+            },
             //장바구니 가져오기
             async getSelectCartQuery(){
-                console.log('회원번호: ',this.userNo);
                 this.$showLoading();
                 let result 
                     = await axios.get(`/api/product/paymentform/${this.userNo}`)
@@ -279,9 +294,10 @@
                         delivery_request: this.deliveryRequest
                     }
                 };
+                let paymentData = new Array();
 
                 for (let i = 0; i < this.selectCartQuery.length; i++) {
-                    let paymentData = {
+                    let cartProduct = {
                     param : {
                         payment_no: this.orderNo, 
                         product_no: this.selectCartQuery[i].product_no, 
@@ -293,12 +309,23 @@
                         delivery_fee: this.delivery
                         }
                     };
-                    console.log(i,'번입니당:',paymentData);
+                    //console.log(i,'번입니당:',cartProduct);
+                    paymentData.push(cartProduct);
+                    console.log('개별데이터',paymentData);
                 }
-
                 console.log('주문전체',paymentObj); 
-                // let result = await axios.post("/api/user/paymentform", paymentObj, paymentData, this.userNo);
-                // console.log('빠샤', result);
+                
+                let userNo = this.userNo;
+                const sendObj = {
+                    param : {
+                        paymentObj : paymentObj,
+                        paymentData : paymentData,
+                        userNo : userNo
+                    }
+                }
+                let result = await axios.post("/api/product/paymentform", sendObj)
+                                         .catch(err=>console.log(err));
+                console.log('빠샤', result);
             
             },
             orderInfo(){

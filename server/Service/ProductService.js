@@ -6,6 +6,7 @@ const { getConnection } = require('../config/dbPool');
 
 const productDAO = require("../DAO/product/ProductDAO");
 const categoryDAO = require("../DAO/product/CategoryDAO");
+const couponDAO = require("../DAO/product/CouponDAO");
 const PageDTO = require("../commonModule/PageDTO");
 
 
@@ -40,7 +41,14 @@ class ProductService {
         
     }
 
-    
+    //쿠폰
+    //내 쿠폰 가져오기
+    async getMyCouponList(userNo){
+        const result = await couponDAO.selectMyCouponQuery(userNo);
+        return result;
+    }
+
+
     // 상품리스트 가져오기
     async getMainpageProductList(ptype) {
         let result = await productDAO.selectMainpageFirstProductQuery(ptype);
