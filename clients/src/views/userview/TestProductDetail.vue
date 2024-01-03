@@ -3,30 +3,35 @@
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    {{product}}
                     <div class="col-md-6">
-                    <!-- <img class="card-img-top mb-5 mb-md-0" v-if="type == 'd1'"
-                    :src="$store.state.prImg + `dog/` + product.product_image" alt="..." />
+                    <img class="card-img-top mb-5 mb-md-0" v-if="productDetail.pet_type == 'd1'"
+                    :src="$store.state.prImg + `dog/` + productDetail.product_image" alt="..." />
                     <img class="card-img-top mb-5 mb-md-0" v-else
-                    :src="$store.state.prImg + `cat/` + product.product_image" alt="..." /> -->
+                    :src="$store.state.prImg + `cat/` + productDetail.product_image" alt="..." />
                     </div>
                     <div class="col-md-6">
                         <div class="small mb-1">
-                            <span style="font-size : 25px">★ 별점</span>
+                            <span style="font-size : 25px">별점 : {{productDetail.star_cnt}}</span>
                         </div>
-                        <h1 class="display-5 fw-bolder">ANF 치킨야채 캔 95g</h1>
+                        <h1 class="display-5 fw-bolder">{{productDetail.product_name}}</h1>
                         <br />
                         <div class="fs-5 mb-5">
                             <!-- <span class="text-decoration-line-through">$45.00</span> -->
-                            <span style="font-size : 30px">\ 상품가격</span>
+                            <span style="font-size : 30px">\ {{productDetail.product_price}}</span>
                         </div>
-                        <p class="lead">상품 설명</p>
+                        <p class="lead">{{productDetail.product_desc}}</p>
                         <br />
                         <div class="d-flex">
                             <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 5rem" />
                             <button class="btn btn-outline-dark flex-shrink-0" type="button">
                                 <i class="bi-cart-fill me-1"></i>
                                 Add to cart
+                            </button>
+                            &nbsp;
+                            &nbsp;
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                                <i></i>
+                                ♥ Add to wish list
                             </button>
                         </div>
                     </div>
@@ -243,8 +248,27 @@
         </section>
 </template>
 <script>
+import axios from 'axios'
 export default {
+    data(){
+        return{
+            productDetail:[],
+        };
+    },
+    created(){
     
+        this.getProductDetail(this.$route.query.pno);
+    },
+    methods:{
+        async getProductDetail(pno){
+            this.$showLoading();
+            let result = await axios
+                        .get(`/api/product/productDetail?pno=${pno}`)
+                        .catch(err => console.log(err));
+            this.productDetail = result.data;
+            this.$hideLoading();
+        },
+    }
 }
 </script>
 <style scoped>
