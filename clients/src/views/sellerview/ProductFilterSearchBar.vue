@@ -4,55 +4,48 @@
     <tr>
       <td>대분류</td>
       <td>
-        <input type="radio" v-model="selectedCategory" value="feed"> 사료
-        <input type="radio" v-model="selectedCategory" value="snack"> 간식
-        <input type="radio" v-model="selectedCategory" value="health"> 건강관리
-        <input type="radio" v-model="selectedCategory" value="beauty"> 목욕/미용
+        <template v-for="(category, idx, idx2) in categoryList" :key="idx2">
+          <input class="mr-1" type="radio" id="cate" name="cate" v-model="selectedCategory" @click="radioCheck($event.target,idx2)" :value="category[0].parent_no" > 
+          <label class="mr-1" for="cate">{{category[0].parent_category_name}}</label>
+        </template>
       </td>
     </tr>
     <tr>
       <td>중분류</td>
       <td>
-        <div v-if="selectedCategory === 'feed'" class="subcategory">
-          <input type="checkbox" v-model="subCategories.dryFood"> 건식사료
-          <input type="checkbox" v-model="subCategories.wetFood"> 습식사료
-        </div>
-        <div v-if="selectedCategory === 'snack'" class="subcategory">
-          <input type="checkbox" v-model="subCategories.homemadeSnack"> 수제간식
-          <input type="checkbox" v-model="subCategories.canPouch"> 캔/파우치
-          <input type="checkbox" v-model="subCategories.wholeMeat"> 통살
-        </div>
-        <div v-if="selectedCategory === 'health'" class="subcategory">
-          <input type="checkbox" v-model="subCategories.nutritionalSupplement"> 종합영양제
-          <input type="checkbox" v-model="subCategories.skinCoat"> 피부/모질
-          <input type="checkbox" v-model="subCategories.boneJoint"> 뼈/관절
-        </div>
-        <div v-if="selectedCategory === 'beauty'" class="subcategory">
-          <input type="checkbox" v-model="subCategories.shampooConditioner"> 샴푸/린스
-          <input type="checkbox" v-model="subCategories.brush"> 브러쉬
-          <input type="checkbox" v-model="subCategories.nailCare"> 발톱/발관리
-        </div>
+        <template v-for="(category, idx) in categoryList[selectedCategory]" :key="idx2">
+          <input class="mr-1" type="checkbox" :id="idx" name="subcate" >
+          <label class="mr-1" :for="idx">{{category.children_category_name}}</label>
+        </template> 
       </td>
     </tr>
     <tr>
       <td>공개 여부</td>
       <td>
-        <input type="checkbox" v-model="visibility.public"> 공개
-        <input type="checkbox" v-model="visibility.private"> 비공개
+        <input class="mr-1" type="radio" id="visibility" name="visibility" v-model="visibility" :value='"i1"'>
+        <label class="mr-1" for="visibility">공개</label>
+        <input class="mr-1" type="radio" id="visibility" name="visibility" v-model="visibility" :value='"i2"'>
+        <label class="mr-1" for="visibility">비공개</label>
       </td>
+      <input type="hidden" ref="hiddenIn">
     </tr>
  </table>
-    <button @click="searchProducts">검색</button>
+    <button @click="showTest = !showTest">검색</button>
+    <p v-show="showTest">{{subCate}}</p>
 </div>
   </template>
 
 
 <script>
-
+  import axios from 'axios'
   export default {
     data() {
       return {
-      selectedCategory: '',
+      selectedCategory: 0,
+      showTest : false,
+      subCate : '',
+      selectedSubCategory : [],
+      prevIdx : 0,
       subCategories: {
         dryFood: false,
         wetFood: false,
@@ -65,24 +58,55 @@
         shampooConditioner: false,
         brush: false,
         nailCare: false,
-        
-      },
-      visibility: {
-        public: true,
-        private: false,
-      },
+        },
+        categoryList : '',
+        visibility : '',
       }
+    },
+    created() {
+      this.prevTarget = this.$refs.hiddenIn;
+      this.getCategoryData();
     },
     methods: {
-    searchProducts() {
-      const sendObject = {
-        categoryNo : this.categoryNo,
-        publicStateNo : this.publicStateNo
-      }
+      searchProducts() {
+        const sendObject = {
+          categoryNo : categoryNo,
+          publicStateNo : this.visibility == true ? 'I1' : 'I2'
+        }
 
-      this.$emit('send-categoryNo-publicStateNo',sendObject);
-   
-    },
+        this.$emit('send-categoryNo-publicStateNo',sendObject);
+        
+      },
+      radioCheck(target,curIdx) {
+        if(this.prevIdx == curIdx) {
+          target.checked = false;
+          this.prevIdx = -1;  
+          this.selectedCategory = -1;
+          return;
+        }
+        this.prevIdx = curIdx;
+      },
+    async getCategoryData() {
+        // 서버에 요청
+        const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));
+        this.categoryList = result.data; //저장
+        
+        const groupBy = function (data, key) {
+          return data.reduce(function (carry, el) {
+            var group = el[key];
+            if (carry[group] === undefined) {
+              carry[group] = []
+            }
+            carry[group].push(el)
+            return carry
+          }, {});
+        };
+
+        this.categoryList = groupBy(this.categoryList, "parent_no");
+        for(let object in this.categoryList) {
+          
+        }
+      }
    }
   }
 </script>

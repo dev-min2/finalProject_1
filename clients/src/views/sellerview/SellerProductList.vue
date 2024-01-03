@@ -33,7 +33,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr :key="i" v-for="(product,i) in displayedProduct">
+                <!-- <tr :key="i" v-for="(product,i) in displayedProduct">
                     <td>{{product.product_no}}</td>
                     <td>{{product.product_image}}</td>
                     <td>{{product.product_name}}</td>
@@ -41,7 +41,7 @@
                     <td>{{product.product_public_state}}</td>
                     <td>{{product.Parent_category_name}}>>{{product.child_category_name}}</td>
                     <td>{{product.product_registdate}}</td>
-                </tr>
+                </tr> -->
             </tbody>
         </table>
     </div>
@@ -64,23 +64,23 @@
             };
         },
         created() {
-            this.getMyProductList();
+            //this.getMyProductList();
         },
-        computed: {
-            displayedProduct() {
-                const startIndex = (this.currentPage - 1) * this.productsPerPage;
-                const endIndex = startIndex + this.productsPerPage;
-                return this.sellerProductList.slice(startIndex, endIndex);
-            },
-        },
+        // computed: {
+        //     displayedProduct() {
+        //         const startIndex = (this.currentPage - 1) * this.productsPerPage;
+        //         const endIndex = startIndex + this.productsPerPage;
+        //         return this.sellerProductList.slice(startIndex, endIndex);
+        //     },
+        // },
         methods: {
 
-            async getMyProductList() {
+            async getMyProductList(infoObj) {
                 let result = '';
                 const userNo = 1;
                 try {
                     result = await axios.get(
-                        `/api/product/SellerProductList/${userNo}/${categoryNo}/${publicStateNo}`);
+                        `/api/product/SellerProductList/${userNo}/${infoObj.categoryNo}/${infoObj.publicStateNo}`);
                    
 
                 } catch (e) {
