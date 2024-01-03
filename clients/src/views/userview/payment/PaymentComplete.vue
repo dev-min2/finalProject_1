@@ -10,7 +10,7 @@
         	<h5>상품명</h5>
         </div>
         <div>
-        	<h5>{{paymentInfo.product}}</h5>
+        	<h6>{{paymentInfo.product}}</h6>
         </div>
       </div>
       <div class="d-grid gap-6 d-sm-flex justify-content-between py-5">
@@ -18,7 +18,7 @@
         	<h5>주문번호</h5>
         </div>
         <div>
-        	<h5>{{paymentInfo.orderNo}}</h5>
+        	<h6>{{paymentInfo.orderNo}}</h6>
         </div>
       </div>
       <div class="d-grid gap-6 d-sm-flex justify-content-between py-5">
@@ -26,7 +26,15 @@
         	<h5>결제일</h5>
         </div>
         <div>
-        	<h5>{{paymentInfo.orderDate}}</h5>
+        	<h6>{{paymentInfo.orderDate}}</h6>
+        </div>
+      </div>
+      <div class="d-grid gap-6 d-sm-flex justify-content-between py-5">
+        <div>
+        	<h5>주문금액</h5>
+        </div>
+        <div>
+        	<h6>{{paymentInfo.orderPrice}}</h6>
         </div>
       </div>
     </div>    
@@ -51,7 +59,7 @@ export default {
 	created (){
 		this.paymentInfo = this.$route.query;
     console.log(this.$route.query);
-    console.log('냠',this.paymentInfo);
+    console.log('paymentComplete.vue',this.paymentInfo);
 	}
 }
 </script>

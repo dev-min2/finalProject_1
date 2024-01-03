@@ -7,6 +7,7 @@ const { getConnection } = require('../config/dbPool');
 const productDAO = require("../DAO/product/ProductDAO");
 const categoryDAO = require("../DAO/product/CategoryDAO");
 const couponDAO = require("../DAO/product/CouponDAO");
+const userDAO = require("../DAO/user/UserDAO");
 const PageDTO = require("../commonModule/PageDTO");
 
 
@@ -15,15 +16,18 @@ class ProductService {
      
     }
 
-    //쿠폰
-    //내 쿠폰 가져오기
-    async getMyCouponList(userNo){
-        const result = await couponDAO.selectMyCouponQuery(userNo);
+    //결제폼 회원정보, 장바구니, 쿠폰 가져오기 합침
+    async getUserPaymentInfo(userNo){
+        const cartList = await paymentDAO.selectCartQuery(userNo);
+        const couponList = await couponDAO.selectMyCouponQuery(userNo);
+        const userInfo = await userDAO.selectUserInfoQuery(userNo);
+        let result = [cartList, couponList, userInfo[0]];
         return result;
     }
 
     //결제 폼
-    async getCartList(userNo){ //장바구니 정보 가져오기
+    //장바구니 정보 가져오기
+    async getCartList(userNo){ 
         const result = await paymentDAO.selectCartQuery(userNo);
         return result;
 

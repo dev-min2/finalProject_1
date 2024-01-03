@@ -27,7 +27,7 @@
         class="cart_bigorderbtn right"
         type="button"
         id="tess"
-        onclick="paymentfunction()"
+        @click="paymentBtn()"
       >
         주문하기
       </button>
@@ -38,6 +38,14 @@
 import CartList from "../../components/CartList.vue";
 export default {
   components: { CartList },
+  methods : {
+    paymentBtn: function(){
+      console.log('버튼테스트\'^\'*');
+      this.$router.push({path:`/paymentform`});
+      console.log('배송비넘겨요');
+    }
+
+  }
 };
 </script>
 <style scoped>

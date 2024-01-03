@@ -2,12 +2,13 @@ const express = require('express');
 const productRouter = express.Router();
 const ProductService = require("../Service/ProductService");
 
-//결제폼 -내 쿠폰 결제폼에서 불러오기
-productRouter.get('/paymentform/coupon/:userNo', async(req, res)=>{
+
+//결제폼-회원정보,쿠폰,장바구니 같이 불러오기
+productRouter.get('/paymentform/test/:userNo', async(req, res)=>{
     let userNo = req.params.userNo;
     try{
         const productService = new ProductService();
-        let result = await productService.getMyCouponList(userNo);
+        let result = await productService.getUserPaymentInfo(userNo);
         console.log('PrdCont 쿠폰', result);
         res.send(result);
     }

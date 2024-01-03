@@ -14,7 +14,7 @@
 											<th scope="col">가격</th>
 											<th scope="col">수량</th>
 											<th scope="col">결제일</th>
-											<th scope="col">비고</th>
+											<th scope="col">주문상태</th>
 										</tr>
 									</thead>
 									<tbody>

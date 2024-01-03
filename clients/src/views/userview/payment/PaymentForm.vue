@@ -7,7 +7,6 @@
                     <span class="text-primary">장바구니</span>
                     <span class="badge bg-primary rounded-pill">{{totalCount}}</span>
                 </h4>
-                <h6>{{selectMyCouponQuery}}</h6>
                 <ul class="list-group mb-3" id="pList">
                     <div :key="i" v-for="(cart, i) in selectCartQuery">
                         <li class="list-group-item d-flex justify-content-between lh-sm">
@@ -58,29 +57,17 @@
 
                         <div class="col-12">
                             <label for="firstName" class="form-label"> 주문자 이름</label>
-                            <input type="text" class="form-control" id="firstName" placeholder=""
-                                value="이름 불러오기" required>
-                            <div class="invalid-feedback">
-                                주문자이름
-                            </div>
+                            <input type="text" class="form-control" id="firstName" v-model="selectUserQuery.user_name" readonly>
                         </div>
 
                         <div class="col-12">
                             <label for="email" class="form-label"> 주문자 이메일 <span class="text-muted">(Optional)</span></label>
-                            <input type="email" class="form-control" id="email" placeholder="you@example.com"
-                                value="$userInfo.userMail">
-                            <div class="invalid-feedback">
-                                Please enter a valid email address for shipping updates.
-                            </div>
+                            <input type="email" class="form-control" id="email" v-model="selectUserQuery.user_email" readonly>
                         </div>
 
                         <div class="col-12">
                             <label for="phone" class="form-label">주문자 연락처</label>
-                            <input type="text" class="form-control" id="phone" placeholder=""
-                                value="$userInfo.userPhone" required>
-                            <div class="invalid-feedback">
-                                연락처 입력해주세요.
-                            </div>
+                            <input type="text" class="form-control" id="phone" v-model="selectUserQuery.user_phone" readonly>
                         </div>
                     </div>
                     <hr class="my-4">
@@ -95,8 +82,8 @@
 
                         <div class="col-12">
                             <label for="firstName" class="form-label">이름</label>
-                            <input type="text" v-model= "receiverName" class="form-control" id="firstName" placeholder="userName불러오기"
-                                value="name" required>
+                            <input type="text" v-model= "receiverName" class="form-control" id="firstName" placeholder="이름을 입력해주세요"
+                                 required>
                             <div class="invalid-feedback">
                                 이름 입력해주세요.
                             </div>
@@ -104,20 +91,14 @@
 
                         <div class="col-12">
                             <label for="address" class="form-label">주소</label>
-                            <input type="text" v-model= "receiverAddr" class="form-control" id="address" placeholder="userAddr불러오기"
+                            <input type="text" v-model= "receiverAddr" class="form-control" id="address" placeholder="주소를 입력해주세요"
                                 value="" required>
-                            <div class="invalid-feedback">
-                                주소 입력해주세요.
-                            </div>
                         </div>
 
                         <div class="col-12">
                             <label for="phone" class="form-label">연락처</label>
-                            <input type="text" v-model= "receiverPhone" class="form-control" id="phone" placeholder="userTel불러오기"
+                            <input type="text" v-model= "receiverPhone" class="form-control" id="phone" placeholder="연락처를 입력해주세요"
                                 value="c" required>
-                            <div class="invalid-feedback">
-                                연락처 입력해주세요.
-                            </div>
                         </div>
 
                         <div class="col-12">
@@ -184,33 +165,42 @@
         data(){
             return {
                 userNo : '',
-                selectPayment : 'html5_inicis', //결제방식
-                orderCheck:'', //주문동의 확인
                 selectCartQuery : [], //장바구니 목록
                 selectMyCouponQuery : [], //내 쿠폰 목록
+                selectUserQuery : [], //회원정보
+                
+                selectPayment : 'html5_inicis', //결제방식
                 selectPayment: '', //결제수단
+                selectCoupon : 2,
+                orderCheck:'', //주문동의 확인
+                
                 //총금액, 수량, 배송비, 쿠폰사용금액
                 totalPrice : 0, 
                 totalCount: 0, 
                 delivery : 0,
                 couponPrice : 0,
+                realTotalPrice : 0,
                  //주문정보
                 deliveryRequest : '',
+                userEmail : '',
                 receiverName: '',
                 receiverPhone: '',
                 receiverAddr: '',
                 orderNo: 0, //주문번호
                 orderDate : '', //주문날짜
                 orderProduct : '', //주문품목
+                impUid : 0,
 
             }
         },
         async created(){
             this.userNo = this.$store.state.userNo;
-            //장바구니, 쿠폰
-            await this.getSelectCartQuery();
-            await this.getMyCouponQuery();
-
+            //주문자정보, 장바구니, 쿠폰 / 배송지정보
+            await this.getUserInfo();
+            this.receiverName = this.selectUserQuery.user_name;
+            this.receiverPhone = this.selectUserQuery.user_phone;
+            this.receiverAddr = this.selectUserQuery.user_addr;
+            this.userEmail = this.selectUserQuery.user_email;
             //결제 데이터
             this.total();
             this.orderInfo();
@@ -221,28 +211,34 @@
         //     }
         // },
         methods: {
-            //쿠폰 가져오기
-            async getMyCouponQuery(){
-                console.log('쿠폰 회원번호: ',this.userNo);
-                //this.$showLoading();
-                let result 
-                    = await axios.get(`/api/product/paymentform/coupon/${this.userNo}`) 
-                                .catch(err => console.log(err));
-                this.selectMyCouponQuery = result.data;
-                //this.$hideLoading();
-                console.log('할수이따: ',this.selectMyCouponQuery);
+            //데이터 만들기 테스트용 (html 버튼과 함수 둘 다 삭제할 것!!!)
+            TestBtn: async function(){
+                console.log('테스트버튼（っ ‘ ᵕ ‘ ｃ）');
+                //this.getUserInfo();
+                //this.getPaymentInfo();
+                this.getPaymentInfo();
             },
-            //장바구니 가져오기
-            async getSelectCartQuery(){
-                this.$showLoading();
+
+
+            //회원 장바구니, 쿠폰리스트, 회원정보 가져오기
+            async getUserInfo(){
                 let result 
-                    = await axios.get(`/api/product/paymentform/${this.userNo}`)
+                    = await axios.get(`/api/product/paymentform/test/${this.userNo}`)
                                 .catch(err => console.log(err));
-                this.selectCartQuery = result.data;
-                this.$hideLoading();
-                return 1;
+                this.selectUserPaymentQuery = result.data;
+                //0 장바구니, 1 쿠폰, 2 회원정보
+                console.log('할수이따: ',this.selectUserPaymentQuery);
+                console.log('‘ ^ ‘',this.selectUserPaymentQuery[0]);
+                //각각 변수에 담기
+                console.log(this.selectCartQuery);
+                this.selectCartQuery = this.selectUserPaymentQuery[0];
+                this.selectMyCouponQuery = this.selectUserPaymentQuery[1];
+                this.selectUserQuery = this.selectUserPaymentQuery[2];
+                console.log('0',this.selectCartQuery);
+                console.log('1',this.selectMyCouponQuery);
+                console.log('2',this.selectUserQuery);
             },
-            //총 금액, 총 수량, 배송비, 
+            //금액 계산 / 총 금액, 총 수량, 배송비
             total() {
                 console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
 
@@ -250,12 +246,12 @@
                     this.totalPrice += this.selectCartQuery[i].price_sum;
                     this.totalCount += this.selectCartQuery[i].product_sel_cnt;
                 }
-                if(this.totalPrice < 30000) { //배송비 추가: 3만원 이상 무료배송
-                    this.delivery = 2500 ; 
+                if(this.totalPrice < 30000) { //배송비 3000원, 3만원 이상 무료배송
+                    this.delivery = 3000 ; 
                     this.totalPrice += this.delivery;
                     }
             },
-             //결제방식 선택
+            //결제방식 선택
             Paymentmethod: function(){
                 if(this.selectPayment == "kakao"){
                     this.selectPayment = 'kakaopay';
@@ -265,24 +261,29 @@
                      this.selectPayment = 'tosspay';
                 }
             },
-            //데이터 만들기 테스트용 (html 버튼과 함수 둘 다 삭제할 것!!!)
-            TestBtn: async function(){
-                console.log('홧팅（っ ‘ ᵕ ‘ ｃ）');
-                console.log('쫌만더하고자기: ', this.receiverName, '/', this.receiverAddr,'/', this.receiverPhone,'/' ,this.deliveryRequest );
-
-                //주문품목 테스트
-                console.log('졸리당: ', 
-                    this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건');
-                
-                //결제 완료 데이터 처리 테스트
+            //주문번호, 주문날짜 , 주문품목 생성 (~포함 총 n건)
+            orderInfo(){
+                this.orderNo = String(new Date().getTime()) + this.userNo;
+                this.orderDate = this.$dateFormat(new Date());
+                if(this.selectCartQuery.length > 1 ){
+                    this.orderProduct = this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건';
+                } else if (this.selectCartQuery.length == 1){ 
+                    this.orderProduct = this.selectCartQuery[0].product_name; //단건주문
+                } else {
+                    this.$router.push({ path: '/main'});//장바구니 비어있음 > 메인으로 이동
+                }
+            },
+            //결제 완료 데이터 처리
+            async getPaymentInfo(){
+                //payment 테이블
                 let paymentObj = {
                         payment_no: this.orderNo, 
                         user_no: this.userNo, 
-                        my_coupon_no: 2, //쿠폰 생성 후에 수정하기
-                        payment_sub_unique_no: 0, //this.rsp.imp_uid,
+                        my_coupon_no: this.selectCoupon,
+                        payment_sub_unique_no: this.impUid, //imp_uid,
                         payment_date: this.orderDate , 
                         payment_amount: this.totalPrice , 
-                        payment_discount_amount: 0 , //쿠폰 생성 후에 수정하기
+                        payment_discount_amount: this.couponPrice , //쿠폰 생성 후에 수정하기
                         real_payment_amount: this.totalPrice , 
                         order_state: 'c1',
                         total_product: this.totalCount , 
@@ -291,10 +292,11 @@
                         receiver_name: this.receiverName, 
                         receiver_addr: this.receiverAddr, 
                         delivery_request: this.deliveryRequest
-                    
                 };
-                let paymentData = [];
+                console.log('전체입니당',paymentObj);
 
+                //payment_product 테이블
+                let paymentData = [];
                 for (let i = 0; i < this.selectCartQuery.length; i++) {
                     let cartProduct = {
                         payment_no: this.orderNo, 
@@ -306,12 +308,11 @@
                         delivery_state: 'c1', 
                         delivery_fee: this.delivery 
                     };
-                    //console.log(i,'번입니당:',cartProduct);
                     paymentData.push(cartProduct);
-                    console.log('개별데이터',paymentData);
                 }
-                console.log('주문전체',paymentObj); 
                 
+                console.log('개별상품입니당',paymentData);
+
                 let userNo = this.userNo;
                 const sendObj = {
                     param : {
@@ -322,23 +323,7 @@
                 }
                 let result = await axios.post("/api/product/paymentform", sendObj)
                                          .catch(err=>console.log(err));
-                console.log('빠샤', result);
-            
-            },
-            orderInfo(){
-                //주문번호, 주문날짜 , 주문품목 생성 (~포함 총 n건)
-                this.orderNo = String(new Date().getTime()) + this.userNo;
-                this.orderDate = this.$dateFormat(new Date());
-                if(this.selectCartQuery.length > 1 ){
-                    this.orderProduct = this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건';
-                } else if (this.selectCartQuery.length == 1){ 
-                    this.orderProduct = this.selectCartQuery[0].product_name; //단건주문
-                } else {
-                    //상품정보 없음 > 메인으로 이동
-                    this.orderProduct = '';
-                }
-
-
+                console.log('결제완료', result);
             },
 
              //결제 버튼 클릭
@@ -348,8 +333,9 @@
                         this.$showWarningAlert('결제 동의란을 확인하고 체크해주세요. ');
                         return;
                 }
-                
-                this.orderInfo();
+
+                //주문번호, 주문날짜 , 주문품목 데이터 불러오기
+                this.orderInfo(); 
 
                 //IMP 결제정보 담기
                 let paymentInfo = {
@@ -358,28 +344,30 @@
                     merchant_uid: this.orderNo, //주문번호
                     name: this.orderProduct, //주문품목
                     amount: this.totalPrice,
-                    buyer_email: "funidea_woo@naver.com",
+                    buyer_email: this.userEmail,
                     buyer_name: this.receiverName,
                     buyer_tel: this.receiverPhone,
                     buyer_addr: this.receiverAddr,
                 };
             
-
                 //결제 넘기기
                 const myThis = this;
                 IMP.request_pay(paymentInfo, rsp => { // callback
-                    console.log(rsp);
+                    console.log('1', rsp);
                     if (rsp.success) {
                         //결제완료 페이지에 넘길 정보
                         let paymentDetail = { 
                             product: myThis.orderProduct,
                             orderNo: myThis.orderNo,
-                            orderDate: myThis.orderDate
+                            orderDate: myThis.orderDate,
+                            orderPrice : myThis.realTotalPrice
                         }
-                        //주문 DB저장 여기서 (payment 추가, payment_product 추가, cart 비우기, coupon 상태 업데이트)
+                        //주문 DB저장, 장바구니 비우기
+                        myThis.impUid = rsp.imp_uid;
+                        this.getPaymentInfo();
 
-                        console.log('결제폼', rsp); //imp_uid, merchant_uid
-                        console.log("결제 성공");
+                        console.log('2. 결제폼 성공', rsp); //imp_uid, merchant_uid
+                        console.log('3. imp uid', rsp.imp_uid);
                         myThis.$router.push({ name : 'paymentcomplete', query: paymentDetail }); //주문완료 페이지 이동
                     } else {
                         myThis.$showWarningAlert('결제 실패');
