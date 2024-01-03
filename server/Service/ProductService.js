@@ -78,20 +78,28 @@ class ProductService {
         }
         return resResult;
     }
-
+    //판매자 메인-기간,가격으로 검색
     async selectQueryByPeriod(userNo, period, minPrice, maxPrice) {
         let result = await productDAO.selectQueryByPeriod(userNo, period, minPrice, maxPrice);
         console.log('테스트')
         console.log(result)
         return result;
     }
-
+    //판매자 메인-상품리스트
     async getMyProductList(userNo) {
         
         let result = await productDAO.getMyProductList(userNo);
         console.log(result)
         return result;
     }
+
+    //판매자 상품관리-필터검색
+    async getMyProductListFilter(userNo,categoryNo,publicStateNo) {
+        let result = await productDAO.getMyProductListFilter(userNo,categoryNo,publicStateNo);
+        console.log(result)
+        return result;
+    }
+
 
     async uploadProduct(object) {
         // const object = {

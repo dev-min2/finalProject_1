@@ -7,6 +7,7 @@ import sellerMain from '../views/sellerview/sellerMain.vue'
 import SellerProductList from '../views/sellerview/SellerProductList.vue'
 import SellerReviewList from '../views/sellerview/SellerReviewList.vue'
 import SellerDelivery from '../views/sellerview/SellerDelivery.vue'
+import ProductFilterSearchBar from '../views/sellerview/ProductFilterSearchBar.vue'
 
 export default {
     path : '/seller',
@@ -48,6 +49,11 @@ export default {
           path : '/sellerDelivery',
           name : 'sellerDelivery',
           component : SellerDelivery
+        },
+        {
+          path : '/productFilterSearchBar',
+          name : 'productFilterSearchBar',
+          component : ProductFilterSearchBar
         }
     ]
 }

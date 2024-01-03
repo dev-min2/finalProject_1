@@ -66,6 +66,72 @@ let productDAO = {
                 `;
         return query(getMyProductList, userNo)
     },
+
+    //판매자 상품 필터 조회
+    getMyProductListFilter: async function (userNo,categoryNo,publicStateNo) {
+        //category_no 1~4는 대분류라서 중분류인 5부터 조회. 중분류 뒤 괄호안의 숫자는 대분류
+        let categoryFilter = '';
+        switch (categoryNo) {
+            case '0':
+                categoryFilter = 'AND A.category_no = 5'; //건식사료(1)
+                break;
+            case '1':
+                categoryFilter = 'AND A.category_no = 6'; //습식사료(1)
+                break;
+            case '2':
+                categoryFilter = 'AND A.category_no = 7'; //수제간식(2)
+                break;
+            case '3':
+                categoryFilter = 'AND A.category_no = 8'; //캔.파우치(2)
+                break;
+            case '4':
+                categoryFilter = 'AND A.category_no = 9'; //통살(2)
+                break;
+            case '5':
+                categoryFilter = 'AND A.category_no = 10';//종합영양제(3)
+                break;
+            case '6':
+                categoryFilter = 'AND A.category_no = 11';//피부.모질(3)
+                break;
+            case '7':
+                categoryFilter = 'AND A.category_no = 12';//뼈.관절(3)
+                break;
+            case '8':
+                categoryFilter = 'AND A.category_no = 13';//샴푸/린스(4)
+                break;      
+            case '9':
+                categoryFilter = 'AND A.category_no = 14';//브러쉬(4)
+                break;   
+            case '10':
+                categoryFilter = 'AND A.category_no = 15';//발톱.발관리(4)
+                break;   
+        }
+
+        let publicState = '';
+        //h1은 공개, h2는 비공개
+        switch (publicStateNo) {
+            case '0':
+                categoryFilter = `'AND A.product_public_state = 'h1'`; 
+                break;
+            case '1':
+                categoryFilter = `'AND A.product_public_state = 'h2'`; 
+                break;
+        }
+
+
+        const getMyProductListFilter = `
+                SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
+                FROM product AS A
+                JOIN category AS B ON A.category_no = B.category_no
+                JOIN category AS C ON C.category_no = B.category_pno
+                WHERE user_no = ?
+                ${categoryFilter}
+                ${publicState}
+                `;
+        return query(getMyProductListFilter, userNo)
+    },
+
+
     //판매자 상품검색
     sellerProductSearchName: async function (search) {
         const searchQuery = "%" + search + "%"
