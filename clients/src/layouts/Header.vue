@@ -80,15 +80,8 @@ g<template>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" @click="this.getRecProduct()">추천상품</a>
-<<<<<<< HEAD
           </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/upload">업로드테스트</router-link>
-          </li>
-          <!-- 지워야함-->
-=======
-          </li> 
->>>>>>> develop
+
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
