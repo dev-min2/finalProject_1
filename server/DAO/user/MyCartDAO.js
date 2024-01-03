@@ -43,7 +43,7 @@ const myCartDAO = {
         WHERE user_no = ? and product_no = ?
         `;
         return query(deleteProductQuery, [user_no, product_no]);
-    }
+    },
 };
 
 module.exports = myCartDAO;
