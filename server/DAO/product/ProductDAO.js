@@ -73,13 +73,12 @@ let productDAO = {
         console.log(publicStateNo);
         let question = '';
         //let categoryArray = [];
-        
         for(let i = 0; i < categoryArray.length; ++i) {
-            if(i == categoryArray.length -1) {
+            if(i == categoryArray.length -1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
                 question += '?)';
             }
             else {
-                question += '?,';
+                question += '?,'; // 배열의 마지막이 아니면 ?후 ,를 넣어줌
             }
         }
 

@@ -4,6 +4,7 @@ const ReviewDAO = require('../DAO/user/ReviewDAO');
 const DeliveryDAO = require('../DAO/user/DeliveryDAO');
 const categoryDAO = require("../DAO/product/CategoryDAO");
 const PageDTO = require("../commonModule/PageDTO");
+const fs = require('fs');
 
 class ProductService {
     constructor() {
@@ -98,9 +99,9 @@ class ProductService {
         let result = '';
         try {            
 
-            if(categoryArray == -1)
-                result = await productDAO.getMyProductList(userNo);
-            else 
+            if(categoryArray == -1) //-1 특별한 의미는 없다..
+                result = await productDAO.getMyProductList(userNo); //카테고리를 선택하지 않았을때 전체상품 리스트를 조회함
+            else //카테고리를 선택했을때 공개상태와 categoryArray를 인수로 보냄
                 result = await productDAO.getMyProductListFilter(userNo,publicStateNo, categoryArray);
         }
         catch(e) {
@@ -111,19 +112,27 @@ class ProductService {
     }
 
 
-    async uploadProduct(object) {
-        // const object = {
-        //     pet_type : petType,
-        //     category_no : categoryNo,
-        //     productName: product_name,
-        //     productDetailDesc: product_detail_desc,
-        //     productPrice: product_price,
-        //     productStock: product_stock,
-        //     product_desc: product_desc,
-        //     user_no: user_no,
-        //     product_public_state: product_public_state
-        
-        // }
+    async uploadProduct(sendObj,fileImage) {
+        const productImage = fileImage;
+        const petTypeName = sendObj.petType == 'd1' ? 'dog' : 'cat'; 
+
+        let savePath = __dirname + `/../uploads/productImage/${petTypeName}/${productImage.originalFilename}`;
+        const rs = fs.createReadStream(productImage.path);
+	    const ws = fs.createWriteStream(savePath);
+	    rs.pipe(ws);
+
+        const object = {
+            pet_type : sendObj.petType,
+            category_no : sendObj.categoryNo,
+            product_name: sendObj.productName,
+            product_detail_desc: sendObj.productDetailDesc,
+            product_price: sendObj.productPrice,
+            product_stock: sendObj.productStock,
+            product_desc: sendObj.product_desc,
+            user_no: sendObj.user_no,
+            product_public_state: sendObj.product_public_state,
+            product_image : productImage.originalFilename
+        }
         let result = await productDAO.uploadProduct(object);
         return result;
     }

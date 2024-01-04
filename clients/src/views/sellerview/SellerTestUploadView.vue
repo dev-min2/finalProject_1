@@ -65,7 +65,7 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							<input type="submit" value="저장" class="btn btn-primary" @click="uploadProduct()"> 
+							<input type="submit" value="저장" class="btn btn-primary">
 							<input type="reset" value="초기화" class="btn btn-warning">
 						</td>
 					</tr>
@@ -119,9 +119,17 @@ export default {
             formData.append('product_desc', html);
             formData.append('user_no', 1);
             formData.append('product_public_state', 'I1');
+            this.$showLoading();
 			let result = await axios.post('/api/product/uploadProduct', formData);
-			console.log(result);
-		}
+            this.$hideLoading();
+            if(result.data.insertId > 0) {
+                this.$showSuccessAlert('ㅋㅋ성공함ㅋ');
+                this.$router.push({path : '/SellerProductList'});
+            }
+            else {
+                this.$showFailAlert('실패함');
+            }
+		},
     }
 }
 </script>

@@ -24,7 +24,7 @@
         <table class="productList">
             <thead>
                 <tr>
-                    <th>상품 번호</th>
+                    <th class = "th1">상품 번호</th>
                     <th>상품이미지</th>
                     <th>상품명</th>
                     <th>판매가</th>
@@ -46,6 +46,11 @@
                 </tr>
             </tbody>
         </table>
+    <!-- 상품등록,삭제,숨김 버튼 -->
+    <button class = "b1" @click="upload" style="border-radius:5px"><router-link class="nav-link" to="/upload">상품등록</router-link></button>
+    <button class = "b2" @click="productDelete" style="border-radius:5px"><router-link class="nav-link" to="/">삭제</router-link></button>
+    <button class = "b3" @click="productHiding" style="border-radius:5px"><router-link class="nav-link" to="/">숨김</router-link></button>
+        
     </div>
 </template>
 
@@ -174,5 +179,17 @@
         border: 2px solid #000000;
         background-color: #f2f2f2;
 
+    }
+    .b1{
+        margin-left: 10px;
+        margin-top: 5px;
+    }
+    .b2{
+        margin-left: 2px;
+        margin-top: 5px;
+    }
+    .b3{
+        margin-left: 2px;
+        margin-top: 5px;
     }
 </style>

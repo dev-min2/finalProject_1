@@ -38,7 +38,7 @@
         </td>
       </tr>
     </table>
-    <button @click="searchProducts">검색</button>
+    <button class = "search" @click="searchProducts">검색</button> 
   </div>
 </template>
 
@@ -72,14 +72,13 @@
     },
     methods: {
       searchProducts() {
-        console.log('search:', this.visibility, this.selectedSubCategory);
-
+        //console.log('search:', this.visibility, this.selectedSubCategory);
         let categoryArray
-        if (this.selectedCategory <= 0) {
+        if (this.selectedCategory <= 0) { // 카테고리를 선택하지 않았을때 전체상품리스트를 조회함(productService에서 처리..)
           categoryArray = -1;
 
         } else {
-          categoryArray = this.selectedSubCategory;
+          categoryArray = this.selectedSubCategory; // 선택된 중분류 값이 있으면 categoryArray에 넣어서 필터검색 동작하게함
         }
 
         const sendObject = {
@@ -89,6 +88,7 @@
 
         this.$emit('send-search', sendObject)
       },
+      //라디오버튼을 두번 클릭했을때 체크 해제 가능하도록 함
       radioCheck(target, curIdx) {
         if (this.prevIdx == curIdx) {
           target.checked = false;
@@ -98,11 +98,12 @@
         }
         this.prevIdx = curIdx;
       },
+      //
       checkMiddle(target, sel, categoryArray) {
         if (this.prevSelCategory != sel) {
-          this.selectedSubCategory = [];
+          this.selectedSubCategory = []; //
         }
-        if (target.checked) {
+        if (target.checked) {//중분류가 체크되었을때 그 값을 배열에 삽입
           this.selectedSubCategory.push(categoryArray);
         }else {
         // 중분류를 선택 해제할 때 해당 항목을 배열에서 제거
@@ -115,8 +116,9 @@
       },
       async getCategoryData() {
         // 서버에 요청
+        // 카테고리가 계층형 구조이다.대분류1에 중분류 2개 이런식으로 묶여있기 때문에 group by를 함
         const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));
-        this.categoryList = result.data; //저장
+        this.categoryList = result.data; //저장 //이게 원래 1차원 배열인데
         console.log(this.categoryList);
         const groupBy = function (data, key) {
           return data.reduce(function (carry, el) {
@@ -129,7 +131,7 @@
           }, {});
         };
 
-        this.categoryList = groupBy(this.categoryList, "parent_no");
+        this.categoryList = groupBy(this.categoryList, "parent_no"); //여기서 그룹바이를 통해 2차원 배열로 만들어 줌
         console.log(this.categoryList);
       }
     }
@@ -165,5 +167,11 @@
     border: 2px solid #000000;
     background-color: #f2f2f2;
 
+  }
+  .search{
+    margin-left: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    
   }
 </style>

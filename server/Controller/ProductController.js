@@ -82,14 +82,11 @@ productRouter.post('/SellerProductList', async (req, res) => {
 //판매자-상품 등록
 const multipart = require('connect-multiparty')
 productRouter.post('/uploadProduct',multipart(), async (req, res) => {
-   console.log(req.session)
    let data = req.body;
-   let file2 = req.files.productImage.originalFilename;
-   console.log(data);
-   console.log(file2);
+   const fileImage = req.files.productImage;
    try {
       const productService = new ProductService();
-      //result = await productService.uploadProduct(data);
+      result = await productService.uploadProduct(data,fileImage);
       res.send(result);
    } catch (e) {
       console.log(e)
