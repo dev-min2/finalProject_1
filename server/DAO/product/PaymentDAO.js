@@ -13,7 +13,7 @@ let paymentDAO = {
         }
 
         const selectCartQuery = 
-        `SELECT p.product_no, c.product_sel_cnt, p.product_name, p.product_price, c.product_sel_cnt * p.product_price as price_sum
+        `SELECT p.user_no, p.product_no, c.product_sel_cnt, p.product_name, p.product_price, c.product_sel_cnt * p.product_price as price_sum
         FROM cart c LEFT JOIN product p
         ON c.product_no = p.product_no
         WHERE c.user_no = ? AND c.cart_no IN(${url}`;

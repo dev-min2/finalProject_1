@@ -41,6 +41,7 @@ export default {
   data(){
     return {
       cartNo : [],
+      deliveryPrice : []
     }
   },
   components: { 
@@ -48,14 +49,17 @@ export default {
     },
   methods : {
     paymentBtn: function(){
-      console.log('주문하기버튼\'^\'*');
       let cartData = this.cartNo;
-      this.$router.push({path:`/paymentform`, query : cartData });
+      let deliveryData = this.deliveryPrice;
+      let data = [cartData,deliveryData];
+      this.$router.push({path:`/paymentform`, query : data});
     },
     //장바구니 선택 cart_no 자식컴포넌트에서 불러오기
-    cartList(Object){
-      this.cartNo = Object;
+    cartList(cart, delivery){
+      this.cartNo = cart;
+      this.deliveryPrice = delivery;
       console.log('나왓으면좋겟당',this.cartNo);
+      console.log('배송비',this.deliveryPrice);
     }
   }
 };

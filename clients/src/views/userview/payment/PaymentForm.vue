@@ -165,11 +165,13 @@
         data(){
             return {
                 cartData : [],  //장바구니에서 선택한 상품번호 넘겨받기
+                deliveryData : [],
 
                 userNo : '',
                 selectCartQuery : [], //장바구니 목록
                 selectMyCouponQuery : [], //내 쿠폰 목록
                 selectUserQuery : [], //회원정보
+                testCartQuery : [],//카트 테스트 (삭제할 것!!)
                 
                 selectPayment : 'html5_inicis', //결제방식
                 selectPayment: '', //결제수단
@@ -180,6 +182,7 @@
                 totalPrice : 0, 
                 totalCount: 0, 
                 delivery : 0,
+                totalDelivery : 0,
                 couponPrice : 0,
                 realTotalPrice : 0,
                  //주문정보
@@ -197,7 +200,8 @@
         },
         async created(){
             //장바구니 데이터 넘겨받기 테스트
-            this.cartData = this.$route.query;
+            this.cartData = this.$route.query[0];
+            this.deliveryData = this.$route.query[1];
 
             this.userNo = this.$store.state.userNo;
             //주문자정보, 장바구니, 쿠폰 / 배송지정보
@@ -209,21 +213,44 @@
             //결제 데이터
             this.total();
             this.orderInfo();
+            const cart = this.groupBy(this.selectCartQuery,'user_no');
+            this.testCartQuery = cart;
+
+                for(let object in this.testCartQuery){
+                    let companyDelivery = 0;
+                    for(let i=0; i<this.testCartQuery[object].length; i++){
+                        companyDelivery += this.testCartQuery[object][i].price_sum;
+                    }
+                    if(companyDelivery > 30000) {
+                        companyDelivery = 0;
+                    } else {
+                        companyDelivery = 3000;
+                    }
+                    console.log('테스트',companyDelivery);
+                    for(let i=0; i<this.testCartQuery[object].length; i++){
+                        console.log(this.testCartQuery[object][i]);
+                    }
+                }
         },
         methods: {
             //데이터 만들기 테스트용 (html 버튼과 함수 둘 다 삭제할 것!!!)
             TestBtn: async function(){
-                console.log('테스트버튼（っ ‘ ᵕ ‘ ｃ）');
-                //this.getPaymentInfo()
                 console.log('T^T나와주세요')
-                console.log(this.$route.query);
-                console.log('넘어와주세여',this.cartData);
+                console.log('쿼리',this.$route.query[0]);
+                console.log('장바구니번호',this.cartData);
+                console.log('배송비',this.deliveryData);
+
+                for (const i in this.deliveryData){
+                    console.log(this.deliveryData[i]);
+                    this.totalDelivery += Number(this.deliveryData[i]);
+                    console.log(this.totalDelivery);
+                }
+
+
             },
 
             //회원 장바구니, 쿠폰리스트, 회원정보 가져오기
             async getUserInfo(){
-                console.log( this.cartData);
-
                 let url =  `/api/product/paymentform?userNo=${this.userNo}&`;
 
                 let length = Object.keys(this.cartData).length;
@@ -236,12 +263,10 @@
                     }
                     ++i;
                 }
-                console.log(url);
                 let result 
                     = await axios.get(url)
                                 .catch(err => console.log(err));
                 this.selectUserPaymentQuery = result.data;
-                console.log('장바구니',this.selectUserPaymentQuery);
                 //0 장바구니, 1 쿠폰, 2 회원정보
                 //각각 변수에 담기
                 this.selectCartQuery = this.selectUserPaymentQuery[0];
@@ -250,15 +275,15 @@
             },
             //금액 계산 / 총 금액, 총 수량, 배송비
             total() {
-                console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
-                for (let i = 0; i< this.selectCartQuery.length; i++){  // 총 금액, 총 수량
+                for (let i=0; i< this.selectCartQuery.length; i++){  // 총 금액, 총 수량
                     this.totalPrice += this.selectCartQuery[i].price_sum;
                     this.totalCount += this.selectCartQuery[i].product_sel_cnt;
                 }
-                if(this.totalPrice < 30000) { //배송비 3000원, 3만원 이상 무료배송
-                    this.delivery = 3000 ; 
-                    this.totalPrice += this.delivery;
-                    }
+                // if(this.totalPrice < 30000) { //배송비 3000원, 3만원 이상 무료배송
+                //     this.delivery = 3000 ; 
+                //     this.totalPrice += this.delivery;
+                //     }
+                
             },
             //결제방식 선택
             Paymentmethod: function(){
@@ -296,7 +321,7 @@
                         real_payment_amount: this.totalPrice , 
                         order_state: 'c1',
                         total_product: this.totalCount , 
-                        total_delivery_fee: this.delivery, 
+                        total_delivery_fee: this.totalDelivery, 
                         receiver_phone: this.receiverPhone , 
                         receiver_name: this.receiverName, 
                         receiver_addr: this.receiverAddr, 
@@ -305,6 +330,7 @@
 
                 //payment_product 테이블
                 let paymentData = [];
+
                 for (let i = 0; i < this.selectCartQuery.length; i++) {
                     let cartProduct = {
                         payment_no: this.orderNo, 
@@ -319,6 +345,7 @@
                     paymentData.push(cartProduct);
                 }
 
+
                 let userNo = this.userNo;
                 const sendObj = {
                     param : {
@@ -331,6 +358,18 @@
                                          .catch(err=>console.log(err));
                 console.log('결제완료', result);
             },
+            
+            groupBy: function(data, key){
+                return data.reduce(function (carry, el){
+                    var group = el[key];
+                    if(carry[group] === undefined){
+                    carry[group] = []
+                    }
+                    carry[group].push(el)
+                    return carry
+                },{})
+            },
+
 
              //결제 버튼 클릭
             PaymentBtn: function(){ 

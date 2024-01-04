@@ -300,7 +300,7 @@ export default {
 
         return;
       }
-      this.$emit('productNo', this.CartNoList);
+      this.$emit('productNo', this.CartNoList, this.deliveryPriceList);
     },
     //총배송비 함수
     totalPrice() {
@@ -367,7 +367,7 @@ export default {
           }
           console.log('삭제확인합시다아', this.CartNoList);
       }
-      this.$emit('productNo', this.CartNoList);
+      this.$emit('productNo', this.CartNoList,this.deliveryPriceList);
     },
     //그룹바이함수
     groupBy: function(data, key){
