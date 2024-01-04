@@ -163,10 +163,17 @@ let productDAO = {
     showProductDetailQuery: async function (product_no) {
         const showProductDetailQuery = `
         SELECT *
-        FROM product p left join review r on p.product_no = r.product_no
-        where p.product_no = ?
+        FROM product
+        where product_no = ?
         `;
         return query(showProductDetailQuery, product_no);
+    },
+    addCartQuery: async function (product_no, product_sel_cnt, user_no) {
+        const addCartQuery = `
+        INSERT cart
+        SET product_no = ? , product_sel_cnt = ? , user_no = ?
+        `;
+        return query(addCartQuery, [product_no, product_sel_cnt, user_no]);
     }
 };
 

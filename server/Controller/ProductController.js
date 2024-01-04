@@ -99,4 +99,20 @@ productRouter.get('/productDetail', async (req, res) => {
         console.log(err);
     }
 });
+
+productRouter.post('/productDetail', async (req, res) => {
+    let productNo = req.body.pno;
+    let productSelCnt = req.body.cnt;
+    let userNo = req.body.userNo
+    try {
+        console.log(productNo, productSelCnt, userNo);
+        const productService = new ProductService();
+        result = await productService.addCart(productNo, productSelCnt, userNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }
+    
+});
+
 module.exports = productRouter;

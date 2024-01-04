@@ -1,5 +1,6 @@
 <template>
     <hr />
+    {{productDetail}}
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
@@ -22,25 +23,39 @@
                         </div>-->
                         <h1 class="display-5 fw-bolder">{{productDetail.product_name}}</h1>
                         <br />
+                        <p style="text-align : right; color : gray">♥ 3만원 이상 구매시 무료 배송♥</p>
                         <div class="fs-5 mb-5">
                             <!-- <span class="text-decoration-line-through">$45.00</span> -->
-                            <span style="font-size : 30px">\ {{productDetail.product_price}}</span>
+                            <h4 style="font-size : 30px; text-align : right">\ {{productDetail.product_price}}</h4>
                         </div>
                         <p class="lead">{{productDetail.product_desc}}</p>
                         <br />
                         <div class="d-flex">
-                            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 5rem" />
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                                <i class="bi-cart-fill me-1"></i>
-                                Add to cart
-                            </button>
-                            &nbsp;
-                            &nbsp;
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                            <input class="form-control text-center me-3" id="inputQuantity" type="number" min="1" max="99" value="1" style="max-width: 6rem" 
+                            @input="inputNumber($event)"/> &nbsp;
+                            <!-- 입력 수량 : {{this.cnt}}
+                            상품 번호 : {{productDetail.product_no}}
+                            유저 번호 : {{this.$store.state.userNo}} -->
+                            <h4 style="color : gray; margin-inline-start: auto">총 상품 금액 \ {{this.cnt * productDetail.product_price}}</h4>
+                        </div>
+                            <br />
+                            <br />
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button" style="width : 48%; height : 50px">
                                 <i></i>
                                 ♥ Add to wish list
                             </button>
-                        </div>
+                            &nbsp;
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button" @click="addCartfunction()" style="width : 48%; height : 50px">
+                                <i class="bi-cart-fill me-1"></i>
+                                Add to cart
+                            </button>
+                            <br />
+                            <br />
+
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button" style="width : 100%; height : 50px">
+                                <i></i>
+                                ▶ Buy Now
+                            </button>
                     </div>
                 </div>
                     <div class="container px-4 px-lg-5 my-5" style="text-align:center;">
@@ -55,6 +70,12 @@
 				href="#order">취소/교환/반품 안내</a>
 			<hr>
 		</div>
+        <!-- 상품정보 -->
+        <div class="cardBody">
+            <div ref="viewer">
+
+            </div>   
+        </div>   
         <!-- 구매후기  -->
         <div id="review" class="reviewTable">
          <h2 style="font: bolder; font-size: 30px; text-align: left">구매 후기</h2>
@@ -256,15 +277,24 @@
 </template>
 <script>
 import axios from 'axios'
+import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
+let toastViewer = null;
 export default {
     data(){
         return{
             productDetail:[],
+            cnt: 1
         };
     },
-    created(){
-    
-        this.getProductDetail(this.$route.query.pno);
+    async created(){
+        await this.getProductDetail(this.$route.query.pno);
+        
+        const viewDiv = this.$refs.viewer;
+        const html = this.productDetail.product_detail_desc;
+        toastViewer = new Viewer({
+            el : viewDiv,
+            initialValue : html
+        });
     },
     methods:{
         async getProductDetail(pno){
@@ -275,6 +305,41 @@ export default {
             this.productDetail = result.data;
             this.$hideLoading();
         },
+        async addCartfunction(){
+            if(this.cnt <= 0){
+                this.$showWarningAlert("상품을 1개 이상 담아주세요.");
+                return;
+            }
+            if(this.cnt > this.productDetail.product_stock){
+                this.$showWarningAlert("상품의 재고보다 많이 담았습니다.");
+                return;
+            }
+            this.$showLoading();
+            let obj = {
+                pno : this.productDetail.product_no,
+                cnt : this.cnt,
+                userNo : this.$store.state.userNo
+            }
+            let result = await axios
+                        .post(`/api/product/productDetail`,obj)
+                        .catch(err => console.log(err));
+            this.$hideLoading();
+            console.log(result.data);
+            if(result.data.affectedRows > 0){
+                this.$showSuccessAlert("성공적으로 장바구니에 담겼습니다.");
+            }
+        },
+        //장바구니 수량 입력
+        inputNumber(event){
+            this.cnt = event.target.value
+            if(this.cnt <= 0){
+                this.$showWarningAlert('상품을 1개 이상 담아주세요.');
+                return
+            }else if(this.cnt > this.productDetail.product_stock){
+                this.$showWarningAlert('상품의 재고보다 많이 담았습니다.');
+                return;
+            }
+        }
     }
 }
 </script>

@@ -1,4 +1,4 @@
-g<template>
+<template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light">
       <!-- bg-light -->
@@ -47,7 +47,7 @@ g<template>
             <button @click="$router.push('/cart')" class="btn" type="button">
               <i class="bi-cart-fill me-1"> </i>
               <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCnt">
-                0
+                {{cartCnt}}
                 <!-- 변경해야함 -->
               </span>
             </button>
@@ -109,7 +109,8 @@ g<template>
         keyword: '',
         categoryList: [],
         productList: [],
-        selectedMenu : []
+        selectedMenu : [],
+        cartCnt : 0
       }
     },
 
@@ -121,10 +122,15 @@ g<template>
     },
     created() {
       this.getCategoryData();
-
+      this.cartCount();
     },
     methods: {
-  
+      async cartCount(){
+        const result = await axios.get(`/api/carts/cartCount/${this.$store.state.userNo}`).catch((err)=>console.log(err));
+        this.cartCount = result.data;
+        this.cartCnt.push(0);
+      },
+
       async getCategoryData() {
         // 서버에 요청
         const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));

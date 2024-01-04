@@ -177,6 +177,17 @@ userRouter.get('/carts/:userNo', async (req, res) => {
     }
 })
 
+userRouter.get('/carts/cartCount/:userNo', async (req, res) => {
+    let userNo = req.params.userNo;
+    try {
+        const userService = new UserService();
+        let result = await userService.showCartCount(userNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }
+})
+
 userRouter.put('/carts/:productNo/:updown', async (req, res) => {
     let productNo = req.params.productNo;
     let updownState = req.params.updown;
