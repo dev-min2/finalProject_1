@@ -11,7 +11,7 @@ import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
-import ChangePassword from '../views/userview/mypage/ChangePassword.vue'
+import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
@@ -109,7 +109,12 @@ export default {
     {
       path: "/user-pass",
       name: "userPass",
-      component : ChangePassword
+      component : CgPasswordAndAccountLeave
+    },
+    {
+      path: "/leave",
+      name: "leave",
+      component: CgPasswordAndAccountLeave
     }
   ]
 };
