@@ -31,7 +31,7 @@
             }
         },
         created() {
-            
+            console.log(this.$route.path);
         },
         methods : {
             async sendMail() {

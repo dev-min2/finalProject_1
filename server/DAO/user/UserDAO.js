@@ -19,7 +19,7 @@ const userDAO = {
 
     selectUserQuery : async function(userId, userPw) {
         const selectUserQuery = `
-            SELECT user_no, user_permission
+            SELECT user_no, user_permission, forgot_pw_change
                 FROM user
                 WHERE user_id = ? AND user_pw = ?
         `;
@@ -47,12 +47,11 @@ const userDAO = {
     },
     updateResetPWQuery : async function(user_pw, user_id, user_email) {
         const updateResetPWQuery = `
-            UPDATE user SET user_pw = ? WHERE user_id = ? AND user_email = ?
+            UPDATE user SET user_pw = ?, forgot_pw_change = ? WHERE user_id = ? AND user_email = ?
         `;
 
-        return query(updateResetPWQuery,[user_pw,user_id,user_email]);
+        return query(updateResetPWQuery,[user_pw, 'P2', user_id,user_email]);
     },
-
     selectUserInfoQuery : async function(userNo) {
         const selectUserInfoQuery = `
             SELECT *

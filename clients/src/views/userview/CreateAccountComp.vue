@@ -354,7 +354,7 @@
                     this.userIdDuplicateCheck = true;
                 }
                 else {
-                    this.$showFailAlert("사용할 수 있는 아이디입니다!",null);
+                    this.$showFailAlert("사용할 수 없는 아이디입니다!",null);
                 }
             },
             async createAccount() {
@@ -415,6 +415,8 @@
                 userObj.user_email = this.userEmail,
                 userObj.user_phone = this.userPhone,
                 userObj.user_addr = this.roadAddress + ' ' + this.detailAddress,  
+                userObj.postcode = this.postcode;
+                userObj.forgot_pw_change = 'P1';
                 sendObj.user = userObj;
                 this.$showLoading();
                 let result = await axios.post('/api/user/join',sendObj,{ 'Content-Type' : 'application/json'});
