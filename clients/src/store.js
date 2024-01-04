@@ -22,7 +22,7 @@ const store = createStore({
             accessToken : '',
             refreshToken : '',
             userPermission : '',
-            prImg : 'http://localhost:12532/uploads/produc5r4356rwImage/'
+            prImg : 'http://localhost:12532/uploads/productImage/'
         }
     },
     getters : {
