@@ -25,7 +25,7 @@
                                 <td>{{ review.buy_cnt }}</td>
                                 <td>{{ this.$dateFormat(review.payment_date) }}</td>
                                 <td><button class="btn btn-primary my-2" style="background-color:#fc97bf; border:0;"
-                                        @click="goReviewBoard(review.review_no,review.product_name)">리뷰수정</button>
+                                        @click="goWriteReview(review.product_no,review.product_name)">리뷰수정</button>
                                 </td>
                                 <td><button class="btn btn-primary my-2" style="background-color:#fc97bf; border:0;"
                                         @click="goReviewBoard(review.review_no,review.product_name)">삭제</button>
@@ -67,10 +67,10 @@
                 console.log(this.page);
             },
             //리뷰작성
-            // goWriteReview(product_no, product_name){
-            //     console.log(product_name)
-            //     this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
-            // },
+            goWriteReview(product_no, product_name){
+                console.log(product_name)
+                this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
+            },
             goReviewBoard(reviewNo, product_name){
                 console.log(reviewNo,product_name);
                 this.$router.push({path : "/myreview/info", query : {rno: reviewNo, pname : product_name }});

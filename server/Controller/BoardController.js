@@ -117,10 +117,10 @@ boardRouter.post('/myreview/write', async (req, res) => {
 });
 
 // 리뷰 단건조회
-boardRouter.get('/myreview/info/:rno', async (req, res) => {
+boardRouter.get('/myreview/info', async (req, res) => {
     try {
-        const reviewNo = req.query.rno;
         const boardService = new BoardService();
+        const reviewNo = req.query.rno;
         const result = await boardService.getReviewInfo(reviewNo);
         res.send(result);
     } catch (e) {

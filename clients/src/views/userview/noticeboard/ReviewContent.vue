@@ -1,18 +1,18 @@
 <template>
     <div class="container mt-3">
-        <div class="row" v-if="reviewInfo !== null">
+        <div class="row">
             <div class="col-md-12 offset-md-0">
                 <h2 class="my-3">리뷰내용</h2>
                 <div class="card">
                     <div class="card-header">
-                        <!-- <h3 class="card-title">{{reviewInfo}}</h3> -->
+                        <h3 class="card-title"></h3>
                         <div style="float:left">
-                            <p class="card-text" style="text-align='right'; display:inline-block;">작성자 |
-                                {{ }}</p>
+                            <p class="card-text" style="text-align='right'; display:inline-block;">상품명 |
+                                {{ product_name }}</p>
                         </div>
-                        <!-- <div style="float:right">
-                                    <p class="card-text" style="text-align='right'; display:inline-block;">조회 {{boardInfo.view_cnt + 1}} | 댓글 {{noticeReplyCount}}</p>
-                                </div> -->
+                        <div style="float:right">
+                                    <p class="card-text" style="text-align='right'; display:inline-block;">작성자 {{  }} | 댓글 {{}}</p>
+                                </div>
                     </div>
                     <div class="card-body">
                         <div ref="viewer">
@@ -42,11 +42,13 @@
             }
         },
         async created() {
+          
+            this.product_name = this.$route.query.pname;
             this.reviewNo = this.$route.query.rno;
             await this.getReviewInfo();
 
             const viewDiv = this.$refs.viewer;
-            const html = this.reviewInfo.content;
+            const html = this.reviewNo.content;
             toastViewer = new Viewer({
                 el: viewDiv,
                 initialValue: html
@@ -56,16 +58,16 @@
         methods: {
             async getReviewInfo() {
                 this.$showLoading();
-                const result = await axios.get(`/api/board/myreview/info/${this.reviewNo}`);
-                // if (result.status == 200) {
+                const result = await axios.get(`/api/board/myreview/info?rno=${this.reviewNo}`);
+                 if (result.status == 200) {
                     this.reviewNo = result.data;
-                   
-                // } else {
-                //     this.$showFailAlert('데이터를 불러오는데 실패했습니다.');
-                //     this.$router.push({
-                //         path: "/myreview"
-                //     });
-                // }
+               
+                } else {
+                    this.$showFailAlert('데이터를 불러오는데 실패했습니다.');
+                    this.$router.push({
+                        path: "/myreview"
+                    });
+                }
                 this.$hideLoading();
                 return result;
 
