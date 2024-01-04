@@ -2,6 +2,7 @@ const fxExtra = require('fs-extra');
 const path = require('path');
 const fs = require('fs');
 const noticeBoardDAO = require('../DAO/board/NoticeBoardDAO');
+const reviewDAO = require('../DAO/user/ReviewDAO');
 const { groupBy } = require('../commonModule/commonModule');
 const PageDTO = require('../commonModule/PageDTO');
 
@@ -134,6 +135,28 @@ class BoardService {
             return null;
         }
 
+        return result;
+    }
+    //리뷰작성
+    async registReviewBoard(userNo, reviewBoardInfo){
+        let reviewVO = {
+            content : reviewBoardInfo.html,
+            star_cnt : 4,//reviewBoardInfo.star_cnt,
+            review_date : new Date(),
+            product_no : reviewBoardInfo.product_no,
+            user_no : userNo
+        }
+    
+        const result = await reviewDAO.insertReviewQuery(reviewVO);
+        if(result == null && result.affectedRows <= 0) {
+            return null;
+        }
+        return result;
+    }
+
+    //리뷰 단건조회
+    async getReviewBoardInfo(reviewNo){
+        const result = await reviewDAO.selectReviewBoardQuery(reviewNo);
         return result;
     }
 }

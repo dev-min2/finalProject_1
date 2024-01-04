@@ -20,6 +20,8 @@ import SearchPage from '../views/userview/SearchPage.vue'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
+import CreateReview from '../views/userview/noticeboard/CreateReview.vue'
+import ReviewInfo from '../views/userview/noticeboard/ReviewContent.vue'
 
 export default {
   path: '/',
@@ -122,6 +124,16 @@ export default {
       path: "/user-pass",
       name: "userPass",
       component : ChangePassword
+    },
+    {
+      path : "/myreview/write",
+      name : "myreviewWrite",
+      component : CreateReview
+    },
+    {
+      path : "/myreview/info",
+      name : "myreviewinfo",
+      component : ReviewInfo
     }
   ]
 };

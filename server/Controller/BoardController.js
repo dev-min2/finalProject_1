@@ -2,6 +2,7 @@ const express = require('express');
 const boardRouter = express.Router();
 const BoardService = require('../Service/BoardService');
 
+
 boardRouter.post('/notice', async(req,res) => {
     const { noticeBoardInfo, randNoticeValue, curTimeVal } = req.body.param;
 
@@ -96,6 +97,34 @@ boardRouter.put('/notice', async(req, res) => {
     catch(e) {
         console.log(e);
     }
-})
+});
+
+//리뷰 작성
+boardRouter.post('/myreview/write', async(req, res)=>{
+    const { reviewBoardInfo } = req.body.param;
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.registReviewBoard(req.session.userNo, reviewBoardInfo);        
+        res.send("OK");
+    }
+    catch(e) {
+        console.log(e);
+    }
+
+});
+
+// 리뷰 단건조회
+boardRouter.get('/myreview/info', async(req, res)=>{
+    try{
+        console.log(reviewNo);
+        const boardService = new BoardService();
+        const result = await boardService.getReviewInfo(reviewNo);
+        console.log(result);
+        res.send(result);
+    }catch(e) {
+        console.log(e);
+    }
+});
+
 
 module.exports = boardRouter;

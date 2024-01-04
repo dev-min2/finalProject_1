@@ -9,23 +9,26 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">주문번호</th>
+                                <th scope="col">리뷰번호</th>
                                 <th scope="col">상품명</th>
                                 <th scope="col">가격</th>
                                 <th scope="col">수량</th>
                                 <th scope="col">결제일</th>
-                                <th scope="col">비고</th>
+                                <th colspan="2" scope="col">비고</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(review, idx) in reviewList" :key="idx" :review="review">
-                                <td>{{ review.payment_no }}</td>
+                            <tr v-for="(review, idx) in reviewList" :key="idx" :review="review" @click="goReviewBoard(review.product_no,review.product_name)">
+                                <td>{{ review.review_no }}</td>
                                 <td>{{ review.product_name }}</td>
                                 <td>{{ review.product_price }}</td>
                                 <td>{{ review.buy_cnt }}</td>
-                                <td>{{ this.$dateTimeFormat(review.payment_date) }}</td>
+                                <td>{{ this.$dateFormat(review.payment_date) }}</td>
                                 <td><button class="btn btn-primary my-2" style="background-color:#fc97bf; border:0;"
-                                        @click="goWriteReview">리뷰작성</button>
+                                        @click="goReviewBoard(review.product_no,review.product_name)">리뷰수정</button>
+                                </td>
+                                <td><button class="btn btn-primary my-2" style="background-color:#fc97bf; border:0;"
+                                        @click="goReviewBoard(review.product_no,review.product_name)">삭제</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -61,10 +64,15 @@
                 this.reviewList = result.data.selectResult;
                 console.log(this.reviewList);
                 this.page = result.data.pageDTO;
-
+                console.log(this.page);
             },
-            goWriteReview(){
-                this.$router.push({path : "/myreview/write"});
+            goWriteReview(product_no, product_name){
+                console.log(product_name)
+                this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
+            },
+            goReviewBoard(reviewNo){
+                console.log(reviewNo);
+                this.$router.push({path : "/myreview/info", query : {rno: reviewNo }});
             }
         }
     }

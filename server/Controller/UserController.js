@@ -245,10 +245,9 @@ userRouter.put('/info', async(req, res) => {
 userRouter.get('/myreview', async(req, res)=>{
     const userNo = req.query.userNo;
     const pageNo = req.query.pageNo;
-    const productNo = req.query.productNo;
     try{
         const userService = new UserService();
-        const result = await userService.getMyReviewList(userNo,pageNo,productNo);
+        const result = await userService.getMyReviewList(userNo,pageNo);
         res.send(result);
     }catch(e) {
         console.log(e);
