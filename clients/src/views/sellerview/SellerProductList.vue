@@ -24,6 +24,7 @@
         <table class="productList">
             <thead>
                 <tr>
+                    <th class = "th1">선택</th>
                     <th class = "th1">상품 번호</th>
                     <th>상품이미지</th>
                     <th>상품명</th>
@@ -35,6 +36,7 @@
             </thead>
             <tbody>
                 <tr :key="i" v-for="(product,i) in displayedProduct">
+                    <td><input type = "checkbox" v-model = "product.selected" /></td>
                     <td>{{product.product_no}}</td>
                     <td>{{product.product_image}}</td>
                     <td>{{product.product_name}}</td>
