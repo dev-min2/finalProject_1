@@ -13,7 +13,7 @@
       </ul>
     </div>
     <div>
-      <CartList />
+      <CartList @product-no="cartList"/>
     </div>
     <div class="cart_mainbts">
       <button
@@ -36,15 +36,27 @@
 </template>
 <script>
 import CartList from "../../components/CartList.vue";
+
 export default {
-  components: { CartList },
+  data(){
+    return {
+      cartNo : [],
+    }
+  },
+  components: { 
+    CartList 
+    },
   methods : {
     paymentBtn: function(){
-      console.log('버튼테스트\'^\'*');
-      this.$router.push({path:`/paymentform`});
-      console.log('배송비넘겨요');
+      console.log('주문하기버튼\'^\'*');
+      let cartData = this.cartNo;
+      this.$router.push({path:`/paymentform`, query : cartData });
+    },
+    //장바구니 선택 cart_no 자식컴포넌트에서 불러오기
+    cartList(Object){
+      this.cartNo = Object;
+      console.log('나왓으면좋겟당',this.cartNo);
     }
-
   }
 };
 </script>

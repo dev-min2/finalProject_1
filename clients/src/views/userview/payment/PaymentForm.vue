@@ -164,6 +164,8 @@
     export default {
         data(){
             return {
+                cartData : [],  //장바구니에서 선택한 상품번호 넘겨받기
+
                 userNo : '',
                 selectCartQuery : [], //장바구니 목록
                 selectMyCouponQuery : [], //내 쿠폰 목록
@@ -194,6 +196,9 @@
             }
         },
         async created(){
+            //장바구니 데이터 넘겨받기 테스트
+            this.cartData = this.$route.query;
+
             this.userNo = this.$store.state.userNo;
             //주문자정보, 장바구니, 쿠폰 / 배송지정보
             await this.getUserInfo();
@@ -205,27 +210,38 @@
             this.total();
             this.orderInfo();
         },
-        // watch:{
-        //     orderCheck(newValue,oldValue){
-        //         console.log('watch',newValue);
-        //     }
-        // },
         methods: {
             //데이터 만들기 테스트용 (html 버튼과 함수 둘 다 삭제할 것!!!)
             TestBtn: async function(){
                 console.log('테스트버튼（っ ‘ ᵕ ‘ ｃ）');
-                //this.getUserInfo();
-                //this.getPaymentInfo();
-                this.getPaymentInfo();
+                //this.getPaymentInfo()
+                console.log('T^T나와주세요')
+                console.log(this.$route.query);
+                console.log('넘어와주세여',this.cartData);
             },
-
 
             //회원 장바구니, 쿠폰리스트, 회원정보 가져오기
             async getUserInfo(){
+                console.log( this.cartData);
+
+                let url =  `/api/product/paymentform?userNo=${this.userNo}&`;
+
+                let length = Object.keys(this.cartData).length;
+                let i = 0;
+                for(const object in this.cartData){
+                    if(i == length -1){
+                        url += `cno=${this.cartData[object]}`;
+                    }else{
+                        url += `cno=${this.cartData[object]}&`; 
+                    }
+                    ++i;
+                }
+                console.log(url);
                 let result 
-                    = await axios.get(`/api/product/paymentform/${this.userNo}`)
+                    = await axios.get(url)
                                 .catch(err => console.log(err));
                 this.selectUserPaymentQuery = result.data;
+                console.log('장바구니',this.selectUserPaymentQuery);
                 //0 장바구니, 1 쿠폰, 2 회원정보
                 //각각 변수에 담기
                 this.selectCartQuery = this.selectUserPaymentQuery[0];
@@ -235,7 +251,6 @@
             //금액 계산 / 총 금액, 총 수량, 배송비
             total() {
                 console.log('할수이따........(›´-`‹ )', this.selectCartQuery);
-
                 for (let i = 0; i< this.selectCartQuery.length; i++){  // 총 금액, 총 수량
                     this.totalPrice += this.selectCartQuery[i].price_sum;
                     this.totalCount += this.selectCartQuery[i].product_sel_cnt;
@@ -264,7 +279,7 @@
                 } else if (this.selectCartQuery.length == 1){ 
                     this.orderProduct = this.selectCartQuery[0].product_name; //단건주문
                 } else {
-                    this.$router.push({ path: '/main'});//장바구니 비어있음 > 메인으로 이동
+                    //this.$router.push({ path: '/main'});//장바구니 비어있음 > 메인으로 이동
                 }
             },
             //결제 완료 데이터 처리
@@ -312,7 +327,7 @@
                         userNo : userNo
                     }
                 }
-                let result = await axios.post("/api/product/paymentform", sendObj)
+                let result = await axios.post("/api/product/payment", sendObj)
                                          .catch(err=>console.log(err));
                 console.log('결제완료', result);
             },

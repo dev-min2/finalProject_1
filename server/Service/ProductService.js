@@ -16,21 +16,14 @@ class ProductService {
     }
 
     //결제폼 회원정보, 장바구니, 쿠폰 가져오기 합침
-    async getUserPaymentInfo(userNo){
-        const cartList = await paymentDAO.selectCartQuery(userNo);
+    async getUserPaymentInfo(userNo, cartNo){
+        const cartList = await paymentDAO.selectCartQuery(userNo, cartNo);
         const couponList = await couponDAO.selectMyCouponQuery(userNo);
         const userInfo = await userDAO.selectUserInfoQuery(userNo);
         let result = [cartList, couponList, userInfo[0]];
         return result;
     }
 
-    //결제 폼
-    //장바구니 정보 가져오기
-    async getCartList(userNo){ 
-        const result = await paymentDAO.selectCartQuery(userNo);
-        return result;
-    }
-    
     //결제 완료 처리
     async completePayment(paymentObj, paymentData, userNo){ 
         const connection = await getConnection();
@@ -55,7 +48,7 @@ class ProductService {
     }
     //주문 내역 가져오기
     async getPaymentList(userNo){
-        const result = paymentDAO.selectPaymentList(userNo);
+        const result = await paymentDAO.selectPaymentList(userNo);
         return result;
     }
 
