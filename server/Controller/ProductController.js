@@ -43,13 +43,13 @@ productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice', async (req
 })
 
 //판매자-내 상품 전체 조회
-productRouter.get('/SellerProductList/:userNo', async (req, res) => {
+productRouter.get('/SellerProductList/:userNo/:state', async (req, res) => {
    // let userNo = req.params.userNo;
    const userNo = 1;
-   
+   let state=req.params.state
    try {
       const productService = new ProductService();
-      result = await productService.getMyProductList(userNo);
+      result = await productService.getMyProductList(userNo,state);
       res.send(result);
 
    } catch (e) {
@@ -60,66 +60,18 @@ productRouter.get('/SellerProductList/:userNo', async (req, res) => {
 //판매자 필터검색 - 카테고리 분류 조회
 productRouter.post('/SellerProductList', async (req, res) => {
    //let userNo = req.params.userNo;
-   console.log('categoryNo',categoryNo1,categoryNo2,categoryNo3)
-      console.log(publicStateNo)
+    // const userNo = req.body.userNo
    const userNo = 1;
-   let categoryNo1 = req.body.categoryNo1;
-   let categoryNo2 = req.body.categoryNo2;
-   let categoryNo3 = req.body.categoryNo3;
+   let categoryArray = req.body.categoryArray;
    let publicStateNo = req.body.publicStateNo;
+  
+   
+   console.log('categoryNo',categoryArray)
+   console.log(publicStateNo)
    //req.session.userNo;
    try {
       const productService = new ProductService();
-
-      
-      switch (categoryNo1) {
-         case "0": //건식사료
-         case "1"://습식사료
-         case "2"://수제간식
-         case "3"://캔,파우치
-         case "4"://통살
-         case "5"://종합영양제
-         case "6"://피부 모질
-         case "7"://뼈.관절
-         case "8"://샴푸.린스
-         case "9"://브러쉬
-         case "10"://발톱.발관리
-            result = await productService.getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3);
-            break;    
-      }
-
-      switch (categoryNo2) {
-         case "0": //건식사료
-         case "1"://습식사료
-         case "2"://수제간식
-         case "3"://캔,파우치
-         case "4"://통살
-         case "5"://종합영양제
-         case "6"://피부 모질
-         case "7"://뼈.관절
-         case "8"://샴푸.린스
-         case "9"://브러쉬
-         case "10"://발톱.발관리
-            result = await productService.getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3);
-            break;    
-      }
-
-      switch (categoryNo3) {
-         case "0": //건식사료
-         case "1"://습식사료
-         case "2"://수제간식
-         case "3"://캔,파우치
-         case "4"://통살
-         case "5"://종합영양제
-         case "6"://피부 모질
-         case "7"://뼈.관절
-         case "8"://샴푸.린스
-         case "9"://브러쉬
-         case "10"://발톱.발관리
-            result = await productService.getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3);
-            break;    
-      }
-
+      result = await productService.getMyProductListFilter(userNo,publicStateNo, categoryArray);
       res.send(result);
    } catch (e) {
       console.log(e);
@@ -130,10 +82,10 @@ productRouter.post('/SellerProductList', async (req, res) => {
 //판매자-상품 등록
 const multipart = require('connect-multiparty')
 productRouter.post('/uploadProduct',multipart(), async (req, res) => {
+   console.log(req.session)
    let data = req.body;
    let file2 = req.files.productImage.originalFilename;
    console.log(data);
-   console.log(file);
    console.log(file2);
    try {
       const productService = new ProductService();

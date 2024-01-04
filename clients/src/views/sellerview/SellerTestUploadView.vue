@@ -118,7 +118,7 @@ export default {
             console.log(html);
             formData.append('product_desc', html);
             formData.append('user_no', 1);
-            formData.append('product_public_state', 'i1');
+            formData.append('product_public_state', 'I1');
 			let result = await axios.post('/api/product/uploadProduct', formData);
 			console.log(result);
 		}

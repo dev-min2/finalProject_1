@@ -31,10 +31,10 @@
       <tr>
         <td>공개 여부</td>
         <td>
-          <input class="mr-1" type="radio" :id="'visibility'" name="visibility" v-model="visibility" :value="'i1'" />
-          <label :for="'visibility1'" class="mr-1">공개</label> <!-- 수정된 부분 -->
-          <input class="mr-1" type="radio" :id="'visibility'" name="visibility" v-model="visibility" :value="'i2'" />
-          <label :for="'visibility2'" class="mr-1">비공개</label> <!-- 수정된 부분 -->
+          <input class="mr-1" type="radio" :id="'visibility'" name="visibility" v-model="visibility" :value="'I1'" />
+          <label :for="'visibility1'" class="mr-1">공개</label> 
+          <input class="mr-1" type="radio" :id="'visibility'" name="visibility" v-model="visibility" :value="'I2'" />
+          <label :for="'visibility2'" class="mr-1">비공개</label> 
         </td>
       </tr>
     </table>
@@ -56,7 +56,7 @@
         selectedSubCategory: [],
         prevIdx: 0,
         ategoryList: '',
-        visibility: 'i1',
+        visibility: 'I1',
       }
     },
     watch: {
@@ -72,26 +72,19 @@
     },
     methods: {
       searchProducts() {
-            console.log('search:', this.visibility, this.selectedSubCategory);
+        console.log('search:', this.visibility, this.selectedSubCategory);
 
-        let categoryNo1;
-        let categoryNo2;
-        let categoryNo3;
+        let categoryArray
         if (this.selectedCategory <= 0) {
-          categoryNo1 = -1;
-          categoryNo2 = -1;
-          categoryNo3 = -1;
+          categoryArray = -1;
+
         } else {
-          categoryNo1 = this.selectedSubCategory[0];
-          categoryNo2 = this.selectedSubCategory[1];
-          categoryNo3 = this.selectedSubCategory[2];
+          categoryArray = this.selectedSubCategory;
         }
 
         const sendObject = {
-          categoryNo1: categoryNo1,
-          categoryNo2: categoryNo2,
-          categoryNo3: categoryNo3,
-          publicStateNo: this.visibility ? 'I1' : 'I2'
+          categoryArray: categoryArray,
+          publicStateNo: this.visibility //v-model="visibility" I1,I2값을 담아두었다가 여기서 꺼내씀
         }
 
         this.$emit('send-search', sendObject)
@@ -105,18 +98,15 @@
         }
         this.prevIdx = curIdx;
       },
-      checkMiddle(target, sel, categoryNo1,categoryNo2,categoryNo3) {
+      checkMiddle(target, sel, categoryArray) {
         if (this.prevSelCategory != sel) {
           this.selectedSubCategory = [];
         }
-
         if (target.checked) {
-          this.selectedSubCategory.push(categoryNo1);
-          this.selectedSubCategory.push(categoryNo2);
-          this.selectedSubCategory.push(categoryNo3);
+          this.selectedSubCategory.push(categoryArray);
         }else {
         // 중분류를 선택 해제할 때 해당 항목을 배열에서 제거
-        const indexToRemove = this.selectedSubCategory.indexOf(categoryNo1);
+        const indexToRemove = this.selectedSubCategory.indexOf(categoryArray);
         if (indexToRemove !== -1) {
             this.selectedSubCategory.splice(indexToRemove, 1);
         }

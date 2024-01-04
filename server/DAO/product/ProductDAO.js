@@ -56,31 +56,44 @@ let productDAO = {
 
 
     //판매자 상품 조회
-    getMyProductList: async function (userNo) {
+    getMyProductList: async function (userNo,publicStateNo) {
         const getMyProductList = `
                 SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
                 FROM product AS A
                 JOIN category AS B ON A.category_no = B.category_no
                 JOIN category AS C ON C.category_no = B.category_pno
-                WHERE user_no = ?
+                WHERE user_no = ? AND A.product_public_state = ?
                 `;
-        return query(getMyProductList, userNo)
+        return query(getMyProductList, [userNo,publicStateNo])
     },
 
     //판매자 상품 필터 조회
-    getMyProductListFilter: async function (userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3) {
+    getMyProductListFilter: async function (userNo,publicStateNo,categoryArray) {
+        console.log('dao');
+        console.log(publicStateNo);
+        let question = '';
+        //let categoryArray = [];
         
+        for(let i = 0; i < categoryArray.length; ++i) {
+            if(i == categoryArray.length -1) {
+                question += '?)';
+            }
+            else {
+                question += '?,';
+            }
+        }
 
-        const getMyProductListFilter = `
+        let getMyProductListFilter = `
                 SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
                 FROM product AS A
                 JOIN category AS B ON A.category_no = B.category_no
                 JOIN category AS C ON C.category_no = B.category_pno
                 WHERE user_no = ?
                 AND A.product_public_state = ?
-                AND A.category_no IN(?,?,?)
+                AND A.category_no IN(${question}
                 `;
-        return query(getMyProductListFilter, [userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3])
+                // ...(스프레드 연산자)를 사용하지 않으면, query 함수에 배열 전체가 하나의 인수로 전달.
+        return query(getMyProductListFilter, [userNo,publicStateNo, ...categoryArray])
     },
 
 

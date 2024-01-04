@@ -1,7 +1,7 @@
 <template>
     <div id="container">
         <div class="table-header">검색 조건</div>
-        <product-filter-search-bar @send-search="getMyProductListFilter" />
+        <ProductFilterSearchBar @send-search="getMyProductListFilter" />
 
         <div class="product-toolbar">
             <div class="display-options">
@@ -39,9 +39,10 @@
                     <td>{{product.product_image}}</td>
                     <td>{{product.product_name}}</td>
                     <td>{{product.product_price}}</td>
-                    <td>{{product.product_public_state}}</td>
+                    <td v-if="product.product_public_state == 'I1'">공개</td>
+                    <td v-else>비공개</td>
                     <td>{{product.Parent_category_name}}>>{{product.child_category_name}}</td>
-                    <td>{{product.product_registdate}}</td>
+                    <td>{{$dateFormat(product.product_registdate)}}</td>
                 </tr>
             </tbody>
         </table>
@@ -62,12 +63,12 @@
                 search: '',
                 productsPerPage: 5,
                 currentPage: 1,
-                getMyProductListFilter:[]
+               // getMyProductListFilter:[]
             };
         },
         created() {
 
-            this.getMyProductList();
+            this.getMyProductList('I1');
         },
         computed: {
             displayedProduct() {
@@ -77,42 +78,36 @@
             },
         },
         methods: {
-            async getMyProductList() {
-
+            async getMyProductList(publicStateNo) {
                 let result = '';
                 const userNo = 1;
+                const state = publicStateNo
                 try {
-                    result = await axios.get(`/api/product/SellerProductList/${userNo}`);
-                    console.log(userNo)
+                    result = await axios.get(`/api/product/SellerProductList/${userNo}/${state}`);
+                    console.log(userNo,state)
                 } catch (e) {
                     console.log(e);
                 }
                 this.sellerProductList = result.data
             },
-            async getMyProductListFilter(userNo, publicStateNo, categoryNo1, categoryNo2, categoryNo3) {
-                 let result = '';
+            //중분류가 선택되지 않았을때 전체조회 method로 공개상태를 인수로 보냄
+            async getMyProductListFilter(sendObj) {
+                if(sendObj.categoryArray == -1){
+                    this.getMyProductList(sendObj.publicStateNo);
+                    return;
+                }
+                sendObj.userNo = this.$store.state.userNo;
+                let result = '';
                 
                 try {
                     result = await axios.post(
-                        `/api/product/SellerProductList/${userNo}`, {
-                            publicStateNo: publicStateNo,
-                            categoryNo1: categoryNo1,
-                            categoryNo2: categoryNo2,
-                            categoryNo3: categoryNo3
-                        }
+                        `/api/product/SellerProductList`, sendObj
                     );
-
-                    console.log('categoryNo', categoryNo1, categoryNo2, categoryNo3);
-                    console.log('publicStateNo', publicStateNo);
-
-                    
-                    this.sellerProductList = result.data;
-                    
+                 
                 } catch (e) {
                     console.log(e);
                 }
-
-
+               this.sellerProductList = result.data;
             },
             //상품이름으로 검색
             async sellerProductSearchName() {

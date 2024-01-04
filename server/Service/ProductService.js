@@ -86,18 +86,26 @@ class ProductService {
         return result;
     }
     //판매자 메인-상품리스트
-    async getMyProductList(userNo) {
+    async getMyProductList(userNo,publicStateNo) {
         
-        let result = await productDAO.getMyProductList(userNo);
+        let result = await productDAO.getMyProductList(userNo,publicStateNo);
         
         return result;
     }
 
     //판매자 상품관리-필터검색
-    async getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3) {
-        let result = await productDAO.getMyProductListFilter(userNo,publicStateNo,categoryNo1,categoryNo2,categoryNo3);
-        console.log('categoryNo',categoryNo1,categoryNo2,categoryNo3)
-        console.log('publicStateNo',publicStateNo)
+    async getMyProductListFilter(userNo,publicStateNo, categoryArray) {
+        let result = '';
+        try {            
+
+            if(categoryArray == -1)
+                result = await productDAO.getMyProductList(userNo);
+            else 
+                result = await productDAO.getMyProductListFilter(userNo,publicStateNo, categoryArray);
+        }
+        catch(e) {
+            console.log(e);
+        }
         
         return result;
     }
