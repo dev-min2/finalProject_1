@@ -99,20 +99,29 @@ productRouter.get('/productDetail', async (req, res) => {
         console.log(err);
     }
 });
-
+//장바구니 추가
 productRouter.post('/productDetail', async (req, res) => {
     let productNo = req.body.pno;
     let productSelCnt = req.body.cnt;
     let userNo = req.body.userNo
     try {
-        console.log(productNo, productSelCnt, userNo);
         const productService = new ProductService();
         result = await productService.addCart(productNo, productSelCnt, userNo);
         res.send(result);
     } catch (err) {
         console.log(err);
+    }   
+});
+//장바구니 확인
+productRouter.get('/productDetail/:userNo', async(req, res) =>{
+    let userNo = req.params.userNo;
+    try {
+        const productService = new ProductService();
+        let result = await productService.cartInfo(userNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
     }
-    
 });
 
 module.exports = productRouter;

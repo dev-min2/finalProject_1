@@ -1,6 +1,6 @@
 <template>
     <hr />
-    {{productDetail}}
+    {{cartInfo}}
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
@@ -283,7 +283,8 @@ export default {
     data(){
         return{
             productDetail:[],
-            cnt: 1
+            cartInfo:[],
+            cnt: 1,
         };
     },
     async created(){
@@ -305,10 +306,23 @@ export default {
             this.productDetail = result.data;
             this.$hideLoading();
         },
+        async getCartInfo(){
+            this.$showLoading();
+            let result = await axios
+                        .get(`/api/product/productDetail/${this.$store.state.userNo}`)
+                        .catch(err => console.log(err));
+            this.cartInfo = result.data;
+            this.$hideLoading();
+        },
         async addCartfunction(){
+            if(this.$store.state.userNo <= 0) {
+                this.$showWarningAlert('로그인 먼저 해주세요.');
+                this.$router.push({path: '/login'});
+                return;
+                }
             if(this.cnt <= 0){
                 this.$showWarningAlert("상품을 1개 이상 담아주세요.");
-                return;
+                return 
             }
             if(this.cnt > this.productDetail.product_stock){
                 this.$showWarningAlert("상품의 재고보다 많이 담았습니다.");
@@ -324,7 +338,6 @@ export default {
                         .post(`/api/product/productDetail`,obj)
                         .catch(err => console.log(err));
             this.$hideLoading();
-            console.log(result.data);
             if(result.data.affectedRows > 0){
                 this.$showSuccessAlert("성공적으로 장바구니에 담겼습니다.");
             }
@@ -333,10 +346,15 @@ export default {
         inputNumber(event){
             this.cnt = event.target.value
             if(this.cnt <= 0){
+                this.cnt = this.resetCnt;
                 this.$showWarningAlert('상품을 1개 이상 담아주세요.');
-                return
+                event.target.value = 1;
+                this.cnt = 1;
+                return;
             }else if(this.cnt > this.productDetail.product_stock){
                 this.$showWarningAlert('상품의 재고보다 많이 담았습니다.');
+                event.target.value = 1;
+                this.cnt = 1;
                 return;
             }
         }

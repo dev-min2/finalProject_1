@@ -174,7 +174,15 @@ let productDAO = {
         SET product_no = ? , product_sel_cnt = ? , user_no = ?
         `;
         return query(addCartQuery, [product_no, product_sel_cnt, user_no]);
-    }
+    },
+    cartInfoQuery : async function (userNo) {
+        const cartInfoQuery = `
+        SELECT *
+        FROM cart
+        WHERE user_no = ?
+        `;
+        return query(cartInfoQuery, userNo);
+    },
 };
 
 module.exports = productDAO;

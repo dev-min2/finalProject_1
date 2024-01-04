@@ -126,9 +126,9 @@
     },
     methods: {
       async cartCount(){
-        const result = await axios.get(`/api/carts/cartCount/${this.$store.state.userNo}`).catch((err)=>console.log(err));
-        this.cartCount = result.data;
-        this.cartCnt.push(0);
+        //const result = await axios.get(`/api/carts/cartCount/${this.$store.state.userNo}`).catch((err)=>console.log(err));
+        //this.cartCount = result.data;
+        //this.cartCnt.push(0);
       },
 
       async getCategoryData() {

@@ -97,6 +97,11 @@ class ProductService {
         let result = await productDAO.addCartQuery(product_no, product_sel_cnt, user_no);
         return result;
     }
+
+    async cartInfo(userNo){
+        let result = await productDAO.cartInfoQuery(userNo);
+        return result;
+    }
 }
 
 module.exports = ProductService;
