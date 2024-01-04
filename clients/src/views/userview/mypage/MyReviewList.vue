@@ -18,17 +18,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(review, idx) in reviewList" :key="idx" :review="review" @click="goReviewBoard(review.product_no,review.product_name)">
+                            <tr v-for="(review, idx) in reviewList" :key="idx" :review="review" @click="goReviewBoard(review.review_no,review.product_name)">
                                 <td>{{ review.review_no }}</td>
                                 <td>{{ review.product_name }}</td>
                                 <td>{{ review.product_price }}</td>
                                 <td>{{ review.buy_cnt }}</td>
                                 <td>{{ this.$dateFormat(review.payment_date) }}</td>
                                 <td><button class="btn btn-primary my-2" style="background-color:#fc97bf; border:0;"
-                                        @click="goReviewBoard(review.product_no,review.product_name)">리뷰수정</button>
+                                        @click="goReviewBoard(review.review_no,review.product_name)">리뷰수정</button>
                                 </td>
                                 <td><button class="btn btn-primary my-2" style="background-color:#fc97bf; border:0;"
-                                        @click="goReviewBoard(review.product_no,review.product_name)">삭제</button>
+                                        @click="goReviewBoard(review.review_no,review.product_name)">삭제</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -66,13 +66,14 @@
                 this.page = result.data.pageDTO;
                 console.log(this.page);
             },
-            goWriteReview(product_no, product_name){
-                console.log(product_name)
-                this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
-            },
-            goReviewBoard(reviewNo){
-                console.log(reviewNo);
-                this.$router.push({path : "/myreview/info", query : {rno: reviewNo }});
+            //리뷰작성
+            // goWriteReview(product_no, product_name){
+            //     console.log(product_name)
+            //     this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
+            // },
+            goReviewBoard(reviewNo, product_name){
+                console.log(reviewNo,product_name);
+                this.$router.push({path : "/myreview/info", query : {rno: reviewNo, pname : product_name }});
             }
         }
     }

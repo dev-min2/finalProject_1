@@ -3,7 +3,9 @@ const path = require('path');
 const fs = require('fs');
 const noticeBoardDAO = require('../DAO/board/NoticeBoardDAO');
 const reviewDAO = require('../DAO/user/ReviewDAO');
-const { groupBy } = require('../commonModule/commonModule');
+const {
+    groupBy
+} = require('../commonModule/commonModule');
 const PageDTO = require('../commonModule/PageDTO');
 
 class BoardService {
@@ -16,13 +18,13 @@ class BoardService {
     moveAttachFile(boardType, userNo, pkValue, randValue, curTimeVal) {
         const sourceDir = __dirname + `/../uploads/${boardType}/tempAttachFile/`;
         const destDir = __dirname + `/../uploads/${boardType}/${pkValue}/`;
-        if(!fs.existsSync(destDir)) {
+        if (!fs.existsSync(destDir)) {
             fs.mkdirSync(destDir);
         }
 
         const files = fs.readdirSync(sourceDir)
         files.forEach((file) => {
-            if(file.includes(`${boardType}_${userNo}_${randValue}_${curTimeVal}`)) {
+            if (file.includes(`${boardType}_${userNo}_${randValue}_${curTimeVal}`)) {
                 const sourceFilePath = path.join(sourceDir, file);
                 const destinationFilePath = path.join(destDir, file);
                 fs.renameSync(sourceFilePath, destinationFilePath);
@@ -36,7 +38,7 @@ class BoardService {
     getAttachFileList(boardType, pkValue) {
         let attachFileList = [];
         const sourceDir = __dirname + `/../uploads/${boardType}/${pkValue}/`;
-        if(!fs.existsSync(sourceDir)) {
+        if (!fs.existsSync(sourceDir)) {
             return attachFileList;
         }
 
@@ -50,38 +52,38 @@ class BoardService {
 
     async registNoticeBoard(userNo, randNoticeValue, curTimeVal, noticeBoardInfo) {
         let noticeVO = {
-            title : noticeBoardInfo.title,
-            content : noticeBoardInfo.html,
-            user_no : userNo,
-            importance_level : noticeBoardInfo.importanceLevel,
-            notice_start_date : noticeBoardInfo.startDate,
-            notice_end_date : noticeBoardInfo.endDate,
-            created_date : new Date()
+            title: noticeBoardInfo.title,
+            content: noticeBoardInfo.html,
+            user_no: userNo,
+            importance_level: noticeBoardInfo.importanceLevel,
+            notice_start_date: noticeBoardInfo.startDate,
+            notice_end_date: noticeBoardInfo.endDate,
+            created_date: new Date()
         }
-        
+
         const result = await noticeBoardDAO.insertNoticeBoardQuery(noticeVO);
-        if(result == null && result.affectedRows <= 0) {
+        if (result == null && result.affectedRows <= 0) {
             return null;
         }
         // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
         const moveResult = this.moveAttachFile('notice', userNo, result.insertId, randNoticeValue, curTimeVal);
-        if(!moveResult) {
+        if (!moveResult) {
             return null;
         }
 
         return result;
-    } 
+    }
 
-    async getNoticeBoardList(pageNo,keyword) {
-        const result = await noticeBoardDAO.selectNoticeBoardListQuery(pageNo,keyword);
+    async getNoticeBoardList(pageNo, keyword) {
+        const result = await noticeBoardDAO.selectNoticeBoardListQuery(pageNo, keyword);
         const countResult = await noticeBoardDAO.selectNoticeBoardCountQuery(keyword); // 총 카운트.
         const importanceNoticeResult = await noticeBoardDAO.selectImportanceNoticeBoardListQuery();
 
         const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
         const resResult = {
-            selectResult : result,
-            pageDTO : pageDTO,
-            selectImportance : importanceNoticeResult
+            selectResult: result,
+            pageDTO: pageDTO,
+            selectImportance: importanceNoticeResult
         }
 
         return resResult;
@@ -96,10 +98,10 @@ class BoardService {
         const attachList = this.getAttachFileList('notice', result[0].notice_board_no);
 
         const resResult = {
-            noticeBoard : result[0],
-            reply : replyResult,
-            replyCount : replyCountResult[0].CNT,
-            attachFileList : attachList
+            noticeBoard: result[0],
+            reply: replyResult,
+            replyCount: replyCountResult[0].CNT,
+            attachFileList: attachList
         }
 
         return resResult;
@@ -118,44 +120,44 @@ class BoardService {
 
     async modifyNotice(userNo, boardNo, randNoticeValue, curTimeVal, noticeBoardInfo) {
         let noticeVO = {
-            title : noticeBoardInfo.title,
-            content : noticeBoardInfo.html,
-            importance_level : noticeBoardInfo.importanceLevel,
-            notice_start_date : noticeBoardInfo.startDate,
-            notice_end_date : noticeBoardInfo.endDate
+            title: noticeBoardInfo.title,
+            content: noticeBoardInfo.html,
+            importance_level: noticeBoardInfo.importanceLevel,
+            notice_start_date: noticeBoardInfo.startDate,
+            notice_end_date: noticeBoardInfo.endDate
         };
 
-        const result = await noticeBoardDAO.updateNoticeBoardQuery(noticeVO,boardNo);
-        if(result == null && result.affectedRows <= 0) {
+        const result = await noticeBoardDAO.updateNoticeBoardQuery(noticeVO, boardNo);
+        if (result == null && result.affectedRows <= 0) {
             return null;
         }
         // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
         const moveResult = this.moveAttachFile('notice', userNo, boardNo, randNoticeValue, curTimeVal);
-        if(!moveResult) {
+        if (!moveResult) {
             return null;
         }
 
         return result;
     }
     //리뷰작성
-    async registReviewBoard(userNo, reviewBoardInfo){
+    async registReviewBoard(userNo, reviewBoardInfo) {
         let reviewVO = {
-            content : reviewBoardInfo.html,
-            star_cnt : 4,//reviewBoardInfo.star_cnt,
-            review_date : new Date(),
-            product_no : reviewBoardInfo.product_no,
-            user_no : userNo
+            content: reviewBoardInfo.html,
+            star_cnt: 4, //reviewBoardInfo.star_cnt,
+            review_date: new Date(),
+            product_no: reviewBoardInfo.product_no,
+            user_no: userNo
         }
-    
+
         const result = await reviewDAO.insertReviewQuery(reviewVO);
-        if(result == null && result.affectedRows <= 0) {
+        if (result == null && result.affectedRows <= 0) {
             return null;
         }
         return result;
     }
 
     //리뷰 단건조회
-    async getReviewBoardInfo(reviewNo){
+    async getReviewInfo(reviewNo) {
         const result = await reviewDAO.selectReviewBoardQuery(reviewNo);
         return result;
     }

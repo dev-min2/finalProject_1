@@ -8,7 +8,7 @@
                         <!-- <h3 class="card-title">{{reviewInfo}}</h3> -->
                         <div style="float:left">
                             <p class="card-text" style="text-align='right'; display:inline-block;">작성자 |
-                                {{$dateTimeFormat(reviewInfo.review_date)}}</p>
+                                {{ }}</p>
                         </div>
                         <!-- <div style="float:right">
                                     <p class="card-text" style="text-align='right'; display:inline-block;">조회 {{boardInfo.view_cnt + 1}} | 댓글 {{noticeReplyCount}}</p>
@@ -39,11 +39,10 @@
         data() {
             return {
                 reviewNo: 0,
-                reviewInfo: null
             }
         },
         async created() {
-            this.reviewNo = this.$route.params.no;
+            this.reviewNo = this.$route.query.rno;
             await this.getReviewInfo();
 
             const viewDiv = this.$refs.viewer;
@@ -58,14 +57,15 @@
             async getReviewInfo() {
                 this.$showLoading();
                 const result = await axios.get(`/api/board/myreview/info/${this.reviewNo}`);
-                if (result.status == 200) {
+                // if (result.status == 200) {
                     this.reviewNo = result.data;
-                } else {
-                    this.$showFailAlert('데이터를 불러오는데 실패했습니다.');
-                    this.$router.push({
-                        path: "/myreview"
-                    });
-                }
+                   
+                // } else {
+                //     this.$showFailAlert('데이터를 불러오는데 실패했습니다.');
+                //     this.$router.push({
+                //         path: "/myreview"
+                //     });
+                // }
                 this.$hideLoading();
                 return result;
 
@@ -74,5 +74,17 @@
     }
 </script>
 <style scoped>
+    textarea {
+        resize: none;
+    }
 
+    .scroll_ul {
+		overflow-y:scroll;
+		list-style: none;
+		height : 100px;
+	}
+
+    a {
+        text-decoration-line: none;
+    }
 </style>

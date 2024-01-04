@@ -1,13 +1,16 @@
-let { pool,query } = require('../../config/dbPool');
+let {
+    pool,
+    query
+} = require('../../config/dbPool');
 
 // 쿼리문 만들기
 let reviewDAO = {
     //내 리뷰정보 전체 가져오기
-    selectReviewListQuery : async function(userNo, pageNo) {
-        const startpageList = (pageNo -1) * 10;
+    selectReviewListQuery: async function (userNo, pageNo) {
+        const startpageList = (pageNo - 1) * 10;
         const endpageList = 10;
-        const selectReviewListQuery = 
-        `SELECT r.review_no, p.payment_no, a.product_no, a.product_name, a.product_price, b.buy_cnt, p.payment_date
+        const selectReviewListQuery =
+            `SELECT r.review_no, p.payment_no, a.product_no, a.product_name, a.product_price, b.buy_cnt, p.payment_date
         FROM user u
         JOIN review r ON u.user_no = r.user_no
         JOIN payment p ON u.user_no = p.user_no
@@ -17,27 +20,25 @@ let reviewDAO = {
         order by p.payment_date desc limit ?,?`;
         return query(selectReviewListQuery, [userNo, startpageList, endpageList]);
     },
-    selectReviewCntQuery : async function(userNo){
-        const selectReviewCntQuery = 
-        `select count(*) as cnt from review where user_no=?`;
-        return query(selectReviewCntQuery,userNo);
+    selectReviewCntQuery: async function (userNo) {
+        const selectReviewCntQuery =
+            `select count(*) as cnt from review where user_no=?`;
+        return query(selectReviewCntQuery, userNo);
     },
-    insertReviewQuery : async function(reviewVO){
-        const insertReviewQuery = 
-        `INSERT INTO review SET ?`;
-        return query(insertReviewQuery,reviewVO);
+    insertReviewQuery: async function (reviewVO) {
+        const insertReviewQuery =
+            `INSERT INTO review SET ?`;
+        return query(insertReviewQuery, reviewVO);
     },
     //리뷰 단건조회
-    selectReviewBoardQuery : async function(reviewNo){
+    selectReviewBoardQuery: async function (reviewNo) {
         const selectReviewBoardQuery =
-        `select * 
-            from review
-            wherer review_no = ${reviewNo}
-        `;
-        return query(selectReviewBoardQuery, reviewNo );
+            `select * from review
+            where review_no=${reviewNo}`;
+        return query(selectReviewBoardQuery, reviewNo);
     }
 
-    
+
 };
 
 module.exports = reviewDAO;
