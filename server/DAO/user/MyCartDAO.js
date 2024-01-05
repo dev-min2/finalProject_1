@@ -15,8 +15,8 @@ const myCartDAO = {
     },
     showCartCountQuery: async function (user_no) {
         const showCartCountQuery = `
-        SELECT COUNT(*) FROM cart
-        WHERE user_no = ?
+            SELECT COUNT(*) AS CNT FROM cart
+            WHERE user_no = ?
         `;
         return query(showCartCountQuery, user_no);
     },

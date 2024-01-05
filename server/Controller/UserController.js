@@ -169,6 +169,7 @@ userRouter.post('/forgot-account', async(req, res) => {
 userRouter.get('/carts/:userNo', async (req, res) => {
     let userNo = req.params.userNo;
     try {
+        console.log(userNo);
         const userService = new UserService();
         let result = await userService.showCart(userNo);
         res.send(result);
@@ -177,9 +178,10 @@ userRouter.get('/carts/:userNo', async (req, res) => {
     }
 })
 
-userRouter.get('/carts/cartCount/:userNo', async (req, res) => {
+userRouter.get('/cart-count/:userNo', async (req, res) => {
     let userNo = req.params.userNo;
     try {
+        console.log(userNo);
         const userService = new UserService();
         let result = await userService.showCartCount(userNo);
         res.send(result);

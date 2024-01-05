@@ -175,13 +175,21 @@ let productDAO = {
         `;
         return query(addCartQuery, [product_no, product_sel_cnt, user_no]);
     },
-    cartInfoQuery : async function (userNo) {
+    updateCartQuery: async function (product_sel_cnt, user_no, product_no) {
+        const updateCartQuery = `
+        UPDATE cart
+        SET product_sel_cnt = product_sel_cnt + ${product_sel_cnt}
+        WHERE user_no = ? AND product_no = ?
+        `;
+        return query(updateCartQuery, [user_no, product_no]);
+    },
+    cartInfoQuery : async function (userNo, productNo) {
         const cartInfoQuery = `
         SELECT *
         FROM cart
-        WHERE user_no = ?
+        WHERE user_no = ? AND product_no = ?
         `;
-        return query(cartInfoQuery, userNo);
+        return query(cartInfoQuery, [userNo, productNo]);
     },
 };
 

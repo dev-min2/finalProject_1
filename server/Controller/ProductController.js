@@ -112,12 +112,12 @@ productRouter.post('/productDetail', async (req, res) => {
         console.log(err);
     }   
 });
-//장바구니 확인
-productRouter.get('/productDetail/:userNo', async(req, res) =>{
+productRouter.get('/productDetail/:userNo/:productNo', async (req, res) => {
     let userNo = req.params.userNo;
+    let productNo = req.params.productNo;
     try {
         const productService = new ProductService();
-        let result = await productService.cartInfo(userNo);
+        let result = await productService.showCartInfo(userNo, productNo);
         res.send(result);
     } catch (err) {
         console.log(err);

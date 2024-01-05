@@ -1,14 +1,27 @@
 <template>
     <hr />
-    {{cartInfo}}
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6">
+                    <div class="col-md-6" v-if="productDetail.product_stock > 0">
                     <img class="card-img-top mb-5 mb-md-0" v-if="productDetail.pet_type == 'd1'"
                     :src="$store.state.prImg + `dog/` + productDetail.product_image" alt="..." />
                     <img class="card-img-top mb-5 mb-md-0" v-else
                     :src="$store.state.prImg + `cat/` + productDetail.product_image" alt="..." />
+                    </div>
+                    <div class="col-md-6" v-else>
+                    <img class="card-img-top mb-5 mb-md-0" style="opacity : 0.3" v-if="productDetail.pet_type == 'd1'"
+                    :src="$store.state.prImg + `dog/` + productDetail.product_image" alt="..." />
+                    <img class="card-img-top mb-5 mb-md-0" style="opacity : 0.3" v-else
+                    :src="$store.state.prImg + `cat/` + productDetail.product_image" alt="..." />
+                    <h2 style="color : red; font-weight: bold;text-align : center; position:absolute;top:50%;left:50%;transform: translate(-50%, -50%)"
+                    v-if="productDetail.product_stock == 0">
+                        현재 상품은 <br />품절되었습니다.
+                    </h2>
+                    <h2 style="color : red; font-weight: bold;text-align : center; position:absolute;top:50%;left:50%;transform: translate(-50%, -50%)"
+                    v-else-if="productDetail.product_stock < 0">
+                        현재 상품은 판매가 종료되었습니다.
+                    </h2>
                     </div>
                     <div class="col-md-6">
                         <!--<div class="small mb-1">
@@ -32,27 +45,34 @@
                         <br />
                         <div class="d-flex">
                             <input class="form-control text-center me-3" id="inputQuantity" type="number" min="1" max="99" value="1" style="max-width: 6rem" 
-                            @input="inputNumber($event)"/> &nbsp;
-                            <!-- 입력 수량 : {{this.cnt}}
-                            상품 번호 : {{productDetail.product_no}}
-                            유저 번호 : {{this.$store.state.userNo}} -->
-                            <h4 style="color : gray; margin-inline-start: auto">총 상품 금액 \ {{this.cnt * productDetail.product_price}}</h4>
+                            v-if="productDetail.product_stock > 0"
+                            @input="inputNumber($event)"/> 
+                            
+                            <h3 v-else-if="productDetail.product_stock == 0" style="color : red">"현재 상품은 품절되었습니다." </h3> 
+                            
+                            <h3 v-else-if="productDetail.product_stock < 0" style="color : red">"현재 상품은 판매가 종료되었습니다." </h3>
+                            
+                            &nbsp;
+                            <h4 v-if="productDetail.product_stock > 0" style="color : gray; margin-inline-start: auto">총 상품 금액 \ {{this.cnt * productDetail.product_price}}</h4>
                         </div>
                             <br />
                             <br />
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button" style="width : 48%; height : 50px">
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button" style="width : 48%; height : 50px"
+                            v-if="productDetail.product_stock >= 0">
                                 <i></i>
                                 ♥ Add to wish list
                             </button>
                             &nbsp;
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button" @click="addCartfunction()" style="width : 48%; height : 50px">
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button" @click="addCartfunction()" style="width : 48%; height : 50px"
+                            v-if="productDetail.product_stock >= 0">
                                 <i class="bi-cart-fill me-1"></i>
                                 Add to cart
                             </button>
                             <br />
                             <br />
 
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button" style="width : 100%; height : 50px">
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button" style="width : 100%; height : 50px"
+                            v-if="productDetail.product_stock >= 0">
                                 <i></i>
                                 ▶ Buy Now
                             </button>
@@ -304,16 +324,13 @@ export default {
                         .get(`/api/product/productDetail?pno=${pno}`)
                         .catch(err => console.log(err));
             this.productDetail = result.data;
-            this.$hideLoading();
-        },
-        async getCartInfo(){
-            this.$showLoading();
-            let result = await axios
-                        .get(`/api/product/productDetail/${this.$store.state.userNo}`)
+            const cartResult = await axios
+                        .get(`/api/product/productDetail/${this.$store.state.userNo}/${this.productDetail.product_no}`)
                         .catch(err => console.log(err));
-            this.cartInfo = result.data;
+            this.cartInfo = cartResult.data;
             this.$hideLoading();
         },
+        
         async addCartfunction(){
             if(this.$store.state.userNo <= 0) {
                 this.$showWarningAlert('로그인 먼저 해주세요.');
@@ -324,9 +341,21 @@ export default {
                 this.$showWarningAlert("상품을 1개 이상 담아주세요.");
                 return 
             }
-            if(this.cnt > this.productDetail.product_stock){
-                this.$showWarningAlert("상품의 재고보다 많이 담았습니다.");
-                return;
+            if(this.productDetail.product_stock == 0){
+                this.$showWarningAlert("현재 상품은 품절 상태입니다.");
+                    return;
+            }
+            if(this.cartInfo.length >= 1) {
+                if(Number(this.cnt) + Number(this.cartInfo[0].product_sel_cnt) > Number(this.productDetail.product_stock)){
+                    this.$showWarningAlert("상품의 재고보다 많이 담았습니다.");
+                    return;
+                }    
+            }
+            else {
+                if(Number(this.cnt) > Number(this.productDetail.product_stock)){
+                    this.$showWarningAlert("상품의 재고보다 많이 담았습니다.");
+                    return;
+                }    
             }
             this.$showLoading();
             let obj = {
@@ -339,7 +368,13 @@ export default {
                         .catch(err => console.log(err));
             this.$hideLoading();
             if(result.data.affectedRows > 0){
-                this.$showSuccessAlert("성공적으로 장바구니에 담겼습니다.");
+                this.$showSuccessAlert("성공적으로 장바구니에 담겼습니다."); 
+                    this.$showLoading();
+                    const cartResult = await axios
+                        .get(`/api/product/productDetail/${this.$store.state.userNo}/${this.productDetail.product_no}`)
+                        .catch(err => console.log(err));
+                    this.cartInfo = cartResult.data;
+                    this.$hideLoading();   
             }
         },
         //장바구니 수량 입력
@@ -351,15 +386,28 @@ export default {
                 event.target.value = 1;
                 this.cnt = 1;
                 return;
-            }else if(this.cnt > this.productDetail.product_stock){
-                this.$showWarningAlert('상품의 재고보다 많이 담았습니다.');
-                event.target.value = 1;
-                this.cnt = 1;
-                return;
+            }
+            else {
+                if(this.cartInfo.length >= 1) {
+                    if(Number(this.cnt) + Number(this.cartInfo[0].product_sel_cnt) > this.productDetail.product_stock) {
+                        this.$showWarningAlert('상품의 재고보다 많이 담았습니다.');
+                        event.target.value = 1;
+                        this.cnt = 1;
+                        return;
+                    }
+                }
+                else {
+                    if(Number(this.cnt) > Number(this.productDetail.product_stock)) {
+                        this.$showWarningAlert('상품의 재고보다 많이 담았습니다.');
+                        event.target.value = 1;
+                        this.cnt = 1;
+                        return;
+                    }   
+                }
             }
         }
     }
-}
+}    
 </script>
 <style scoped>
 

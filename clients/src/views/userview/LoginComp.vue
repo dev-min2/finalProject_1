@@ -62,6 +62,11 @@
             }
         },
         methods : {
+        async cartCount(){
+            let result = await axios.get(`/api/user/cart-count/${this.$store.state.userNo}`).catch((err)=>console.log(err));
+            console.log(result);
+            this.$store.commit('setCartCnt',result.data.CNT);
+        },
             async kakaoLogin() {
                 let myThis = this;
                 Kakao.Auth.loginForm({
@@ -92,6 +97,7 @@
                                     if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
                                         this.$store.commit('setUserNo', result.data[0].user_no);
                                         this.$store.commit('setUserPermission', result.data[0].user_permission);
+                                        this.cartCount();
                                         this.$router.push({path : '/main'});
                                     }
                                     else {
@@ -121,9 +127,9 @@
                     else {
                         localStorage.setItem("userId", "");
                     }
-
                     this.$store.commit('setUserNo', result.data[0].user_no);
                     this.$store.commit('setUserPermission', result.data[0].user_permission);
+                    this.cartCount();
                     this.$router.push({path : '/main'});
                 }
                 else {

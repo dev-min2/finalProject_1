@@ -230,7 +230,8 @@ class UserService {
     }
     async showCartCount(user_no) {
         let result = await myCartDAO.showCartCountQuery(user_no);
-        return result;
+        console.log(result);
+        return result[0];
     }
     async UpCnt(product_no) {
         let stock = await myCartDAO.selectProductStockQuery(product_no);
