@@ -4,6 +4,7 @@ const userRouter = express.Router();
 const UserService = require("../Service/UserService");
 
 
+
 //마이페이지-내 반려동물관리
 userRouter.get('/mypetinfo/:userNo', async(req,res)=>{ //전체조회
     let userNo = req.params.userNo;
@@ -18,7 +19,7 @@ userRouter.get('/mypetinfo/:userNo', async(req,res)=>{ //전체조회
     }
 });
 
-userRouter.get('/mypetform/:petNo', async(req,res)=>{ //단건조회
+userRouter.get('/mypetform/:petNo', async(req,res)=>{ //해당유저 전체조회
     let petNo = req.params.petNo;
     try{
         const userService = new UserService();
@@ -48,7 +49,6 @@ userRouter.put('/mypetform/:petNo', async(req, res)=>{
     try{
         const userService = new UserService();
         let result = await userService.updatePet(data,petNo);
-        console.log('controller',result);
         res.send(result);
     }catch(e){
         console.log(e);
