@@ -19,7 +19,7 @@ const userDAO = {
 
     selectUserQuery : async function(userId, userPw) {
         const selectUserQuery = `
-            SELECT user_no, user_permission, forgot_pw_change
+            SELECT user_no, user_permission, forgot_pw_change, user_leavedate
                 FROM user
                 WHERE user_id = ? AND user_pw = ?
         `;

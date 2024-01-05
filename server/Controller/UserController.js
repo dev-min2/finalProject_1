@@ -109,14 +109,14 @@ userRouter.post('/login', async(req,res) =>{
 });
 
 userRouter.get("/logout", async (req, res) => {
-  req.session.destroy((err) => {
+    req.session.destroy((err) => {
     if (err) {
-      console.log(err);
-      res.status(500).send("Error");
-    } else {
-      res.status(200).send("OK");
-    }
-  });
+        console.log(err);
+        res.status(500).send("Error");
+    } 
+    else {
+        res.status(200).send("OK");
+    }});
 });
 
 userRouter.post('/email-auth', async(req, res) => {

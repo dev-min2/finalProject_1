@@ -135,6 +135,6 @@ export default {
       path: "/leave",
       name: "leave",
       component: CgPasswordAndAccountLeave
-    }
+    },
   ]
 };

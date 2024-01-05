@@ -89,7 +89,13 @@
                                     };
                                     
                                     let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
+                                    this.$hideLoading();
                                     if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
+                                        if(result.data[0].user_leavedate != null) {
+                                            this.$router.push({path : "/account-leave", query : { userNo : result.data[0].user_no, leaveDate : result.data[0].user_leavedate}});
+                                            return;
+                                        }
+
                                         this.$store.commit('setUserNo', result.data[0].user_no);
                                         this.$store.commit('setUserPermission', result.data[0].user_permission);
                                         this.$router.push({path : '/main'});
@@ -97,7 +103,6 @@
                                     else {
                                         console.log('실패?');
                                     }
-                                    this.$hideLoading();
                                 }
                             }
                         });
@@ -113,12 +118,18 @@
                 };
 
                 let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
+                this.$hideLoading();
                 if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
                     if(this.idSaveChecked) {
                         localStorage.setItem("userId", this.userId);    
                     }
                     else {
                         localStorage.setItem("userId", "");
+                    }
+
+                    if(result.data[0].user_leavedate != null) {
+                        this.$router.push({path : "/account-leave", query : { userNo : result.data[0].user_no, leaveDate : result.data[0].user_leavedate}});
+                        return;
                     }
 
                     this.$store.commit('setUserNo', result.data[0].user_no);
@@ -134,7 +145,6 @@
                 else {
                     this.$showWarningAlert('아이디와 비밀번호를 확인해주세요',null);        
                 }
-                this.$hideLoading();
             }
         }
     }

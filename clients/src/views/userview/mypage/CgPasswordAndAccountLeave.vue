@@ -83,6 +83,14 @@
                 const result = await axios.put('/api/user/leave');
                 if(result.data.changedRows > 0) {
                     this.$showSuccessAlert('회원탈퇴 완료.');
+                    let result = await axios.get("/api/user/logout");
+                    if (result.status == 200 && result.data == "OK") {
+                        this.$store.commit("setUserNo", -1);
+                        this.$store.commit("setUserPermission", '');
+                        this.$router.push({
+                        path: "/"
+                    });
+                }
                 }
                 else {
                     this.$showSuccessAlert('오류발생');
