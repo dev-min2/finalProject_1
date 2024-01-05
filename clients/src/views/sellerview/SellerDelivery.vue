@@ -35,46 +35,74 @@
             </thead>
             <tbody>
                 <tr :key="i" v-for="(delivery, i) in displayedDelivery">
-                    <td class = "no">{{delivery.payment_no}}</td>
-                    <td class = "no">{{delivery.payment_product_no}}</td>
+                    <td class="no">{{delivery.payment_no}}</td>
+                    <td class="no">{{delivery.payment_product_no}}</td>
                     <td class="name">{{ delivery.user_name }}</td>
                     <td class="addr">{{ delivery.receiver_addr }}</td>
                     <td class="pname">{{ delivery.product_name }}</td>
                     <td class="buycnt">{{ delivery.buy_cnt }}</td>
-                    <td class="date">{{delivery.payment_date}}</td>
+                    <td class="date">{{$dateFormat(delivery.payment_date)}}</td>
                     <td class="deliveryNo">{{ delivery.delivery_number }}</td>
                     <td class="state">{{delivery.delivery_state}}</td>
                     <!--<td><button @click="changeDeliveryState">변경하기</button></td>-->
-                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                          변경하기
+                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" @click="test"
+                            :data-bs-target="`#exampleModal${i}`">
+                            변경하기
                         </button>
                         <!-- Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog">
+                        <div class="modal fade" :id="`exampleModal${i}`" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
                                 <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel"> 운송장번호와 주소를 입력해 주세요.</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body">
-                                    <table>                                
-                                            <tr>
-                                                <td>운송장번호</td>
-                                                <td><input type = "text" v-model="deliveryNumber" ></td>
-                                            </tr>
+                                    <div class="modal-header">
+                                        <template v-if="delivery.delivery_state == 'C1'">
+                                            <h5 class="modal-title" id="exampleModalLabel"> </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </template>
+                                    </div>
+                                    <div class="modal-header">
+                                        <template v-if="delivery.delivery_state == 'C2'">
+                                            <h5 class="modal-title" id="exampleModalLabel"> 운송장번호와 주소를 입력해 주세요.</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </template>
+                                    </div>
+                                    <div class="modal-body">
+                                        <template v-if="delivery.delivery_state == 'C1'">
 
-                                    </table>    
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" 
-                                    @click="sellerDeliveryUpdate(delivery.payment_no,delivery.payment_product_no)">확인</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                  </div>
+                                            <h4>[배송 준비중] 상태로 변경하시겠습니까?</h4>
+
+                                        </template>
+                                        <template v-else-if="delivery.delivery_state == 'C2'">
+                                            <table>
+                                                <tr>
+                                                    <td>운송장번호</td>
+                                                    <td><input type="text" v-model="deliveryNumber"></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <template v-if="delivery.delivery_state == 'C1'">
+                                            <button type="button" class="btn btn-primary"
+                                                @click="DeliveryStateChangeC2(delivery.payment_product_no)"
+                                                data-bs-dismiss="modal">확인</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">닫기</button>
+                                        </template>
+                                        <template v-if="delivery.delivery_state == 'C2'">
+                                            <button type="button" class="btn btn-primary"
+                                                @click="sellerDeliveryUpdate(delivery.payment_no,delivery.payment_product_no)">확인</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">닫기</button>
+                                        </template>
+                                    </div>
                                 </div>
-                              </div>
                             </div>
-                        </td>
-                    
+                        </div>
+                    </td>
+
                 </tr>
             </tbody>
         </table>
@@ -86,12 +114,12 @@
     export default {
         data() {
             return {
-                sellerDeliveryList : [],
+                sellerDeliveryList: [],
                 search: '',
                 deliveryPerPage: 5,
                 currentPage: 1,
-                deliveryNumber:'',
-                addr:''
+                deliveryNumber: '',
+                addr: ''
             };
         },
         created() {
@@ -105,6 +133,9 @@
             },
         },
         methods: {
+            test() {
+                this.isModal = true;
+            },
             async sellerDelivery() {
                 let result = '';
                 const userNo = 1;
@@ -120,35 +151,61 @@
             async sellerDeliveryUpdate(paymentNo, paymentProductNo) {
                 let result = '';
                 let obj = {
-                    param : {
-                        addr : this.addr,
-                        paymentProductNo : paymentProductNo,
-                        deliveryNumber : this.deliveryNumber,
-                        paymentNo : paymentNo
+                    param: {
+                        addr: this.addr,
+                        paymentProductNo: paymentProductNo,
+                        deliveryNumber: this.deliveryNumber,
+                        paymentNo: paymentNo,
                     }
                 }
                 try {
                     result = await axios.put(
-                        `/api/product/sellerDeliveryUpdate`,obj,{headers:{'Content-Type' : 'application/json'}});
+                        `/api/product/sellerDeliveryUpdate`, obj, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
                 } catch (e) {
                     console.log(e);
                 }
                 this.sellerDeliveryList = result.data;
             },
-            
- 
-                //배송상태 회원이름으로 검색
-             async searchSellerDelivery() {
+            async DeliveryStateChangeC2(paymentProductNo) {
+                this.isModal = false;
+                let result = '';
+                let obj = {
+                    param: {
+                        addr: this.addr,
+                        paymentProductNo: paymentProductNo,
+                        deliveryNumber: this.deliveryNumber,
+                    }
+                }
+                console.log('현재paymentProductNo : ', paymentProductNo)
+            result = await axios.put(`/api/product/DeliveryStateChangeC2`, obj, { headers: {'Content-Type': 'application/json'}});            
+                if (result.data.changedRows > 0) {
+                    this.$showSuccessAlert('상태가 변경되었습니다');
+                    await this.sellerDelivery();
+                } else {
+                    this.$showFailAlert('변경 실패');
+                }
+
+                //this.sellerDeliveryList = result.data;
+
+            },
+
+
+            //배송상태 회원이름으로 검색
+            async searchSellerDelivery() {
                 let result = '';
                 //const userNo = 1;
                 try {
                     result = await axios.get(`/api/product/sellerDeliverySearchUserName/${this.search}`)
                     console.log('배송조회검색 :' + result);
-                    
+
                 } catch (e) {
-                    console.log(e);
+                    console.log(e); 
                 }
-                
+
                 this.sellerDeliveryList = result.data;
             },
             updateDeliveryPerPage() {
@@ -160,7 +217,7 @@
 </script>
 
 <style scoped>
-.delivery-toolbar {
+    .delivery-toolbar {
         display: flex;
         justify-content: space-between;
         background-color: #363636;
@@ -168,25 +225,32 @@
         color: white;
         margin: 10px;
     }
-    .no{
+
+    .no {
         width: 100px;
     }
-    .name{
+
+    .name {
         width: 150px;
     }
-    .buycnt{
+
+    .buycnt {
         width: 100px;
     }
-    .pname{
+
+    .pname {
         width: 360px;
     }
-    .date{
+
+    .date {
         width: 300px;
     }
-    .state{
+
+    .state {
         width: 120px;
     }
-     .table-header {
+
+    .table-header {
         background-color: #5f5f5f;
         color: rgb(255, 255, 255);
         padding: 10px;

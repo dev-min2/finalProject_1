@@ -58,7 +58,7 @@ let productDAO = {
     //판매자 상품 조회
     getMyProductList: async function (userNo,publicStateNo) {
         const getMyProductList = `
-                SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
+                SELECT false AS selected, A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
                 FROM product AS A
                 JOIN category AS B ON A.category_no = B.category_no
                 JOIN category AS C ON C.category_no = B.category_pno
@@ -81,6 +81,9 @@ let productDAO = {
                 question += '?,'; // 배열의 마지막이 아니면 ?후 ,를 넣어줌
             }
         }
+        console.log('1',categoryArray)
+        console.log('2',categoryArray.length)
+        console.log('3',question)
 
         let getMyProductListFilter = `
                 SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
@@ -116,14 +119,59 @@ let productDAO = {
                 `;
         return query(uploadProduct, productInfo);
     },
-    selectQuery: async function () {
-        let prQuery = `
-            SELECT *
-                FROM product
+    //판매자 상품삭제
+    //삭제는 상품데이터를 DB상에서 실제로 지우는게 아니라, 재고값을 
+    //-9999로 두고 품절로 표시, 실제 재고가 0일때는 재고 없음으로 표시
+    deleteProduct: async function (productArray) {
+        let delQuestion = '';
+        for(let i = 0; i < productArray.length; ++i) {
+            if(i == productArray.length -1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
+                delQuestion += '?)';
+            }
+            else {
+                delQuestion += '?,'; // 배열의 마지막이 아니면 ?후 ,를 넣어줌
+            }
+        }
+        console.log('1',productArray)
+        console.log('2',productArray.length)
+        console.log('3',delQuestion)
+        console.log('4',...productArray)
+
+        let deleteProduct = `
+            UPDATE PRODUCT
+            SET product_stock = -9999, product_public_state = 'I2'
+            WHERE product_no IN(${delQuestion}
         `
 
-        return query(prQuery);
+        return query(deleteProduct, [...productArray]); // 그냥 ...productArray 만 하면 오류남..값이 여러개니까 []붙여야함
     },
+
+    //판매자 상품숨김 
+    
+    hidingProduct: async function (productArray) {  
+        let hidQuestion = '';
+        for(let i = 0; i < productArray.length; ++i) {
+            if(i == productArray.length -1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
+                hidQuestion += '?)';
+            }
+            else {
+                hidQuestion += '?,'; // 배열의 마지막이 아니면 ?후 ,를 넣어줌
+            }
+        }
+
+        console.log('1',productArray)
+        console.log('2',productArray.length)
+        console.log('3',hidQuestion)
+        console.log('4',...productArray)
+        let hidingProduct = `
+            update product
+            set product_public_state = 'I2'
+            WHERE product_no IN(${hidQuestion}
+        `
+
+        return query(hidingProduct, [...productArray]);
+    },
+
     //메인페이지 첫 라인(최신 등록순)
     selectMainpageFirstProductQuery: async function (ptype) {
         const state = 'i1';

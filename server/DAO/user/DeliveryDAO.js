@@ -42,12 +42,32 @@ let deliveryDAO = {
     sellerDeliveryNumberUpdate : async function(deliveryNumber,paymentProductNo) {
         const sellerDeliveryNumberUpdate = `
             UPDATE payment_product
-            set delivery_number = ?
+            set delivery_number = ?,delivery_state = 'C3', delivery_updatedate = DATE_ADD(sysdate(), INTERVAL 3 DAY)
             where payment_product_no = ?   
         `;
         return query(sellerDeliveryNumberUpdate,[deliveryNumber,paymentProductNo])        
     },
 
+    //C1상태일때 
+    DeliveryStateC1 : async function(paymentProductNo,delivery_state) {
+        const DeliveryStateC1 = `
+        SELECT A.payment_no, A.payment_product_no, C.user_name,B.receiver_addr,D.product_name,A.buy_cnt,B.payment_date,A.delivery_number,A.delivery_state,A.delivery_updatedate
+        FROM payment_product A JOIN payment B ON A.payment_no = B.payment_no
+        JOIN USER C ON B.user_no = C.user_no
+        Join product D ON D.product_no = A.product_no
+        where payment_product_no = ?  AND delivery_state = ?
+        `;
+        return query(DeliveryStateC1,[paymentProductNo,delivery_state])        
+    },
+    //C2로 바꾸기
+    DeliveryStateChangeC2 : async function(paymentProductNo) {
+        const DeliveryStateChangeC2 = `
+        UPDATE payment_product 
+        SET delivery_state = 'C2'
+        where payment_product_no = ? 
+        `;
+        return query(DeliveryStateChangeC2,paymentProductNo)        
+    },
 };
 
 

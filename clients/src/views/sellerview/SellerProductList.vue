@@ -50,8 +50,8 @@
         </table>
     <!-- 상품등록,삭제,숨김 버튼 -->
     <button class = "b1" @click="upload" style="border-radius:5px"><router-link class="nav-link" to="/upload">상품등록</router-link></button>
-    <button class = "b2" @click="productDelete" style="border-radius:5px"><router-link class="nav-link" to="/">삭제</router-link></button>
-    <button class = "b3" @click="productHiding" style="border-radius:5px"><router-link class="nav-link" to="/">숨김</router-link></button>
+    <button class = "b2" @click="productDelete" style="border-radius:5px">삭제</button>
+    <button class = "b3" @click="productHiding" style="border-radius:5px">숨김</button>
         
     </div>
 </template>
@@ -96,6 +96,9 @@
                     console.log(e);
                 }
                 this.sellerProductList = result.data
+                for(let product of this.sellerProductList) {
+                    product.selected = false;
+                }
             },
             //중분류가 선택되지 않았을때 전체조회 method로 공개상태를 인수로 보냄
             async getMyProductListFilter(sendObj) {
@@ -121,7 +124,7 @@
                 let result = '';
                 try {
                     result = await axios.get(`/api/product/sellerProductSearchName/${this.search}`)
-                    console.log('상품이름검색 :' + result);
+                    console.log('상품이름검색 :', result);
 
                 } catch (e) {
                     console.log(e);
@@ -130,6 +133,54 @@
                 this.sellerProductList = result.data;
             },
 
+            //판매자 상품삭제
+            async productDelete(){
+                let sendDeleteProductArray = [];
+                for(const object of this.sellerProductList) {
+                    if(object.selected) {
+                        sendDeleteProductArray.push(object.product_no);
+                    }
+                }
+                let result = '';
+                let obj = {
+                    param : sendDeleteProductArray
+                };
+                result = await axios.put(`/api/product/sellerDeleteProduct`, obj);
+                if(result.data.changedRows > 0) {
+                    this.$showSuccessAlert('상품이 삭제되었습니다.');    
+                    await this.getMyProductList('I1');
+                }
+                else {
+                    this.$showFailAlert('삭제 실패');
+                }
+                //this.$router.push('/SellerProductList')
+                
+                
+            },
+
+            //판매자 상품숨김
+             async productHiding(){
+                let sendHideProductArray = [];
+                for(const object of this.sellerProductList) {
+                    if(object.selected) {
+                        sendHideProductArray.push(object.product_no);
+                    }
+                }
+                 let result = '';
+                let obj = {
+                    param : sendHideProductArray
+                };
+                result = await axios.put(`/api/product/sellerHideProduct`, obj);
+                if(result.data.changedRows > 0) {
+                    this.$showSuccessAlert('상품이 숨김처리 되었습니다.');    
+                    await this.getMyProductList('I1');
+                }
+                else {
+                    this.$showFailAlert('숨김처리 실패');
+                }
+                
+       
+            },
             updateProductsPerPage() {
                 this.currentPage = 1;
             },

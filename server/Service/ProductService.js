@@ -111,6 +111,18 @@ class ProductService {
         return result;
     }
 
+    //판매자 상품삭제
+    async deleteProduct(productArray) {
+        let result = await productDAO.deleteProduct(productArray);
+        return result;
+    }
+
+    //판매자 상품숨김
+    async hidingProduct(productArray) {
+        let result = await productDAO.hidingProduct(productArray);
+        return result;
+    }
+
 
     async uploadProduct(sendObj,fileImage) {
         const productImage = fileImage;
@@ -170,8 +182,16 @@ class ProductService {
 
     //판매자-배송관리-주소 업데이트
     async sellerDeliveryUpdate(deliveryNumber, paymentProductNo) {
-
+        
         let result = await DeliveryDAO.sellerDeliveryNumberUpdate(deliveryNumber, paymentProductNo);
+        return result;
+
+    }
+
+     //판매자-배송관리-C1에서 C2로
+     async DeliveryStateChangeC2(paymentProductNo) {
+        
+        let result = await DeliveryDAO.DeliveryStateChangeC2(paymentProductNo);
         return result;
 
     }
