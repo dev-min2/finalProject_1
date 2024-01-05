@@ -4,6 +4,7 @@ import LoginComp from '../views/userview/LoginComp.vue'
 import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
 import CartView from '../views/userview/CartView.vue'
+import TestProductDetailView from '../views/userview/TestProductDetail.vue'
 //마이페이지
 import MyPageSide from '../components/common/MypageSidebar.vue'
 import MyInfo from '../views/userview/mypage/MyInfo.vue'
@@ -18,6 +19,10 @@ import SearchPage from '../views/userview/SearchPage.vue'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
+
+//결제
+import PaymentForm from '../views/userview/payment/PaymentForm.vue'
+import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
 
 export default {
   path: '/',
@@ -51,6 +56,11 @@ export default {
       component: CartView,
     },
     {
+      path: "/productdetail",
+      name: "productdetail",
+      component: TestProductDetailView,
+    },
+    {
       path: "/mypageside",
       name: "mypageside",
       component: MyPageSide,
@@ -80,6 +90,16 @@ export default {
           component: ChangeMyInfo
         }
       ]
+    },
+    {
+      path: "/paymentform",
+      name: "paymentform",
+      component: PaymentForm
+    },
+    {
+      path: "/paymentcomplete",
+      name: "paymentcomplete",
+      component: PaymentComplete
     },
     {
       path: "/forgot-account/:forgot",

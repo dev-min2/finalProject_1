@@ -2,6 +2,53 @@ const express = require('express');
 const productRouter = express.Router();
 const ProductService = require("../Service/ProductService");
 
+
+//결제폼-회원정보,쿠폰,장바구니 같이 불러오기
+productRouter.get('/paymentform', async(req, res)=>{
+    let userNo = req.query.userNo;
+    let cartList = req.query.cno;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getUserPaymentInfo(userNo, cartList);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+})
+
+ //결제 완료 처리
+ productRouter.post('/payment', async(req, res) => {
+    let data = req.body.param;
+
+    console.log(data);
+    try{
+        const productService = new ProductService();
+        let result 
+            = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo, data.cartNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+ })
+ 
+ //주문내역 불러오기
+ productRouter.get('/orderdetail/:userNo', async(req, res) => {
+    let userNo = req.params.userNo;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getPaymentList(userNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+
+ })
+
+
+
 productRouter.get('/main', async (req, res) => {
     try {
         const productService = new ProductService();
@@ -86,6 +133,17 @@ productRouter.get('/search/recproduct', async (req, res)=>{
         res.send(result);
     } catch (e){
         console.log(e);
+    }
+});
+//하랑
+productRouter.get('/productDetail', async (req, res) => {
+    let productNo = req.query.pno;
+    try {
+        const productService = new ProductService();
+        let result = await productService.showProdDetail(productNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
     }
 });
 module.exports = productRouter;
