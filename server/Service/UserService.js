@@ -290,6 +290,11 @@ class UserService {
         }
     }
 
+    async leaveAccount(userNo) {   
+        const result = await userDAO.updateUserLeaveDateQuery(userNo);
+        return result;
+    }
+
     // 테스트용
     async testUpload(deschtml, fileName) {
         let data = {

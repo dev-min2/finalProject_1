@@ -253,6 +253,18 @@ userRouter.put('/password', async(req, res) => {
     }
 })
 
+userRouter.put('/leave', async(req, res) => {
+    const userNo = req.session.userNo;
+    try {
+        const userService = new UserService();
+        const result = await userService.leaveAccount(userNo);
+        res.send(result);0
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
 // 파일 업로드 테스트용 코드
 const multer = require("multer");
 const path = require("path");

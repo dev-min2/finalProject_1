@@ -51,7 +51,6 @@
         },
         created() {
             this.curPath = this.$route.path;
-            console.log(this.curPath);
         },
         methods : {
             async sendMail() {
@@ -80,7 +79,15 @@
                 this.$hideLoading();
             },
             async leaveAccount() {
-
+                this.$showLoading();
+                const result = await axios.put('/api/user/leave');
+                if(result.data.changedRows > 0) {
+                    this.$showSuccessAlert('회원탈퇴 완료.');
+                }
+                else {
+                    this.$showSuccessAlert('오류발생');
+                }
+                this.$hideLoading();
             }
         }
     }

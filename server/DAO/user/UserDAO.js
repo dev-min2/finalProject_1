@@ -99,6 +99,12 @@ const userDAO = {
             UPDATE user SET user_pw = ? WHERE user_no = ? AND user_pw = ?
         `
         return query(updateUserPasswordQuery, [newUserPw, user_no, prevUserPw]);
+    },
+    updateUserLeaveDateQuery : async function(userNo) {
+        const updateUserLeaveDateQuery = `
+            UPDATE user SET user_leavedate = current_date() WHERE user_no = ${userNo}
+        `;
+        return query(updateUserLeaveDateQuery);
     }
 };
 
