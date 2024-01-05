@@ -58,7 +58,6 @@ export default {
 	},
 	created (){
 		this.paymentInfo = this.$route.query;
-    console.log(this.$route.query);
     console.log('paymentComplete.vue',this.paymentInfo);
 	}
 }

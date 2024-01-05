@@ -58,8 +58,6 @@ export default {
     cartList(cart, delivery){
       this.cartNo = cart;
       this.deliveryPrice = delivery;
-      console.log('나왓으면좋겟당',this.cartNo);
-      console.log('배송비',this.deliveryPrice);
     }
   }
 };

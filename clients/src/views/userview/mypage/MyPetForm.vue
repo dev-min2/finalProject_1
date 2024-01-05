@@ -38,8 +38,8 @@
 							</tr>
 							<tr>
 								<td colspan="4" align="center">
-                                    <input type="submit" value="저장" class="btn text-white" style="background-color: #fc97bf; margin : 10px;" @click="isUpdated? updatePetQuery() : insertPetQuery()">
-                                    <input type="reset" value="초기화" class="btn text-white" style="background-color: #a4a4a4;">
+                                    <input type="submit" value="저장" class="btn text-white" style="background-color: #fab3cc; margin : 10px;" @click="isUpdated? updatePetQuery() : insertPetQuery()">
+                                    <input type="reset" value="초기화" class="btn text-white" style="background-color: #bbbbbb;">
                                 </td>
 							</tr>
 						</table>

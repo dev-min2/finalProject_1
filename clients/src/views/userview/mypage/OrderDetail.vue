@@ -15,16 +15,21 @@
 								<th>수량</th>
 								<th>결제일</th>
 								<th>주문상태</th>
+								<th>리뷰작성</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center">
 								<td>{{order.payment_no}}</td>
-								<td><a href="">{{order.order_state}}</a></td>
+								<td><a href="">{{order.payment_product}}</a></td>
 								<td>{{order.real_payment_amount}}원</td>
 								<td>총 {{order.total_product}}개</td>
 								<td>{{this.$dateFormat(order.payment_date)}}</td>
 								<td>{{order.order_state}}</td>
+								<td>
+									<button class="btn btn-primary my-2" style="background-color:#fab3cc; border:0;"
+                                        @click="goWriteReview(review.product_no,review.product_name)">리뷰작성</button>
+                                </td> 
 							</tr>
 						</tbody>
 					</table>
@@ -47,7 +52,7 @@ export default {
 	created(){
 		this.userNo = this.$store.state.userNo;
 		this.getSelectPayment();
-		console.log(this.getSelectPayment);
+		console.log(this.selectPaymentList);
 	},
 	methods: {
 		async getSelectPayment(){

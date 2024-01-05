@@ -5,20 +5,30 @@ let paymentDAO = {
     //결제폼 카트 정보 불러오기
     selectCartQuery : async function(userNo,cartNo){
         let url = '';
-        for(let i = 0; i < cartNo.length; ++i) {
-            if(i == cartNo.length - 1)
-                url += '?)';
-            else 
-                url += '?,'
+        let arrayConfirm = Array.isArray(cartNo);
+        //배열인지 아닌지 확인해서 url넘기기
+        if(!arrayConfirm){
+            url = '?)'
+        } else {
+            for(let i = 0; i < cartNo.length; i++) {
+                if(i == cartNo.length - 1)
+                    url += '?)';
+                else 
+                    url += '?,'
+            }
         }
-
+        
         const selectCartQuery = 
         `SELECT p.user_no, p.product_no, c.product_sel_cnt, p.product_name, p.product_price, c.product_sel_cnt * p.product_price as price_sum
         FROM cart c LEFT JOIN product p
         ON c.product_no = p.product_no
         WHERE c.user_no = ? AND c.cart_no IN(${url}`;
-        
-        return query(selectCartQuery, [userNo,...cartNo]);
+        if(!arrayConfirm) {
+            return query(selectCartQuery, [userNo,cartNo]);
+        }
+        else {
+            return query(selectCartQuery, [userNo,...cartNo]);
+        }
     },
     //결제완료 후 결제 정보 넣기 (1)
     insertPaymentQuery : async function(paymentObj, conn = null){

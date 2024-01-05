@@ -250,12 +250,10 @@ export default {
         const productArray = this.cartList[companyIndex];
 
 
-        //선택한 카트 번호 배열에 담기
-        console.log(productArray[productsIndex].cart_no);
+        //선택한 카트 번호 배열에 담기 (민)
         if(this.CartNoList.indexOf(productArray[productsIndex].cart_no) < 0){
               this.CartNoList.push(productArray[productsIndex].cart_no); //선택한 번호 추가
         }
-        console.log('선택1', this.CartNoList);
 
         let isAllCheck = true;
         for(let i = 0; i < productArray.length; ++i) {
@@ -292,14 +290,14 @@ export default {
               this.deliveryPriceList[idx] = 0;
             }    
 
-        //선택한 카트 번호 배열에서 삭제
+        //선택한 카트 번호 배열에서 삭제 (민)
         const productArray = this.cartList[companyIndex];
         const index = this.CartNoList.indexOf(productArray[productsIndex].cart_no);
         this.CartNoList.splice(index, 1);
-        console.log('삭제되나여', this.CartNoList);
 
         return;
       }
+      //데이터 부모한테 보내기 (민)
       this.$emit('productNo', this.CartNoList, this.deliveryPriceList);
     },
     //총배송비 함수
@@ -332,16 +330,13 @@ export default {
               this.deliveryPriceList[idx] = 0;
             }
 
-            //선택한 카트 번호 배열에 담기
-            console.log(productArray);
+            //선택한 카트 번호 배열에 담기 (민)
             for(let i = 0; i<productArray.length; i++ ){
                 if(this.CartNoList.indexOf(productArray[i].cart_no) >= 0){
                   continue;
                 }
                 this.CartNoList.push(productArray[i].cart_no)
             }
-            console.log('전체', this.CartNoList);
-            
       }
       else { // 그룹별 체크가 풀린상태. (기존에 풀린건 냅두고, 선택된것만 풀어야함.)
           let sum = 0;
@@ -360,14 +355,14 @@ export default {
             }else if(this.companyPriceList[idx] <= 0){
               this.deliveryPriceList[idx] = 0;
             }
-          //선택한 번호 카트번호 배열에서 삭제
+          //선택한 번호 카트번호 배열에서 삭제 (민)
           for(let i = 0; i< productArray.length; i++ ){
                 const index = this.CartNoList.indexOf(productArray[i].cart_no);
                 this.CartNoList.splice(index, 1);
           }
-          console.log('삭제확인합시다아', this.CartNoList);
       }
-      this.$emit('productNo', this.CartNoList,this.deliveryPriceList);
+      //데이터 부모한테 보내기 (민)
+      this.$emit('productNo', this.CartNoList, this.deliveryPriceList); 
     },
     //그룹바이함수
     groupBy: function(data, key){

@@ -7,7 +7,6 @@ const ProductService = require("../Service/ProductService");
 productRouter.get('/paymentform', async(req, res)=>{
     let userNo = req.query.userNo;
     let cartList = req.query.cno;
-    console.log('test', req.query);
     try{
         const productService = new ProductService();
         let result = await productService.getUserPaymentInfo(userNo, cartList);
@@ -19,7 +18,6 @@ productRouter.get('/paymentform', async(req, res)=>{
 })
 
  //결제 완료 처리
- //(1) 결제 정보 넣기
  productRouter.post('/payment', async(req, res) => {
     let data = req.body.param;
 
@@ -27,7 +25,7 @@ productRouter.get('/paymentform', async(req, res)=>{
     try{
         const productService = new ProductService();
         let result 
-            = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo);
+            = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo, data.cartNo);
         res.send(result);
     }
     catch(e){
