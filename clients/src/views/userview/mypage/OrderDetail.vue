@@ -15,7 +15,6 @@
 								<th>수량</th>
 								<th>결제일</th>
 								<th>주문상태</th>
-								<th>리뷰작성</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -26,10 +25,6 @@
 								<td>총 {{order.total_product}}개</td>
 								<td>{{this.$dateFormat(order.payment_date)}}</td>
 								<td>{{order.order_state}}</td>
-								<td>
-									<button class="btn btn-primary my-2" style="background-color:#fab3cc; border:0;"
-                                        @click="goWriteReview(review.product_no,review.product_name)">리뷰작성</button>
-                                </td> 
 							</tr>
 						</tbody>
 					</table>
