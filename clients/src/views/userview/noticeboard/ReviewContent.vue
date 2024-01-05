@@ -11,8 +11,10 @@
                                 {{ product_name }}</p>
                         </div>
                         <div style="float:right">
-                                    <p class="card-text" style="text-align='right'; display:inline-block;">작성자 {{  }} | 댓글 {{}}</p>
-                                </div>
+                            <p class="card-text" style="text-align='right'; display:inline-block;">작성자 {{  }} | 별점
+                                {{ star_cnt }}
+                            </p>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div ref="viewer">
@@ -22,7 +24,7 @@
                 </div>
                 <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
                     <button style="background-color:#fab3cc; border:0;" class="btn btn-primary"
-                        @click="modifyReview(reviewNo)">수정하기</button>
+                        @click="modifyReview">수정하기</button>
                 </div>
             </div>
         </div>
@@ -39,16 +41,18 @@
         data() {
             return {
                 reviewNo: 0,
+                reviewInfo: {},
+                product_name: ''
             }
         },
         async created() {
-          
+
             this.product_name = this.$route.query.pname;
             this.reviewNo = this.$route.query.rno;
             await this.getReviewInfo();
 
             const viewDiv = this.$refs.viewer;
-            const html = this.reviewNo.content;
+            const html = this.reviewInfo.content;
             toastViewer = new Viewer({
                 el: viewDiv,
                 initialValue: html
@@ -59,19 +63,22 @@
             async getReviewInfo() {
                 this.$showLoading();
                 const result = await axios.get(`/api/board/myreview/info?rno=${this.reviewNo}`);
-                 if (result.status == 200) {
-                    this.reviewNo = result.data;
-               
+                if (result.status == 200) {
+                    this.reviewInfo = result.data;
+                    console.log(this.reviewInfo);
+
                 } else {
                     this.$showFailAlert('데이터를 불러오는데 실패했습니다.');
                     this.$router.push({
-                        path: "/myreview"
-                    });
+                        path: "/myreview"});
                 }
                 this.$hideLoading();
                 return result;
 
-            }
+            },
+            modifyReview(reviewNo) {
+                this.$router.push({ path: '/myreview/write', query: { modify: this.reviewNo, pname : this.product_name }});
+            },
         }
     }
 </script>
@@ -81,10 +88,10 @@
     }
 
     .scroll_ul {
-		overflow-y:scroll;
-		list-style: none;
-		height : 100px;
-	}
+        overflow-y: scroll;
+        list-style: none;
+        height: 100px;
+    }
 
     a {
         text-decoration-line: none;

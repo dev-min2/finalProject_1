@@ -25,6 +25,7 @@ let reviewDAO = {
             `select count(*) as cnt from review where user_no=?`;
         return query(selectReviewCntQuery, userNo);
     },
+    //리뷰등록
     insertReviewQuery: async function (reviewVO) {
         const insertReviewQuery =
             `INSERT INTO review SET ?`;
@@ -36,6 +37,18 @@ let reviewDAO = {
             `select * from review
             where review_no=${reviewNo}`;
         return query(selectReviewBoardQuery, reviewNo);
+    },
+    // 리뷰 수정
+    updateReviewBoardQuery : async function(reviewVO, reviewNo){
+        const updateReviewBoardQuery = 
+        `UPDATE review SET ? WHERE review_no=?`;
+        return query(updateReviewBoardQuery, [reviewVO, reviewNo]);
+    },
+    //리뷰삭제
+    deleteReviewBoardQuery : async function(reviewNo){
+        const deleteReviewBoardQuery = 
+        `DELETE FROM review WHERE review_no=?`;
+        return query(deleteReviewBoardQuery, reviewNo);
     }
 
 

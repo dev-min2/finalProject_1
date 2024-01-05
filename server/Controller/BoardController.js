@@ -121,12 +121,38 @@ boardRouter.get('/myreview/info', async (req, res) => {
     try {
         const boardService = new BoardService();
         const reviewNo = req.query.rno;
-        const result = await boardService.getReviewInfo(reviewNo);
+        const result = await boardService.getReviewBoardInfo(reviewNo);
         res.send(result);
     } catch (e) {
         console.log(e);
     }
 });
-
+//리뷰 수정
+boardRouter.put('/myreview', async(req, res)=>{
+    const { review_no, reviewBoardInfo} = req.body.param;
+    if(typeof req.session.userNo === "undefined"){
+        res.status(403).send("FAIL");
+        return;
+    }
+    try{
+        const boardService = new BoardService();
+        const result = await boardService.modifyReviewBoard(req.session.userNo, review_no, reviewBoardInfo);
+        res.send(result);
+    }catch (e){
+        console.log(e);
+    }
+});
+// 리뷰 삭제
+boardRouter.delete('/myreview/:rno', async (req, res)=>{
+    let reviewNo = req.params.rno;
+    try{
+        const boardService = new BoardService();
+        const result = await boardService.deleteReviewBoard(reviewNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+});
 
 module.exports = boardRouter;

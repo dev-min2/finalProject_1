@@ -157,8 +157,30 @@ class BoardService {
     }
 
     //리뷰 단건조회
-    async getReviewInfo(reviewNo) {
+    async getReviewBoardInfo(reviewNo) {
         const result = await reviewDAO.selectReviewBoardQuery(reviewNo);
+        return result[0];
+    }
+    //리뷰 수정
+    async modifyReviewBoard(userNo, reviewNo, reviewBoardInfo ){
+        let reviewVO = {
+            reviewNo : reviewNo,
+            content: reviewBoardInfo.html,
+            star_cnt: 4, //reviewBoardInfo.star_cnt,
+            review_date: new Date(),
+            product_no: reviewBoardInfo.product_no,
+            user_no : userNo
+        }
+        const result = await reviewDAO.updateReviewBoardQuery(reviewVO, reviewNo);
+        if (result == null && result.affectedRows <= 0) {
+            return null;
+        }
+        return result;
+
+    }
+    //리뷰 삭제
+    async deleteReviewBoard(reviewNo){
+        const result = await reviewDAO.deleteReviewBoardQuery(reviewNo);
         return result;
     }
 }
