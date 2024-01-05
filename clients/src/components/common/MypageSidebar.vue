@@ -32,6 +32,9 @@
 										</a><a @click="$router.push('/leave')" class="nav-link" href="#">
 											<div class="sb-nav-link-icon"><i class="bi bi-person"></i></div> 회원 탈퇴
 										</a>
+										<a @click="$router.push('/paymentDetail')" class="nav-link" href="#">
+											<div class="sb-nav-link-icon"><i class="bi bi-person"></i></div> 테스트 주문내역 상세페이지
+										</a>
 									</div>
 								</div>
 							</nav>

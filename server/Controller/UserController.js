@@ -258,7 +258,19 @@ userRouter.put('/leave', async(req, res) => {
     try {
         const userService = new UserService();
         const result = await userService.leaveAccount(userNo);
-        res.send(result);0
+        res.send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
+userRouter.put('/cancel-leave', async(req,res) => {
+    const userNo = req.body.userNo;
+    try {
+        const userService = new UserService();
+        const  result = await userService.cancleLeaveAccount(userNo);
+        res.status(200).send(result)
     }
     catch(e) {
         console.log(e);
