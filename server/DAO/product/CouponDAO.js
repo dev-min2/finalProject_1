@@ -11,6 +11,7 @@ let couponDAO = {
             WHERE m.user_no = ?`;
             return query(selectMyCouponQuery, userNo);
     },
+    //쿠폰 사용 후 삭제
     deleteMyCouponQuery : async function(couponNo){
         const deleteMyCouponQuery = 
         `DELETE FROM my_coupon WHERE my_coupon_no =?`;
