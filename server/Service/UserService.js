@@ -295,6 +295,11 @@ class UserService {
         return result;
     }
 
+    async cancleLeaveAccount(userNo) {
+        const result = await userDAO.updateUserNullLeaveDateQuery(userNo);
+        return result;
+    }
+
     // 테스트용
     async testUpload(deschtml, fileName) {
         let data = {

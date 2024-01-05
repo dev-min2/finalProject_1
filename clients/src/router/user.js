@@ -23,6 +23,7 @@ import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
 //결제
 import PaymentForm from '../views/userview/payment/PaymentForm.vue'
 import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
+import PaymentDetailPage from '../views/userview/mypage/PaymentDetailPage.vue'
 
 export default {
   path: '/',
@@ -88,6 +89,11 @@ export default {
           path: "/changeInfo",
           name: "changeInfo",
           component: ChangeMyInfo
+        },
+        {
+          path: "/paymentDetail",
+          name: "paymentDetail",
+          component : PaymentDetailPage
         }
       ]
     },
