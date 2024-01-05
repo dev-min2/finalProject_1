@@ -18,13 +18,13 @@
                 <ul>
                     <li v-for="(companyName, objectIdx, idx) in paymentProductsListByCompany" :key="idx">
                         <!-- 업체명 -->
-                        <h2>{{companyName[0].company_name}}</h2>
+                        <h4>{{companyName[0].company_name}}</h4>
                         <ul class="mt-3">
                             <li v-for="(product, idx) in paymentProductsListByCompany[objectIdx]" :key="idx">
                                 <div class="d-flex justify-content-between">
                                     <div>
                                         <!-- 상품명 가격 구매갯수-->
-                                        <h4>{{product.product_name}}</h4>
+                                        <h5>{{product.product_name}}</h5>
                                         <p>{{$printPriceComma(product.product_price)}}원 {{product.buy_cnt}}개</p>
                                     </div>
                                     

@@ -18,7 +18,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center">
+							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center" @click="goOrderDetail()">
 								<td>{{order.payment_no}}</td>
 								<td><a href="">{{order.payment_product}}</a></td>
 								<td>{{order.real_payment_amount}}원</td>
@@ -56,7 +56,12 @@ export default {
 							.catch(err => console.log(err));
 			this.selectPaymentList = result.data;
 			console.log(this.selectPaymentList);
+		},
+		goOrderDetail(){
+			this.$router.push({ name : `paymentDetail`});
+			//, params : { no : `${}` } 
 		}
+
 	}
 }
 </script>
