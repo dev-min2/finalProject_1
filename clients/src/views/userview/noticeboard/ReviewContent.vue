@@ -11,8 +11,7 @@
                                 {{ product_name }}</p>
                         </div>
                         <div style="float:right">
-                            <p class="card-text" style="text-align='right'; display:inline-block;">작성자 {{  }} | 별점
-                                {{ star_cnt }}
+                            <p class="card-text" style="text-align='right'; display:inline-block;">별점 {{ reviewInfo.star_cnt }}
                             </p>
                         </div>
                     </div>

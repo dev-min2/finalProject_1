@@ -15,11 +15,11 @@
 						<th style="width:120px;">별점</th>
 						<td>
 							<fieldset class="rate">
-                                <input type="radio" id="rating5" name="rating" v-model="star_cnt_radio[4]"><label for="rating5" title="5점"></label>
-                                <input type="radio" id="rating4" name="rating" v-model="star_cnt_radio[3]"><label for="rating4" title="4점"></label>
-                                <input type="radio" id="rating3" name="rating" v-model="star_cnt_radio[2]"><label for="rating3" title="3점"></label>
-                                <input type="radio" id="rating2" name="rating" v-model="star_cnt_radio[1]"><label for="rating2" title="2점"></label>
-                                <input type="radio" id="rating1" name="rating" v-model="star_cnt_radio[0]"><label for="rating1" title="1점"></label>
+                                <input type="radio" id="rating5" name="rating" value="5" @click="insertStarCnt($event.target)"><label for="rating5" title="5점"></label>
+                                <input type="radio" id="rating4" name="rating" value="4" @click="insertStarCnt($event.target)"><label for="rating4" title="4점"></label>
+                                <input type="radio" id="rating3" name="rating" value="3" @click="insertStarCnt($event.target)"><label for="rating3" title="3점"></label>
+                                <input type="radio" id="rating2" name="rating" value="2" @click="insertStarCnt($event.target)"><label for="rating2" title="2점"></label>
+                                <input type="radio" id="rating1" name="rating" value="1" @click="insertStarCnt($event.target)"><label for="rating1" title="1점"></label>
                             </fieldset>
 						</td>
 					</tr>
@@ -64,17 +64,19 @@ export default {
 			curModifyForm : false,
 			boardNo : '',
 			product_name : '',
-			star_cnt_radio : []
+			starValue : '',
+			reviewNo : ''
         }
     },
 	created (){
-		console.log(this.curModifyForm);
 		this.reviewBoardInfo.product_no = this.$route.query.pno;
 		this.product_name = this.$route.query.pname;
 		this.reviewNo = this.$route.query.modify;
 		
 		if(this.reviewNo > 0) {
 			this.curModifyForm = true;
+			
+			console.log(this.curModifyForm);
 			this.getReviewBoardInfo(this.reviewNo);
 		}
 
@@ -104,6 +106,7 @@ export default {
             if(result.status == 200) {
                 this.reviewBoardInfo.product_name = this.product_name;
 				this.reviewBoardInfo.html = result.data.content;
+				this.reviewBoardInfo.product_no = result.data.product_no;
             }
             else {
                 this.$showFailAlert('데이터를 불러오는데 실패했습니다.');
@@ -112,20 +115,24 @@ export default {
             this.$hideLoading();
             return 1;
 		},
+		insertStarCnt(target) {
+			this.starValue = target.value;
+		},
 		//리뷰수정
 		async modifyReviewPost(){
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
+			this.reviewBoardInfo.star_cnt = this.starValue;
 			const sendObj = {
 					param : {
 						reviewBoardInfo : this.reviewBoardInfo,
-						review_no : this.reviewBoardInfo.review_no
+						review_no : this.reviewNo
 				}
 			}
-			const result = await axios.put(`/api/board/myreview/write`, sendObj);
+			const result = await axios.put(`/api/board/myreview`, sendObj);
 			if(result.status == 200) {
 				this.$showSuccessAlert('수정성공',null);
-				this.$router.push({path : `/myreview/write/${this.reviewNo}`});
+				this.$router.push({path : `/myreview`});
 			}
 			
 		}

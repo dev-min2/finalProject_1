@@ -41,8 +41,8 @@ let reviewDAO = {
     // 리뷰 수정
     updateReviewBoardQuery : async function(reviewVO, reviewNo){
         const updateReviewBoardQuery = 
-        `UPDATE review SET ? WHERE review_no=?`;
-        return query(updateReviewBoardQuery, [reviewVO, reviewNo]);
+        `UPDATE review SET ? WHERE review_no= ${reviewNo}`;
+        return query(updateReviewBoardQuery, reviewVO);
     },
     //리뷰삭제
     deleteReviewBoardQuery : async function(reviewNo){

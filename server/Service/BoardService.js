@@ -163,10 +163,10 @@ class BoardService {
     }
     //리뷰 수정
     async modifyReviewBoard(userNo, reviewNo, reviewBoardInfo ){
+        console.log(reviewBoardInfo.html);
         let reviewVO = {
-            reviewNo : reviewNo,
             content: reviewBoardInfo.html,
-            star_cnt: 4, //reviewBoardInfo.star_cnt,
+            star_cnt: reviewBoardInfo.star_cnt,
             review_date: new Date(),
             product_no: reviewBoardInfo.product_no,
             user_no : userNo

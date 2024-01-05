@@ -66,9 +66,9 @@
                 this.page = result.data.pageDTO;
             },
             //리뷰작성
-            goWriteReview(product_no, product_name){
-                this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
-            },
+            // goWriteReview(product_no, product_name){
+            //     this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
+            // },
             goReviewBoard(reviewNo, product_name){
                 this.$router.push({path : "/myreview/info", query : {rno: reviewNo, pname : product_name }});
             },

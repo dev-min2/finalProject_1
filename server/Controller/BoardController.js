@@ -134,6 +134,7 @@ boardRouter.put('/myreview', async(req, res)=>{
         res.status(403).send("FAIL");
         return;
     }
+    
     try{
         const boardService = new BoardService();
         const result = await boardService.modifyReviewBoard(req.session.userNo, review_no, reviewBoardInfo);
