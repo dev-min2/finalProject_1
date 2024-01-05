@@ -66,9 +66,9 @@
                 <form class="card p-2">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="" id="couponNameBox"
-                            style="font-size:10px;">
+                            style="font-size:10px;" v-model="couponName" >
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal" data-target="#couponmodal">쿠폰선택</button>
+                            data-bs-target="#exampleModal" data-target="#couponmodal" >쿠폰선택</button>
                     </div>
                 </form>
             </div>
@@ -213,6 +213,7 @@
                 //결제관련 정보
                 coupon:'', // 쿠폰 정보
                 couponNo:'', //사용 쿠폰 번호
+                couponName:'',
                 couponPercent:'', //선택한 쿠폰 퍼센트 / ex)10
                 selectPayment: 'html5_inicis', //결제방식
                 orderCheck: '', //주문동의 확인
@@ -264,6 +265,7 @@
             //쿠폰 적용버튼
             CouponBtn : async function(){
                 this.couponNo = this.coupon.my_coupon_no; //사용한 쿠폰 번호
+                this.couponName = this.coupon.coupon_name;
                 this.couponPercent = this.coupon.discount_pct;
                 this.couponPrice = this.totalPrice * this.couponPercent/100;
                 this.realTotalPrice = this.totalPrice + this.totalDelivery - this.couponPrice;
@@ -385,12 +387,14 @@
 
                 let userNo = this.userNo;
                 let cartNo = this.cartData;
+                let couponNo = this.couponNo;
                 const sendObj = {
                     param: {
                         paymentObj: paymentObj,
                         paymentData: paymentData,
                         userNo: userNo,
-                        cartNo: cartNo
+                        cartNo: cartNo,
+                        couponNo: couponNo
                     }
                 }
                 this.$showLoading();

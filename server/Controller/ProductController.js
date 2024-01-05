@@ -25,7 +25,7 @@ productRouter.get('/paymentform', async(req, res)=>{
     try{
         const productService = new ProductService();
         let result 
-            = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo, data.cartNo);
+            = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo, data.cartNo, data.couponNo);
         res.send(result);
     }
     catch(e){

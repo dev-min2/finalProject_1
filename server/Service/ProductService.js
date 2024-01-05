@@ -25,7 +25,7 @@ class ProductService {
     }
 
     //결제 완료 처리
-    async completePayment(paymentObj, paymentData, userNo, cartNo){ 
+    async completePayment(paymentObj, paymentData, userNo, cartNo, couponNo){ 
         const connection = await getConnection();
         try{
             //트랜잭션 시작
@@ -35,6 +35,7 @@ class ProductService {
                 let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData[i],connection); //개별상품결제정보 삽입
             }
             let result3 = await paymentProductsDAO.deleteCartQuery(userNo,cartNo,connection); //장바구니 삭제
+            let result4 = await couponDAO.updateMyCouponQuery(couponNo);
             await connection.commit(); //결제처리 성공
         }
         catch(e){ 
