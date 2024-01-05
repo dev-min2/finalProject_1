@@ -12,13 +12,17 @@ import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
-import ChangePassword from '../views/userview/mypage/ChangePassword.vue'
+import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
+
+//결제
+import PaymentForm from '../views/userview/payment/PaymentForm.vue'
+import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
 
 export default {
   path: '/',
@@ -88,6 +92,16 @@ export default {
       ]
     },
     {
+      path: "/paymentform",
+      name: "paymentform",
+      component: PaymentForm
+    },
+    {
+      path: "/paymentcomplete",
+      name: "paymentcomplete",
+      component: PaymentComplete
+    },
+    {
       path: "/forgot-account/:forgot",
       name: "forgotAccount",
       component: ForgotAccountComp
@@ -115,7 +129,12 @@ export default {
     {
       path: "/user-pass",
       name: "userPass",
-      component : ChangePassword
-    }
+      component : CgPasswordAndAccountLeave
+    },
+    {
+      path: "/leave",
+      name: "leave",
+      component: CgPasswordAndAccountLeave
+    },
   ]
 };
