@@ -69,8 +69,11 @@
                             style="font-size:10px;" v-model="couponName" >
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                             data-bs-target="#exampleModal" data-target="#couponmodal" >쿠폰선택</button>
+                             <h5 v:if="couponName != null"> test</h5>  
                     </div>
                 </form>
+                 
+            
             </div>
             <!--장바구니 폼 끝-->
             <!--주문 폼-->
@@ -91,16 +94,15 @@
                         </div>
 
                         <div class="col-12">
-                            <label for="email" class="form-label"> 주문자 이메일 <span
-                                    class="text-muted">(Optional)</span></label>
-                            <input type="email" class="form-control" id="email" v-model="selectUserQuery.user_email"
-                                readonly>
+                            <label for="email" class="form-label"> 주문자 이메일 
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+                            <input type="email" class="form-control" id="email" v-model="selectUserQuery.user_email" readonly>
                         </div>
 
                         <div class="col-12">
                             <label for="phone" class="form-label">주문자 연락처</label>
-                            <input type="text" class="form-control" id="phone" v-model="selectUserQuery.user_phone"
-                                readonly>
+                            <input type="text" class="form-control" id="phone" v-model="selectUserQuery.user_phone" readonly>
                         </div>
                     </div>
                     <hr class="my-4">
@@ -261,6 +263,7 @@
                 console.log(this.coupon);
                 console.log(this.couponPercent);
                 console.log('쿠폰번호', this.couponNo);
+
             },
             //쿠폰 적용버튼
             CouponBtn : async function(){
@@ -376,8 +379,8 @@
                             product_no: this.testCartQuery[object][i].product_no,
                             buy_cnt: this.testCartQuery[object][i].product_sel_cnt,
                             payment_amount: this.testCartQuery[object][i].price_sum,
-                            payment_discount_amount: 0,
-                            real_payment_amount: this.testCartQuery[object][i].price_sum,
+                            payment_discount_amount: this.testCartQuery[object][i].price_sum * this.couponPercent/100,
+                            real_payment_amount: this.testCartQuery[object][i].price_sum - this.testCartQuery[object][i].price_sum * this.couponPercent/100,
                             delivery_state: 'c1',
                             delivery_fee: companyDelivery
                         };
