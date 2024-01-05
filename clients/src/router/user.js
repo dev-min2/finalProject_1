@@ -23,6 +23,10 @@ import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
 import CreateReview from '../views/userview/noticeboard/CreateReview.vue'
 import ReviewInfo from '../views/userview/noticeboard/ReviewContent.vue'
 
+//결제
+import PaymentForm from '../views/userview/payment/PaymentForm.vue'
+import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
+
 export default {
   path: '/',
   name: 'tmpMain',
@@ -94,6 +98,16 @@ export default {
           component : MyReview
         }
       ]
+    },
+    {
+      path: "/paymentform",
+      name: "paymentform",
+      component: PaymentForm
+    },
+    {
+      path: "/paymentcomplete",
+      name: "paymentcomplete",
+      component: PaymentComplete
     },
     {
       path: "/forgot-account/:forgot",

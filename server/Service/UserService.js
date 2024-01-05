@@ -18,12 +18,12 @@ class UserService {
     }
     //마이페이지-내반려동물정보
     async getPetList(userNo){
-        const result = myPetDAO.selectPetQuery(userNo);
+        const result = await myPetDAO.selectPetQuery(userNo);
         return result;
     }
 
     async getPetInfo(petNo){
-        const result = myPetDAO.infoPetQuery(petNo);
+        const result = await myPetDAO.infoPetQuery(petNo);
         return result;
     }
 
