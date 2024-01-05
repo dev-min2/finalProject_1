@@ -23,7 +23,7 @@ class ProductService {
         let result = [cartList, couponList, userInfo[0]];
         return result;
     }
-
+    
     //결제 완료 처리
     async completePayment(paymentObj, paymentData, userNo, cartNo, couponNo){ 
         const connection = await getConnection();
