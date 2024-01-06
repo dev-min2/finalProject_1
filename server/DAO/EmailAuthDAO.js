@@ -13,6 +13,10 @@ let emailAuthDAO = {
     deleteQuery : async function(email) {
         const deleteQuey = `DELETE FROM email_auth WHERE email = ?`;
         return query(deleteQuey,email);
+    },
+    selectEmailCountQuery : async function(email) {
+        const selectCountQuery = `SELECT count(*) AS cnt FROM user WHERE user_email = ?`;
+        return query(selectCountQuery, email);
     }
 };
 

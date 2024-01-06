@@ -84,7 +84,7 @@ export default {
 			this.$router.push({path : '/changeInfo'});
 		},
 		changePassword() {
-			this.$router.push({path : '/user-pass'});
+			this.$router.push({ path : '/user-pass'});
 		}
 	}
 }

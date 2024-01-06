@@ -12,8 +12,9 @@ import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
-import ChangePassword from '../views/userview/mypage/ChangePassword.vue'
+
 import MyReview from '../views/userview/mypage/MyReviewList.vue'
+import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
@@ -26,6 +27,7 @@ import ReviewInfo from '../views/userview/noticeboard/ReviewContent.vue'
 //결제
 import PaymentForm from '../views/userview/payment/PaymentForm.vue'
 import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
+import PaymentDetailPage from '../views/userview/mypage/PaymentDetailPage.vue'
 
 export default {
   path: '/',
@@ -93,9 +95,14 @@ export default {
           component: ChangeMyInfo
         },
         {
-          path : "/myreview",
-          name : "myreview",
-          component : MyReview
+          path: "/myreview",
+          name: "myreview",
+          component: MyReview
+        },
+        {
+          path: "/paymentDetail",
+          name: "paymentDetail",
+          component: PaymentDetailPage
         }
       ]
     },
@@ -137,17 +144,22 @@ export default {
     {
       path: "/user-pass",
       name: "userPass",
-      component : ChangePassword
+      component: CgPasswordAndAccountLeave
     },
     {
-      path : "/myreview/write",
-      name : "myreviewWrite",
-      component : CreateReview
+      path: "/myreview/write",
+      name: "myreviewWrite",
+      component: CreateReview
     },
     {
-      path : "/myreview/info",
-      name : "myreviewinfo",
-      component : ReviewInfo
+      path: "/myreview/info",
+      name: "myreviewinfo",
+      component: ReviewInfo
+    },
+    {
+      path: "/leave",
+      name: "leave",
+      component: CgPasswordAndAccountLeave
     }
   ]
 };
