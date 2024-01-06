@@ -17,8 +17,11 @@
                 <div class="text-right">
                     <p style="display:inline-block;">{{$dateTimeFormat(reply[0].parent_reply_date)}}</p>
                 </div>
-                <p class="ml-3">{{reply[0].parent_comment}}</p>
+                <p v-if="reply[0].parent_delete_date == null" class="ml-3">{{reply[0].parent_comment}}</p>
+                <p v-else class="ml-3"><b>삭제된 댓글입니다.</b></p>
                 <button class="ml-3" style="border : 1px solid #e4e4e4; background-color:#fafafa;" @click="showContent[idx] = !showContent[idx]">답글</button>
+                <button v-if="$store.state.userNo == reply[0].parent_user_no" class="ml-2" style="border : 1px solid #e4e4e4; background-color:#fafafa;">수정</button>
+                <button v-if="$store.state.userNo == reply[0].parent_user_no" class="ml-2" style="border : 1px solid #e4e4e4; background-color:#fafafa;" @click="deleteReply(reply[0].parent_reply_no)">삭제</button>
                 <hr style="color:#e4e4e4; margin-bottom:0;">
                 <template v-if="showContent[idx]">
                     <div class="my-2">
@@ -43,7 +46,10 @@
                         <div class="text-right">
                             <p style="display:inline-block;">{{$dateTimeFormat(childReply.child_reply_date)}}</p>
                         </div>
-                        <p class="ml-3">{{childReply.child_comment}}</p>
+                        <p v-if="childReply.child_delete_date == null" class="ml-3">{{childReply.child_comment}}</p>
+                        <p v-else class="ml-3"><b>삭제된 댓글입니다.</b></p>
+                        <button v-if="$store.state.userNo == childReply.child_user_no" class="ml-3" style="border : 1px solid #e4e4e4; background-color:#fafafa;">수정</button>
+                        <button v-if="$store.state.userNo == childReply.child_user_no" class="ml-2" style="border : 1px solid #e4e4e4; background-color:#fafafa;" @click="deleteReply(childReply.child_reply_no)">삭제</button>
                         <hr>
                     </div>
                 </template>
@@ -110,6 +116,10 @@
                 else {
                     this.comment = '';
                 }
+            },
+            deleteReply(replyNo) {
+                console.log(replyNo);
+                this.$emit('deleteReply', replyNo);
             }
         }
     }

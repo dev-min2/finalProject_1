@@ -78,6 +78,15 @@ boardRouter.post('/notice-reply', async(req, res) => {
         console.log(e);
     }
 });
+boardRouter.delete('/notice-reply', async(req, res) => {
+    const replyNo = req.query.replyNo;
+    try {
+        const boardService = new BoardService();
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
 
 boardRouter.put('/notice', async(req, res) => {
     const { notice_board_no, noticeBoardInfo, randNoticeValue, curTimeVal } = req.body.param;
