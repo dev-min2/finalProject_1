@@ -27,7 +27,11 @@ const store = createStore({
         }
     },
     getters : {
-        
+        getSubCodeName(state, subcode) {
+            return state.subCode.find(ele => {
+                ele.sub_code == subcode
+            });
+        }
     },  
     mutations : { //동기식, 직접 수정은 못하고 commit을 통해 밑의 함수명을 전달해야함
         reversePetType(state, payload){

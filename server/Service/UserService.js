@@ -302,7 +302,7 @@ class UserService {
     }
 
     async getSubcode() {
-        const result = await mainCodeDAO.getSubcode();
+        const result = await mainCodeDAO.selectSubcodeQuery();
         return result;
     }
 
