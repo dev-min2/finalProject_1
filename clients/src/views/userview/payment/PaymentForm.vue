@@ -10,27 +10,24 @@
                             <h5 class="modal-title" id="exampleModalLabel"> 사용하실 쿠폰을 선택해주세요 </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body" >
-                            <select name="coupon" v-model="couponSelect" class="form-select">
+                        <div class="modal-body">
+                            <select name="coupon" v-model="coupon" class="form-select" >
                                 <option disabled value="">쿠폰을 선택해주세요</option>
-                                <option value="" :key="i" v-for="(coupon, i) in selectMyCouponQuery" >
-                                    [ {{coupon.coupon_name}} ]    할인율: {{coupon.discount_pct}} % 
-                                    / 발급 : {{this.$dateFormat(coupon.receive_date)}} ~ 만료: {{this.$dateFormat(coupon.expire_date)}}
-                                    
+                                <option value="coupon"> 쿠폰 취소 </option>
+                                <option :key="i" :value="coupon"  v-for="(coupon, i) in selectMyCouponQuery">
+                                   <div style="display:none;"> {{coupon.my_coupon_no}} </div>
+                                   [ {{coupon.coupon_name}} ]    할인율: {{coupon.discount_pct}} % 
+                                    | 발급 : {{this.$dateFormat(coupon.receive_date)}} ~ 만료: {{this.$dateFormat(coupon.expire_date)}}
                                 </option>
                             </select>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary">확인</button>
+                            <button type="button" @click="CouponBtn()" class="btn btn-primary" data-bs-dismiss="modal">확인</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <h6>{{selectMyCouponQuery}}</h6>
-            <div :key="i" v-for="(coupon, i) in selectMyCouponQuery" >
-                                    <h5>{{coupon.coupon_name}}</h5>
-                                </div>
             <!--장바구니 폼-->
             <div class="col-md-5 col-lg-4 order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -50,12 +47,17 @@
                     </div>
 
                     <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
+                        <div >
+                            <h6 id="discount" style="color:red;">할인율</h6>
+                        </div>
+                        <span style="color:red;"> - {{couponPrice}} 원 </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
                         <div class="text-success">
                             <h6 class="my-0" id="fee">배송비</h6>
                         </div>
                         <span class="text-success"> {{totalDelivery}} 원 </span>
                     </li>
-
                     <li class="list-group-item d-flex justify-content-between">
                         <span>총 결제금액</span>
                         <strong id="priceTag">{{ realTotalPrice }}원</strong>
@@ -65,11 +67,13 @@
                 <form class="card p-2">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="" id="couponNameBox"
-                            style="font-size:10px;">
+                            style="font-size:10px;" v-model="couponName" >
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal" data-target="#couponmodal">쿠폰선택</button>
+                            data-bs-target="#exampleModal" data-target="#couponmodal" >쿠폰선택</button>
                     </div>
                 </form>
+                 
+            
             </div>
             <!--장바구니 폼 끝-->
             <!--주문 폼-->
@@ -90,16 +94,15 @@
                         </div>
 
                         <div class="col-12">
-                            <label for="email" class="form-label"> 주문자 이메일 <span
-                                    class="text-muted">(Optional)</span></label>
-                            <input type="email" class="form-control" id="email" v-model="selectUserQuery.user_email"
-                                readonly>
+                            <label for="email" class="form-label"> 주문자 이메일 
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+                            <input type="email" class="form-control" id="email" v-model="selectUserQuery.user_email" readonly>
                         </div>
 
                         <div class="col-12">
                             <label for="phone" class="form-label">주문자 연락처</label>
-                            <input type="text" class="form-control" id="phone" v-model="selectUserQuery.user_phone"
-                                readonly>
+                            <input type="text" class="form-control" id="phone" v-model="selectUserQuery.user_phone" readonly>
                         </div>
                     </div>
                     <hr class="my-4">
@@ -182,8 +185,6 @@
                     <button @click="PaymentBtn" class="w-100 btn btn-primary btn-lg" id="paymentBtn"
                         style="background-color: #fab3cc;border-style:none;">결제하기</button>
                     <hr>
-                    <!--테스트버튼 나중에 지우기-->
-                    <button @click="TestBtn" class="w-100 btn btn-primary btn-lg" id="test">Test</button>
                 </div>
             </div>
             <!--주문 폼 끝-->
@@ -210,18 +211,20 @@
                 testCartQuery: [], //카트 테스트 (수정할 것!!)
 
                 //결제관련 정보
-                couponSelect:'', //선택한 쿠폰
+                coupon:'', // 쿠폰 정보
+                couponNo:'', //사용 쿠폰 번호
+                couponName:'',
+                couponPercent:'', //선택한 쿠폰 퍼센트 / ex)10
                 selectPayment: 'html5_inicis', //결제방식
-                selectCoupon: 2,
                 orderCheck: '', //주문동의 확인
 
                 //총금액, 수량, 배송비, 쿠폰사용금액
                 totalPrice: 0,
                 totalCount: 0,
-                delivery: 0,
-                totalDelivery: 0,
-                couponPrice: 0,
-                realTotalPrice: 0,
+                delivery: 0, //각각 배송비
+                couponPrice: 0, //할인 금액
+                realTotalPrice: 0, //진짜 결제 금액
+                totalDelivery: 0, //업체별 배송비 합계
                 //주문정보
                 deliveryRequest: '',
                 userEmail: '',
@@ -233,7 +236,6 @@
                 orderDate: '', //주문날짜
                 orderProduct: '', //주문품목
                 impUid: 0,
-
             }
         },
         async created() {
@@ -252,23 +254,27 @@
             //결제 데이터
             this.total();
             this.orderInfo();
-
         },
         methods: {
             //데이터 만들기 테스트용 (html 버튼과 함수 둘 다 삭제할 것!!!)
             TestBtn: async function () {
-                console.log('T^T나와주세요')
-                console.log('쿼리', this.$route.query[0]);
-                console.log('장바구니번호', this.cartData);
-                console.log('배송비', this.deliveryData);
-                console.log('======================')
-
-                //업체별 배송비 계산, payment_product 테이블에 데이터 넣기 테스트
-                console.log('\'^\'* product_payment', paymentData);
-                console.log(paymentData);
+                console.log(this.coupon);
+                console.log(this.couponPercent);
+                console.log('쿠폰번호', this.couponNo);
 
             },
-
+            //쿠폰 적용버튼
+            CouponBtn : async function(){
+                if( this.coupon.discount_pct == undefined){
+                    this.couponPercent = 0;
+                }else {
+                    this.couponPercent = this.coupon.discount_pct;
+                }
+                this.couponNo = this.coupon.my_coupon_no; //사용한 쿠폰 번호
+                this.couponName = this.coupon.coupon_name;                
+                this.couponPrice = this.totalPrice * this.couponPercent/100;
+                this.realTotalPrice = this.totalPrice + this.totalDelivery - this.couponPrice;
+            },
             //회원 장바구니, 쿠폰리스트, 회원정보 가져오기
             async getUserInfo() {
                 let url = `/api/product/paymentform?userNo=${this.userNo}&`;
@@ -293,14 +299,15 @@
             },
             //금액 계산 / 총 금액, 총 수량, 배송비
             total() {
+                //총 배송비
                 for (const i in this.deliveryData) {
                     this.totalDelivery += Number(this.deliveryData[i]);
                 }
                 for (let i = 0; i < this.selectCartQuery.length; i++) { // 총 금액, 총 수량
-                    this.realTotalPrice += this.selectCartQuery[i].price_sum;
+                    this.totalPrice += this.selectCartQuery[i].price_sum;
                     this.totalCount += this.selectCartQuery[i].product_sel_cnt;
                 }
-                this.realTotalPrice += this.totalDelivery
+                this.realTotalPrice += this.totalPrice + this.totalDelivery;
             },
             //결제방식 선택
             Paymentmethod: function () {
@@ -317,8 +324,7 @@
                 this.orderNo = String(new Date().getTime()) + this.userNo;
                 this.orderDate = this.$dateFormat(new Date());
                 if (this.selectCartQuery.length > 1) {
-                    this.orderProduct = this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length +
-                        '건';
+                    this.orderProduct = this.selectCartQuery[0].product_name + ' 포함 총 ' + this.selectCartQuery.length + '건';
                 } else if (this.selectCartQuery.length == 1) {
                     this.orderProduct = this.selectCartQuery[0].product_name; //단건주문
                 } else {
@@ -333,7 +339,7 @@
                     payment_no: this.orderNo,
                     user_no: this.userNo,
                     payment_product: this.orderProduct,
-                    my_coupon_no: this.selectCoupon,
+                    my_coupon_no: this.couponNo,
                     payment_sub_unique_no: this.impUid, //imp_uid,
                     payment_date: this.orderDate,
                     payment_amount: this.totalPrice,
@@ -375,8 +381,8 @@
                             product_no: this.testCartQuery[object][i].product_no,
                             buy_cnt: this.testCartQuery[object][i].product_sel_cnt,
                             payment_amount: this.testCartQuery[object][i].price_sum,
-                            payment_discount_amount: 0,
-                            real_payment_amount: this.testCartQuery[object][i].price_sum,
+                            payment_discount_amount: this.testCartQuery[object][i].price_sum * this.couponPercent/100,
+                            real_payment_amount: this.testCartQuery[object][i].price_sum - this.testCartQuery[object][i].price_sum * this.couponPercent/100,
                             delivery_state: 'c1',
                             delivery_fee: companyDelivery
                         };
@@ -386,12 +392,14 @@
 
                 let userNo = this.userNo;
                 let cartNo = this.cartData;
+                let couponNo = this.couponNo;
                 const sendObj = {
                     param: {
                         paymentObj: paymentObj,
                         paymentData: paymentData,
                         userNo: userNo,
-                        cartNo: cartNo
+                        cartNo: cartNo,
+                        couponNo: couponNo
                     }
                 }
                 this.$showLoading();
