@@ -41,12 +41,24 @@ let paymentDAO = {
         return query (insertPaymentQuery, paymentObj);
     },
 
-    //결제 주문내역 불러오기
+    //결제 전체 주문내역 불러오기
     selectPaymentList : async function(userNo){
         const selectPaymentList =
             `SELECT * FROM payment WHERE user_no = ?`;
             
             return query(selectPaymentList, userNo);
+    },
+    
+
+    //결제 전체 취소 (Update payment + payment_product)
+    cancelAllPayment: async function(paymentNo){
+       const cancelAllPayment = 
+            `  UPDATE payment p 
+                JOIN payment_product p2
+                ON p.payment_no = p2.payment_no
+                SET p.order_state = 'C5', p2.delivery_state = 'C5'
+                WHERE p.payment_no = ?`;
+       return query (cancelAllPayment, paymentNo);
     }
 };
 

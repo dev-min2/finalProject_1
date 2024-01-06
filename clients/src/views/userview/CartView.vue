@@ -52,7 +52,12 @@ export default {
       let cartData = this.cartNo;
       let deliveryData = this.deliveryPrice;
       let data = [cartData,deliveryData];
-      this.$router.push({path:`/paymentform`, query : data});
+      if(cartData.length == 0){
+        this.$showFailAlert('장바구니가 비어있습니다!');
+      }else{
+        this.$router.push({path:`/paymentform`, query : data});
+      }
+
     },
     //장바구니 선택 cart_no 자식컴포넌트에서 불러오기
     cartList(cart, delivery){
