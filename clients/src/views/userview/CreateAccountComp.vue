@@ -235,9 +235,12 @@
                     return;
                 }
 
-                const result = await axios.post('/api/user/email-auth', { email : this.userEmail }, {'Content-Type' : 'application/json'});
-                if(result.data) {
+                const result = await axios.post('/api/user/email-auth', { email : this.userEmail, isCreateAccount : true }, {'Content-Type' : 'application/json'});
+                if(result.data == '2') {
                     this.showEmailAuth = true;
+                }
+                else if(result.data == '0') {
+                    this.$showFailAlert(null,'이메일 등록 가능 횟수(5회)를 넘을 수 없습니다.');
                 }
                 else {
                     this.$showFailAlert('이메일 인증값 생성에 실패했습니다. 다시 시도해주세요',null);
@@ -351,7 +354,7 @@
                     this.userIdDuplicateCheck = true;
                 }
                 else {
-                    this.$showFailAlert("사용할 수 있는 아이디입니다!",null);
+                    this.$showFailAlert("사용할 수 없는 아이디입니다!",null);
                 }
             },
             async createAccount() {
@@ -412,6 +415,8 @@
                 userObj.user_email = this.userEmail,
                 userObj.user_phone = this.userPhone,
                 userObj.user_addr = this.roadAddress + ' ' + this.detailAddress,  
+                userObj.postcode = this.postcode;
+                userObj.forgot_pw_change = 'P1';
                 sendObj.user = userObj;
                 this.$showLoading();
                 let result = await axios.post('/api/user/join',sendObj,{ 'Content-Type' : 'application/json'});

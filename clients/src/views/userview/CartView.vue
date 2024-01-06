@@ -13,7 +13,7 @@
       </ul>
     </div>
     <div>
-      <CartList />
+      <CartList @product-no="cartList"/>
     </div>
     <div class="cart_mainbts">
       <button
@@ -27,7 +27,7 @@
         class="cart_bigorderbtn right"
         type="button"
         id="tess"
-        onclick="paymentfunction()"
+        @click="paymentBtn()"
       >
         주문하기
       </button>
@@ -36,8 +36,35 @@
 </template>
 <script>
 import CartList from "../../components/CartList.vue";
+
 export default {
-  components: { CartList },
+  data(){
+    return {
+      cartNo : [],
+      deliveryPrice : []
+    }
+  },
+  components: { 
+    CartList 
+    },
+  methods : {
+    paymentBtn: function(){
+      let cartData = this.cartNo;
+      let deliveryData = this.deliveryPrice;
+      let data = [cartData,deliveryData];
+      if(cartData.length == 0){
+        this.$showFailAlert('장바구니가 비어있습니다!');
+      }else{
+        this.$router.push({path:`/paymentform`, query : data});
+      }
+
+    },
+    //장바구니 선택 cart_no 자식컴포넌트에서 불러오기
+    cartList(cart, delivery){
+      this.cartNo = cart;
+      this.deliveryPrice = delivery;
+    }
+  }
 };
 </script>
 <style scoped>

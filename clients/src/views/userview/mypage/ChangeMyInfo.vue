@@ -179,7 +179,7 @@
                     return;
                 }
 
-                const result = await axios.post('/api/user/email-auth', { email : this.userEmail }, {'Content-Type' : 'application/json'});
+                const result = await axios.post('/api/user/email-auth', { email : this.userEmail, isCreateAccount : false }, {'Content-Type' : 'application/json'});
                 if(result.data) {
                     this.showEmailAuth = true;
                 }

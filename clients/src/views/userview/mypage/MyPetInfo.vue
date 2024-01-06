@@ -17,7 +17,7 @@
                         <tr>
                             <td colspan="6">
                                 <div class="d-grid gap-2">
-                                    <button type="button" class="btn text-white" style="background-color: #fc97bf;"
+                                    <button type="button" class="btn text-white" style="background-color: #fab3cc;"
                                       @click="goToPetInsert()">내 반려동물 등록하기</button>
                                 </div>
                             </td>
@@ -42,15 +42,15 @@
                             <td>{{pet.pet_type}}</td>
                             <td>{{this.$dateFormat(pet.pet_birth)}}</td>
                             <td>{{pet.pet_gender}}</td>
-                            <td><button type="button" class="btn text-white" style="background-color: #9999FF;"
+                            <td><button type="button" class="btn text-white" style="background-color: #acb1f8;"
                                      @click="goToUpdateForm(pet.pet_no)">수정</button></td>
-                            <td><button type="button" class="btn text-white" style="background-color: #a4a4a4;"
+                            <td><button type="button" class="btn text-white" style="background-color: #bbbbbb;"
                                      @click="deletePetQuery(pet)">삭제</button></td>
                         </tr>
                         <tr>
                             <td colspan="6">
                                 <div class="d-grid gap-2">
-                                    <button type="button" class="btn text-white" style="background-color: #fc97bf;"
+                                    <button type="button" class="btn text-white" style="background-color: #fab3cc;"
                                        @click="goToPetInsert()">내 반려동물 추가 등록하기</button>
                                 </div>
                             </td>
@@ -96,7 +96,7 @@
                 if(result.data.affectedRows > 0){
                     this.$showSuccessAlert('삭제되었습니다');
                 }else{
-                    this.$showErrorAlert('삭제에 실패했습니다. ');
+                    this.$showWarningAlert('삭제에 실패했습니다. ');
                 }
                 for(let i=0; i<this.selectPetQuery.length;i++){
                     if (this.selectPetQuery[i].pet_no == petNo){

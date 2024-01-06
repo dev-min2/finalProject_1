@@ -2,6 +2,95 @@ const express = require('express');
 const productRouter = express.Router();
 const ProductService = require("../Service/ProductService");
 
+
+//결제폼-회원정보,쿠폰,장바구니 같이 불러오기
+productRouter.get('/paymentform', async(req, res)=>{
+    let userNo = req.query.userNo;
+    let cartList = req.query.cno;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getUserPaymentInfo(userNo, cartList);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+})
+
+ //결제 완료 처리
+ productRouter.post('/payment', async(req, res) => {
+    let data = req.body.param;
+
+    console.log(data);
+    try{
+        const productService = new ProductService();
+        let result 
+            = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo, data.cartNo, data.couponNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+ })
+
+ //주문 전체 취소
+ productRouter.put('/paymentdetail/cancel/:paymentNo', async(req, res)=>{
+    let data = req.params.paymentNo;
+    console.log('prdController주문전체취소!' ,data);
+    try{
+        const productService = new ProductService();
+        let result = await productService.cancelAllPayment(data);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+ })
+
+ 
+ //주문 전체 내역 불러오기
+ productRouter.get('/orderdetail/:userNo', async(req, res) => {
+    let userNo = req.params.userNo;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getPaymentList(userNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+ })
+
+
+ //주문 전체내역 불러오기 2
+ productRouter.get('/paymentdetail/all/:userNo', async(req, res) => {
+    let userNo = req.params.userNo;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getPaymentList(userNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+ })
+ 
+ //주문 상세 내역 불러오기
+ productRouter.get('/paymentdetail/:paymentNo', async(req,res) => {
+    let paymentNo = req.params.paymentNo;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getPaymentDetail(paymentNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+
+ })
+
+
+
 productRouter.get('/main', async (req, res) => {
     try {
         const productService = new ProductService();
