@@ -261,7 +261,6 @@
                 console.log(this.coupon);
                 console.log(this.couponPercent);
                 console.log('쿠폰번호', this.couponNo);
-
             },
             //쿠폰 적용버튼
             CouponBtn : async function(){
