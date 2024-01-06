@@ -84,7 +84,6 @@ export default {
             this.$showLoading();
             let result = await axios.get(`/api/user/mypetform/${this.petNo}`)
                                     .catch(err => console.log(err));
-            //console.log(';-;나와줘', result.data);
             this.petInfo = result.data[0];
             this.petInfo.pet_birth = this.$dateFormat(this.petInfo.pet_birth);
             this.$hideLoading();
@@ -105,9 +104,8 @@ export default {
             this.$showLoading();
             let result = await axios.put(`/api/user/mypetform/${this.petNo}`, petObj)
                                      .catch(err=>console.log(err));
-            console.log('수정test',result.data.affectedRows);
             if(result.data.affectedRows > 0){
-                this.$showSuccessAlert('수정되었습니다');
+                this.$showSuccessAlert('수정되었습니다. ');
             }else{
                 this.$showFailAlert('수정에 실패했습니다. ');
             }

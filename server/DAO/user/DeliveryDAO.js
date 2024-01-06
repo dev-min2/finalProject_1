@@ -4,15 +4,29 @@ let { pool,query } = require('../../config/dbPool');
 
 //판매자 배송현황
 let deliveryDAO = {
-    sellerDelivery : async function(userNo) {
+    sellerDelivery : async function(userNo,pageNo,showCnt) {
+        let startPage = (pageNo - 1) * showCnt;
+        let showPage = showCnt;
         const sellerDelivery = `
         SELECT A.payment_no,A.payment_product_no, C.user_name,B.receiver_addr,D.product_name,A.buy_cnt,B.payment_date,A.delivery_number,A.delivery_state
         FROM payment_product A JOIN payment B ON A.payment_no = B.payment_no
         JOIN USER C ON B.user_no = C.user_no
         Join product D ON D.product_no = A.product_no
         where D.user_no = ?
+        LIMIT ${startPage},${showPage}
         `;
         return query(sellerDelivery,userNo)
+    },
+
+    sellerDeliveryCnt : async function(userNo) {
+        const sellerDeliveryCnt = `
+            SELECT count(*) AS CNT
+                FROM user AS A
+                JOIN product AS B ON A.user_no = B.user_no
+                JOIN payment_product C ON C.product_no = B.product_no
+                WHERE A.user_no = ${userNo}
+        `;
+        return query(sellerDeliveryCnt);
     },
     
 

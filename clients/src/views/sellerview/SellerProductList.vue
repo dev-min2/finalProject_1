@@ -6,11 +6,10 @@
         <div class="product-toolbar">
             <div class="display-options">
                 <label for="productsPerPage"> 표시할 상품 갯수 </label>
-                <select v-model="productsPerPage" @change="updateProductsPerPage" style="margin-left:10px">
+                <select v-model="productsPerPage" @change="updateProductsPerPage($event.target)" style="margin-left:10px">
                     <option value="5">5개</option>
                     <option value="10">10개</option>
                     <option value="20">20개</option>
-                    <option value="100">100개</option>
                 </select>
             </div>
             <div class="total-product">
@@ -53,16 +52,19 @@
     <button class = "b2" @click="productDelete" style="border-radius:5px">삭제</button>
     <button class = "b3" @click="productHiding" style="border-radius:5px">숨김</button>
         
+       <PaginationComp v-if="page !== null" :page="page" @go-page="getSellerProductList" />
     </div>
 </template>
 
 <script>
+    import PaginationComp from '../../components/common/PaginationComp.vue'
     import axios from 'axios';
     import ProductFilterSearchBar from './ProductFilterSearchBar.vue';
 
     export default {
         components: {
-            ProductFilterSearchBar
+            ProductFilterSearchBar,
+            PaginationComp
         },
         data() {
             return {
@@ -70,11 +72,13 @@
                 search: '',
                 productsPerPage: 5,
                 currentPage: 1,
+                pageNo : 1,
+                page : null,
+                publicStateNo : ''
                // getMyProductListFilter:[]
             };
         },
         created() {
-
             this.getMyProductList('I1');
         },
         computed: {
@@ -84,18 +88,32 @@
                 return this.sellerProductList.slice(startIndex, endIndex);
             },
         },
+        watch : {
+            productPerPage(newVal,oldVal) {
+                if(newVal != oldVal) {
+                    this.getMyProductList('I1');
+                }
+            }
+        },
         methods: {
+            async getSellerProductList(pageNo) {
+                this.pageNo = pageNo;
+                this.getMyProductList(this.publicStateNo)
+            },
+            test() {
+                this.isModal = true;
+            },
             async getMyProductList(publicStateNo) {
-                let result = '';
                 const userNo = 1;
                 const state = publicStateNo
-                try {
-                    result = await axios.get(`/api/product/SellerProductList/${userNo}/${state}`);
-                    console.log(userNo,state)
-                } catch (e) {
-                    console.log(e);
-                }
-                this.sellerProductList = result.data
+                this.publicStateNo = state;
+                
+                const result = await axios.get(`/api/product/SellerProductList?pg=${this.pageNo}&showCnt=${this.productsPerPage}&state=${state}`);
+                if(result.status == 200) {
+                    this.sellerProductList = result.data.selectResult;
+                    this.page = result.data.pageDTO;
+                }   
+                this.$hideLoading();
                 for(let product of this.sellerProductList) {
                     product.selected = false;
                 }
@@ -181,7 +199,7 @@
                 
        
             },
-            updateProductsPerPage() {
+            updateProductsPerPage(target) {
                 this.currentPage = 1;
             },
         }

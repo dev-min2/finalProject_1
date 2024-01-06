@@ -155,6 +155,9 @@ const methods = {
             carry[group].push(el)
             return carry
         },{})
+    },
+    printPriceComma(price) {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 }
 
@@ -175,5 +178,6 @@ export default {
         Vue.config.globalProperties.$convertAttachFileNameList = methods.convertAttachFileNameList;
         Vue.config.globalProperties.$convertAttachFileName = methods.convertAttachFileName;
         Vue.config.globalProperties.$groupBy = methods.groupBy;
+        Vue.config.globalProperties.$printPriceComma = methods.printPriceComma;
     }
 }

@@ -105,6 +105,12 @@ const userDAO = {
             UPDATE user SET user_leavedate = current_date() WHERE user_no = ${userNo}
         `;
         return query(updateUserLeaveDateQuery);
+    },
+    updateUserNullLeaveDateQuery : async function(userNo) {
+        const updateUserNullLeaveDateQuery = `  
+            UPDATE user SET user_leavedate = null WHERE user_no = ${userNo}
+        `;
+        return query(updateUserNullLeaveDateQuery);
     }
 };
 
