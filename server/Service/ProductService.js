@@ -2,14 +2,59 @@
 const productDAO = require('../DAO/product/ProductDAO');
 const ReviewDAO = require('../DAO/user/ReviewDAO');
 const DeliveryDAO = require('../DAO/user/DeliveryDAO');
+const paymentDAO = require('../DAO/product/PaymentDAO');
+const paymentProductsDAO = require('../DAO/product/PaymentProductsDAO');
+const { getConnection } = require('../config/dbPool');
+
 const categoryDAO = require("../DAO/product/CategoryDAO");
+const couponDAO = require("../DAO/product/CouponDAO");
+const userDAO = require("../DAO/user/UserDAO");
 const PageDTO = require("../commonModule/PageDTO");
 const fs = require('fs');
 
+
 class ProductService {
     constructor() {
-
+     
     }
+
+    //결제폼 회원정보, 장바구니, 쿠폰 가져오기 합침
+    async getUserPaymentInfo(userNo, cartNo){
+        const cartList = await paymentDAO.selectCartQuery(userNo, cartNo);
+        const couponList = await couponDAO.selectMyCouponQuery(userNo);
+        const userInfo = await userDAO.selectUserInfoQuery(userNo);
+        let result = [cartList, couponList, userInfo[0]];
+        return result;
+    }
+
+    //결제 완료 처리
+    async completePayment(paymentObj, paymentData, userNo, cartNo){ 
+        const connection = await getConnection();
+        try{
+            //트랜잭션 시작
+            await connection.beginTransaction(); 
+            let result = await paymentDAO.insertPaymentQuery(paymentObj,connection); //결제정보 삽입
+            for(let i = 0; i < paymentData.length; ++i) {
+                let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData[i],connection); //개별상품결제정보 삽입
+            }
+            let result3 = await paymentProductsDAO.deleteCartQuery(userNo,cartNo,connection); //장바구니 삭제
+            await connection.commit(); //결제처리 성공
+        }
+        catch(e){ 
+            console.log(e);
+            await connection.rollback(); //결제처리 실패
+        }
+        finally {
+            connection.release(); //사용한 커넥션 다시 풀에 반납
+        }
+        
+    }
+    //주문 내역 가져오기
+    async getPaymentList(userNo){
+        const result = await paymentDAO.selectPaymentList(userNo);
+        return result;
+    }
+
     // 상품리스트 가져오기
     async getMainpageProductList(ptype) {
         let result = await productDAO.selectMainpageFirstProductQuery(ptype);
