@@ -15,8 +15,8 @@
               @change="checkComp($event.target.checked, companyIndex, idx)"
               />
               </td>
-            <td class="fixedcol0">상품이미지</td>
             <td>나중에 hidden하기 </td>
+            <td class="fixedcol0">상품이미지</td>
             <td class="fixedcol1">상품정보</td>
             <td class="fixedcol2">옵션</td>
             <td>상품금액</td>
