@@ -12,8 +12,6 @@ export default {
     async getSubcode() {
       const result = await axios.get('/api/user/subcode');
       this.$store.commit('setSubCode', result.data);
-
-      console.log(this.$getSubCodeName('C5'));
     } 
   }
 }
