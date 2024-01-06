@@ -106,7 +106,7 @@
                 }
             },
             async deleteReply(replyNo) {
-                const result = await axios.delete(`/api/board/notice-reply?replyNo=${replyNo}`);
+                const result = await axios.put(`/api/board/notice-reply?replyNo=${replyNo}`);
                 if(result.status == 200) {
                     await this.getNoticeData();
                 }

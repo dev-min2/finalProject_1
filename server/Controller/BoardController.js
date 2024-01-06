@@ -78,10 +78,17 @@ boardRouter.post('/notice-reply', async(req, res) => {
         console.log(e);
     }
 });
-boardRouter.delete('/notice-reply', async(req, res) => {
+boardRouter.put('/notice-reply', async(req, res) => {
     const replyNo = req.query.replyNo;
     try {
         const boardService = new BoardService();
+        const result = await boardService.deleteNoticeReply(replyNo);
+        if(result) {
+            res.status(200).send(result);
+        }
+        else {
+            res.status(500).send('FAIL');
+        }
     }
     catch(e) {
         console.log(e);

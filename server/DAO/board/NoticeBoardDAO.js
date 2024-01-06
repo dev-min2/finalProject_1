@@ -117,6 +117,18 @@ let noticeBoardDAO = {
             INSERT INTO notice_reply SET ? 
         `
         return query(insertNoticeReplyQuery,obj);
+    },
+    deleteNotieReplyQuery : async function(replyNo) {
+        const deleteNotieReplyQuery = `
+            UPDATE notice_reply SET delete_date = current_date() where notice_reply_no = ${replyNo}
+        `
+        return query(deleteNotieReplyQuery);
+    },
+    updateNoticeReplyQuery : async function(replyContent, replyNo) {
+        const updateNoticeReplyQuery = `
+            UPDATE notice_reply SET comment = ?, reply_date = current_timestamp() WHERE notice_reply_no = ${replyNo}
+        `;
+        return query(updateNoticeReplyQuery, replyContent);
     }
 };
 
