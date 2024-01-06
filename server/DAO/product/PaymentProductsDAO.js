@@ -49,7 +49,7 @@ let paymentProductsDAO = {
         }   
     },
 
-    //주문 상세 조회
+    //주문 상세 개별 조회
     selectPaymentDetail : async function(paymentNo){
         const selectPaymentDetail = 
         `SELECT p2.user_no, u.company_name, p2.product_name, p2.product_price,

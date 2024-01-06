@@ -29,10 +29,10 @@
                                         <p>{{(product.product_price)}}원 {{product.buy_cnt}}개</p>
                                     </div>
                                     <div>
-                                        <h5 class="mx-4" style="display:inline-block;" >배송완료</h5>
+                                        <h5 class="mx-4" style="display:inline-block;" >{{product.delivery_state}}</h5>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary" style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
+                                        <button class="btn btn-primary" @click="cancelSelectPayment()" style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
                                         <br>
                                         <button class="btn btn-primary" style="background-color: #acb1f8; border: none; margin : 5px;">주문취소</button>
                                     </div>
@@ -43,18 +43,24 @@
 
                     </li>
                 </ul>
-        <!---->
             </div>
-            <div class="d-flex justify-content-center mt-5">
-                <!--delivery_state가 c1일때 컬러 acb1f8 / 그 외일 때 bbbbbb (회색) -->
-                <button class="btn btn-primary" style="background-color:#acb1f8; color:white; border:none; height:60px;">전체 상품 주문 취소</button>
+            <!--주문취소버튼-->
+            <div v-if= "orderState == 'C1'">
+                <div class="d-flex justify-content-center mt-5">
+                    <button class="btn btn-primary" @click="cancelAllPayment(paymentNo)" style="background-color:#acb1f8; color:white; border:none; height:60px;">전체 상품 주문 취소</button>        
+                </div>
+            </div>
+            <div v-else>
+                <div class="d-flex justify-content-center mt-5">
+                    <button class="btn btn-primary"  style="background-color:#bbbbbb; color:white; border:none; height:60px;">주문 취소 불가능</button>        
+                </div>
             </div>
             <div class="d-flex justify-content-center mt-2">
                 <p style="color:gray;">주문취소는[주문완료] 상태일 경우에만 가능합니다.</p>
             </div>
 
             <!-- 주문 및 배송정보 -->
-            <div class="mt-5">
+                        <div class="mt-5">
                 <h4 class="text-left">결제정보</h4>
                 <hr style="border: 1px solid black;">
                 <table class="table">
@@ -72,7 +78,7 @@
                     </tr>
                      <tr>
                         <th>할인금액</th>
-                        <td> -{{this.$printPriceComma(paymentDiscountPrice)}}원</td>
+                        <td style="color:red;">{{this.$printPriceComma(paymentDiscountPrice)}}원</td>
                     </tr>
                     <tr>
                         <th>배송비</th>
@@ -116,10 +122,13 @@
     export default {
         data() {
             return {
+                test: '...',
+                paymentList : [],
                 paymentProductsList : [], //주문내역 전체
                 paymentProductsListByCompany : {}, //업체별로 분류
 
                 //주문정보
+                userNo:'',
                 paymentNo : '',
                 paymentSubNo : '',
                 userNo : '',
@@ -141,49 +150,52 @@
                 receiverAddr : '',
                 receiverPostCode : '',
                 deliveryRequest : '',
-                
             }
         },
          created() {
-            //주문정보
+            this.userNo = this.$store.state.userNo;
             this.paymentNo = this.$route.query.paymentNo;
-            this.userNo = this.$route.query.userNo;
-            this.orderState = this.$route.query.orderState;
-            this.myCouponNo = this.$route.query.myCouponNo;
-            this.paymentDate = this.$route.query.paymentDate;
-            this.paymentProduct = this.$route.query.paymentProduct;
-            this.totalProductCnt = this.$route.query.totalProductCnt;
-
-            //결제정보
-            this.paymentPrice = this.$route.query.paymentPrice;
-            this.paymentDiscountPrice = this.$route.query.paymentDiscountPrice;
-            this.totalDeliveryFee = this.$route.query.totalDeliveryFee;
-            this.realPaymentPrice = this.$route.query.realPaymentPrice;
-
-            //배송정보
-            this.receiverName = this.$route.query.receiverName;
-            this.receiverPhone = this.$route.query.receiverPhone;
-            this.receiverAddr = this.$route.query.receiverAddr;
-            this.receiverPostCode = this.$route.query.receiverPostCode;
-            this.deliveryRequest = this.$route.query.deliveryRequest;
-
-
+            
+            this.getSelectPayment();
             this.getSelectPaymentDetail();
-            console.log(this.$route.query);
-
-
         },
         methods : {
-            //주문내역 전체 가져오기
-            async getSelectPaymentDetail(){
+            //주문전체정보 가져오기(payment)
+            async getSelectPayment(){
 			let result 
-				= await axios.get(`/api/product/paymentdetail/${this.paymentNo}`)
+				= await axios.get(`/api/product/paymentdetail/all/${this.userNo}`)
 							.catch(err => console.log(err));
-			this.paymentProductsList = result.data;
-			console.log(this.paymentProductsList);
-            const company = this.groupBy(this.paymentProductsList, 'user_no');
-            this.paymentProductsListByCompany = company;
-            console.log(this.paymentProductsListByCompany);
+			this.paymentList = result.data;
+            let payment = this.paymentList[0];
+            //주문정보
+            this.orderState = payment.order_state;
+            this.myCouponNo = payment.my_coupon_no;
+            this.paymentDate = payment.payment_date;
+            this.paymentProduct = payment.payment_product;
+            this.totalProductCnt = payment.total_product;
+
+            //결제정보
+            this.paymentPrice = payment.payment_amount;
+            this.paymentDiscountPrice = payment.payment_discount_amount;
+            this.totalDeliveryFee = payment.total_delivery_fee;
+            this.realPaymentPrice = payment.real_payment_amount;
+
+            //배송정보
+            this.receiverName = payment.receiver_name;
+            this.receiverPhone = payment.receiver_phone;
+            this.receiverAddr = payment.receiver_addr;
+            this.receiverPostCode = payment.receiver_postcode;
+            this.deliveryRequest = payment.delivery_request;
+		    },
+
+            //주문상세내역 전체 가져오기
+            async getSelectPaymentDetail(){
+                let result 
+                    = await axios.get(`/api/product/paymentdetail/${this.paymentNo}`)
+                                .catch(err => console.log(err));
+                this.paymentProductsList = result.data;
+                const company = this.groupBy(this.paymentProductsList, 'user_no');
+                this.paymentProductsListByCompany = company;
 		    },
             groupBy: function (data, key) {
                 return data.reduce(function (carry, el) {
@@ -195,8 +207,27 @@
                     return carry
                 }, {})
             },
+            //전체 주문취소
+            async cancelAllPayment(paymentNo){
+            console.log(paymentNo);
+            this.$showLoading();
+            let result = await axios.put(`/api/product/paymentdetail/cancel/${this.paymentNo}`)
+                                     .catch(err=>console.log(err));
+            if(result.data.affectedRows > 0){
+                this.$showSuccessAlert('전체 주문이 취소되었습니다. ');
+            }else{
+                this.$showFailAlert('취소에 실패했습니다. ');
+            }
+            this.$hideLoading();
 
+            this.$router.push({ path: '/paymentdetail'});
+            },
+            //일부 주문 취소
+            cancelSelectPayment(){
 
+            }
+         
+            
         },
        
     }

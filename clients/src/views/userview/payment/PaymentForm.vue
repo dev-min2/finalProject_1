@@ -13,6 +13,7 @@
                         <div class="modal-body">
                             <select name="coupon" v-model="coupon" class="form-select" >
                                 <option disabled value="">쿠폰을 선택해주세요</option>
+                                <option value="coupon"> 쿠폰 취소 </option>
                                 <option :key="i" :value="coupon"  v-for="(coupon, i) in selectMyCouponQuery">
                                    <div style="display:none;"> {{coupon.my_coupon_no}} </div>
                                    [ {{coupon.coupon_name}} ]    할인율: {{coupon.discount_pct}} % 
@@ -69,7 +70,6 @@
                             style="font-size:10px;" v-model="couponName" >
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                             data-bs-target="#exampleModal" data-target="#couponmodal" >쿠폰선택</button>
-                             <h5 v:if="couponName != null"> test</h5>  
                     </div>
                 </form>
                  
@@ -185,8 +185,6 @@
                     <button @click="PaymentBtn" class="w-100 btn btn-primary btn-lg" id="paymentBtn"
                         style="background-color: #fab3cc;border-style:none;">결제하기</button>
                     <hr>
-                    <!--테스트버튼 나중에 지우기-->
-                    <button @click="TestBtn" class="w-100 btn btn-primary btn-lg" id="test">Test</button>
                 </div>
             </div>
             <!--주문 폼 끝-->
@@ -267,9 +265,13 @@
             },
             //쿠폰 적용버튼
             CouponBtn : async function(){
+                if( this.coupon.discount_pct == undefined){
+                    this.couponPercent = 0;
+                }else {
+                    this.couponPercent = this.coupon.discount_pct;
+                }
                 this.couponNo = this.coupon.my_coupon_no; //사용한 쿠폰 번호
-                this.couponName = this.coupon.coupon_name;
-                this.couponPercent = this.coupon.discount_pct;
+                this.couponName = this.coupon.coupon_name;                
                 this.couponPrice = this.totalPrice * this.couponPercent/100;
                 this.realTotalPrice = this.totalPrice + this.totalDelivery - this.couponPrice;
             },
