@@ -1,69 +1,57 @@
 <template>
-  <div>
-	<h3 class="mt-4" style= text-align:center>찜 목록</h3>
-    <div class="col mb-5" style="height: 400px">
-      <div class="card h-100">
-        <!-- Product image-->
-            <router-link style="text-decoration : none; color : black"
-              :to="{
-                path: '/productdetail',
-                query: { pno: product.product_no },
-              }"
-            >
-        <div class="card-image">
-          <div class="hoverImg">
-              <img
-                class="card-img-top"
-                style="height: 200px"
-                alt="..."
-                v-if="product.pet_type == 'd1'"
-                :src="$store.state.prImg + `dog/` + product.product_image"
-              />
-              <img
-                class="card-img-top"
-                style="height: 200px"
-                alt="..."
-                v-else
-                :src="$store.state.prImg + `cat/` + product.product_image"
-              />
-          </div>
+    <section class="py-3">
+        <div>
+            <h3 class="text-center">내 찜목록</h3>
+            <h3 class="text-center" v-if="page !== null"> 총 {{ page.total }} 건 입니다.</h3>
         </div>
-        <!-- Product details-->
-        <div class="card-body p-4">
-          <div class="text-left">
-            <!-- Product name-->
-            <p></p>
-            <h6 class="fw-bolder">{{ product.product_name }}</h6>
-          </div>
-          <br />
-          <div class="text-left">
-            <!-- Product price-->
-            <p style="text-align : right">{{ product.product_price }}원</p>
-          </div>
-          <div class="text-left">
-            <p v-if="product.avg_cnt !== null">
-              {{ "★" + product.avg_cnt }}{{ "(" + product.cnt + ")" }}
-            </p>
-            <p v-else>{{ "★0.0" }}{{ "(" + product.cnt + ")" }}</p>
-          </div>
+        <div class="container px-4 px-lg-5 mt-5">
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                <Product v-for="(product2,idx) in productList" :key="idx" :product="product2" />
+            </div>
+            <PaginationComp v-if="page !== null" :page="page" @go-page="getSearchPageList" />
         </div>
-        </router-link>
-        <!-- Product actions-->
-        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-          <div class="text-center">
-            <!--<a class="btn btn-outline-dark mt-auto" href="/productdetail?pno=${products.product_no}&cno=${products.category_no}&type=${products.pet_type}">상세보기</a>-->
-            <!--<router-link :to="{ path : '/productdetail', query : { pno : product.product_no}}">상세보기</router-link>-->
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
 </template>
 
 <script>
-export default {
-  props: ["product"],
+    import axios from 'axios'
+    import Product from '../../../components/userview/Product.vue';
+    import PaginationComp from '../../../components/common/PaginationComp.vue';
 
-  created() {},
-};
+    export default {
+        components: {
+            Product,
+            PaginationComp
+        },
+        data() {
+            return {
+                productList: [],
+                page: null,
+            }
+        },
+        created() {
+            let action = this.$route.query.action;
+            
+            if (action == "categorySearch") {
+                this.getCategoryProductList(this.$route.query.categoryNo, 1)
+                this.keyword = this.$route.query.category_name;
+            } else if (action == "newProduct"){
+                    this.getNewProductList(1);
+                    this.keyword = "신상품";
+            } 
+             else {
+                this.keyword = this.$route.query.keyword;
+                this.getProductList(this.$route.query.keyword, 1);
+            }
+        },
+        methods: {
+            async getNewProductList(pageno){
+                const result = await axios.get(
+                    `/api/product/search/newproduct?type=${this.$store.state.curShowPetType}&pageno=${pageno}`
+                );
+                this.productList = result.data.selectResult;
+                this.page = result.data.pageDTO;
+            },
+        }
+    }
 </script>

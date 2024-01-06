@@ -57,7 +57,7 @@
                         </div>
                             <br />
                             <br />
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button" style="width : 48%; height : 50px"
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button"  @click="addWishfunction()" style="width : 48%; height : 50px"
                             v-if="productDetail.product_stock >= 0">
                                 <i></i>
                                 ♥ Add to wish list
@@ -320,7 +320,6 @@ export default {
     methods:{
         async getProductDetail(pno){
             this.$showLoading();
-            console.log(this.$store.state.cartCnt);
             let result = await axios
                         .get(`/api/product/productDetail?pno=${pno}`)
                         .catch(err => console.log(err));
@@ -331,7 +330,25 @@ export default {
             this.cartInfo = cartResult.data;
             this.$hideLoading();
         },
-        
+        async addWishfunction(){
+            if(this.$store.state.userNo <= 0) {
+                this.$showWarningAlert('로그인 먼저 해주세요.');
+                this.$router.push({path: '/login'});
+                return;
+                }
+            this.$showLoading();
+            let obj = {
+                pno : this.productDetail.product_no,
+                uno : this.$store.state.userNo
+            }
+            let result = await axios
+                        .post(`/api/product/wish`,obj)
+                        .catch(err => console.log(err));
+            if(result.data.affectedRows > 0){
+                this.$showSuccessAlert("찜에 등록되었습니다."); 
+            }
+                this.$hideLoading();   
+        },
         async addCartfunction(){
             if(this.$store.state.userNo <= 0) {
                 this.$showWarningAlert('로그인 먼저 해주세요.');

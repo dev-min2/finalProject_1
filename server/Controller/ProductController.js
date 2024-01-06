@@ -212,5 +212,16 @@ productRouter.get('/productDetail/:userNo/:productNo', async (req, res) => {
         console.log(err);
     }
 });
+productRouter.post('/wish', async(req, res) => {
+    let productNo = req.body.pno;
+    let userNo = req.body.uno
+    try {
+        const productService = new ProductService();
+        result = await productService.addWish(productNo, userNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }   
+});
 
 module.exports = productRouter;

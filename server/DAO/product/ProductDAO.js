@@ -191,6 +191,13 @@ let productDAO = {
         `;
         return query(cartInfoQuery, [userNo, productNo]);
     },
+    addWishQuery : async function (product_no, user_no){
+        const addWishQuery = `
+        INSERT wishlist
+        SET product_no = ? , user_no = ?
+        `;
+        return query(addWishQuery, [product_no, user_no]);
+    }
 };
 
 module.exports = productDAO;
