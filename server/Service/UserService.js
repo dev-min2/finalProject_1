@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const { decryptAES256, encryptSHA256 } = require('../commonModule/commonModule');
 const userDAO = require('../DAO/user/UserDAO');
 const myCartDAO = require('../DAO/user/MyCartDAO');
+const mainCodeDAO = require('../DAO/MainCodeDAO');
 
 //마이페이지
 const myPetDAO = require('../DAO/user/MyPetDAO');
@@ -297,6 +298,11 @@ class UserService {
 
     async cancleLeaveAccount(userNo) {
         const result = await userDAO.updateUserNullLeaveDateQuery(userNo);
+        return result;
+    }
+
+    async getSubcode() {
+        const result = await mainCodeDAO.selectSubcodeQuery();
         return result;
     }
 
