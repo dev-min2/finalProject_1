@@ -56,15 +56,30 @@ let productDAO = {
 
 
     //판매자 상품 조회
-    getMyProductList: async function (userNo,publicStateNo) {
+    getMyProductList: async function (userNo,publicStateNo,showCnt) {
+        let startPage = (pageNo - 1) * showCnt;
+        let showPage = showCnt;
+
         const getMyProductList = `
                 SELECT false AS selected, A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
                 FROM product AS A
                 JOIN category AS B ON A.category_no = B.category_no
                 JOIN category AS C ON C.category_no = B.category_pno
                 WHERE user_no = ? AND A.product_public_state = ?
+                LIMIT ${startPage},${showPage}
                 `;
         return query(getMyProductList, [userNo,publicStateNo])
+    },
+
+    sellerProductCnt : async function(userNo) {
+        const sellerProductCnt = `
+            SELECT count(*) AS CNT
+                FROM user AS A
+                JOIN product AS B ON A.user_no = B.user_no
+                JOIN payment_product C ON C.product_no = B.product_no
+                WHERE A.user_no = ${userNo}
+        `;
+        return query(sellerProductCnt);
     },
 
     //판매자 상품 필터 조회

@@ -47,9 +47,12 @@ productRouter.get('/SellerProductList/:userNo/:state', async (req, res) => {
    // let userNo = req.params.userNo;
    const userNo = 1;
    let state = req.params.state
+   const showCnt = req.params.showCnt;
+
+   
    try {
       const productService = new ProductService();
-      result = await productService.getMyProductList(userNo, state);
+      result = await productService.getMyProductList(userNo, state, showCnt);
       res.send(result);
 
    } catch (e) {
@@ -162,12 +165,15 @@ productRouter.get('/SellerReviewList/:userNo/:search', async (req, res) => {
 })
 
 //판매자 - 배송 조회
-productRouter.get('/SellerDelivery/:userNo', async (req, res) => {
+productRouter.get('/SellerDelivery', async (req, res) => {
    // let userNo = req.params.userNo;
+   //0req.session.userNo;
    const userNo = 1;
+   const pageNo = req.query.pg;
+   const showCnt = req.query.showCnt;
    try {
       const productService = new ProductService();
-      result = await productService.sellerDelivery(userNo);
+      result = await productService.sellerDelivery(userNo,pageNo, showCnt);
       res.send(result);
 
    } catch (e) {

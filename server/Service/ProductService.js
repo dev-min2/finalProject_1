@@ -211,9 +211,17 @@ class ProductService {
     }
 
     //판매자-배송관리
-    async sellerDelivery(userNo) {
-        let result = await DeliveryDAO.sellerDelivery(userNo);
-        return result;
+    async sellerDelivery(userNo,pageNo, showCnt) {
+        let result = await DeliveryDAO.sellerDelivery(userNo,pageNo, showCnt);
+        let cntResult = await DeliveryDAO.sellerDeliveryCnt(userNo);
+        const pageDTO = new PageDTO(cntResult[0].CNT, pageNo, showCnt);
+
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+
+        return resResult;
     }
 
     //판매자-배송관리-회원이름으로 검색
