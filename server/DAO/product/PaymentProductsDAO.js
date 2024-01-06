@@ -63,9 +63,6 @@ let paymentProductsDAO = {
         
         return query (selectPaymentDetail, paymentNo);
     }
-
-    
-
 };
 
 module.exports = paymentProductsDAO;

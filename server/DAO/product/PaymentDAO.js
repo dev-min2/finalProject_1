@@ -59,7 +59,16 @@ let paymentDAO = {
                 SET p.order_state = 'C5', p2.delivery_state = 'C5'
                 WHERE p.payment_no = ?`;
        return query (cancelAllPayment, paymentNo);
-    }
+    },
+
+    //결제 부분 취소 (update payment_product)
+    cancelSelectPayment: async function(paymentProductNo){
+        const cancelSelectPayment = 
+             `UPDATE payment_product 
+             SET delivery_state = 'C5' 
+             WHERE payment_product_no = ?`;
+        return query (cancelSelectPayment, paymentProductNo);
+     },
 };
 
 module.exports = paymentDAO;

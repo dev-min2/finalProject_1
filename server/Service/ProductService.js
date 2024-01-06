@@ -52,6 +52,11 @@ class ProductService {
         const result = await paymentDAO.cancelAllPayment(paymentNo);
         return result;
     }
+    //결제 부분 취소 처리
+    async cancelSelectPayment(paymentProductNo){
+        const result = await paymentDAO.cancelSelectPayment(paymentProductNo);
+        return result;
+    }
 
     //주문 전체 내역 가져오기
     async getPaymentList(userNo){
