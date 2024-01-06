@@ -26,9 +26,9 @@ class ProductService {
         let result = [cartList, couponList, userInfo[0]];
         return result;
     }
-
+    
     //결제 완료 처리
-    async completePayment(paymentObj, paymentData, userNo, cartNo){ 
+    async completePayment(paymentObj, paymentData, userNo, cartNo, couponNo){ 
         const connection = await getConnection();
         try{
             //트랜잭션 시작
@@ -38,6 +38,7 @@ class ProductService {
                 let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData[i],connection); //개별상품결제정보 삽입
             }
             let result3 = await paymentProductsDAO.deleteCartQuery(userNo,cartNo,connection); //장바구니 삭제
+            let result4 = await couponDAO.updateMyCouponQuery(couponNo);
             await connection.commit(); //결제처리 성공
         }
         catch(e){ 
@@ -49,11 +50,23 @@ class ProductService {
         }
         
     }
-    //주문 내역 가져오기
+    //결제 전체 취소 처리
+    async cancelAllPayment(paymentNo){
+        const result = await paymentDAO.cancelAllPayment(paymentNo);
+        return result;
+    }
+
+    //주문 전체 내역 가져오기
     async getPaymentList(userNo){
         const result = await paymentDAO.selectPaymentList(userNo);
         return result;
     }
+    //주문 상세 내역 가져오기
+    async getPaymentDetail(paymentNo){
+        const result = await paymentProductsDAO.selectPaymentDetail(paymentNo);
+        return result;
+    }
+
 
     // 상품리스트 가져오기
     async getMainpageProductList(ptype) {
