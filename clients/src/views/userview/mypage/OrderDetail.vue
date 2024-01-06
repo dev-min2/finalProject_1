@@ -18,10 +18,10 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center" @click="goOrderDetail()">
+							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center" @click="goOrderDetail(order)">
 								<td>{{order.payment_no}}</td>
-								<td><a href="">{{order.payment_product}}</a></td>
-								<td>{{order.real_payment_amount}}원</td>
+								<td>{{order.payment_product}}</td>
+								<td>{{this.$printPriceComma(order.real_payment_amount)}}원</td>
 								<td>총 {{order.total_product}}개</td>
 								<td>{{this.$dateFormat(order.payment_date)}}</td>
 								<td>{{order.order_state}}</td>
@@ -47,7 +47,7 @@ export default {
 	created(){
 		this.userNo = this.$store.state.userNo;
 		this.getSelectPayment();
-		console.log(this.selectPaymentList);
+		console.log('할수잇당',this.selectPaymentList);
 	},
 	methods: {
 		async getSelectPayment(){
@@ -57,8 +57,28 @@ export default {
 			this.selectPaymentList = result.data;
 			console.log(this.selectPaymentList);
 		},
-		goOrderDetail(){
-			this.$router.push({ name : `paymentDetail`});
+		goOrderDetail(order){
+			console.log(order);
+			let paymentDetail = {
+				userNo:order.user_no,
+				paymentNo:order.payment_no,
+				orderState:order.order_state,
+				myCouponNo:order.my_coupon_no,
+				paymentProduct:order.payment_product,
+				totalProductCnt:order.total_product,
+				paymentPrice:order.payment_amount,
+				paymentDate:order.payment_date,
+				paymentDiscountPrice:order.payment_discount_amount,
+				totalDeliveryFee:order.total_delivery_fee,
+				realPaymentPrice:order.real_payment_amount,
+				paymentSubNo:order.payment_sub_unique_no,
+				receiverAddr:order.receiver_addr,
+				receiverName:order.receiver_name,
+				receiverPhone:order.receiver_phone,
+				receiverPostCode:order.receiver_postcode,
+				deliveryRequest:order.delivery_request,
+			}
+			this.$router.push({ path : '/paymentdetail', query :  paymentDetail });
 			//, params : { no : `${}` } 
 		}
 

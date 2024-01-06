@@ -47,11 +47,23 @@ class ProductService {
         }
         
     }
-    //주문 내역 가져오기
+    //결제 전체 취소 처리
+    async cancelAllPayment(paymentNo){
+        const result = await paymentDAO.cancelAllPayment(paymentNo);
+        return result;
+    }
+
+    //주문 전체 내역 가져오기
     async getPaymentList(userNo){
         const result = await paymentDAO.selectPaymentList(userNo);
         return result;
     }
+    //주문 상세 내역 가져오기
+    async getPaymentDetail(paymentNo){
+        const result = await paymentProductsDAO.selectPaymentDetail(paymentNo);
+        return result;
+    }
+
 
     // 상품리스트 가져오기
     async getMainpageProductList(ptype) {

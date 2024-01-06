@@ -32,13 +32,43 @@ productRouter.get('/paymentform', async(req, res)=>{
         console.log(e);
     }
  })
+
+ //주문 전체 취소
+ productRouter.put('/paymentdetail:paymentNo', async(req, res)=>{
+    let data = req.body.param;
+    console.log('prdController주문전체취소!' ,data);
+    try{
+        const productService = new ProductService();
+        let result = await productService.cancelAllPayment(paymentNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+ })
+
  
- //주문내역 불러오기
+ //주문 전체 내역 불러오기
  productRouter.get('/orderdetail/:userNo', async(req, res) => {
     let userNo = req.params.userNo;
     try{
         const productService = new ProductService();
         let result = await productService.getPaymentList(userNo);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+
+ })
+
+
+ //주문 상세 내역 불러오기
+ productRouter.get('/paymentdetail/:paymentNo', async(req,res) => {
+    let paymentNo = req.params.paymentNo;
+    try{
+        const productService = new ProductService();
+        let result = await productService.getPaymentDetail(paymentNo);
         res.send(result);
     }
     catch(e){
