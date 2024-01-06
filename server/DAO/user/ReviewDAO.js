@@ -39,15 +39,15 @@ let reviewDAO = {
         return query(selectReviewBoardQuery, reviewNo);
     },
     // 리뷰 수정
-    updateReviewBoardQuery : async function(reviewVO, reviewNo){
-        const updateReviewBoardQuery = 
-        `UPDATE review SET ? WHERE review_no= ${reviewNo}`;
+    updateReviewBoardQuery: async function (reviewVO, reviewNo) {
+        const updateReviewBoardQuery =
+            `UPDATE review SET ? WHERE review_no= ${reviewNo}`;
         return query(updateReviewBoardQuery, reviewVO);
     },
     //리뷰삭제
-    deleteReviewBoardQuery : async function(reviewNo){
-        const deleteReviewBoardQuery = 
-        `DELETE FROM review WHERE review_no=?`;
+    deleteReviewBoardQuery: async function (reviewNo) {
+        const deleteReviewBoardQuery =
+            `DELETE FROM review WHERE review_no=?`;
         return query(deleteReviewBoardQuery, reviewNo);
     }
 

@@ -15,11 +15,11 @@
 						<th style="width:120px;">별점</th>
 						<td>
 							<fieldset class="rate">
-                                <input type="radio" id="rating5" name="rating" value="5" @click="insertStarCnt($event.target)"><label for="rating5" title="5점"></label>
-                                <input type="radio" id="rating4" name="rating" value="4" @click="insertStarCnt($event.target)"><label for="rating4" title="4점"></label>
-                                <input type="radio" id="rating3" name="rating" value="3" @click="insertStarCnt($event.target)"><label for="rating3" title="3점"></label>
-                                <input type="radio" id="rating2" name="rating" value="2" @click="insertStarCnt($event.target)"><label for="rating2" title="2점"></label>
-                                <input type="radio" id="rating1" name="rating" value="1" @click="insertStarCnt($event.target)"><label for="rating1" title="1점"></label>
+                                <input type="radio" ref="ra5" id="rating5" name="rating" value="5" @click="insertStarCnt($event.target)"><label for="rating5" title="5점"></label>
+                                <input type="radio" ref="ra4" id="rating4" name="rating" value="4" @click="insertStarCnt($event.target)"><label for="rating4" title="4점"></label>
+                                <input type="radio" ref="ra3" id="rating3" name="rating" value="3" @click="insertStarCnt($event.target)"><label for="rating3" title="3점"></label>
+                                <input type="radio" ref="ra2" id="rating2" name="rating" value="2" @click="insertStarCnt($event.target)"><label for="rating2" title="2점"></label>
+                                <input type="radio" ref="ra" id="rating1" name="rating" value="1" @click="insertStarCnt($event.target)"><label for="rating1" title="1점"></label>
                             </fieldset>
 						</td>
 					</tr>
@@ -34,9 +34,10 @@
 					</tr>
 					<tr>
 						<td colspan="2" style="text-align:center;">
-							<input v-if="curModifyForm == false" type="submit" value="저장" class="btn btn-primary mx-3" @click="registPost">
+							<input v-if="curModifyForm == false" type="submit" value="저장" class="btn btn-primary mx-3" @click="registReviewBoard">
 							<input v-else type="submit" value="수정" class="btn btn-primary mx-3" @click="modifyReviewPost">
-							<router-link class="btn btn-warning" to="/myreview">수정취소</router-link>
+							<router-link v-if="curModifyForm == false" class="btn btn-warning" to="/myreview">작성취소</router-link>
+							<router-link v-else class="btn btn-warning" to="/myreview">수정취소</router-link>
 						</td>
 					</tr>
 				</table>
@@ -84,9 +85,10 @@ export default {
 		this.curTimeVal = new Date().getTime();
 	},
 	methods : {
-		async registPost(){
+		async registReviewBoard(){
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
+			this.reviewBoardInfo.star_cnt = this.starValue;
 			const sendObj = {
 				param : {
 					reviewBoardInfo : this.reviewBoardInfo,
@@ -100,6 +102,9 @@ export default {
 				this.$router.push({path : '/myreview'});
 			}
 		},
+		test(target) {
+			console.log(target);
+		},
 		async getReviewBoardInfo(reviewNo) {
 			this.$showLoading();
             const result = await axios.get(`/api/board/myreview/info?rno=${reviewNo}`);
@@ -107,6 +112,24 @@ export default {
                 this.reviewBoardInfo.product_name = this.product_name;
 				this.reviewBoardInfo.html = result.data.content;
 				this.reviewBoardInfo.product_no = result.data.product_no;
+				this.reviewBoardInfo.star_cnt = result.data.star_cnt;
+				this.starValue = this.registReviewBoard.star_cnt;
+				console.log('별점',result.data.star_cnt);
+				if(this.reviewBoardInfo.star_cnt == 5) {
+					this.$refs.ra5.checked = true;
+				}
+				else if(this.reviewBoardInfo.star_cnt == 4) {
+					this.$refs.ra4.checked = true
+				}
+				else if(this.reviewBoardInfo.star_cnt == 3) {
+					this.$refs.ra3.checked = true
+				}
+				else if(this.reviewBoardInfo.star_cnt == 2) {
+					this.$refs.ra2.checked = true
+				}
+				else{
+					this.$refs.ra.checked = true
+				}	
             }
             else {
                 this.$showFailAlert('데이터를 불러오는데 실패했습니다.');
@@ -151,11 +174,11 @@ th{
 .rate > label:before {display: inline-block;font-size: 1rem;padding: .3rem .2rem;margin: 0;cursor: pointer;font-family: FontAwesome;content: "\f005 ";}
 .rate .half:before {content: "\f089 "; position: absolute;padding-right: 0;}
 .rate input:checked ~ label, 
-.rate label:hover,.rate label:hover ~ label { color: #f73c32 !important;  } 
+.rate label:hover,.rate label:hover ~ label { color: #fab3cc !important;  } 
 .rate input:checked + .rate label:hover,
 .rate input input:checked ~ label:hover,
 .rate input:checked ~ .rate label:hover ~ label,  
-.rate label:hover ~ input:checked ~ label { color: #f73c32 !important;  } 
+.rate label:hover ~ input:checked ~ label { color: #fab3cc !important;  } 
 .scroll_ul {
 		border : 1px solid black;
 		overflow-y:scroll;
