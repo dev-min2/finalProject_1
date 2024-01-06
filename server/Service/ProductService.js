@@ -1,15 +1,12 @@
 
-<<<<<<< HEAD
 const productDAO = require('../DAO/product/ProductDAO');
 const ReviewDAO = require('../DAO/user/ReviewDAO');
 const DeliveryDAO = require('../DAO/user/DeliveryDAO');
-=======
 const paymentDAO = require('../DAO/product/PaymentDAO');
 const paymentProductsDAO = require('../DAO/product/PaymentProductsDAO');
 const { getConnection } = require('../config/dbPool');
 
-const productDAO = require("../DAO/product/ProductDAO");
->>>>>>> develop
+
 const categoryDAO = require("../DAO/product/CategoryDAO");
 const couponDAO = require("../DAO/product/CouponDAO");
 const userDAO = require("../DAO/user/UserDAO");
