@@ -15,7 +15,7 @@
               @change="checkComp($event.target.checked, companyIndex, idx)"
               />
               </td>
-            <td>상품이미지</td>
+            <td class="fixedcol0">상품이미지</td>
             <td class="fixedcol1">상품정보</td>
             <td class="fixedcol2">옵션</td>
             <td>상품금액</td>
@@ -25,7 +25,7 @@
           <tr
             class="cart_list_detail"
             v-for="(products, productsIndex) in cartList[companyIndex]" :key="productsIndex">
-            <td>
+            <td v-if="products.product_stock > 0">  
               <input
                 type="checkbox"
                 name="product"
@@ -33,6 +33,18 @@
                 id="products.product_no"
                 v-model="products.selected"
                 @change="checkProd($event.target, products, idx, companyIndex)"
+              />
+            </td>
+            <td v-else>
+              <input
+                type="checkbox"
+                name="product"
+                value="products.product_price"
+                id="products.product_no"
+                v-model="products.selected"
+                checked = "checked" 
+                disabled ="disabled" 
+                @change="checkProd($event.target, products, idx, companyIndex)" 
               />
             </td>
             <td>
@@ -46,7 +58,7 @@
               <br />
               <span class="price">가격 : {{ products.product_price }}</span>
             </td>
-            <td class="cart_list_option">
+            <td class="cart_list_option" v-if="products.product_stock > 0">
               <p>선택수량 : {{ products.product_sel_cnt }}</p>
               <input
                 type="button"
@@ -67,6 +79,24 @@
                 @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
               />
             </td>
+            <td class="cart_list_option" v-else-if="products.product_stock == 0">
+            <h6 style="color : red; font-weight : bold">품절 되었습니다.</h6>
+              <input
+                type="button"
+                value="상품 삭제"
+                class="cart_list_optionbtn"
+                @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
+              />
+            </td>  
+            <td class="cart_list_option" v-else-if="products.product_stock < 0">
+            <h6 style="color : red; font-weight : bold">판매가 종료 되었습니다.</h6>
+              <input
+                type="button"
+                value="상품 삭제"
+                class="cart_list_optionbtn"
+                @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
+              />
+            </td>  
             <td>
               <span class="price">{{products.product_price * products.product_sel_cnt}}</span>
               <br />
@@ -210,7 +240,6 @@ export default {
       let result = await axios  
                             .delete(`/api/user/carts/${this.$store.state.userNo}/${products.product_no}`)
                             .catch(err => console.log(err));
-      this.$hideLoading();
       if(result.data.affectedRows > 0){
         this.$showSuccessAlert("상품이 삭제되었습니다.");
       
@@ -223,7 +252,9 @@ export default {
               companyPrArray.splice(i,1);
             break;
         }
-      }  
+      }
+      this.$store.state.cartCnt -= 1;  
+      this.$hideLoading();
       }
       if(products.selected){
         this.checkedPrice -= products.product_price * products.product_sel_cnt;
@@ -290,12 +321,15 @@ export default {
     //그룹별 체크박스
     checkComp(checked, companyIndex, idx){
       const productArray = this.cartList[companyIndex];
+      console.log(productArray);
       if(checked) {
           let sum = 0;
           for(let i = 0; i < productArray.length; ++i) {
+            if(this.cartList[companyIndex][i].product_stock > 0){
             if(!this.cartList[companyIndex][i].selected) {
               sum += productArray[i].product_price * productArray[i].product_sel_cnt;
               this.cartList[companyIndex][i].selected = true;
+            }
             }
           }
           this.companyPriceList[idx] += sum;
@@ -357,11 +391,14 @@ thead {
 tbody {
   font-size: 12px;
 }
+td.fixedcol0{
+  width: 200px;
+}
 td.fixedcol1{
-  width: 450px;
+  width: 300px;
 }
 td.fixedcol2{
-  width: 400px;
+  width: 350px;
 }
 td {
   padding: 15px 0px;

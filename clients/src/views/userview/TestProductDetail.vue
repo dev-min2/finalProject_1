@@ -320,6 +320,7 @@ export default {
     methods:{
         async getProductDetail(pno){
             this.$showLoading();
+            console.log(this.$store.state.cartCnt);
             let result = await axios
                         .get(`/api/product/productDetail?pno=${pno}`)
                         .catch(err => console.log(err));
@@ -374,6 +375,7 @@ export default {
                         .get(`/api/product/productDetail/${this.$store.state.userNo}/${this.productDetail.product_no}`)
                         .catch(err => console.log(err));
                     this.cartInfo = cartResult.data;
+                    this.$store.state.cartCnt += 1;
                     this.$hideLoading();   
             }
         },
