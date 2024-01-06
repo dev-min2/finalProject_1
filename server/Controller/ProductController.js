@@ -43,16 +43,17 @@ productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice', async (req
 })
 
 //판매자-내 상품 전체 조회
-productRouter.get('/SellerProductList/:userNo/:state', async (req, res) => {
+productRouter.get('/SellerProductList', async (req, res) => {
    // let userNo = req.params.userNo;
    const userNo = 1;
-   let state = req.params.state
-   const showCnt = req.params.showCnt;
+   let state = req.query.state
+   const pageNo = req.query.pg;
+   const showCnt = req.query.showCnt;
 
    
    try {
       const productService = new ProductService();
-      result = await productService.getMyProductList(userNo, state, showCnt);
+      result = await productService.getMyProductList(userNo, state, pageNo,showCnt);
       res.send(result);
 
    } catch (e) {

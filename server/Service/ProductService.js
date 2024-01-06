@@ -145,11 +145,17 @@ class ProductService {
         return result;
     }
     //판매자 메인-상품리스트
-    async getMyProductList(userNo,publicStateNo) {
-        
-        let result = await productDAO.getMyProductList(userNo,publicStateNo);
-        
-        return result;
+    async getMyProductList(userNo,publicStateNo,pageNo, showCnt) {
+        let result = await productDAO.getMyProductList(userNo,publicStateNo,pageNo, showCnt);
+        let cntResult = await productDAO.sellerProductCnt(userNo, publicStateNo);
+        const pageDTO = new PageDTO(cntResult[0].CNT, pageNo, showCnt);
+
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+
+        return resResult;
     }
 
     //판매자 상품관리-필터검색

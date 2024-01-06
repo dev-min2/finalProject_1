@@ -56,7 +56,7 @@ let productDAO = {
 
 
     //판매자 상품 조회
-    getMyProductList: async function (userNo,publicStateNo,showCnt) {
+    getMyProductList: async function (userNo,publicStateNo,pageNo, showCnt) {
         let startPage = (pageNo - 1) * showCnt;
         let showPage = showCnt;
 
@@ -71,15 +71,14 @@ let productDAO = {
         return query(getMyProductList, [userNo,publicStateNo])
     },
 
-    sellerProductCnt : async function(userNo) {
+    sellerProductCnt : async function(userNo, state) {
         const sellerProductCnt = `
             SELECT count(*) AS CNT
                 FROM user AS A
                 JOIN product AS B ON A.user_no = B.user_no
-                JOIN payment_product C ON C.product_no = B.product_no
-                WHERE A.user_no = ${userNo}
+                WHERE A.user_no = ${userNo} AND B.product_public_state = ?
         `;
-        return query(sellerProductCnt);
+        return query(sellerProductCnt, state);
     },
 
     //판매자 상품 필터 조회

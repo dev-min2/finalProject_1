@@ -72,11 +72,13 @@
                 search: '',
                 productsPerPage: 5,
                 currentPage: 1,
+                pageNo : 1,
+                page : null,
+                publicStateNo : ''
                // getMyProductListFilter:[]
             };
         },
         created() {
-            this.getSellerProductList(1);
             this.getMyProductList('I1');
         },
         computed: {
@@ -86,32 +88,32 @@
                 return this.sellerProductList.slice(startIndex, endIndex);
             },
         },
+        watch : {
+            productPerPage(newVal,oldVal) {
+                if(newVal != oldVal) {
+                    this.getMyProductList('I1');
+                }
+            }
+        },
         methods: {
             async getSellerProductList(pageNo) {
-                this.$showLoading();
-                const result = await axios.get(`/api/product/SellerProductList?pg=${pageNo}&showCnt=${this.productsPerPage}`);
-                if(result.status == 200) {
-                    this.sellerProductList = result.data.selectResult;
-                    this.page = result.data.pageDTO;
-                }   
-                this.$hideLoading();
+                this.pageNo = pageNo;
+                this.getMyProductList(this.publicStateNo)
             },
             test() {
                 this.isModal = true;
             },
             async getMyProductList(publicStateNo) {
-                let result = '';
                 const userNo = 1;
                 const state = publicStateNo
-                try {
-                    result = await axios.get(`/api/product/SellerProductList/${userNo}/${state}`);
-                } catch (e) {
-                    console.log(e);
-                }
-
-                this.sellerProductList = result.data
-                console.log('출력');
-                console.log(this.sellerProductList);
+                this.publicStateNo = state;
+                
+                const result = await axios.get(`/api/product/SellerProductList?pg=${this.pageNo}&showCnt=${this.productsPerPage}&state=${state}`);
+                if(result.status == 200) {
+                    this.sellerProductList = result.data.selectResult;
+                    this.page = result.data.pageDTO;
+                }   
+                this.$hideLoading();
                 for(let product of this.sellerProductList) {
                     product.selected = false;
                 }
