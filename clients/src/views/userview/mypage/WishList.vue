@@ -1,16 +1,31 @@
 <template>
-    <section class="py-3">
-        <div>
-            <h3 class="text-center">내 찜목록</h3>
-            <h3 class="text-center" v-if="page !== null"> 총 {{ page.total }} 건 입니다.</h3>
-        </div>
-        <div class="container px-4 px-lg-5 mt-5">
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                <Product v-for="(product2,idx) in productList" :key="idx" :product="product2" />
-            </div>
-            <PaginationComp v-if="page !== null" :page="page" @go-page="getSearchPageList" />
-        </div>
-    </section>
+{{this.$store.state.userNo}}
+{{this.wishInfo}}
+<div id="layoutSidenav_content">
+		<main>
+			<div class="container-fluid px-4">
+				<div class="px-4 py-1 my-3 text-center">
+					<h2 class="fw-bold mb-3">내 찜목록</h2>
+				</div>
+				<div class="d-flex justify-content-center">
+					<table class="table w-85">
+						<thead>
+							<tr align="center">
+								<th>상품명</th>
+								<th>가격</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center" @click="goOrderDetail(order.payment_no)">
+								<td>{{order.payment_product}}</td>
+								<td>{{this.$printPriceComma(order.real_payment_amount)}}원</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</main>
+	</div>
 </template>
 
 <script>
@@ -25,32 +40,21 @@
         },
         data() {
             return {
-                productList: [],
+                wishInfo: [],
                 page: null,
             }
         },
         created() {
-            let action = this.$route.query.action;
-            
-            if (action == "categorySearch") {
-                this.getCategoryProductList(this.$route.query.categoryNo, 1)
-                this.keyword = this.$route.query.category_name;
-            } else if (action == "newProduct"){
-                    this.getNewProductList(1);
-                    this.keyword = "신상품";
-            } 
-             else {
-                this.keyword = this.$route.query.keyword;
-                this.getProductList(this.$route.query.keyword, 1);
-            }
+           this.wishResult();
         },
         methods: {
-            async getNewProductList(pageno){
-                const result = await axios.get(
-                    `/api/product/search/newproduct?type=${this.$store.state.curShowPetType}&pageno=${pageno}`
-                );
-                this.productList = result.data.selectResult;
-                this.page = result.data.pageDTO;
+            async wishResult(){
+                this.$showLoading();
+                let result = await axios
+                        .get(`/api/product/wish/${this.$store.state.userNo}`)
+                        .catch(err => console.log(err));
+                         this.wishInfo = result.data;
+                this.$hideLoading();
             },
         }
     }

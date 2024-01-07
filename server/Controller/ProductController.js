@@ -223,5 +223,15 @@ productRouter.post('/wish', async(req, res) => {
         console.log(err);
     }   
 });
+productRouter.get('/wish/:userNo', async(req, res)=>{
+    let userNo = req.params.userNo
+    try{
+        const productService = new ProductService();
+        let result = await productService.wishInfo(userNo);
+        res.send(result);
+    }catch(err){
+        console.log(err);
+    }
+})
 
 module.exports = productRouter;

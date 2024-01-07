@@ -305,6 +305,7 @@ export default {
             productDetail:[],
             cartInfo:[],
             cnt: 1,
+            wishInfo : []
         };
     },
     async created(){
@@ -327,7 +328,11 @@ export default {
             const cartResult = await axios
                         .get(`/api/product/productDetail/${this.$store.state.userNo}/${this.productDetail.product_no}`)
                         .catch(err => console.log(err));
+            const wishResult = await axios
+                        .get(`/api/product/wish/${this.$store.state.userNo}`)
+                        .catch(err => console.log(err));
             this.cartInfo = cartResult.data;
+            this.wishInfo = wishResult.data;
             this.$hideLoading();
         },
         async addWishfunction(){
@@ -336,6 +341,12 @@ export default {
                 this.$router.push({path: '/login'});
                 return;
                 }
+            for(let i =0; i< this.wishInfo.length; ++i){
+                if(this.productDetail.product_no == this.wishInfo[i].product_no){
+                    this.$showWarningAlert("이미 찜목록에 있는 상품입니다.");
+                    return;
+                }
+            }
             this.$showLoading();
             let obj = {
                 pno : this.productDetail.product_no,
@@ -346,6 +357,10 @@ export default {
                         .catch(err => console.log(err));
             if(result.data.affectedRows > 0){
                 this.$showSuccessAlert("찜에 등록되었습니다."); 
+                 const wishResult = await axios
+                        .get(`/api/product/wish/${this.$store.state.userNo}`)
+                        .catch(err => console.log(err));
+                         this.wishInfo = wishResult.data;
             }
                 this.$hideLoading();   
         },

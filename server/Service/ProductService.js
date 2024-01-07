@@ -182,6 +182,10 @@ class ProductService {
         let result = await productDAO.addWishQuery(product_no, user_no);
         return result;
     }
+    async wishInfo(user_no){
+        let result = await productDAO.wishInfoQuery(user_no);
+        return result;
+    }
 }
 
 module.exports = ProductService;

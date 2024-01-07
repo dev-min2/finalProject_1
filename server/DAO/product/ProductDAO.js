@@ -197,6 +197,14 @@ let productDAO = {
         SET product_no = ? , user_no = ?
         `;
         return query(addWishQuery, [product_no, user_no]);
+    },
+    wishInfoQuery : async function (user_no){
+        const wishInfoQuery = `
+        SELECT *
+        FROM wishlist
+        where user_no = ?
+        `;
+        return query(wishInfoQuery, user_no);
     }
 };
 
