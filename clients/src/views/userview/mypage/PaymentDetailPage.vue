@@ -26,10 +26,10 @@
                                     <div>
                                         <!-- 상품명 가격 구매갯수-->
                                         <h5>{{product.product_name}}</h5>
-                                        <p>{{(product.product_price)}}원 {{product.buy_cnt}}개</p>
+                                        <p>{{$printPriceComma(product.product_price)}}원 {{product.buy_cnt}}개</p>
                                     </div>
                                     <div>
-                                        <h5 class="mx-4" style="display:inline-block;" >{{product.delivery_state}}</h5>
+                                        <h5 class="mx-4" style="display:inline-block;" >{{$getSubCodeName(product.delivery_state)}}</h5>
                                     </div>
                                     <div>
                                         <button class="btn btn-primary" style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
@@ -118,7 +118,8 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    import axios from 'axios';
+
     export default {
         data() {
             return {
@@ -131,6 +132,8 @@
                 userNo:'',
                 paymentNo : '',
                 impNo: '',
+                accessToken:'',
+
                 userNo : '',
                 orderState : '',
                 myCouponNo : '',
@@ -158,6 +161,7 @@
             
             this.getSelectPayment();
             this.getSelectPaymentDetail();
+            this.getAccessToken();
         },
         methods : {
             //주문전체정보 가져오기(payment)
@@ -188,7 +192,7 @@
                 this.receiverAddr = payment.receiver_addr;
                 this.receiverPostCode = payment.receiver_postcode;
                 this.deliveryRequest = payment.delivery_request;
-                console.log(this.impNo);
+                //console.log(this.impNo);
 		    },
 
             //주문상세내역 전체 가져오기
@@ -199,17 +203,26 @@
                 this.paymentProductsList = result.data;
                 const company = this.groupBy(this.paymentProductsList, 'user_no');
                 this.paymentProductsListByCompany = company;
-            console.log('0번',this.paymentList);
-
-            console.log('1번',this.paymentProductsList);
-            console.log('2번',this.paymentProductsListByCompany);
 		    },
+
+            //토큰 발급받기
+            async getAccessToken() {
+                let result = await axios.get(`api/product/paymentdetail/accessToken`)
+                                        .catch(err => console.log(err));
+                console.log(result);
+                this.accessToken = result.data;
+                console.log('토큰 나와주세여');
+                console.log(this.accessToken);
+                
+            },
+
+
+
             //전체 주문취소
             async cancelAllPayment(paymentNo){
                 //this.$showLoading();
 
-                //아임포트 결제 취소
-
+            
 
                 //아임포트 결제취소 성공하면> DB 주문상태 변경
                 let result = await axios.put(`/api/product/paymentdetail/cancel/${this.paymentNo}`)

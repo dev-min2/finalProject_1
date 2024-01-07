@@ -21,10 +21,10 @@
 							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center" @click="goOrderDetail(order.payment_no)">
 								<td>{{order.payment_no}}</td>
 								<td>{{order.payment_product}}</td>
-								<td>{{this.$printPriceComma(order.real_payment_amount)}}원</td>
+								<td>{{$printPriceComma(order.real_payment_amount)}}원</td>
 								<td>총 {{order.total_product}}개</td>
-								<td>{{this.$dateFormat(order.payment_date)}}</td>
-								<td>{{order.order_state}}</td>
+								<td>{{$dateFormat(order.payment_date)}}</td>
+								<td>{{$getSubCodeName(order.order_state)}}</td>
 							</tr>
 						</tbody>
 					</table>

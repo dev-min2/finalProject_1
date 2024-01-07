@@ -47,12 +47,12 @@ class ProductService {
         }
         
     }
-    //결제 전체 취소 처리
+    //결제 전체 취소 처리 테이블
     async cancelAllPayment(paymentNo){
         const result = await paymentDAO.cancelAllPayment(paymentNo);
         return result;
     }
-    //결제 부분 취소 처리
+    //결제 부분 취소 처리 테이블
     async cancelSelectPayment(paymentProductNo){
         const result = await paymentDAO.cancelSelectPayment(paymentProductNo);
         return result;

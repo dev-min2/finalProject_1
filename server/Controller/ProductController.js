@@ -33,7 +33,7 @@ productRouter.get('/paymentform', async(req, res)=>{
     }
  })
 
-//주문 전체 취소
+//주문 전체 취소 테이블 처리
  productRouter.put('/paymentdetail/cancel/:paymentNo', async(req, res)=>{
     let data = req.params.paymentNo;
     console.log('prdController주문전체취소!',data);
@@ -47,10 +47,10 @@ productRouter.get('/paymentform', async(req, res)=>{
     }
  })
 
- //주문 일부 취소
+ //주문 일부 취소 테이블처리
  productRouter.put('/paymentdetail/cancelselect/:paymentProductNo', async(req, res)=>{
     let data = req.params.paymentProductNo;
-    console.log('prdController주문부분취소!' ,data);
+    console.log('prdController주문부분취소!', data);
     try{
         const productService = new ProductService();
         let result = await productService.cancelSelectPayment(data);
@@ -60,7 +60,6 @@ productRouter.get('/paymentform', async(req, res)=>{
         console.log(e);
     }
  })
-
 
  
 //주문 전체 내역 불러오기 (전체페이지)
