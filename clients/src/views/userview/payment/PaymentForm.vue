@@ -214,7 +214,7 @@
                 coupon:'', // 쿠폰 정보
                 couponNo:'', //사용 쿠폰 번호
                 couponName:'',
-                couponPercent:'', //선택한 쿠폰 퍼센트 / ex)10
+                couponPercent: 0, //선택한 쿠폰 퍼센트 / ex)10
                 selectPayment: 'html5_inicis', //결제방식
                 orderCheck: '', //주문동의 확인
 
@@ -273,6 +273,17 @@
                 this.couponName = this.coupon.coupon_name;                
                 this.couponPrice = this.totalPrice * this.couponPercent/100;
                 this.realTotalPrice = this.totalPrice + this.totalDelivery - this.couponPrice;
+                if(this.coupon.my_coupon_no === undefined ){
+                    this.couponNo = null; //쿠폰 사용 안할 경우
+                }
+                console.log('할수잇당',this.coupon);
+                console.log('퍼센트',this.couponPercent);
+                console.log(this.coupon.my_coupon_no)
+                console.log('쿠폰번호', this.couponNo);
+                // if(this.couponPercent = 0){
+                //     this.my_coupon_no = '';
+
+                // }
             },
             //회원 장바구니, 쿠폰리스트, 회원정보 가져오기
             async getUserInfo() {
@@ -342,9 +353,9 @@
                     payment_sub_unique_no: this.impUid, //imp_uid,
                     payment_date: this.orderDate,
                     payment_amount: this.totalPrice,
-                    payment_discount_amount: this.couponPrice, //쿠폰 생성 후에 수정하기
+                    payment_discount_amount: this.couponPrice, 
                     real_payment_amount: this.realTotalPrice,
-                    order_state: 'c1',
+                    order_state: 'C1', //기본적으로 주문완료상태
                     total_product: this.totalCount,
                     total_delivery_fee: this.totalDelivery,
                     receiver_phone: this.receiverPhone,
@@ -382,7 +393,7 @@
                             payment_amount: this.testCartQuery[object][i].price_sum,
                             payment_discount_amount: this.testCartQuery[object][i].price_sum * this.couponPercent/100,
                             real_payment_amount: this.testCartQuery[object][i].price_sum - this.testCartQuery[object][i].price_sum * this.couponPercent/100,
-                            delivery_state: 'c1',
+                            delivery_state: 'C1',
                             delivery_fee: companyDelivery
                         };
                         paymentData.push(cartProduct);

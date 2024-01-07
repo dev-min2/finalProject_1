@@ -34,12 +34,16 @@ productRouter.get('/paymentform', async(req, res)=>{
  })
 
 //주문 전체 취소 테이블 처리
- productRouter.put('/paymentdetail/cancel/:paymentNo', async(req, res)=>{
-    let data = req.params.paymentNo;
-    console.log('prdController주문전체취소!',data);
+ productRouter.post('/paymentdetail/cancel', async(req, res)=>{
+    let paymentNo = req.body.param.paymentNo;
+    const impUid = req.body.param.impUid;
+    const cancelRequestAmount= req.body.param.cancelRequestAmount;
+    const cancelableAmount= req.body.param.cancelableAmount;    
+
+    console.log('prdController주문전체취소!',paymentNo);
     try{
         const productService = new ProductService();
-        let result = await productService.cancelAllPayment(data);
+        let result = await productService.cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount);
         res.send(result);
     }
     catch(e){
@@ -54,6 +58,7 @@ productRouter.get('/paymentform', async(req, res)=>{
     try{
         const productService = new ProductService();
         let result = await productService.cancelSelectPayment(data);
+        console.log('빠샤', result);
         res.send(result);
     }
     catch(e){
@@ -62,7 +67,7 @@ productRouter.get('/paymentform', async(req, res)=>{
  })
 
  
-//주문 전체 내역 불러오기 (전체페이지)
+//주문 전체 내역 리스트 불러오기 (전체페이지)
  productRouter.get('/orderdetail/:userNo', async(req, res) => {
     let userNo = req.params.userNo;
     try{
@@ -76,12 +81,12 @@ productRouter.get('/paymentform', async(req, res)=>{
  })
 
 
-//주문 전체내역 불러오기 (상세페이지)
+//주문 전체내역 단건 조회(상세페이지)
  productRouter.get('/paymentdetail/all/:userNo', async(req, res) => {
     let userNo = req.params.userNo;
     try{
         const productService = new ProductService();
-        let result = await productService.getPaymentList(userNo);
+        let result = await productService.getPaymentInfo(userNo);
         res.send(result);
     }
     catch(e){
@@ -89,7 +94,7 @@ productRouter.get('/paymentform', async(req, res)=>{
     }
  })
  
- //주문 상세 내역 불러오기
+ //주문 상세 내역 불러오기 (상세페이지)
  productRouter.get('/paymentdetail/:paymentNo', async(req,res) => {
     let paymentNo = req.params.paymentNo;
     try{

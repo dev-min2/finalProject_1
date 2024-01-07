@@ -47,7 +47,6 @@ export default {
 	created(){
 		this.userNo = this.$store.state.userNo;
 		this.getSelectPayment();
-		console.log('할수잇당',this.selectPaymentList);
 	},
 	methods: {
 		//주문정보 가져오기
