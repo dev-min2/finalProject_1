@@ -44,7 +44,7 @@
                     </li>
                 </ul>
             </div>
-            <!--주문취소버튼-->
+            <!--주문취소버튼 주문 상태에 따라 다르게-->
             <div v-if= "orderState == 'C1'">
                 <div class="d-flex justify-content-center mt-5">
                     <button class="btn btn-primary" @click="cancelAllPayment(paymentNo)" style="background-color:#acb1f8; color:white; border:none; height:60px;">전체 상품 주문 취소</button>        
@@ -123,14 +123,14 @@
         data() {
             return {
                 test: '...',
-                paymentList : [],
-                paymentProductsList : [], //주문내역 전체
-                paymentProductsListByCompany : {}, //업체별로 분류
+                paymentList : [], //주문내역
+                paymentProductsList : [], //상세품목 전체
+                paymentProductsListByCompany : {}, //상세내역 업체별로 분류
 
                 //주문정보
                 userNo:'',
                 paymentNo : '',
-                paymentSubNo : '',
+                impNo: '',
                 userNo : '',
                 orderState : '',
                 myCouponNo : '',
@@ -167,7 +167,9 @@
                                 .catch(err => console.log(err));
                 this.paymentList = result.data;
                 let payment = this.paymentList[0];
+
                 //주문정보
+                this.impNo = payment.payment_sub_unique_no;
                 this.orderState = payment.order_state;
                 this.myCouponNo = payment.my_coupon_no;
                 this.paymentDate = payment.payment_date;
@@ -186,6 +188,7 @@
                 this.receiverAddr = payment.receiver_addr;
                 this.receiverPostCode = payment.receiver_postcode;
                 this.deliveryRequest = payment.delivery_request;
+                console.log(this.impNo);
 		    },
 
             //주문상세내역 전체 가져오기
@@ -196,12 +199,19 @@
                 this.paymentProductsList = result.data;
                 const company = this.groupBy(this.paymentProductsList, 'user_no');
                 this.paymentProductsListByCompany = company;
+            console.log('0번',this.paymentList);
 
-            console.log('집가서하고싶당',this.paymentProductsListByCompany);
+            console.log('1번',this.paymentProductsList);
+            console.log('2번',this.paymentProductsListByCompany);
 		    },
             //전체 주문취소
             async cancelAllPayment(paymentNo){
-                this.$showLoading();
+                //this.$showLoading();
+
+                //아임포트 결제 취소
+
+
+                //아임포트 결제취소 성공하면> DB 주문상태 변경
                 let result = await axios.put(`/api/product/paymentdetail/cancel/${this.paymentNo}`)
                                         .catch(err=>console.log(err));
                 if(result.data.affectedRows > 0){
@@ -209,15 +219,15 @@
                 }else{
                     this.$showFailAlert('주문이 취소되지 않았습니다. ');
                 }
-                this.$hideLoading();
-                //아임포트 결제 취소처리하기
+                
+                //this.$hideLoading();
 
                 //this.$router.push({ path: '/paymentdetail'});
             },
             //일부 주문 취소
             async cancelSelectPayment(paymentProductNo){
 
-                if (confirm("정말 취소하시겠습니까??") == true){    //확인
+                if (confirm("정말 취소하시겠습니까?") == true){    //확인
                     this.$showLoading();
                     console.log('나오나요');
                     console.log(paymentProductNo);
@@ -239,9 +249,6 @@
                     this.$showFailAlert('','선택한 상품의 주문이 취소되지 않았습니다. ');
                     return;
                 }
-                
-                
-
                 //this.$router.push({ path: '/paymentdetail'});
             },
             

@@ -59,7 +59,6 @@ export default {
 		},
 		//주문상세페이지로 이동
 		goOrderDetail(paymentNo){
-			console.log('test',paymentNo);
 			this.$router.push({ path : '/paymentdetail', query :  { paymentNo: paymentNo} });
 		}
 
