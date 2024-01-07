@@ -100,6 +100,8 @@ userRouter.post('/login', async(req,res) =>{
         let result = await userService.loginUser(user);
         if(result.length > 0) {
             req.session.userNo = result[0].user_no; //session저장
+            req.session.userName = result[0].user_name;
+            console.log(req.session.userName);
         }
         res.send(result);
     }

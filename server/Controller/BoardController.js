@@ -78,11 +78,24 @@ boardRouter.post('/notice-reply', async(req, res) => {
         console.log(e);
     }
 });
+// 댓글삭제와 수정을 동시에 처리함.
 boardRouter.put('/notice-reply', async(req, res) => {
     const replyNo = req.query.replyNo;
+    let modifyReplyObject = null;
+    if(typeof replyNo == "undefined") {
+        modifyReplyObject = req.body;
+    }
+
     try {
         const boardService = new BoardService();
-        const result = await boardService.deleteNoticeReply(replyNo);
+        let result = '';
+        if(modifyReplyObject == null) {
+            result = await boardService.deleteNoticeReply(replyNo);
+        }
+        else {
+            result = await boardService.modifyNoticeReply(modifyReplyObject);
+        }
+        
         if(result) {
             res.status(200).send(result);
         }
