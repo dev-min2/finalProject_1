@@ -43,7 +43,7 @@
                     <td class="buycnt">{{ delivery.buy_cnt }}</td>
                     <td class="date">{{$dateFormat(delivery.payment_date)}}</td>
                     <td class="deliveryNo">{{ delivery.delivery_number }}</td>
-                    <td class="state">{{delivery.delivery_state}}</td>
+                    <td class="state">{{$getSubCodeName(delivery.delivery_state)}}</td>
                     <!--<td><button @click="changeDeliveryState">변경하기</button></td>-->
                     <td>
                         <div>
@@ -196,14 +196,14 @@
 
                 if(result.data.changedRows > 0) {
                     this.$showSuccessAlert('상태가 변경되었습니다');
-                    await this.sellerDelivery();
+                    //await this.sellerDelivery();
                     this.deliveryNumber = '';
-                    // for(let i = 0; i < this.sellerDeliveryList.length; ++i) {
-                    //     if(this.sellerDeliveryList[i].paymentProductNo == paymentProductNo) {
-                    //         this.sellerDeliveryList[i].delivery_state = 'C3'
-                    //         break;
-                    //     }
-                    // }
+                    for(let i = 0; i < this.sellerDeliveryList.length; ++i) {
+                        if(this.sellerDeliveryList[i].payment_product_no == paymentProductNo) {
+                            this.sellerDeliveryList[i].delivery_state = 'C3'
+                            break;
+                        }
+                    }
                 } else {
                     this.$showFailAlert('변경 실패');
                 }
@@ -223,7 +223,13 @@
                 result = await axios.put(`/api/product/DeliveryStateChangeC2`, obj, { headers: {'Content-Type': 'application/json'}});            
                 if (result.data.changedRows > 0) {
                     this.$showSuccessAlert('상태가 변경되었습니다');
-                    await this.sellerDelivery();
+                    //await this.sellerDelivery();
+                    for(let i = 0; i < this.sellerDeliveryList.length; ++i) {
+                        if(this.sellerDeliveryList[i].payment_product_no == paymentProductNo) {
+                            this.sellerDeliveryList[i].delivery_state = 'C2'
+                            break;
+                        }
+                    }
                 } else {
                     this.$showFailAlert('변경 실패');
                 }

@@ -138,18 +138,54 @@ class ProductService {
         }
         return resResult;
     }
-    //판매자 메인-기간,가격으로 검색
-    async selectQueryByPeriod(userNo, period, minPrice, maxPrice) {
-        let result = await productDAO.selectQueryByPeriod(userNo, period, minPrice, maxPrice);
-        console.log('테스트')
-        console.log(result)
-        return result;
+//////////////////
+/////관리자///////
+/////////////////
+
+//관리자 메인
+async selectQueryByPeriodAdmin(period, minPrice, maxPrice, pageNo) {
+    let result = await productDAO.selectQueryByPeriodAdmin(period, minPrice, maxPrice,pageNo);
+    let cntResult = await productDAO.selectQueryByPeriodCntAdmin(period, minPrice, maxPrice);
+    const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
+    const resResult = {
+        selectResult : result,
+        pageDTO : pageDTO
+        
     }
-    //판매자 메인-상품리스트
+    return resResult;
+    
+}
+//관리자-회원조회
+async getAdminMemberList(permission,leave,pageNo) {
+    let result = await productDAO.getAdminMemberList(permission,leave,pageNo);
+    let cntResult = await productDAO.getAdminMemberListCnt(permission,leave);
+    const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
+    const resResult = {
+        selectResult : result,
+        pageDTO : pageDTO
+    }
+
+    return resResult;
+}
+
+    //판매자 메인-기간,가격으로 검색
+    async selectQueryByPeriod(userNo, period, minPrice, maxPrice, pageNo) {
+        let result = await productDAO.selectQueryByPeriod(userNo, period, minPrice, maxPrice,pageNo);
+        let cntResult = await productDAO.selectQueryByPeriodCnt(userNo,period, minPrice, maxPrice);
+        console.log('qweqwdsa',cntResult);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+
+        return resResult;
+    }
+    //판매자-상품리스트
     async getMyProductList(userNo,publicStateNo,pageNo, showCnt) {
         let result = await productDAO.getMyProductList(userNo,publicStateNo,pageNo, showCnt);
         let cntResult = await productDAO.sellerProductCnt(userNo, publicStateNo);
-        const pageDTO = new PageDTO(cntResult[0].CNT, pageNo, showCnt);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
 
         const resResult = {
             selectResult : result,
@@ -214,10 +250,19 @@ class ProductService {
         return result;
     }
     //판매자-리뷰조회
-    async getSellerReview(userNo) {
-        let result = await ReviewDAO.getSellerReview(userNo);
-        return result;
+    async getSellerReview(userNo,pageNo, showCnt) {
+        let result = await ReviewDAO.getSellerReview(userNo,pageNo, showCnt);
+        let cntResult = await ReviewDAO.sellerReviewCnt(userNo);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
+
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+
+        return resResult;
     }
+
     //판매자-리뷰검색
     async searchSellerReview(search) {
         let result = await ReviewDAO.searchSellerReview(search);
@@ -234,7 +279,7 @@ class ProductService {
     async sellerDelivery(userNo,pageNo, showCnt) {
         let result = await DeliveryDAO.sellerDelivery(userNo,pageNo, showCnt);
         let cntResult = await DeliveryDAO.sellerDeliveryCnt(userNo);
-        const pageDTO = new PageDTO(cntResult[0].CNT, pageNo, showCnt);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
 
         const resResult = {
             selectResult : result,

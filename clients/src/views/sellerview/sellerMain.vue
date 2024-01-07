@@ -39,60 +39,65 @@
                     <td>{{product.buy_cnt}}</td>
                     <td>{{product.allamount}}</td>
                 </tr>
-
-
             </tbody>
         </table>
-
-
-
+                <PaginationComp v-if="page !== null" :page="page" @go-page="getPage" />
     </div>
-
-
-
-
 </template>
 
 <script>
+    import PaginationComp from '../../components/common/PaginationComp.vue'
     import axios from 'axios';
     import ProductResearchBar from './ProductResearchBar.vue';
     export default {
         components: {
-            ProductResearchBar
+            ProductResearchBar,
+            PaginationComp
         },
         data() {
             return {
-                ProductList: []
+                ProductList: [],
+                page : null,
+                pageNo : 1,
+                searchObject : {
+                    period : 2,
+                    minPrice : 0,
+                    maxPrice : 0
+                }
             };
         },
         created() {
-            const sendObject = {
-                period : 2,
-                minPrice : 0,
-                maxPrice : 0
-            }
-            this.getProductList(sendObject);
+            this.getProductList(this.searchObject);
             //this.initSellerChart();
         },
 
 
         methods: {
+            async getPage(pageNo){
+                this.pageNo = pageNo;
+                this.getProductList(this.searchObject);
+
+            },
+
             async getProductList(obj) {
                 console.log('asd123',obj);
-               
+                this.searchObject = obj;
                 let result = '';
                 //const userNo = this.$store.state.userNo;
                 const userNo = 1; // 나중에 위코드로 수저해야함.
                 try {
-                    result = await axios.get(`/api/product/seller-main/${userNo}/${obj.period}/${obj.minPrice}/${obj.maxPrice}`);
+                    result = await axios.get(`/api/product/seller-main/${userNo}/${obj.period}/${obj.minPrice}/${obj.maxPrice}/${this.pageNo}`);
                    // let period = req.params.period;
 
                 } catch (e) {
                     console.log(e);
                 }
 
-                this.ProductList = result.data;
+                this.ProductList = result.data.selectResult;
+                this.page = result.data.pageDTO;
+                console.log(this.page);
 
+                ////////////////////////////////차트
                 google.charts.load("current", {
                     packages: ["corechart"]
                 });

@@ -35,12 +35,10 @@ export default {
     },
     watch : {
         page(newVal, oldVal) {
-            if(newVal.showContentCnt != oldVal.showContentCnt) {
-                this.array = [];
-                for(let i = this.page.startPage; i <= this.page.endPage; ++i) {
-                    this.array.push(i);
-                }        
-            }
+            this.array = [];
+            for(let i = this.page.startPage; i <= this.page.endPage; ++i) {
+                this.array.push(i);
+            }   
         }
     },
     created() {

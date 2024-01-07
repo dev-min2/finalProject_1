@@ -17,7 +17,7 @@
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="       상품명 검색" v-model="search" />
-                <button @click="sellerProductSearchName" style="border-radius:8px">검색</button>
+                <button @click="sellerProductSearchName()" style="border-radius:8px">검색</button>
             </div>
         </div>
         <table class="productList">
@@ -89,7 +89,7 @@
             },
         },
         watch : {
-            productPerPage(newVal,oldVal) {
+            productsPerPage(newVal,oldVal) {
                 if(newVal != oldVal) {
                     this.getMyProductList('I1');
                 }
@@ -97,6 +97,7 @@
         },
         methods: {
             async getSellerProductList(pageNo) {
+                this.$showLoading();
                 this.pageNo = pageNo;
                 this.getMyProductList(this.publicStateNo)
             },

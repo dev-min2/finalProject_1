@@ -2,13 +2,76 @@ const express = require('express');
 const productRouter = express.Router();
 const ProductService = require('../Service/ProductService');
 
-//판매자 기간지정 상품조회
-
-productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice', async (req, res) => {
+//관리자 기간지정 상품조회
+productRouter.get('/seller-main/:period/:minPrice/:maxPrice/:pageNo', async (req, res) => {
    //let userNo = req.params.userNo;
    let period = req.params.period;
    let minPrice = req.params.minPrice;
    let maxPrice = req.params.maxPrice;
+   let pageNo = req.params.pageNo;
+   
+   try {
+      const productService = new ProductService();
+      //1일조회
+      if (period == "0", minPrice, maxPrice) {
+         result = await productService.selectQueryByPeriodAdmin(period, minPrice, maxPrice,pageNo);
+      }
+      //1주조회
+      else if (period == "1", minPrice, maxPrice) {
+         result = await productService.selectQueryByPeriodAdmin(period, minPrice, maxPrice,pageNo);
+      }
+      //1달조회
+      else if (period == "2", minPrice, maxPrice) {
+         result = await productService.selectQueryByPeriodAdmin(period, minPrice, maxPrice,pageNo);
+      }
+      //3달조회
+      else if (period == "3", minPrice, maxPrice) {
+         result = await productService.selectQueryByPeriodAdmin(period, minPrice, maxPrice,pageNo);
+      }
+      //6달조회
+      else if (period == "4", minPrice, maxPrice) {
+         result = await productService.selectQueryByPeriodAdmin(period, minPrice, maxPrice,pageNo);
+      }
+      res.send(result);
+   } catch (e) {
+      console.log(e);
+   }
+   
+})
+
+//관리자-회원 조회
+productRouter.get('/AdminMemberList/:permission/:leave/:pageNo', async (req, res) => {
+   const permission = req.params.permission;
+   const leave = req.params.leave;
+   const pageNo = req.params.pageNo;
+   console.log('permission',permission)
+   console.log('leave',leave)
+   console.log('pageno',pageNo)
+   try {
+      const productService = new ProductService();
+      if (permission == "0"||"1",leave ) {
+         result = await productService.getAdminMemberList(permission, leave,pageNo);
+      }else if((permission == "0" || "1" ) && leave == "1" ) {
+         result = await productService.getAdminMemberList(permission, leave,pageNo);
+      }
+      console.log(result);
+      res.send(result);
+
+   } catch (e) {
+      console.log(e)
+   }
+})
+
+
+
+//판매자 기간지정 상품조회
+
+productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice/:pageNo', async (req, res) => {
+   //let userNo = req.params.userNo;
+   let period = req.params.period;
+   let minPrice = req.params.minPrice;
+   let maxPrice = req.params.maxPrice;
+   let pageNo = req.params.pageNo;
    console.log(minPrice);
    console.log(typeof minPrice);
 
@@ -18,23 +81,23 @@ productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice', async (req
       const productService = new ProductService();
       //1일조회
       if (period == "0", minPrice, maxPrice) {
-         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice);
+         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice,pageNo);
       }
       //1주조회
       else if (period == "1", minPrice, maxPrice) {
-         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice);
+         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice,pageNo);
       }
       //1달조회
       else if (period == "2", minPrice, maxPrice) {
-         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice);
+         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice,pageNo);
       }
       //3달조회
       else if (period == "3", minPrice, maxPrice) {
-         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice);
+         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice,pageNo);
       }
       //6달조회
       else if (period == "4", minPrice, maxPrice) {
-         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice);
+         result = await productService.selectQueryByPeriod(userNo, period, minPrice, maxPrice,pageNo);
       }
       res.send(result);
    } catch (e) {
@@ -123,12 +186,14 @@ productRouter.put('/sellerHideProduct', async (req, res) => {
 })
 
 //판매자 - 리뷰 조회
-productRouter.get('/SellerReviewList/:userNo', async (req, res) => {
+productRouter.get('/SellerReviewList', async (req, res) => {
    // let userNo = req.params.userNo;
    const userNo = 1;
+   const pageNo = req.query.pg;
+   const showCnt = req.query.showCnt;
    try {
       const productService = new ProductService();
-      result = await productService.getSellerReview(userNo);
+      result = await productService.getSellerReview(userNo,pageNo,showCnt);
       console.log(result);
       res.send(result);
 

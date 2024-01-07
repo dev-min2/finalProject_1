@@ -41,10 +41,13 @@
                 </tr>
             </tbody>
         </table>
+               <PaginationComp v-if="page !== null" :page="page" @go-page="getSellerReview" />
+
     </div>
 </template>
 
 <script>
+    import PaginationComp from '../../components/common/PaginationComp.vue'
     import axios from 'axios';
 
     export default {
@@ -54,10 +57,14 @@
                 search: '',
                 reviewsPerPage: 5,
                 currentPage: 1,
+                page : null
             };
         },
+        components: {
+            PaginationComp
+        },
         created() {
-            this.getSellerReview();
+            this.getSellerReview(1);
         },
         computed: {
             displayedReviews() {
@@ -66,16 +73,25 @@
                 return this.sellerReviewList.slice(startIndex, endIndex);
             },
         },
-        methods: {
-            async getSellerReview() {
-                let result = '';
-                const userNo = 1;
-                try {
-                    result = await axios.get(`/api/product/SellerReviewList/${userNo}`);
-                } catch (e) {
-                    console.error(e);
+        watch : {
+            reviewsPerPage(newVal,oldVal) {
+                if(newVal != oldVal) {
+                    this.getSellerReview(1);
                 }
-                this.sellerReviewList = result.data;
+            }
+        },
+        methods: {
+            async getSellerReview(pageNo) {
+                this.$showLoading();
+                const userNo = 1;
+            
+                const result = await axios.get(`/api/product/SellerReviewList?pg=${pageNo}&showCnt=${this.reviewsPerPage}`);
+                if(result.status == 200) {
+                    this.sellerReviewList = result.data.selectResult;
+                    this.page = result.data.pageDTO;
+                }   
+                //this.sellerReviewList = result.data;
+                this.$hideLoading();
             },
             //리뷰검색
             async searchSellerReview(search) {
