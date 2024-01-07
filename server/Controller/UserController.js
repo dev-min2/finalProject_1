@@ -277,6 +277,17 @@ userRouter.put('/cancel-leave', async(req,res) => {
     }
 })
 
+userRouter.get('/subcode', async(req, res) => {
+    try {
+        const userService = new UserService();
+        const result = await userService.getSubcode();
+        res.status(200).send(result);
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
 // 파일 업로드 테스트용 코드
 const multer = require("multer");
 const path = require("path");

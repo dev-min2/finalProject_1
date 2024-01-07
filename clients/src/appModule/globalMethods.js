@@ -158,6 +158,11 @@ const methods = {
     },
     printPriceComma(price) {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    getSubCodeName(subCode) {
+        return this.$store.state.subCode.find(ele => {
+            return ele.sub_code == subCode
+        }).sub_code_name;
     }
 }
 
@@ -179,5 +184,6 @@ export default {
         Vue.config.globalProperties.$convertAttachFileName = methods.convertAttachFileName;
         Vue.config.globalProperties.$groupBy = methods.groupBy;
         Vue.config.globalProperties.$printPriceComma = methods.printPriceComma;
+        Vue.config.globalProperties.$getSubCodeName = methods.getSubCodeName;
     }
 }

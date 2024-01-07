@@ -9,7 +9,7 @@ const store = createStore({
     plugins : [
         createPersistedState({
             storage: window.sessionStorage,
-            paths : ['userNo','curShowPetType','testData','curIp','socialId','accessToken','userPermission','prImg'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
+            paths : ['userNo','curShowPetType','testData','curIp','socialId','accessToken','userPermission','prImg','subCode'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
         })
     ],
     state() {
@@ -22,11 +22,16 @@ const store = createStore({
             accessToken : '',
             refreshToken : '',
             userPermission : '',
-            prImg : 'http://localhost:12532/uploads/productImage/'
+            prImg : 'http://localhost:12532/uploads/productImage/',
+            subCode : [],
         }
     },
     getters : {
-        
+        getSubCodeName(state, subcode) {
+            return state.subCode.find(ele => {
+                ele.sub_code == subcode
+            });
+        }
     },  
     mutations : { //동기식, 직접 수정은 못하고 commit을 통해 밑의 함수명을 전달해야함
         reversePetType(state, payload){
@@ -47,6 +52,9 @@ const store = createStore({
         },
         setUserPermission(state, payload) {
             state.userPermission = payload;
+        },
+        setSubCode(state, payload) {
+            state.subCode = payload;
         }
     },
     actions : { // 비동기
