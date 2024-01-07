@@ -31,6 +31,7 @@
         <BoardReply v-if="noticeReply !== null" :noticeReply="noticeReply" :noticeReplyCount="noticeReplyCount"  
             @regist-reply="registReply"
             @delete-reply="deleteReply"
+            @update-reply="updateReply"
             />
     </div>
 </template>
@@ -107,6 +108,20 @@
             },
             async deleteReply(replyNo) {
                 const result = await axios.put(`/api/board/notice-reply?replyNo=${replyNo}`);
+                if(result.status == 200) {
+                    await this.getNoticeData();
+                }
+                else {
+                    this.$showFailAlert('댓글삭제에 실패했습니다. 사유 : ', result.status);
+                }
+            },
+            async updateReply(recvObj) {
+                const sendObj = {
+                    notice_reply_no : recvObj.replyNo,
+                    comment : recvObj.modifyComment
+                }
+
+                const result = await axios.put(`/api/board/notice-reply`, sendObj);
                 if(result.status == 200) {
                     await this.getNoticeData();
                 }

@@ -84,7 +84,7 @@ let noticeBoardDAO = {
             FROM notice_reply AS A
             LEFT JOIN notice_reply AS B ON A.notice_reply_no = B.notice_reply_pno
             JOIN user AS C ON A.user_no = C.user_no
-            WHERE A.notice_board_no = 1 AND A.notice_reply_pno IS NULL
+            WHERE A.notice_board_no = ? AND A.notice_reply_pno IS NULL
             ORDER BY A.reply_date asc, child_reply_date asc
         `
         return query(selectNoticeBoardReplyQuery, boardNo);
@@ -126,7 +126,7 @@ let noticeBoardDAO = {
     },
     updateNoticeReplyQuery : async function(replyContent, replyNo) {
         const updateNoticeReplyQuery = `
-            UPDATE notice_reply SET comment = ?, reply_date = current_timestamp() WHERE notice_reply_no = ${replyNo}
+            UPDATE notice_reply SET comment = ? WHERE notice_reply_no = ${replyNo}
         `;
         return query(updateNoticeReplyQuery, replyContent);
     }
