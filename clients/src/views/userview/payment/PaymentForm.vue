@@ -417,6 +417,7 @@
                     .catch(err => console.log(err));
                 console.log('결제완료', result);
                 this.$hideLoading();
+                return result.data;
             },
             groupBy: function (data, key) {
                 return data.reduce(function (carry, el) {
@@ -455,7 +456,7 @@
 
                 //결제 넘기기
                 const myThis = this;
-                IMP.request_pay(paymentInfo, rsp => { // callback
+                IMP.request_pay(paymentInfo, async rsp => { // callback
                     if (rsp.success) {
                         //결제완료 페이지에 넘길 정보
                         let paymentDetail = {
@@ -466,11 +467,19 @@
                         }
                         //주문 DB저장, 장바구니 비우기
                         myThis.impUid = rsp.imp_uid;
-                        this.getPaymentInfo();
-                        myThis.$router.push({
-                            name: 'paymentcomplete',
-                            query: paymentDetail
-                        }); //주문완료 페이지 이동
+                        const result = await this.getPaymentInfo();
+                        console.log('ProductService에서 넘겨받은' ,result);
+                        if (result == true){
+                            myThis.$router.push({
+                                name: 'paymentcomplete',
+                                query: paymentDetail
+                            }); //주문완료 페이지 이동
+                        }
+                        else{
+                            myThis.$showWarningAlert('결제 실패');
+                            //결제 환불 (수정하기)
+
+                        }
                     } else {
                         myThis.$showWarningAlert('결제 실패');
                         console.log("결제 실패");

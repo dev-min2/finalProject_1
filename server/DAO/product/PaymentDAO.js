@@ -71,6 +71,30 @@ let paymentDAO = {
                 WHERE p.payment_no = ?`;
        return query (cancelAllPayment, paymentNo);
     },
+    //API 결제 부분취소를 위해 환불 금액, 배송금액 가져오기
+    cancelSelectPayPrice: async function(paymentProductNo){
+        const cancelSelectPayPrice
+            = `SELECT p1.real_payment_amount as payment_price, p1.total_delivery_fee,
+                        p2.real_payment_amount as prod_payment_price, p2.delivery_fee
+                FROM payment_product p2 JOIN payment p1
+                WHERE p1.payment_no = p2.payment_no
+                AND p2.payment_product_no = ?`
+        return query(cancelSelectPayPrice, paymentProductNo);  
+
+    },
+    //결제 부분취소를 위해 업체 합계금액 가져오기
+    cancelCompanySum: async function(sellerNo, paymentNo){
+        const cancelCompanySum =
+            `SELECT SUM(p2.payment_amount) as companyTotalPrice
+            FROM payment_product AS p2 LEFT JOIN product AS pd
+            ON pd.product_no = p2.product_no
+            WHERE pd.user_no = ?
+            AND p2.payment_no = ?`;
+        
+        return query(cancelCompanySum, [sellerNo, paymentNo]);
+    },
+    
+
 
     //결제 부분 취소 (update payment_product)
     cancelSelectPayment: async function(paymentProductNo){

@@ -26,6 +26,7 @@ class ProductService {
     
     //결제 완료 처리
     async completePayment(paymentObj, paymentData, userNo, cartNo, couponNo){ 
+        let isCompletePayment = true;
         const connection = await getConnection();
         try{
             //트랜잭션 시작
@@ -35,7 +36,6 @@ class ProductService {
                 let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData[i],connection); //개별상품결제정보 삽입
             }
             let result3 = await paymentProductsDAO.deleteCartQuery(userNo,cartNo,connection); //장바구니 삭제
-            console.log('쿠폰번호',couponNo);
             if(couponNo != null){
                 let result4 = await couponDAO.updateMyCouponQuery(couponNo);
             }
@@ -43,12 +43,15 @@ class ProductService {
         }
         catch(e){ 
             console.log(e);
+
             await connection.rollback(); //결제처리 실패
+            isCompletePayment = false
         }
         finally {
             connection.release(); //사용한 커넥션 다시 풀에 반납
         }
-        
+
+        return isCompletePayment;
     }
 
     //결제 환불취소를 위해 토큰 받아오기
@@ -67,12 +70,61 @@ class ProductService {
         return accessToken;
     }
 
-
-    //결제 전체 취소+환불 처리 테이블
+     /* 결제 전체 취소 */
     async cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount){
         const accessToken = await this.getImpAccessToken();
+        //deliveryState로 배송상태 검증하기 (수정하기)
+
         
         /* 포트원 REST API로 결제환불 요청 */
+        try{
+            const getCancelData = await axios({
+                url: "https://api.iamport.kr/payments/cancel",
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": accessToken // 포트원 서버로부터 발급받은 엑세스 토큰
+                },
+                data: {
+                    reason: '주문 취소', // 가맹점 클라이언트로부터 받은 환불사유
+                    imp_uid: impUid, // imp_uid를 환불 `unique key`로 입력
+                    amount: cancelRequestAmount, // 가맹점 클라이언트로부터 받은 환불금액
+                    checksum: cancelableAmount // [권장] 환불 가능 금액 입력
+                }
+            });
+            console.log('포트원 데이터뽑아요', getCancelData);
+
+            if(getCancelData.status != 200 || getCancelData.data.code != 0 ){
+                console.log('취소 실패');
+                return;
+            }
+
+            //테이블 변경
+            const result = await paymentDAO.cancelAllPayment(paymentNo);
+            return result;
+        } catch (error) {
+            console.log(e);
+        }
+    }
+
+
+    /* 결제 부분 취소 */
+    //1)전체/부분 가격 가져오기
+    async cancelSelectPayPrice(paymentProductNo){
+        const result = await paymentDAO.cancelSelectPayPrice(paymentProductNo);
+        return result;
+    }
+
+    //2)업체별 합계 가져오기
+    async cancelCompanySum(sellerNo, paymentNo){
+        const result = await paymentDAO.cancelCompanySum(sellerNo, paymentNo);
+        return result;
+    }
+
+    //3) REST API로 결제환불 요청
+    async cancelSelectAPI(paymentNo, impUid, cancelRequestAmount, cancelableAmount){
+        const accessToken = await this.getImpAccessToken();
+
         try{
             const getCancelData = await axios({
                 url: "https://api.iamport.kr/payments/cancel",
@@ -95,21 +147,21 @@ class ProductService {
                 return;
             }
 
-            const result = await paymentDAO.cancelAllPayment(paymentNo);
+           //const result = await paymentDAO.cancelAllPayment(paymentNo);
             return result;
         } catch (error) {
             console.log(e);
         }
     }
 
-
-    //결제 부분 취소 처리 테이블
+    //결제 부분 취소 - 3)payment_product 테이블 배송상태 변경
     async cancelSelectPayment(paymentProductNo){
         const result = await paymentDAO.cancelSelectPayment(paymentProductNo);
-        const accessToken = await this.getImpAccessToken();
 
         return result;
     }
+
+    
 
     //주문 전체 내역 리스트 가져오기 (1.주문내역 조회)
     async getPaymentList(userNo){

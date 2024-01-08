@@ -52,14 +52,50 @@ productRouter.get('/paymentform', async(req, res)=>{
  })
 
  //주문 일부 취소 테이블처리
- productRouter.put('/paymentdetail/cancelselect/:paymentProductNo', async(req, res)=>{
-    let data = req.params.paymentProductNo;
-    console.log('prdController주문부분취소!', data);
+ productRouter.post('/paymentdetail/cancelselect/', async(req, res)=>{
+    console.log('ProductContoroller')
+    console.log('할수있당', req.body.param);
+    //API 정보 담아주기
+    const sellerNo = req.body.param.sellerNo;
+    let paymentNo = req.body.param.paymentNo;
+    const impUid = req.body.param.impUid;
+    const paymentProductNo = req.body.param.paymentProductNo;
+    
     try{
+        //환불 금액 계산
         const productService = new ProductService();
-        let result = await productService.cancelSelectPayment(data);
+        let companyPrice = await productService.cancelCompanySum(sellerNo, paymentNo);
+        let price = await productService.cancelSelectPayPrice(paymentProductNo); //환불 가격 가져오기
+        
+        const cancelableAmount= price[0].payment_price ;  
+        let cancelRequestAmount = price[0].prod_payment_price;
+        let ifPrice = companyPrice[0].companyTotalPrice - cancelRequestAmount; //배송비 기준 계산 (업체합계 - 취소가격)
+
+        if(price[0].delivery_fee == 0){ //무료배송 기준 깨질 때 (ex 4만원중 2만원 환불) 
+            if(ifPrice < 30000){ 
+                cancelRequestAmount =  cancelRequestAmount - 3000; //배송비 빼고 환불
+            }
+        }
+        else if(price[0].delivery_fee != 0){ //배송비 있고, 단건 취소일 때는 배송비까지 환불
+            if(ifPrice == 0){ 
+                cancelRequestAmount = cancelRequestAmount + price[0].delivery_fee;
+            }
+        }
+
+        console.log('업체전체가격', companyPrice[0].companyTotalPrice);
+        console.log(price[0].payment_price);
+        console.log('전체금액-취소금액: ',ifPrice);
+        console.log('환불가격2',cancelRequestAmount);
+        
+
+        //환불 금액 계산 끗
+
+        //API넘겨주기
+        let result = await productService.cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount);
+
         console.log('빠샤', result);
         res.send(result);
+        //let result = await productService.cancelSelectPayment(paymentProductNo); //배송 상태 변경
     }
     catch(e){
         console.log(e);
