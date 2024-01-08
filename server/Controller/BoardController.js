@@ -126,5 +126,41 @@ boardRouter.put('/notice', async(req, res) => {
         console.log(e);
     }
 })
+//하랑
+boardRouter.get('/qna/:productNo', async (req, res) => {
+    let productNo = req.params.productNo
+    try {
+        const boardService = new BoardService();
+        let result = await boardService.getQnaList(productNo);
+        res.send(result);
+    } catch(err) {
+        console.log(err);
+    }
+})
+boardRouter.post('/qna', async (req, res) => {
+    let qnaCategory = req.body.qnaCategory;
+    let title = req.body.title;
+    let boardPublic = req.body.boardPublic;
+    let content = req.body.content;
+    let productNo = req.query.pno;
+    let userNo = req.body.userNo;
+    try {
+        const boardService = new BoardService();
+        let result = await boardService.addQna(qnaCategory, title, boardPublic, content, productNo, userNo);
+        res.send(result);
+    } catch(err) {
+        console.log(err);
+    }
+})
+boardRouter.get('/qna', async (req, res) => {
+    let qno = req.query.qno
+    try {
+        const boardService = new BoardService();
+        let result = await boardService.detailQna(qno);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }
+})
 
 module.exports = boardRouter;

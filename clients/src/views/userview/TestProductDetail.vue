@@ -121,7 +121,7 @@
                     </table>
 		</div>
         <!-- 문의게시판 -->
-		<form action=addUserQnaForm.do name=productDetail method="post">
+		<form >
 		<div id="qna" class="qnaTable">
 			<h2 style="font: bolder; font-size: 30px; text-align: left">문의
 				게시판</h2>
@@ -138,18 +138,34 @@
 					</tr>
 				</thead>
 				<tbody>
-				
+					<tr v-if="qnaInfo.length <= 0"><td style=color:gray; colspan="7">아직 작성된 문의가 없습니다.</td></tr>
+                    <tr v-else v-for="(qna,idx) in qnaInfo" :key="idx">
+                        <th v-if="qna.board_public == 'H1'">공개글</th>
+                        <th v-else-if="qna.board_public == 'H2'">비공개글</th>
+                        <th>{{qna.qna_board_no}}</th>
+                        <th v-if="qna.qna_category == 'G1'">상품문의</th>
+                        <th v-else-if="qna.qna_category == 'G2'">배송문의</th>
+                        <th v-else-if="qna.qna_category == 'G3'">교환/환불문의</th>
+                        <th v-else-if="qna.qna_category == 'G4'">기타문의</th>
+                        <th><router-link style="text-decoration : none" 
+                            :to="{
+                                path: '/detailqnaform',
+                                query: {qno: qna.qna_board_no},
+                                }">{{qna.title}}</router-link></th>
+                        <th>{{qna.user_name}}</th>
+                        <th>{{$dateFormat(qna.created_date)}}</th>
+                        <th v-if="qna.qna_state == 'K1'" style="color : blue">답변대기중</th>
+                        <th v-if="qna.qna_state == 'K2'" style="color : red">답변완료</th>
+                    </tr>
 		          
 				
-					<tr><td style=color:gray; colspan="7">아직 작성된 문의가 없습니다.</td></tr>
 				
 				
 				</tbody>
 			</table>
-			 <p><input type="submit" value="문의글 작성" >
-				<input type="hidden" name=pName value="ANF 치킨야채 캔 95g" >
-				<input type="hidden" name=pNo value="11">
-			</p>
+			 <button @click="toAddQnaForm">
+                문의글 작성
+             </button>
 		</div>
 		<hr>
 		</form>
@@ -305,7 +321,8 @@ export default {
             productDetail:[],
             cartInfo:[],
             cnt: 1,
-            wishInfo : []
+            wishInfo : [],
+            qnaInfo : [],
         };
     },
     async created(){
@@ -331,8 +348,12 @@ export default {
             const wishResult = await axios
                         .get(`/api/product/wish/${this.$store.state.userNo}`)
                         .catch(err => console.log(err));
+            const qnaResult = await axios
+                        .get(`/api/board/qna/${this.productDetail.product_no}`)
+                        .catch(err => console.log(err));            
             this.cartInfo = cartResult.data;
             this.wishInfo = wishResult.data;
+            this.qnaInfo = qnaResult.data;
             this.$hideLoading();
         },
         async addWishfunction(){
@@ -439,7 +460,13 @@ export default {
                     }   
                 }
             }
-        }
+        },
+        toAddQnaForm(){
+            this.$router.push({
+                path:`/addqnaform`,
+                query: { pno: this.productDetail.product_no , pname : this.productDetail.product_name},
+            })
+        },
     }
 }    
 </script>

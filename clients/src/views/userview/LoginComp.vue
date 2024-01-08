@@ -99,7 +99,7 @@
                                             this.$router.push({path : "/account-leave", query : { userNo : result.data[0].user_no, leaveDate : result.data[0].user_leavedate}});
                                             return;
                                         }
-
+                                        this.$store.commit('setUserName', result.data[0].user_name);
                                         this.$store.commit('setUserNo', result.data[0].user_no);
                                         this.$store.commit('setUserPermission', result.data[0].user_permission);
                                         this.cartCount();
@@ -137,6 +137,7 @@
                         return;
                     }
 
+                    this.$store.commit('setUserName', result.data[0].user_name);
                     this.$store.commit('setUserNo', result.data[0].user_no);
                     this.$store.commit('setUserPermission', result.data[0].user_permission);
                     this.cartCount();

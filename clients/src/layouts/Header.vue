@@ -192,6 +192,7 @@
         let result = await axios.get("/api/user/logout");
         if (result.status == 200 && result.data == "OK") {
           this.$showSuccessAlert("로그아웃 완료");
+          this.$store.commit('setUserName', '');
           this.$store.commit("setUserNo", -1);
           this.$store.commit("setUserPermission", '');
           this.$router.push({

@@ -2,8 +2,10 @@ const fxExtra = require('fs-extra');
 const path = require('path');
 const fs = require('fs');
 const noticeBoardDAO = require('../DAO/board/NoticeBoardDAO');
+const QnABoardDAO = require('../DAO/board/QnABoardDAO');
 const { groupBy } = require('../commonModule/commonModule');
 const PageDTO = require('../commonModule/PageDTO');
+const qnaBoardDAO = require('../DAO/board/QnABoardDAO');
 
 class BoardService {
     constructor() {
@@ -145,6 +147,19 @@ class BoardService {
         }
 
         return result;
+    }
+    //하랑
+    async getQnaList(product_no) {
+        let result = await QnABoardDAO.showQnaQuery(product_no);
+        return result;
+    }
+    async addQna(qna_category, title, board_public, content, product_no, user_no) {
+        let result = await QnABoardDAO.addQnaQuery(qna_category, title, board_public, content, product_no, user_no);
+        return result;
+    }
+    async detailQna(qno) {
+        let result = await QnABoardDAO.showDetailQnaQuery(qno);
+        return result[0];
     }
 }
 
