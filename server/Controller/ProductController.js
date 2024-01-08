@@ -223,15 +223,26 @@ productRouter.post('/wish', async(req, res) => {
         console.log(err);
     }   
 });
-productRouter.get('/wish/:userNo', async(req, res)=>{
+productRouter.get('/wish/:userNo', async (req, res) => {
     let userNo = req.params.userNo
-    try{
+    try {
         const productService = new ProductService();
         let result = await productService.wishInfo(userNo);
         res.send(result);
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
-})
+});
+productRouter.delete('/wish/:userNo/:productNo', async (req, res) => {
+    let userNo = req.params.userNo;
+    let productNo = req.params.productNo;
+    try {
+        const productService = new ProductService();
+        let result = await productService.delWish(userNo, productNo);
+        res.send(result);
+    }catch (err) {
+        console.log(err);
+    }
+});
 
 module.exports = productRouter;

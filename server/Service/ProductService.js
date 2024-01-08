@@ -186,6 +186,10 @@ class ProductService {
         let result = await productDAO.wishInfoQuery(user_no);
         return result;
     }
+    async delWish(user_no, product_no) {
+        let result = await productDAO.delWishQuery(user_no, product_no);
+        return result;
+    }
 }
 
 module.exports = ProductService;

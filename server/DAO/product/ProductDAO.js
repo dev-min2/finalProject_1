@@ -201,10 +201,17 @@ let productDAO = {
     wishInfoQuery : async function (user_no){
         const wishInfoQuery = `
         SELECT *
-        FROM wishlist
-        where user_no = ?
+        FROM product p join wishlist w on p.product_no = w.product_no
+        WHERE w.user_no = ?;
         `;
         return query(wishInfoQuery, user_no);
+    },
+    delWishQuery: async function (user_no, product_no) {
+        const delWishQuery = `
+        DELETE from wishlist
+        WHERE user_no = ? and product_no = ?
+        `;
+        return query(delWishQuery, [user_no, product_no]);
     }
 };
 
