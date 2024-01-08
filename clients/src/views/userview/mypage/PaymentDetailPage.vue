@@ -140,7 +140,7 @@
                 paymentProductsList : [], //상세품목 전체
                 paymentProductsListByCompany : {}, //상세내역 업체별로 분류
 
-                orderBtn : false,
+                orderBtn : true,
                 
                 //주문정보
                 sellerNo:'',
@@ -172,22 +172,26 @@
                 productInfoTotal: 0 //업체별 품목 합계 계산
             }
         },
-         created() {
+        async created() {
             this.userNo = this.$store.state.userNo;
             this.paymentNo = this.$route.query.paymentNo;
             
-            this.getSelectPayment();
-            this.getSelectPaymentDetail();
+            await this.getSelectPayment();
+            await this.getSelectPaymentDetail();
+            this.orderBtnStatus();
         },
         methods : {
             //부분주문취소 테스트 버튼
             testBtn: function(sellerNo){
-                //이거 써야댐!!!!!지우지 말기!!
-                //objinx받고 > sellerNo로
-                // console.log(this.paymentProductsListByCompany[sellerNo]);
+                console.log(this.paymentProductsList);
+                let productsListByCompany = this.paymentProductsListByCompany;
 
-
-                //let productsListByCompany = this.paymentProductsListByCompany;
+                for(let company in this.paymentProductsList){
+                    console.log(company, this.paymentProductsList[company].delivery_state);
+                    if(this.paymentProductsList[company].delivery_state != 'C1'){
+                        this.orderBtn = false;
+                    }
+                 }
 
                 //for (let companyName in productsListByCompany) {
                    //console.log('회사번호', companyName, productsListByCompany[companyName]); 
@@ -202,10 +206,16 @@
                 //}
                 
             },
-
+            orderBtnStatus(){
+                 for(let company in this.paymentProductsList){
+                    console.log(company, this.paymentProductsList[company].delivery_state);
+                    if(this.paymentProductsList[company].delivery_state != 'C1'){
+                        this.orderBtn = false;
+                    }
+                 }
+            },
             //주문전체정보 가져오기(payment)
             async getSelectPayment(){
-
                 //모두 C1일 때만 취소 가능하게 수정
                 let result 
                     = await axios.get(`/api/product/paymentdetail/all/${this.paymentNo}`)
@@ -253,10 +263,6 @@
                 this.paymentProductsListByCompany = company;
                 console.log('업체별로', this.paymentProductsListByCompany);
 		    },
-            // productsDeliveryState(){
-            //      
-
-            // },
 
             //전체 주문취소
             async cancelAllPayment(){
@@ -309,6 +315,8 @@
 
             //일부 상품 주문 취소
             async cancelSelectPayment(product){
+                //일부 취소시 전체 주문 취소 버튼 비활성화
+                
                 //api에 보낼 정보
                 let sellerNo = product.user_no;
                 let paymentProductNo = product.payment_product_no;
@@ -338,7 +346,7 @@
                     console.log(result);
                     if(result.data == true){
                         this.$showSuccessAlert('','선택한 상품의 주문이 취소되었습니다. ');
-                        this.orderBtn = false;
+                        this.orderBtnStatus();
                     }else{
                         this.$showFailAlert('','선택한 상품의 주문이 취소되지 않았습니다. ');
                     }

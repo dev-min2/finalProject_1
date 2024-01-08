@@ -372,21 +372,19 @@
                 let paymentData = [];
                 for (let object in this.testCartQuery) {
                     let companyDelivery = 0;
+                    let fee = 0;
                     //업체별 합계 > 배송비 계산
                     for (let i = 0; i < this.testCartQuery[object].length; i++) {
                         companyDelivery += this.testCartQuery[object][i].price_sum;
                     }
                     if (companyDelivery >= 30000) {
-                        companyDelivery = 0;
+                        fee = 0;
                     } else {
-                        companyDelivery = 3000;
+                        fee = 3000;
                     }
                     console.log(object, '번 배송비', companyDelivery);
                     //payment_product에 데이터 넣어주기
                     for (let i = 0; i < this.testCartQuery[object].length; i++) {
-                        console.log('2. for문------');
-                        console.log('장바구니 개별', this.testCartQuery[object][i]);
-                        //console.log('데이터찍어바요',this.testCartQuery[object][i].product_no);
                         let cartProduct = {
                             payment_no: this.orderNo,
                             product_no: this.testCartQuery[object][i].product_no,
@@ -395,7 +393,7 @@
                             payment_discount_amount: this.testCartQuery[object][i].price_sum * this.couponPercent/100,
                             real_payment_amount: this.testCartQuery[object][i].price_sum - this.testCartQuery[object][i].price_sum * this.couponPercent/100,
                             delivery_state: 'C1',
-                            delivery_fee: companyDelivery
+                            delivery_fee: fee
                         };
                         paymentData.push(cartProduct);
                     }
@@ -491,6 +489,9 @@
     }
 </script>
 
-<style>
+<style scoped>
+    .modal-dialog {
+        max-width: 55%;
+    }
 
 </style>

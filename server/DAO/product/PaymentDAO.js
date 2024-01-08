@@ -89,6 +89,7 @@ let paymentDAO = {
             FROM payment_product AS p2 LEFT JOIN product AS pd
             ON pd.product_no = p2.product_no
             WHERE pd.user_no = ?
+            AND p2.delivery_state ='C1'
             AND p2.payment_no = ?`;
         
         return query(cancelCompanySum, [sellerNo, paymentNo]);
