@@ -45,7 +45,7 @@ selectQueryByPeriodAdmin: async function (period, minPrice, maxPrice,pageNo) {
 
 
     const selectQueryByPeriodAdmin = `
-           SELECT
+    SELECT
            A.product_no,
            A.product_name,
            A.product_price,
@@ -61,12 +61,11 @@ selectQueryByPeriodAdmin: async function (period, minPrice, maxPrice,pageNo) {
        JOIN
            payment C ON B.payment_no = C.payment_no
        WHERE
-           ${dateFilter}
-           ${priceFilter}
+            ${dateFilter}
+            ${priceFilter}
        GROUP BY
-           A.product_no, A.product_name, A.product_price, A.product_stock, B.product_no
+           A.product_no
            LIMIT ?,?
-
        `;
 
     return query(selectQueryByPeriodAdmin, [startPage,endPage]);
@@ -119,17 +118,21 @@ selectQueryByPeriodCntAdmin : async function(period, minPrice,maxPrice) {
     `;
     return query(selectQueryByPeriodCntAdmin);
 },
-//관리자-일반회원조회
+//관리자-회원조회
 getAdminMemberList: async function (permission,leave,pageNo) {
     let startPage = (pageNo - 1) * 10;
     let endPage = 10;
     let permissionFilter = '';
+
     switch (permission) {
         case '0':
             permissionFilter = 'F1';
             break;
         case '1':
             permissionFilter = 'F2';
+            break;
+        case '2':
+            permissionFilter = 'F1'
             break;
     }
     let leaveFilter = ''
@@ -141,14 +144,12 @@ getAdminMemberList: async function (permission,leave,pageNo) {
             leaveFilter = 'NOT';
             break;
     }
-    
     const getAdminMemberList = `
     select user_no, user_id, user_name, user_joindate, user_phone, user_addr
     from user
     WHERE user_permission = '${permissionFilter}'
     AND user_leavedate is ${leaveFilter} null
-    LIMIT ?,?
-            `;
+    LIMIT ?,?`;
             
     return query(getAdminMemberList,[startPage,endPage])
     },
@@ -162,6 +163,9 @@ getAdminMemberListCnt: async function (permission,leave) {
             break;
         case '1':
             permissionFilter = 'F2';
+            break;
+        case '2':
+            permissionFilter = 'F1';
             break;
     }
     let leaveFilter = ''

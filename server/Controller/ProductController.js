@@ -2,6 +2,11 @@ const express = require('express');
 const productRouter = express.Router();
 const ProductService = require('../Service/ProductService');
 
+
+////////////////////////////////////////////////
+//////관리자////////////////////////////////////
+///////////////////////////////////////////////
+
 //관리자 기간지정 상품조회
 productRouter.get('/seller-main/:period/:minPrice/:maxPrice/:pageNo', async (req, res) => {
    //let userNo = req.params.userNo;
@@ -49,11 +54,7 @@ productRouter.get('/AdminMemberList/:permission/:leave/:pageNo', async (req, res
    console.log('pageno',pageNo)
    try {
       const productService = new ProductService();
-      if (permission == "0"||"1",leave ) {
-         result = await productService.getAdminMemberList(permission, leave,pageNo);
-      }else if((permission == "0" || "1" ) && leave == "1" ) {
-         result = await productService.getAdminMemberList(permission, leave,pageNo);
-      }
+      result = await productService.getAdminMemberList(permission, leave,pageNo);
       console.log(result);
       res.send(result);
 
@@ -61,8 +62,29 @@ productRouter.get('/AdminMemberList/:permission/:leave/:pageNo', async (req, res
       console.log(e)
    }
 })
+//쿠폰 정보 조회
+productRouter.get('/AdminCouponInfoList/:pageNo', async (req, res) => {
+   const pageNo = req.params.pageNo;
+   try {
+      const productService = new ProductService();
+      result = await productService.getAdminCouponList(pageNo);
+      res.send(result);
 
-
+   } catch (e) {
+      console.log(e)
+   }
+})
+//쿠폰 정보 생성
+productRouter.post('/adminCreateCoupon', async (req, res) => {
+   let data = req.body.param;
+   try {
+      const productService = new ProductService();
+      result = await productService.createAdminCouponInfo(data);
+      res.send(result);
+   } catch (e) {
+      console.log(e)
+   }
+})
 
 //판매자 기간지정 상품조회
 

@@ -2,8 +2,6 @@
   <router-view/>
 </template>
 
-<<<<<<< HEAD
-=======
 <script>
 import axios from 'axios'
 export default {
@@ -20,9 +18,6 @@ export default {
   }
 }
 </script>
-
-
->>>>>>> develop
 <style>
   @import "./assets/css/styles.css";
 </style>
