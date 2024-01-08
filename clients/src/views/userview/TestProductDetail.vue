@@ -131,6 +131,33 @@
                     </table>
                     <PaginationComp v-if="page !== null" :page="page" @go-page="showReviewList" />
                 </div>
+                <!--리뷰 모달창-->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"> review 모달 </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <select name="review" v-model="review" class="form-select">
+                                    <div :key="i" :value="review" v-for="(review, i) in reviewList">
+                                        <div style="display:none;"> {{ review.review_no }} </div>
+                                        [ {{ review.content }} ] 작성자: {{review.user_name}} %
+                                        | 작성일자 : {{this.$dateFormat(review.review_date)}}
+                                    </div>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" @click="ReviewBtn()" class="btn btn-primary"
+                                    data-bs-dismiss="modal">확인</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- 문의게시판 -->
                 <form action=addUserQnaForm.do name=productDetail method="post">
                     <div id="qna" class="qnaTable">
@@ -189,10 +216,10 @@
             <div class="container px-4 px-lg-5 mt-5">
                 <h2 class="fw-bolder mb-4">관련 상품</h2>
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                <div v-for="(product,idx) in relationCategoryList" :key="idx">
-                <Product :product="product" />
+                    <div v-for="(product,idx) in relationCategoryList" :key="idx">
+                        <Product :product="product" />
+                    </div>
                 </div>
-          </div>
             </div>
         </section>
     </div>
@@ -218,7 +245,7 @@
                 product_no: 0,
                 reviewLikeArray: [],
                 page: null,
-                relationCategoryList : []
+                relationCategoryList: []
             };
         },
         async created() {
@@ -360,10 +387,13 @@
                     }
                 }
             },
+
             async showReviewList(pageno) {
+                console.log(pageno);
                 this.$showLoading();
-                const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`).catch((err) =>
-                    console.log(err));
+                const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
+                    .catch((err) =>
+                        console.log(err));
                 this.reviewList = result.data.selectResult;
                 this.page = result.data.pageDTO;
                 // html 태그 삭제하고 리뷰내용 보이기
@@ -390,10 +420,13 @@
                     if (this.reviewList[i].content.length >= 10) {
                         this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
                     }
-
+                    this.$hideLoading();
                 }
-                this.$hideLoading();
             },
+            ReviewBtn : async function(){
+                
+                this.review_no = this.reviewList.review_no;
+            }
         }
     }
 </script>
