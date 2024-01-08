@@ -121,7 +121,7 @@ class ProductService {
     }
 
     //3) REST API로 결제환불 요청
-    async cancelSelectAPI(paymentNo, impUid, cancelRequestAmount, cancelableAmount){
+    async cancelSelectAPI(paymentNo, impUid, cancelRequestAmount, cancelableAmount, paymentProductNo){
         let cancelOk = true;
         const connection = await getConnection();
         const accessToken = await this.getImpAccessToken();

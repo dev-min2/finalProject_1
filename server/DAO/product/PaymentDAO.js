@@ -103,12 +103,12 @@ let paymentDAO = {
         return (cancelUpdatePayment, [paymentObj, paymentNo]);
     },
     //3-2) payment_product 테이블 변경
-    cancelSelectPaymentProduct: async function(deliveryFee, paymentNo){
-        const  cancelSelectPaymentProduct =
+    cancelUpdatePaymentProduct: async function(deliveryFee, paymentNo){
+        const  cancelUpdatePaymentProduct =
             `UPDATE payment_product
             SET delivery_fee = ?
             WHERE payment_no = ? `;
-        return query(cancelSelectPaymentProduct,[deliveryFee,paymentNo]);
+        return query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
     },
     //3-3) 배송상태 변경 (update payment_product)
     cancelPaymentDelivery: async function(paymentProductNo){
