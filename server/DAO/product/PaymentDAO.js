@@ -115,7 +115,6 @@ let paymentDAO = {
 
         if (conn != null){
             return conn.query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
-
         }
         return query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
     },

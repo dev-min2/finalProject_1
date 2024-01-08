@@ -13,10 +13,12 @@ let couponDAO = {
             return query(selectMyCouponQuery, userNo);
     },
     //쿠폰 사용 후 삭제
-    updateMyCouponQuery : async function(couponNo){
+    updateMyCouponQuery : async function(couponNo, conn = null){
         const updateMyCouponQuery = 
             `UPDATE my_coupon SET coupon_state = 'B2' WHERE my_coupon_no =?`;
-
+        if (conn != null){
+            return conn.query(updateMyCouponQuery, couponNo);
+        }
         return query(updateMyCouponQuery, couponNo);
     }
 };

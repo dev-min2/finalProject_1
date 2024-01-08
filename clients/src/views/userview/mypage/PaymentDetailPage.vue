@@ -94,7 +94,7 @@
                     </tr>
                     <tr>
                         <th>환불금액</th>
-                        <td>원</td>
+                        <td>{{ this.$printPriceComma(paymentPrice - realPaymentPrice) }}원</td>
                     </tr>
                     <tr>
                         <th>실결제금액</th>
@@ -192,27 +192,14 @@
                         this.orderBtn = false;
                     }
                  }
-
-                //for (let companyName in productsListByCompany) {
-                   //console.log('회사번호', companyName, productsListByCompany[companyName]); 
-                   //for(let i ; i<productsListByCompany.length; i++){}
-                  // for(let i in productsListByCompany[companyName]){
-                        //console.log('회사별로분류',i, productsListByCompany[companyName][i]);
-                        //console.log(productsListByCompany[companyName][i].real_payment_amount);
-
-                        // this.productInfoTotal += productsListByCompany[companyName][i].real_payment_amount;
-                        // console.log(this.productInfoTotal); 
-                  // }
-                //}
-                
             },
+            //버튼 비활성화 체크
             orderBtnStatus(){
-                 for(let company in this.paymentProductsList){
-                    console.log(company, this.paymentProductsList[company].delivery_state);
+                for(let company in this.paymentProductsList){
                     if(this.paymentProductsList[company].delivery_state != 'C1'){
                         this.orderBtn = false;
                     }
-                 }
+                }  
             },
             //주문전체정보 가져오기(payment)
             async getSelectPayment(){
@@ -227,11 +214,14 @@
                 //주문정보
                 this.impNo = payment.payment_sub_unique_no;
                 this.orderState = payment.order_state;
-                if (this.orderState != 'C1'){
-                    //여기서 전체 순회하기 개별주문건
+                // if (this.orderState != 'C1'){
+                //     //여기서 전체 순회하기 개별주문건
+                //     this.orderBtn = false;
+                // }
+                this.myCouponNo = payment.my_coupon_no;
+                if(this.myCouponNo != null){
                     this.orderBtn = false;
                 }
-                this.myCouponNo = payment.my_coupon_no;
                 this.paymentDate = payment.payment_date;
                 this.paymentProduct = payment.payment_product;
                 this.totalProductCnt = payment.total_product;
@@ -248,7 +238,8 @@
                 this.receiverAddr = payment.receiver_addr;
                 this.receiverPostCode = payment.receiver_postcode;
                 this.deliveryRequest = payment.delivery_request;
-                console.log(this.orderState);
+                console.log('test');
+                console.log(this.myCouponNo);
                 
 		    },
 
@@ -285,7 +276,7 @@
                 let cancelRequestAmount = this.realPaymentPrice;
                 let cancelableAmount = this.realPaymentPrice;
 
-                 const sendObj = {
+                const sendObj = {
                      param: {
                         paymentNo: paymentNo,
                         impUid: impUid,
@@ -293,7 +284,7 @@
                         cancelableAmount: cancelableAmount,
                     }
                 }
-                console.log(sendObj);
+
                 //아임포트 결제취소 성공하면> DB 주문상태 변경
                 if (confirm("정말 취소하시겠습니까?") == true){
                     let result = await axios.post(`/api/product/paymentdetail/cancel`, sendObj)
@@ -315,15 +306,11 @@
 
             //일부 상품 주문 취소
             async cancelSelectPayment(product){
-                //일부 취소시 전체 주문 취소 버튼 비활성화
-                
                 //api에 보낼 정보
                 let sellerNo = product.user_no;
                 let paymentProductNo = product.payment_product_no;
                 let paymentNo = this.paymentNo;
                 let impUid = this.impNo;
-                // let cancelRequestAmount = this.realPaymentPrice;
-                // let cancelableAmount = this.realPaymentPrice;
 
                  const sendObj = {
                      param: {
@@ -332,12 +319,9 @@
                         paymentNo: paymentNo,
                         impUid: impUid,
                         paymentProductNo :paymentProductNo
-                        // cancelRequestAmount: cancelRequestAmount,
-                        // cancelableAmount: cancelableAmount,
                     }
                 }
                 
-
                 if (confirm("정말 취소하시겠습니까?") == true){    //확인
                     this.$showLoading();
                     console.log(paymentProductNo);
