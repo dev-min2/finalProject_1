@@ -93,12 +93,12 @@
                         <td>{{this.$printPriceComma(totalDeliveryFee)}}원</td>
                     </tr>
                     <tr>
-                        <th>결제금액</th>
-                        <td>{{this.$printPriceComma(realPaymentPrice)}}원</td>
-                    </tr>
-                    <tr>
                         <th>환불금액</th>
                         <td>원</td>
+                    </tr>
+                    <tr>
+                        <th>실결제금액</th>
+                        <td>{{this.$printPriceComma(realPaymentPrice)}}원</td>
                     </tr>
                 </table>
             </div>

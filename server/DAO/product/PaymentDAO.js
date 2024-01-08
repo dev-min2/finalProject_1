@@ -41,6 +41,7 @@ let paymentDAO = {
         return query (insertPaymentQuery, paymentObj);
     },
 
+    /* 결제 조회 기능*/
     //결제 전체 주문내역 불러오기 (유저기준)
     selectPaymentList : async function(userNo){
         const selectPaymentList =
@@ -57,10 +58,7 @@ let paymentDAO = {
             return query(selectPaymentInfo, paymentNo);
     },
 
-
-    
-    
-
+    /* 결제 전체 취소 */
     //결제 전체 취소 (Update payment + payment_product)
     cancelAllPayment: async function(paymentNo){
        const cancelAllPayment = 
@@ -71,18 +69,20 @@ let paymentDAO = {
                 WHERE p.payment_no = ?`;
        return query (cancelAllPayment, paymentNo);
     },
-    //API 결제 부분취소를 위해 환불 금액, 배송금액 가져오기
+
+    /* 결제 부분 취소 */
+    //1) API 결제 부분취소를 위해 환불 금액, 배송금액 가져오기
     cancelSelectPayPrice: async function(paymentProductNo){
         const cancelSelectPayPrice
-            = `SELECT p1.real_payment_amount as payment_price, p1.total_delivery_fee,
-                        p2.real_payment_amount as prod_payment_price, p2.delivery_fee
+            = `SELECT p1.real_payment_amount as payment_price, p1.total_delivery_fee, p1.total_product,
+                        p2.real_payment_amount as prod_payment_price, p2.delivery_fee, p2.buy_cnt
                 FROM payment_product p2 JOIN payment p1
                 WHERE p1.payment_no = p2.payment_no
                 AND p2.payment_product_no = ?`
-        return query(cancelSelectPayPrice, paymentProductNo);  
-
+        return query(cancelSelectPayPrice, paymentProductNo); 
     },
-    //결제 부분취소를 위해 업체 합계금액 가져오기
+
+    //2) 결제 부분취소를 위해 업체 합계금액 가져오기
     cancelCompanySum: async function(sellerNo, paymentNo){
         const cancelCompanySum =
             `SELECT SUM(p2.payment_amount) as companyTotalPrice
@@ -93,17 +93,31 @@ let paymentDAO = {
         
         return query(cancelCompanySum, [sellerNo, paymentNo]);
     },
-    
 
-
-    //결제 부분 취소 (update payment_product)
-    cancelSelectPayment: async function(paymentProductNo){
-        const cancelSelectPayment = 
+    //3-1) payment테이블 변경
+    cancelUpdatePayment: async function(paymentObj, paymentNo){
+        const cancelUpdatePayment = 
+        `UPDATE payment
+            SET ?
+            WHERE payment_no = ?`;
+        return (cancelUpdatePayment, [paymentObj, paymentNo]);
+    },
+    //3-2) payment_product 테이블 변경
+    cancelSelectPaymentProduct: async function(deliveryFee, paymentNo){
+        const  cancelSelectPaymentProduct =
+            `UPDATE payment_product
+            SET delivery_fee = ?
+            WHERE payment_no = ? `;
+        return query(cancelSelectPaymentProduct,[deliveryFee,paymentNo]);
+    },
+    //3-3) 배송상태 변경 (update payment_product)
+    cancelPaymentDelivery: async function(paymentProductNo){
+        const cancelPaymentDelivery = 
              `UPDATE payment_product 
              SET delivery_state = 'C5' 
              WHERE payment_product_no = ?`;
-        return query (cancelSelectPayment, paymentProductNo);
-     }
+        return query (cancelPaymentDelivery, paymentProductNo);
+     },
 };
 
 module.exports = paymentDAO;
