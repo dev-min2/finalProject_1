@@ -115,6 +115,16 @@ class BoardService {
         return result;
     }
 
+    async deleteNoticeReply(replyNo) {
+        const result = await noticeBoardDAO.deleteNotieReplyQuery(replyNo);
+        return result;
+    }
+
+    async modifyNoticeReply(modifyReplyObj) {
+        const result = await noticeBoardDAO.updateNoticeReplyQuery(modifyReplyObj.comment, modifyReplyObj.notice_reply_no);
+        return result;
+    }
+
     async modifyNotice(userNo, boardNo, randNoticeValue, curTimeVal, noticeBoardInfo) {
         let noticeVO = {
             title : noticeBoardInfo.title,

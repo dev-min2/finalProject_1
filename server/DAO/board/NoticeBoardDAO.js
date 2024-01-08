@@ -79,8 +79,8 @@ let noticeBoardDAO = {
     },
     selectNoticeBoardReplyQuery : async function(boardNo) {
         const selectNoticeBoardReplyQuery = `
-        SELECT A.notice_reply_no as parent_reply_no,A.comment as parent_comment, A.reply_date as parent_reply_date, A.user_no AS parent_user_no, C.user_name AS parent_user_name, 
-                B.notice_reply_no as child_reply_no, B.comment as child_comment, B.notice_reply_pno, B.reply_date as child_reply_date, B.user_no AS child_user_no, (SELECT user_name FROM user WHERE user_no = child_user_no) AS child_name
+        SELECT A.notice_reply_no as parent_reply_no,A.comment as parent_comment, A.reply_date as parent_reply_date, A.user_no AS parent_user_no, C.user_name AS parent_user_name, A.delete_date AS parent_delete_date,
+        B.notice_reply_no as child_reply_no, B.comment as child_comment, B.notice_reply_pno, B.reply_date as child_reply_date, B.user_no AS child_user_no, (SELECT user_name FROM user WHERE user_no = child_user_no) AS child_name, B.delete_date AS child_delete_date
             FROM notice_reply AS A
             LEFT JOIN notice_reply AS B ON A.notice_reply_no = B.notice_reply_pno
             JOIN user AS C ON A.user_no = C.user_no
@@ -117,6 +117,18 @@ let noticeBoardDAO = {
             INSERT INTO notice_reply SET ? 
         `
         return query(insertNoticeReplyQuery,obj);
+    },
+    deleteNotieReplyQuery : async function(replyNo) {
+        const deleteNotieReplyQuery = `
+            UPDATE notice_reply SET delete_date = current_date() where notice_reply_no = ${replyNo}
+        `
+        return query(deleteNotieReplyQuery);
+    },
+    updateNoticeReplyQuery : async function(replyContent, replyNo) {
+        const updateNoticeReplyQuery = `
+            UPDATE notice_reply SET comment = ? WHERE notice_reply_no = ${replyNo}
+        `;
+        return query(updateNoticeReplyQuery, replyContent);
     }
 };
 

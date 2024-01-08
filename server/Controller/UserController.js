@@ -100,6 +100,8 @@ userRouter.post('/login', async(req,res) =>{
         let result = await userService.loginUser(user);
         if(result.length > 0) {
             req.session.userNo = result[0].user_no; //session저장
+            req.session.userName = result[0].user_name;
+            console.log(req.session.userName);
         }
         res.send(result);
     }
@@ -284,6 +286,17 @@ userRouter.put('/cancel-leave', async(req,res) => {
         const userService = new UserService();
         const  result = await userService.cancleLeaveAccount(userNo);
         res.status(200).send(result)
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
+userRouter.get('/subcode', async(req, res) => {
+    try {
+        const userService = new UserService();
+        const result = await userService.getSubcode();
+        res.status(200).send(result);
     }
     catch(e) {
         console.log(e);
