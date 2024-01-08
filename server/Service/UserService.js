@@ -238,6 +238,11 @@ class UserService {
         let result = await myCartDAO.showCartQuery(user_no);
         return result;
     }
+    async showCartCount(user_no) {
+        let result = await myCartDAO.showCartCountQuery(user_no);
+        console.log(result);
+        return result[0];
+    }
     async UpCnt(product_no) {
         let stock = await myCartDAO.selectProductStockQuery(product_no);
         if ((stock[0].product_stock - stock[0].product_sel_cnt) <= 0) {

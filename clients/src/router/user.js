@@ -13,6 +13,7 @@ import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
 import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
+import WishList from '../views/userview/mypage/WishList.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
@@ -94,6 +95,11 @@ export default {
           path: "/paymentDetail",
           name: "paymentDetail",
           component : PaymentDetailPage
+        },
+        {
+          path: "/wishList",
+          name: "wishList",
+          component : WishList
         }
       ]
     },
