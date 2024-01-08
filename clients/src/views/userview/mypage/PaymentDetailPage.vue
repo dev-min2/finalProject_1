@@ -33,11 +33,11 @@
                                     </div>
                                     <div>
                                         <!--테스트
-                                        -->
                                         <button @click="testBtn(objectIdx)" class="btn btn-primary" style="background-color: #bbbbbb; border: none; margin : 5px;">테스트</button>
+                                        -->
                                         <!---->
                                         <br>
-                                        <div id="productBtn" v-if= "product.delivery_state == 'C1'">
+                                        <div id="reviewBtn" v-if= "product.delivery_state == 'C1'">
                                             <button class="btn btn-primary" style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
                                             <button class="btn btn-primary" @click="cancelSelectPayment(product)" style="background-color: #acb1f8; border: none; margin : 5px;">주문취소</button>
                                         </div>
@@ -178,7 +178,6 @@
             
             this.getSelectPayment();
             this.getSelectPaymentDetail();
-            //this.productsDeliveryState();
         },
         methods : {
             //부분주문취소 테스트 버튼
@@ -218,8 +217,9 @@
                 //주문정보
                 this.impNo = payment.payment_sub_unique_no;
                 this.orderState = payment.order_state;
-                if (this.orderState == 'C1'){
-                    this.orderBtn = true;
+                if (this.orderState != 'C1'){
+                    //여기서 전체 순회하기 개별주문건
+                    this.orderBtn = false;
                 }
                 this.myCouponNo = payment.my_coupon_no;
                 this.paymentDate = payment.payment_date;
@@ -332,12 +332,11 @@
 
                 if (confirm("정말 취소하시겠습니까?") == true){    //확인
                     this.$showLoading();
-                    console.log('나오나요');
                     console.log(paymentProductNo);
                     let result = await axios.post(`/api/product/paymentdetail/cancelselect/`, sendObj)
                                             .catch(err=>console.log(err));
                     console.log(result);
-                    if(result.data.affectedRows > 0){
+                    if(result.data == true){
                         this.$showSuccessAlert('','선택한 상품의 주문이 취소되었습니다. ');
                         this.orderBtn = false;
                     }else{
@@ -369,10 +368,12 @@
 </script>
 
 <style scoped>
-    /* #productBtn{
+   #reviewBtn{
         display : flex;
         flex-direction: column;
+        padding-bottom: 0.5em;
     }
+     /* 
     #deliveryDetail{
         display : flex;
         justify-content: center;

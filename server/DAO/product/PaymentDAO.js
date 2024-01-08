@@ -36,7 +36,7 @@ let paymentDAO = {
             `INSERT INTO payment SET ?`;
 
         if (conn != null){
-            return query (insertPaymentQuery, paymentObj);
+            return conn.query (insertPaymentQuery, paymentObj);
         }
         return query (insertPaymentQuery, paymentObj);
     },
@@ -95,27 +95,38 @@ let paymentDAO = {
     },
 
     //3-1) payment테이블 변경
-    cancelUpdatePayment: async function(paymentObj, paymentNo){
+    cancelUpdatePayment: async function(paymentObj, paymentNo, conn = null){
         const cancelUpdatePayment = 
         `UPDATE payment
             SET ?
             WHERE payment_no = ?`;
-        return (cancelUpdatePayment, [paymentObj, paymentNo]);
+        if (conn != null){
+            return conn.query(cancelUpdatePayment, [paymentObj, paymentNo]);
+        }
+        return query(cancelUpdatePayment, [paymentObj, paymentNo]);
     },
     //3-2) payment_product 테이블 변경
-    cancelUpdatePaymentProduct: async function(deliveryFee, paymentNo){
+    cancelUpdatePaymentProduct: async function(deliveryFee, paymentNo, conn = null){
         const  cancelUpdatePaymentProduct =
             `UPDATE payment_product
             SET delivery_fee = ?
             WHERE payment_no = ? `;
+
+        if (conn != null){
+            return conn.query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
+
+        }
         return query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
     },
     //3-3) 배송상태 변경 (update payment_product)
-    cancelPaymentDelivery: async function(paymentProductNo){
+    cancelPaymentDelivery: async function(paymentProductNo, conn = null){
         const cancelPaymentDelivery = 
              `UPDATE payment_product 
              SET delivery_state = 'C5' 
              WHERE payment_product_no = ?`;
+        if (conn != null){
+            return conn.query (cancelPaymentDelivery, paymentProductNo);
+        }
         return query (cancelPaymentDelivery, paymentProductNo);
      },
 };

@@ -71,6 +71,7 @@ class ProductService {
 
      /* 결제 전체 취소 */
     async cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount){
+        
         const accessToken = await this.getImpAccessToken();
         //deliveryState로 배송상태 검증하기 (수정하기)
 
@@ -121,41 +122,47 @@ class ProductService {
     }
 
     //3) REST API로 결제환불 요청
-    async cancelSelectAPI(paymentNo, impUid, cancelRequestAmount, cancelableAmount, paymentProductNo){
+    async cancelSelectAPI(
+                    paymentNo, impUid, cancelRequestAmount, cancelableAmount, 
+                            paymentObj, paymentProductNo, deliveryFee
+    ){
         let cancelOk = true;
         const connection = await getConnection();
         const accessToken = await this.getImpAccessToken();
         try{
-            const getCancelData = await axios({
-                url: "https://api.iamport.kr/payments/cancel",
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": accessToken // 포트원 서버로부터 발급받은 엑세스 토큰
-                },
-                data: {
-                    reason: '주문 취소', // 가맹점 클라이언트로부터 받은 환불사유
-                    imp_uid: impUid, // imp_uid를 환불 `unique key`로 입력
-                    amount: cancelRequestAmount, // 가맹점 클라이언트로부터 받은 환불금액
-                    checksum: cancelableAmount // [권장] 환불 가능 금액 입력
-                }
-            });
-            console.log('데이터뽑아요', getCancelData); console.log('prodService 포트원', getCancelData.data);
+            // const getCancelData = await axios({
+            //     url: "https://api.iamport.kr/payments/cancel",
+            //     method: "post",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         "Authorization": accessToken // 포트원 서버로부터 발급받은 엑세스 토큰
+            //     },
+            //     data: {
+            //         reason: '주문 취소', // 가맹점 클라이언트로부터 받은 환불사유
+            //         imp_uid: impUid, // imp_uid를 환불 `unique key`로 입력
+            //         amount: cancelRequestAmount, // 가맹점 클라이언트로부터 받은 환불금액
+            //         checksum: cancelableAmount // [권장] 환불 가능 금액 입력
+            //     }
+            // });
+            // console.log('데이터뽑아요', getCancelData);
+             console.log(paymentObj,',' ,paymentProductNo, ',' ,deliveryFee);
 
-            if(getCancelData.status != 200 || getCancelData.data.code != 0 ){
-                console.log('취소 실패');
-                return;
-            }
+            // if(getCancelData.status != 200 || getCancelData.data.code != 0 ){
+            //     console.log('취소 실패');
+            //     return;
+            // }
             //트랜잭션 시작
             await connection.beginTransaction(); 
-            const result1 = await paymentDAO.cancelUpdatePayment(paymentObj, paymentNo); //update payment
-            const result2 = await paymentDAO.cancelUpdatePaymentProduct(deliveryFee, paymentNo);
-            const result3 = await paymentDAO.cancelPaymentDelivery(paymentProductNo);
+            const result1 = await paymentDAO.cancelUpdatePayment(paymentObj, paymentNo, connection); //update payment
+            const result2 = await paymentDAO.cancelUpdatePaymentProduct(deliveryFee, paymentNo, connection);
+            const result3 = await paymentDAO.cancelPaymentDelivery(paymentProductNo, connection);
+            console.log('트랜잭션 잘 되나');
+            console.log(result1, paymentNo);
             await connection.commit();
-
         }
         catch (error) {
             console.log(error);
+            console.log('실패');
             await connection.rollback(); //결제취소처리 실패
             cancelOk = false;
         }

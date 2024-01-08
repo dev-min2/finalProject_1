@@ -70,46 +70,51 @@ productRouter.get('/paymentform', async(req, res)=>{
         const cancelableAmount= price[0].payment_price ;  //환불가능한 금액 (전체결제금액)
         let cancelRequestAmount = price[0].prod_payment_price; //취소요청금액
         let ifPrice = companyPrice[0].companyTotalPrice - cancelRequestAmount; //배송비 기준 계산 (업체합계 - 취소가격)
+       
+        let totalDeliveryFee = price[0].total_delivery_fee; //총 배송비
+        let deliveryFee = 0;
 
+        console.log(price[0].delivery_fee, ifPrice);
+        
         //환불 배송비 계산
-        if(price[0].delivery_fee == 0){ //무료배송 기준 깨질 때 (ex 4만원중 2만원 환불) 
-            if(ifPrice < 30000){ 
-                cancelRequestAmount =  cancelRequestAmount - 3000; //배송비 빼고 환불
-            }
+        if(price[0].delivery_fee == 0 && 0 <  ifPrice && ifPrice < 30000){ //무료배송 기준 깨질 때 (ex 4만원중 2만원 환불) 
+            cancelRequestAmount -=  3000; //배송비 빼고 환불
+            totalDeliveryFee += 3000;
+            deliveryFee = 3000;
         }
-        else if(price[0].delivery_fee != 0){ //배송비 있고, 단건 취소일 때는 배송비까지 환불
-            if(ifPrice == 0){ 
+        else if(price[0].delivery_fee != 0 && ifPrice == 0){ //배송비 있고, 단건 취소일 때는 배송비까지 환불
                 cancelRequestAmount = cancelRequestAmount + price[0].delivery_fee;
-            }
+                totalDeliveryFee -= 3000;
         }
         //Payment테이블 Update 위한 데이터
         //real_payment_amount = 53000, total_delivery_fee = 0, total_product = 5
         let payTotalCnt= price[0].total_product - price[0].buy_cnt; //전체 구매 수량 - 취소수량
-        let payProductCnt = price[0].buy_cnt; //취소 수량
         let cancelFinalPrice = cancelableAmount - cancelRequestAmount; //남은 결제 금액
+        
+
         let paymentObj = {
             real_payment_amount : cancelFinalPrice,
-            //total_delivery_fee : ,
+            total_delivery_fee : totalDeliveryFee,
             total_product : payTotalCnt
         };
 
         console.log('업체전체가격', companyPrice[0].companyTotalPrice);
-        console.log(price[0].payment_price);
+        console.log(price);
         console.log('전체금액-취소금액: ', ifPrice);
         console.log('환불가격2', cancelRequestAmount);
+        console.log(paymentObj);
+        console.log('개별배송비',deliveryFee);
         
 
-        //API, 테이블에 정보 넘겨주기
+        // //API, 테이블에 정보 넘겨주기
         let result 
             = await productService.cancelSelectAPI(
                         paymentNo, impUid, cancelRequestAmount, cancelableAmount, //API 정보
-                        paymentProductNo
+                        paymentObj, paymentProductNo, deliveryFee
 
                     );
 
-        console.log('빠샤', result);
         res.send(result);
-        //let result = await productService.cancelSelectPayment(paymentProductNo); //배송 상태 변경
     }
     catch(e){
         console.log(e);

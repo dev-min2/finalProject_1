@@ -11,6 +11,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            <p style="color:red;line-height: 1.8;">쿠폰을 사용할 경우 부분취소를 할 수 없습니다.</p>
                             <select name="coupon" v-model="coupon" class="form-select" >
                                 <option disabled value="">쿠폰을 선택해주세요</option>
                                 <option value="coupon"> 쿠폰 취소 </option>
@@ -212,7 +213,7 @@
 
                 //결제관련 정보
                 coupon:'', // 쿠폰 정보
-                couponNo:'', //사용 쿠폰 번호
+                couponNo: null, //사용 쿠폰 번호
                 couponName:'',
                 couponPercent: 0, //선택한 쿠폰 퍼센트 / ex)10
                 selectPayment: 'html5_inicis', //결제방식
@@ -375,7 +376,7 @@
                     for (let i = 0; i < this.testCartQuery[object].length; i++) {
                         companyDelivery += this.testCartQuery[object][i].price_sum;
                     }
-                    if (companyDelivery > 30000) {
+                    if (companyDelivery >= 30000) {
                         companyDelivery = 0;
                     } else {
                         companyDelivery = 3000;
