@@ -75,7 +75,7 @@
                             .delete(`/api/product/wish/${this.$store.state.userNo}/${wish.product_no}`)
                             .catch(err => console.log(err));
             if(result.data.affectedRows > 0){
-                this.$showSuccessAlert("상품이 삭제되었습니다.");
+                this.$showSuccessAlert("찜이 취소되었습니다.");
                     }
                     const wishResult = await axios
                         .get(`/api/product/wish/${this.$store.state.userNo}`)
