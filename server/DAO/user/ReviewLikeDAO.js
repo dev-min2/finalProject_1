@@ -6,8 +6,10 @@ let {
 // 쿼리문 만들기
 let reviewLikeDAO = {
     selectQuery: async function () {},
-    selectReviewLikeQuery: async function (pno) {
-        console.log(pno);
+    //상세에서 리뷰 리스트불러오기
+    selectReviewLikeQuery: async function (pno,pageno) {
+        const startReviewPage = (pageno -1) * 5;
+        const endReviewPage = 5;
         const selectReviewLikeQuery = 
         `SELECT B.*, c.user_name, A.like_cnt
         FROM (
@@ -18,14 +20,16 @@ let reviewLikeDAO = {
            ) AS A
              JOIN review AS B ON A.review_no = B.review_no
              Join USER AS C ON B.user_no = c.user_no
-             WHERE B.product_no=?`;
-        return query(selectReviewLikeQuery,pno)
+             WHERE B.product_no=? order by B.review_date desc limit ?,?`;
+        return query(selectReviewLikeQuery,[pno, startReviewPage, endReviewPage])
     },
+    //리뷰 페이징 cnt쿼리
     selectReviewLikeCntQuery: async function (pno) {
-        // 변수
-        `SELECT COUNT(*) AS CNT
+        
+        const selectReviewLikeCntQuery =
+        `SELECT COUNT(*) AS cnt
         FROM review 
-        WHERE product_no=?`
+        WHERE product_no=?`;
         return query(selectReviewLikeCntQuery,pno);
     },
     selectReviewLikeUserNoQuery : async function(reviewNoArray, userNo) {

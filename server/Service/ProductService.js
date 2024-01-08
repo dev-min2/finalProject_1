@@ -150,7 +150,12 @@ class ProductService {
     //하랑
     async showProdDetail(product_no) {
         let result = await productDAO.showProductDetailQuery(product_no);
-        return result[0];
+        let result2 = await productDAO.relationProductListQuery(result[0].category_no);
+        const result3 = {
+            selectResult : result[0],
+            relationResult : result2
+        }
+        return result3;
     }
     async addCart(product_no, product_sel_cnt, user_no) {
         let cartProduct = await productDAO.showProductDetailQuery(product_no);
@@ -191,11 +196,23 @@ class ProductService {
         let result = await productDAO.delWishQuery(user_no, product_no);
         return result;
     }
-    async showReviewList(product_no,userNo){
-        const result = await reviewLikeDAO.selectReviewLikeQuery(product_no);
-        
+    //구매후기 리스트
+    async showReviewList(product_no, pageno){
+        const result = await reviewLikeDAO.selectReviewLikeQuery(product_no,pageno);
         return result;
     }
+    //구매후기 개수
+    async showReviewListCnt(product_no, pageno){
+        const result = await reviewLikeDAO.selectReviewLikeQuery(product_no, pageno);
+        const countResult = await reviewLikeDAO.selectReviewLikeCntQuery(product_no);
+        const pageDTO = new PageDTO(countResult[0].cnt, Number(pageno), 5);
+        const resResult = {
+            selectResult : result,
+            pageDTO : pageDTO
+        }
+        return resResult;
+    }
+
     async addReviewLikeCnt(rno, user_no,pno){
         let result = await reviewLikeDAO.updateAddReviewLikeCntQuery(rno);
         let result2 = await reviewLikeDAO.insertAddReviewLikeCntQuery(rno, user_no);
@@ -208,6 +225,11 @@ class ProductService {
 
         const result3 = await reviewLikeDAO.selectReviewLikeQuery(pno);
         return result3;
+    }
+    //관련상품 4개 리스트
+    async getrelationProductList(cno){
+        let result = await productDAO.relationProductListQuery(cno);
+        return result;
     }
 }
 

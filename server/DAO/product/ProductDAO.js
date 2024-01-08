@@ -115,7 +115,7 @@ let productDAO = {
     selectBestProductQuery: async function (ptype, pageno) {
         const state = 'i1';
         const startpageList = (pageno - 1) * 8;
-        const endpageList = 30;
+        const endpageList = 8;
         const selectBestProductQuery =
             `select p.product_no, p.product_name, p.product_image, p.pet_type, p.product_price, p.product_stock, p.category_no, cnt, a.avg_cnt
             from 
@@ -212,6 +212,19 @@ let productDAO = {
         WHERE user_no = ? and product_no = ?
         `;
         return query(delWishQuery, [user_no, product_no]);
+    },
+    relationProductListQuery : async function(cno){
+        const limit = 4;
+        const relationProductListQuery = 
+        `select A.* , B.cnt,B.avg_cnt
+        From
+        (select A.product_no, count(review_no) as cnt, truncate(avg(B.star_cnt),1) as avg_cnt 
+        from product A left join review B on A.product_no = B.product_no
+        group by A.product_no
+        ) as B
+        join product as A on A.product_no = B.product_no
+        WHERE A.category_no=? order by rand() limit ?`;
+        return query(relationProductListQuery, [cno, limit]);
     }
 };
 

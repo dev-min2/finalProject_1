@@ -245,12 +245,14 @@ productRouter.delete('/wish/:userNo/:productNo', async (req, res) => {
     }
 });
 
-productRouter.get('/productdetails/review/:productNo', async(req, res)=>{
-    let productNo = req.params.productNo;
-    let userNo = req.session.userNo;
+
+productRouter.get('/productdetails/review/:productNo/:pageNo', async(req, res)=>{
     try {
+        let productNo = req.params.productNo;
+        let userNo = req.session.userNo;
+        let pageNo = req.params.pageNo;
         const productService = new ProductService();
-        let result = await productService.showReviewList(productNo,userNo);
+        const result = await productService.showReviewListCnt(productNo, pageNo);
         res.send(result);
     }catch(e){
         console.log(e);
@@ -263,13 +265,12 @@ productRouter.put('/productdetails/review/:reviewNo/:productNo', async(req, res)
         let productNo = req.params.productNo;
         let userNo = req.session.userNo;
         const productService = new ProductService();
-        let result = await productService.addReviewLikeCnt(reviewNo, userNo, productNo);
+        const result = await productService.addReviewLikeCnt(reviewNo, userNo, productNo);
         res.send(result);
     }catch(e){
         console.log(e);
     }
 });
-
 
 
 
