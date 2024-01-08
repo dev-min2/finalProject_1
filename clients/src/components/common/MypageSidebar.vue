@@ -24,7 +24,8 @@
 										<a class="nav-link" >
 											<div class="sb-nav-link-icon"><i class="bi bi-box-seam"></i></div> 상품문의
 										</a> 
-										<a class="nav-link"><div class="sb-nav-link-icon"><i class="bi bi-chat-left-text"></i>
+										<a @click="$router.push('/myreview')"  class="nav-link">
+											<div class="sb-nav-link-icon"><i class="bi bi-chat-left-text"></i>
 											</div> 내 리뷰보기
 										</a>
 										<a @click="$router.push('/mypetinfo')" class="nav-link">

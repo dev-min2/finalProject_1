@@ -245,4 +245,32 @@ productRouter.delete('/wish/:userNo/:productNo', async (req, res) => {
     }
 });
 
+productRouter.get('/productdetails/review/:productNo', async(req, res)=>{
+    let productNo = req.params.productNo;
+    let userNo = req.session.userNo;
+    try {
+        const productService = new ProductService();
+        let result = await productService.showReviewList(productNo,userNo);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+});
+
+productRouter.put('/productdetails/review/:reviewNo/:productNo', async(req, res)=>{
+    try{
+        let reviewNo = req.params.reviewNo;
+        let productNo = req.params.productNo;
+        let userNo = req.session.userNo;
+        const productService = new ProductService();
+        let result = await productService.addReviewLikeCnt(reviewNo, userNo, productNo);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+});
+
+
+
+
 module.exports = productRouter;

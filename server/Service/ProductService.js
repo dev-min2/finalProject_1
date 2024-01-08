@@ -8,6 +8,7 @@ const categoryDAO = require("../DAO/product/CategoryDAO");
 const couponDAO = require("../DAO/product/CouponDAO");
 const userDAO = require("../DAO/user/UserDAO");
 const PageDTO = require("../commonModule/PageDTO");
+const reviewLikeDAO = require('../DAO/user/ReviewLikeDAO');
 
 
 class ProductService {
@@ -189,6 +190,24 @@ class ProductService {
     async delWish(user_no, product_no) {
         let result = await productDAO.delWishQuery(user_no, product_no);
         return result;
+    }
+    async showReviewList(product_no,userNo){
+        const result = await reviewLikeDAO.selectReviewLikeQuery(product_no);
+        
+        return result;
+    }
+    async addReviewLikeCnt(rno, user_no,pno){
+        let result = await reviewLikeDAO.updateAddReviewLikeCntQuery(rno);
+        let result2 = await reviewLikeDAO.insertAddReviewLikeCntQuery(rno, user_no);
+        if(result.changedRows <= 0 ){
+            return null;
+        }
+        if(result2.affectedRows <= 0){
+            return null;
+        }
+
+        const result3 = await reviewLikeDAO.selectReviewLikeQuery(pno);
+        return result3;
     }
 }
 
