@@ -254,7 +254,24 @@ userRouter.put('/info', async(req, res) => {
         console.log(e);
         res.status(500).send("FAIL");
     }
-})
+});
+
+//작성한 리뷰 목록
+userRouter.get('/myreview', async(req, res)=>{
+    const userNo = req.query.userNo;
+    const pageNo = req.query.pageNo;
+    try{
+        const userService = new UserService();
+        const result = await userService.getMyReviewList(userNo,pageNo);
+        res.send(result);
+    }catch(e) {
+        console.log(e);
+    }
+});
+
+//리뷰 작성하기
+
+
 
 userRouter.put('/password', async(req, res) => {
     try {

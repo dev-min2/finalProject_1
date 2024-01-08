@@ -1,9 +1,12 @@
-let { pool,query } = require('../../config/dbPool');
+let {
+    pool,
+    query
+} = require('../../config/dbPool');
 
 // 쿼리문 만들기
 let myPetDAO = {
-    selectPetQuery : async function(userNo) {
-        const selectPetQuery = 
+    selectPetQuery: async function (userNo) {
+        const selectPetQuery =
             `SELECT p.pet_no, p.pet_name, s1.sub_code_name as pet_type, p.pet_birth, s2.sub_code_name as pet_gender
             FROM pet p 
             LEFT JOIN sub_code_tbl s1
@@ -13,20 +16,20 @@ let myPetDAO = {
             WHERE user_no = ?`;
         return query(selectPetQuery, userNo);
     },
-    infoPetQuery : async function (petNo){
-        const infoPetQuery = 
+    infoPetQuery: async function (petNo) {
+        const infoPetQuery =
             `SELECT * FROM pet WHERE pet_no = ?`
         return query(infoPetQuery, petNo);
     },
-    insertPetQuery : async function(petObj){
+    insertPetQuery: async function (petObj) {
         const insertPetQuery = `INSERT INTO pet SET ?`;
         return query(insertPetQuery, petObj);
     },
-    updatePetQuery : async function(petObj,petNo){
+    updatePetQuery: async function (petObj, petNo) {
         const updatePetQuery = `UPDATE pet SET ? WHERE pet_no=? `;
-        return query(updatePetQuery,[petObj,petNo]);
+        return query(updatePetQuery, [petObj, petNo]);
     },
-    deletePetQuery : async function(petNo){
+    deletePetQuery: async function (petNo) {
         const deletePetQuery = `DELETE FROM pet WHERE pet_no=?`;
         return query(deletePetQuery, petNo);
     }
