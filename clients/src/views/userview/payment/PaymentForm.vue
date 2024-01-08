@@ -382,7 +382,7 @@
                     } else {
                         fee = 3000;
                     }
-                    console.log(object, '번 배송비', companyDelivery);
+                    console.log(object, '번 ', companyDelivery);
                     //payment_product에 데이터 넣어주기
                     for (let i = 0; i < this.testCartQuery[object].length; i++) {
                         let cartProduct = {
