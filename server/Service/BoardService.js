@@ -143,7 +143,7 @@ class BoardService {
     async registReviewBoard(userNo, reviewBoardInfo) {
         let reviewVO = {
             content: reviewBoardInfo.html,
-            star_cnt: 4, //reviewBoardInfo.star_cnt,
+            star_cnt: reviewBoardInfo.star_cnt,
             review_date: new Date(),
             product_no: reviewBoardInfo.product_no,
             user_no: userNo
@@ -162,14 +162,14 @@ class BoardService {
         return result[0];
     }
     //리뷰 수정
-    async modifyReviewBoard(userNo, reviewNo, reviewBoardInfo ){
+    async modifyReviewBoard(userNo, reviewNo, reviewBoardInfo) {
         console.log(reviewBoardInfo.html);
         let reviewVO = {
             content: reviewBoardInfo.html,
             star_cnt: reviewBoardInfo.star_cnt,
             review_date: new Date(),
             product_no: reviewBoardInfo.product_no,
-            user_no : userNo
+            user_no: userNo
         }
         const result = await reviewDAO.updateReviewBoardQuery(reviewVO, reviewNo);
         if (result == null && result.affectedRows <= 0) {
@@ -179,7 +179,7 @@ class BoardService {
 
     }
     //리뷰 삭제
-    async deleteReviewBoard(reviewNo){
+    async deleteReviewBoard(reviewNo) {
         const result = await reviewDAO.deleteReviewBoardQuery(reviewNo);
         return result;
     }

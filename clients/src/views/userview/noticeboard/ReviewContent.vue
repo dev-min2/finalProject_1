@@ -11,7 +11,20 @@
                                 {{ product_name }}</p>
                         </div>
                         <div style="float:right">
-                            <p class="card-text" style="text-align='right'; display:inline-block;">별점 {{ reviewInfo.star_cnt }}
+                            <p v-if="reviewInfo.star_cnt == 5" class="card-text" style="text-align='right'; display:inline-block;">별점 | 
+                                <p style="color:#fab3cc; display:inline-block;">★★★★★</p>
+                            </p>
+                            <p v-else-if="reviewInfo.star_cnt == 4" class="card-text" style="text-align='right'; display:inline-block;">별점 | 
+                                <p style="color:#fab3cc; display:inline-block;">★★★★</p>
+                            </p>
+                            <p v-else-if="reviewInfo.star_cnt == 3" class="card-text" style="text-align='right'; display:inline-block;">별점 | 
+                                <p style="color:#fab3cc; display:inline-block;">★★★</p>
+                            </p>
+                            <p v-else-if="reviewInfo.star_cnt == 2" class="card-text" style="text-align='right'; display:inline-block;">별점 | 
+                                <p style="color:#fab3cc; display:inline-block;">★★</p>
+                            </p>
+                            <p v-else class="card-text" style="text-align='right'; display:inline-block;">별점 | 
+                                <p style="color:#fab3cc; display:inline-block;">★</p>
                             </p>
                         </div>
                     </div>

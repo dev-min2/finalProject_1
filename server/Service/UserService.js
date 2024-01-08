@@ -74,7 +74,16 @@ class UserService {
         return result;
     }
 
-    async createEmailAuthInfo(email) {
+    async createEmailAuthInfo(email,isCreateAccount) {
+        console.log(email);
+        console.log(isCreateAccount);
+        if(isCreateAccount) {
+            const cnt = await emailAuthDAO.selectEmailCountQuery(email);
+            if(cnt[0].cnt >= 5) {
+                return '0';
+            }
+        }
+        
         const { NODEMAILER_ID, NODEMAILER_PW } = process.env;
 
         // 해당 이메일 인증하는 번호가 있다면 지워준다.
@@ -99,7 +108,7 @@ class UserService {
 
         const result = await this.sendMail(transporter, mailOptions);
         if(result == false) {
-            return false;
+            return '1';
         }
 
         let expireDate = new Date();
@@ -116,14 +125,14 @@ class UserService {
         }
         catch(e) {
             console.log(e);
-            return false;
+            return '1';
         }
 
         if(insertResult.affectedRows > 0) {
-            return true;
+            return '2';
         }
         else {
-            return false;
+            return '1';
         }
     }
 
@@ -275,6 +284,35 @@ class UserService {
         }
         console.log(pageDTO);
         return resResult;
+    }
+
+    async changePassword(object) {
+        const { user_no, prevPassword, nextPassword } = object;
+        
+        const hashPrevPW = encryptSHA256(decryptAES256(prevPassword));
+        const hashNextPW = encryptSHA256(decryptAES256(nextPassword));
+        const checkPassword = await userDAO.selectUserPasswordQuery(hashPrevPW, user_no);
+        if(checkPassword.length <= 0) {
+            return "FAIL";
+        }
+        
+        const result = await userDAO.updateUserPasswordQuery(hashPrevPW,user_no,hashNextPW);
+        if(result.affectedRows > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async leaveAccount(userNo) {   
+        const result = await userDAO.updateUserLeaveDateQuery(userNo);
+        return result;
+    }
+
+    async cancleLeaveAccount(userNo) {
+        const result = await userDAO.updateUserNullLeaveDateQuery(userNo);
+        return result;
     }
 
     // 테스트용
