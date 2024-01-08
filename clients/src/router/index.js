@@ -12,6 +12,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  scrollBehavior() {
+    // to : 현재 요청된 route 정보를 가지고 있음
+    return { top: 0 }
+  }
 });
 
 export default router;

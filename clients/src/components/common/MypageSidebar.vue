@@ -18,7 +18,7 @@
 										<a class="nav-link">
 											<div class="sb-nav-link-icon"><i class="bi bi-upc-scan"></i></div> 내 쿠폰
 										</a> 
-										<a class="nav-link">
+										<a @click="$router.push('/wishList')" class="nav-link">
 											<div class="sb-nav-link-icon"><i class="fas fa-heart"></i></div> 찜 목록
 										</a> 
 										<a class="nav-link" >

@@ -151,6 +151,45 @@ class ProductService {
         let result = await productDAO.showProductDetailQuery(product_no);
         return result[0];
     }
+    async addCart(product_no, product_sel_cnt, user_no) {
+        let cartProduct = await productDAO.showProductDetailQuery(product_no);
+        let cartInresult = await productDAO.cartInfoQuery(user_no, product_no);
+        
+        let isExistCartProduct = false;
+        for (let i = 0; i < cartInresult.length; ++i) {
+            if (cartInresult[i].product_no == product_no) {
+                isExistCartProduct = true;
+                break;
+            }
+        }
+        if (isExistCartProduct == true) {
+            if (Number(cartInresult[0].product_sel_cnt) + Number(product_sel_cnt) <= Number(cartProduct[0].product_stock)) {     
+                let result = await productDAO.updateCartQuery(product_sel_cnt,user_no,product_no);
+                return result;
+            }
+        }
+        else {
+            let result = await productDAO.addCartQuery(product_no, product_sel_cnt, user_no);
+            return result;
+        }      
+    }
+    async showCartInfo(userNo, productNo) {
+        let result = await productDAO.cartInfoQuery(userNo, productNo);
+        return result;
+    }
+
+    async addWish(product_no, user_no){
+        let result = await productDAO.addWishQuery(product_no, user_no);
+        return result;
+    }
+    async wishInfo(user_no){
+        let result = await productDAO.wishInfoQuery(user_no);
+        return result;
+    }
+    async delWish(user_no, product_no) {
+        let result = await productDAO.delWishQuery(user_no, product_no);
+        return result;
+    }
 }
 
 module.exports = ProductService;
