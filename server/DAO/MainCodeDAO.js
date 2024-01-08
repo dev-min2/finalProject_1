@@ -10,6 +10,13 @@ let mainCodeDAO = {
             WHERE A.main_code_name = ?
         `;
         return query(selectQuery, mainCodeName);
+    },
+    selectSubcodeQuery : async function() {
+        const selectSubcodeQuery = `
+            SELECT sub_code, sub_code_name
+            FROM sub_code_tbl
+        `;
+        return query(selectSubcodeQuery);
     }
 };
 
