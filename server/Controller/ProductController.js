@@ -261,4 +261,89 @@ productRouter.get('/productDetail', async (req, res) => {
         console.log(err);
     }
 });
+//장바구니 추가
+productRouter.post('/productDetail', async (req, res) => {
+    let productNo = req.body.pno;
+    let productSelCnt = req.body.cnt;
+    let userNo = req.body.userNo
+    try {
+        const productService = new ProductService();
+        result = await productService.addCart(productNo, productSelCnt, userNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }   
+});
+productRouter.get('/productDetail/:userNo/:productNo', async (req, res) => {
+    let userNo = req.params.userNo;
+    let productNo = req.params.productNo;
+    try {
+        const productService = new ProductService();
+        let result = await productService.showCartInfo(userNo, productNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }
+});
+productRouter.post('/wish', async(req, res) => {
+    let productNo = req.body.pno;
+    let userNo = req.body.uno
+    try {
+        const productService = new ProductService();
+        result = await productService.addWish(productNo, userNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }   
+});
+productRouter.get('/wish/:userNo', async (req, res) => {
+    let userNo = req.params.userNo
+    try {
+        const productService = new ProductService();
+        let result = await productService.wishInfo(userNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }
+});
+productRouter.delete('/wish/:userNo/:productNo', async (req, res) => {
+    let userNo = req.params.userNo;
+    let productNo = req.params.productNo;
+    try {
+        const productService = new ProductService();
+        let result = await productService.delWish(userNo, productNo);
+        res.send(result);
+    }catch (err) {
+        console.log(err);
+    }
+});
+
+productRouter.get('/productdetails/review/:productNo', async(req, res)=>{
+    let productNo = req.params.productNo;
+    let userNo = req.session.userNo;
+    try {
+        const productService = new ProductService();
+        let result = await productService.showReviewList(productNo,userNo);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+});
+
+productRouter.put('/productdetails/review/:reviewNo/:productNo', async(req, res)=>{
+    try{
+        let reviewNo = req.params.reviewNo;
+        let productNo = req.params.productNo;
+        let userNo = req.session.userNo;
+        const productService = new ProductService();
+        let result = await productService.addReviewLikeCnt(reviewNo, userNo, productNo);
+        res.send(result);
+    }catch(e){
+        console.log(e);
+    }
+});
+
+
+
+
 module.exports = productRouter;

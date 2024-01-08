@@ -62,6 +62,10 @@
             }
         },
         methods : {
+        async cartCount(){
+            let result = await axios.get(`/api/user/cart-count/${this.$store.state.userNo}`).catch((err)=>console.log(err));
+            this.$store.commit('setCartCnt',result.data.CNT);
+        },
             async kakaoLogin() {
                 let myThis = this;
                 Kakao.Auth.loginForm({
@@ -98,6 +102,7 @@
 
                                         this.$store.commit('setUserNo', result.data[0].user_no);
                                         this.$store.commit('setUserPermission', result.data[0].user_permission);
+                                        this.cartCount();
                                         this.$router.push({path : '/main'});
                                     }
                                     else {
@@ -134,6 +139,7 @@
 
                     this.$store.commit('setUserNo', result.data[0].user_no);
                     this.$store.commit('setUserPermission', result.data[0].user_permission);
+                    this.cartCount();
                     if(result.data[0].forgot_pw_change == 'P2') {
                         this.$showWarningAlert('비밀번호 변경해주세요!');
                         this.$router.push({path : '/myinfo'});

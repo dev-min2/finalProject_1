@@ -163,10 +163,55 @@ let productDAO = {
     showProductDetailQuery: async function (product_no) {
         const showProductDetailQuery = `
         SELECT *
-        FROM product p left join review r on p.product_no = r.product_no
-        where p.product_no = ?
+        FROM product
+        where product_no = ?
         `;
         return query(showProductDetailQuery, product_no);
+    },
+    addCartQuery: async function (product_no, product_sel_cnt, user_no) {
+        const addCartQuery = `
+        INSERT cart
+        SET product_no = ? , product_sel_cnt = ? , user_no = ?
+        `;
+        return query(addCartQuery, [product_no, product_sel_cnt, user_no]);
+    },
+    updateCartQuery: async function (product_sel_cnt, user_no, product_no) {
+        const updateCartQuery = `
+        UPDATE cart
+        SET product_sel_cnt = product_sel_cnt + ${product_sel_cnt}
+        WHERE user_no = ? AND product_no = ?
+        `;
+        return query(updateCartQuery, [user_no, product_no]);
+    },
+    cartInfoQuery : async function (userNo, productNo) {
+        const cartInfoQuery = `
+        SELECT *
+        FROM cart
+        WHERE user_no = ? AND product_no = ?
+        `;
+        return query(cartInfoQuery, [userNo, productNo]);
+    },
+    addWishQuery : async function (product_no, user_no){
+        const addWishQuery = `
+        INSERT wishlist
+        SET product_no = ? , user_no = ?
+        `;
+        return query(addWishQuery, [product_no, user_no]);
+    },
+    wishInfoQuery : async function (user_no){
+        const wishInfoQuery = `
+        SELECT *
+        FROM product p join wishlist w on p.product_no = w.product_no
+        WHERE w.user_no = ?;
+        `;
+        return query(wishInfoQuery, user_no);
+    },
+    delWishQuery: async function (user_no, product_no) {
+        const delWishQuery = `
+        DELETE from wishlist
+        WHERE user_no = ? and product_no = ?
+        `;
+        return query(delWishQuery, [user_no, product_no]);
     }
 };
 
