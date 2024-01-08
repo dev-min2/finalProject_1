@@ -31,6 +31,14 @@ let couponDAO = {
             return query(createAdminCouponInfo,couponInfo);
     },
 
+      //관리자-쿠폰 지급
+      giveAdminCoupon : async function(giveCouponInfo){
+        const giveAdminCoupon = `
+        insert into my_coupon set ?
+        `;
+        return query(giveAdminCoupon,giveCouponInfo)
+      },
+
     //My쿠폰 가져오기
     selectMyCouponQuery : async function(userNo) {
         const selectMyCouponQuery = 

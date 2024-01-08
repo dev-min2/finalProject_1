@@ -263,6 +263,7 @@
 </script>
 
 <style scoped>
+
     .delivery-toolbar {
         display: flex;
         justify-content: space-between;

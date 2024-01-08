@@ -86,6 +86,18 @@ productRouter.post('/adminCreateCoupon', async (req, res) => {
    }
 })
 
+//쿠폰 지급
+productRouter.post('/giveAdminCoupon', async (req, res) => {
+   let data = req.body.param;
+   try {
+      const productService = new ProductService();
+      result = await productService.giveAdminCoupon(data);
+      res.send(result);
+   } catch (e) {
+      console.log(e)
+   }
+})
+
 //판매자 기간지정 상품조회
 
 productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice/:pageNo', async (req, res) => {

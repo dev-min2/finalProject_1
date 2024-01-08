@@ -192,6 +192,19 @@ class ProductService {
         let result = await CouponDAO.createAdminCouponInfo(couponInfo);
         return result;
     }
+
+    //관리자-쿠폰지급
+    async giveAdminCoupon(sendObj) {
+        const giveCouponInfo = {
+            receive_date: sendObj.receiveDate,
+            coupon_state: sendObj.couponState,
+            user_no: sendObj.userNo,
+            coupon_no : sendObj.couponNo
+        }
+        let result = await CouponDAO.giveAdminCoupon(giveCouponInfo);
+        return result;
+    }
+
     //판매자 메인-기간,가격으로 검색
     async selectQueryByPeriod(userNo, period, minPrice, maxPrice, pageNo) {
         let result = await productDAO.selectQueryByPeriod(userNo, period, minPrice, maxPrice, pageNo);
