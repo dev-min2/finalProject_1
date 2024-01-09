@@ -412,16 +412,8 @@
                 this.$showLoading();
                 const result = await axios.put(`/api/product/productdetails/review/${rno}/${this.product_no}`)
                     .catch((err) => console.log(err));
-                this.reviewList = result.data;
-                for (let i = 0; i < this.reviewList.length; ++i) {
-                    const div = document.createElement('div');
-                    div.innerHTML = this.reviewList[i].content;
-                    this.reviewList[i].content = div.textContent || div.innerText || '';
-                    if (this.reviewList[i].content.length >= 10) {
-                        this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
-                    }
-                    this.$hideLoading();
-                }
+                this.showReviewList(this.page.curPage);
+                
             },
             ReviewBtn : async function(){
                 

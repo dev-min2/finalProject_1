@@ -202,6 +202,7 @@ class ProductService {
     //구매후기 개수
     async showReviewListCnt(product_no, userNo, pageno) {
         const result = await reviewLikeDAO.selectReviewLikeQuery(userNo, product_no, pageno);
+        console.log(result);
         const countResult = await reviewLikeDAO.selectReviewLikeCntQuery(product_no);
         const pageDTO = new PageDTO(countResult[0].cnt, Number(pageno), 5);
         const resResult = {
@@ -221,8 +222,7 @@ class ProductService {
             return null;
         }
 
-        const result3 = await reviewLikeDAO.selectReviewLikeQuery(pno);
-        return result3;
+        return true;
     }
     //관련상품 4개 리스트
     async getrelationProductList(cno) {
