@@ -1,10 +1,10 @@
 // 관리자
 import AdminTemplate from '../views/AdminTemplate.vue'
-import adminMain from '../views/adminView/adminMain.vue'
-import ProductResearchBar from '../views/adminView/ProductResearchBar.vue'
-import AdminMemberList from '../views/adminView/AdminMemberList.vue'
-import AdminCoupon from '../views/adminView/AdminCoupon.vue'
-import AdminCreateCoupon from '../views/adminView/AdminCreateCoupon.vue'
+import adminMain from '../views/adminview/adminMain.vue'
+import ProductResearchBar from '../views/adminview/ProductResearchBar.vue'
+import AdminMemberList from '../views/adminview/AdminMemberList.vue'
+import AdminCoupon from '../views/adminview/AdminCoupon.vue'
+import AdminCreateCoupon from '../views/adminview/AdminCreateCoupon.vue'
 
 export default {
     path : '/admin',
