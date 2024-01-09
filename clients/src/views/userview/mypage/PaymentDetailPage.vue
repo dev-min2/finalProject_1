@@ -24,7 +24,10 @@
                             <li v-for="(product, idx) in paymentProductsListByCompany[objectIdx]" :key="idx">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <!-- 상품명 가격 구매갯수-->
+                                        <!-- 상품명 가격 
+                                        <router-link :to="{path: '/productdetail',query: { pno: product.product_no },}">
+                                        </router-link>
+                                        구매갯수-->
                                         <h5>{{product.product_name}}</h5>
                                         <p>{{$printPriceComma(product.product_price)}}원 {{product.buy_cnt}}개</p>
                                     </div>

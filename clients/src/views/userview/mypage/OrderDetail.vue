@@ -29,32 +29,44 @@
 						</tbody>
 					</table>
 				</div>
+				<PaginationComp v-if="page !== null" :page="page" @go-page="getSelectPayment" />
+				<!--
+
+				-->
 			</div>
 		</main>
 	</div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import PaginationComp from '../../../components/common/PaginationComp.vue';
 
 export default {
+    components: {
+        PaginationComp
+    },
 	data() {
 		return {
 			userNo: '',
-			selectPaymentList : []
+			selectPaymentList : [],
+			page: null,
 		}
 	},
 	created(){
 		this.userNo = this.$store.state.userNo;
-		this.getSelectPayment();
+		this.getSelectPayment(1);
 	},
 	methods: {
 		//주문정보 가져오기
-		async getSelectPayment(){
+		async getSelectPayment(pageNo){
 			let result 
-				= await axios.get(`/api/product/orderdetail/${this.userNo}`)
+				= await axios.get(`/api/product/orderdetail?userNo=${this.userNo}&pageNo=${pageNo}`)
 							.catch(err => console.log(err));
-			this.selectPaymentList = result.data;
+			this.selectPaymentList = result.data.selectResult; 
+			this.page = result.data.pageDTO;
+			console.log(this.selectPaymentList);
+			console.log(this.page);
 		},
 		//주문상세페이지로 이동
 		goOrderDetail(paymentNo){

@@ -177,19 +177,17 @@ class ProductService {
         return cancelOk;
     }
 
-    // //4)payment_product 테이블 배송상태 변경
-    // async cancelPaymentDelivery(paymentProductNo){
-    //     const result = await paymentDAO.cancelPaymentDelivery(paymentProductNo);
-    //     return result;
-    // }
-
-
-
     /* 주문내역 전제조회 */
     //주문 전체 내역 리스트 가져오기
-    async getPaymentList(userNo){
-        const result = await paymentDAO.selectPaymentList(userNo);
-        return result;
+    async getPaymentList(userNo, pageNo){
+        const result = await paymentDAO.selectPaymentList(userNo, pageNo);
+        const countResult = await paymentDAO.selectPaymentListCnt(userNo);
+        const pageDTO = new PageDTO(countResult[0].cnt, Number(pageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+        return resResult;
     }
 
     /*주문내역 상세조회*/
@@ -204,7 +202,6 @@ class ProductService {
         const result = await paymentProductsDAO.selectPaymentDetail(paymentNo);
         return result;
     }
-
 
     /*상품조회*/
     // 상품리스트 가져오기

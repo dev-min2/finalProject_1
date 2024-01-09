@@ -463,17 +463,18 @@ productRouter.get('/paymentform', async (req, res) => {
 })
 
 //주문 전체 내역 리스트 불러오기 (전체페이지)
- productRouter.get('/orderdetail/:userNo', async(req, res) => {
+ productRouter.get('/orderdetail', async(req, res) => {
+    const userNo = req.query.userNo;
+    const pageNo = req.query.pageNo;
 
-    let userNo = req.params.userNo;
     try {
         const productService = new ProductService();
-        let result = await productService.getPaymentList(userNo);
+        let result = await productService.getPaymentList(userNo, pageNo);
         res.send(result);
     } catch (e) {
         console.log(e);
     }
-})
+});
 
 
 //주문 전체내역 단건 조회(상세페이지)
