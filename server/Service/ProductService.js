@@ -575,7 +575,6 @@ class ProductService {
     //구매후기 개수
     async showReviewListCnt(product_no, userNo, pageno) {
         const result = await reviewLikeDAO.selectReviewLikeQuery(userNo, product_no, pageno);
-        console.log(result);
         const countResult = await reviewLikeDAO.selectReviewLikeCntQuery(product_no);
         const pageDTO = new PageDTO(countResult[0].cnt, Number(pageno), 5);
         const resResult = {
@@ -584,8 +583,8 @@ class ProductService {
         }
         return resResult;
     }
-
-    async addReviewLikeCnt(rno, user_no, pno) {
+    //리뷰좋아요 등록
+    async addReviewLikeCnt(rno, user_no) {
         let result = await reviewLikeDAO.updateAddReviewLikeCntQuery(rno);
         let result2 = await reviewLikeDAO.insertAddReviewLikeCntQuery(rno, user_no);
         if (result.changedRows <= 0) {
@@ -595,6 +594,18 @@ class ProductService {
             return null;
         }
 
+        return true;
+    }
+    //리뷰좋아요 취소
+    async cancelReviewLikeCnt(rno, user_no){
+        let result2 = await reviewLikeDAO.updateMinusReviewLikeCntQuery(rno);
+        let result3 = await reviewLikeDAO.deleteMinusReviewLikeCntQuery(rno, user_no);
+        if(result2.changedRows >= 0){
+            return null;
+        }
+        if(result3.affectedRows >= 0){
+            return null;
+        }
         return true;
     }
     //관련상품 4개 리스트
