@@ -429,12 +429,12 @@ productRouter.get('/paymentform', async (req, res) => {
         let cancelFinalPrice = cancelableAmount - cancelRequestAmount; //남은 결제 금액
         let cancelPrice = price[0].payment_price - price[0].total_delivery_fee - price[0].prod_payment_price; 
         let refundPrice = price[0].refund_price + cancelRequestAmount;
-
+        
         let paymentObj = {
             real_payment_amount : cancelFinalPrice,
             total_delivery_fee : totalDeliveryFee,
             total_product : payTotalCnt,
-            //payment_amount : cancelPrice, (원결제금액)
+            payment_amount : cancelPrice, //(원결제금액)
             refund_price : refundPrice
         };
 

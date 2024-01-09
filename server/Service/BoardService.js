@@ -2,6 +2,7 @@ const fxExtra = require('fs-extra');
 const path = require('path');
 const fs = require('fs');
 const noticeBoardDAO = require('../DAO/board/NoticeBoardDAO');
+const freeBoardDAO = require('../DAO/board/FreeBoardDAO');
 const reviewDAO = require('../DAO/user/ReviewDAO');
 const {
     groupBy
@@ -193,6 +194,106 @@ class BoardService {
         const result = await reviewDAO.deleteReviewBoardQuery(reviewNo);
         return result;
     }
+
+    /*자유게시판*/
+    //자유게시판 전체조회
+    async getFreeBoardList(userNo, pageNo, keyword) {
+        const result = await freeBoardDAO.selectFreeBoardListQuery(userNo, pageNo, keyword);
+        const countResult = await freeBoardDAO.selectFreeBoardCountQuery(keyword); // 총 카운트.
+
+        const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+
+        return resResult;
+    }
+    //자유게시판 단건조회, 댓글
+    async getFreeBoardInfo(boardNo) {
+        const result = await freeBoardDAO.selectFreeBoardQuery(boardNo);
+        let replyResult = await freeBoardDAO.selectFreeBoardReplyQuery(boardNo);
+        const replyCountResult = await freeBoardDAO.selectFreeBoardReplyCountQuery(boardNo);
+        replyResult = groupBy(replyResult, 'parent_reply_no');
+
+        const attachList = this.getAttachFileList('freeboard', result[0].free_board_no);
+
+        const resResult = {
+            freeBoard: result[0],
+            reply: replyResult,
+            replyCount: replyCountResult[0].CNT,
+            attachFileList: attachList
+        }
+        console.log('보드서비스',resResult );
+        return resResult;
+    }
+
+    async updateFreeBoardViewCnt(boardNo) {
+        const result = await freeBoardDAO.updateFreeViewCntQuery(boardNo);
+        return result;
+    }
+
+    //자유게시판 등록
+    async registFreeBoard(userNo, randFreeValue, curTimeVal, freeBoardInfo) {
+        let freeVO = {
+            title: freeBoardInfo.title,
+            content: freeBoardInfo.html,
+            user_no: userNo,
+            created_date: new Date()
+        }
+
+        const result = await freeBoardDAO.insertFreeBoardQuery(freeVO);
+        if (result == null && result.affectedRows <= 0) {
+            return null;
+        }
+        // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
+        const moveResult = this.moveAttachFile('freeboard', userNo, result.insertId, randFreeValue, curTimeVal);
+        if (!moveResult) {
+            return null;
+        }
+
+        return result;
+    }
+
+    //자유게시판 덧글
+
+    async registFreeReply(replyObj) {
+        replyObj.reply_date = new Date();
+        const result = await freeBoardDAO.insertFreeReplyQuery(replyObj);
+        return result;
+    }
+
+    async deleteFreeReply(replyNo) {
+        const result = await freeBoardDAO.deleteNotieReplyQuery(replyNo);
+        return result;
+    }
+
+    async modifyFreeReply(modifyReplyObj) {
+        const result = await freeBoardDAO.updateFreeReplyQuery(modifyReplyObj.comment, modifyReplyObj.free_reply_no);
+        return result;
+    }
+
+    async modifyFreeBoard(userNo, boardNo, randFreeValue, curTimeVal, freeBoardInfo) {
+        let freeVO = {
+            title: freeBoardInfo.title,
+            content: freeBoardInfo.html
+        };
+
+        const result = await freeBoardDAO.updateFreeBoardQuery(freeVO, boardNo);
+        if (result == null && result.affectedRows <= 0) {
+            return null;
+        }
+        // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
+        const moveResult = this.moveAttachFile('freeboard', userNo, boardNo, randFreeValue, curTimeVal);
+        if (!moveResult) {
+            return null;
+        }
+
+        return result;
+    }
+
+
+ 
 }
 
 module.exports = BoardService;
