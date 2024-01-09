@@ -85,7 +85,6 @@
         this.$showLoading()
         try {
           result = await axios.get(`/api/product/AdminMemberList/${this.permission}/${this.leave}/${this.pageNo}`);
-
         } catch (e) {
           console.log(e);
         }
