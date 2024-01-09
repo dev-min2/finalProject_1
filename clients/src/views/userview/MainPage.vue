@@ -2,36 +2,36 @@
   <div>
     <Banner />
     <section class="py-3">
-            <div class="container px-4 px-lg-5 mt-5">
-              <h4>💗 이 상품 어때요? </h4>
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div v-for="(product2,idx) in productList" :key="idx">
-                      <Product :product="product2" />
-                    </div>
-                </div>
-            </div>
+      <div class="container px-4 px-lg-5 mt-5">
+        <h4>💗 이 상품 어때요? </h4>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+          <div v-for="(product2,idx) in productList" :key="idx">
+            <Product :product="product2" />
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="py-3">
-            <div class="container px-4 px-lg-5 mt-5">
-              <h4>💜 구매후기 BEST 상품! </h4>
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div v-for="(product2,idx) in productList2" :key="idx">
-                      <Product :product="product2" />
-                    </div>
-                </div>
-            </div>
+      <div class="container px-4 px-lg-5 mt-5">
+        <h4>💜 구매후기 BEST 상품! </h4>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+          <div v-for="(product2,idx) in productList2" :key="idx">
+            <Product :product="product2" />
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="py-3">
-            <div class="container px-4 px-lg-5 mt-5">
-              <h4>⭐ 별점 TOP 상품! </h4>
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div v-for="(product2,idx) in productList3" :key="idx">
-                      <Product :product="product2" />
-                    </div>
-                </div>
-            </div>
+      <div class="container px-4 px-lg-5 mt-5">
+        <h4>⭐ 별점 TOP 상품! </h4>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+          <div v-for="(product2,idx) in productList3" :key="idx">
+            <Product :product="product2" />
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 </template>
@@ -55,7 +55,7 @@
         productList3: [],
       };
     },
-    computed : {
+    computed: {
       petType() {
         return this.$store.state.curShowPetType;
       }
@@ -75,9 +75,9 @@
         this.$hideLoading();
       },
     },
-    watch : {
-      petType(newVal,oldVal) {
-        if(newVal != oldVal) {
+    watch: {
+      petType(newVal, oldVal) {
+        if (newVal != oldVal) {
           this.getMainpageProductList();
         }
       }

@@ -1,3 +1,4 @@
+
 const productDAO = require('../DAO/product/ProductDAO');
 const ReviewDAO = require('../DAO/user/ReviewDAO');
 const DeliveryDAO = require('../DAO/user/DeliveryDAO');
@@ -7,13 +8,13 @@ const {
     getConnection
 } = require('../config/dbPool');
 
-
 const categoryDAO = require("../DAO/product/CategoryDAO");
 const couponDAO = require("../DAO/product/CouponDAO");
 const CouponDAO = require("../DAO/product/CouponDAO");
 const userDAO = require("../DAO/user/UserDAO");
 const PageDTO = require("../commonModule/PageDTO");
 const fs = require('fs');
+const reviewLikeDAO = require('../DAO/user/ReviewLikeDAO');
 
 
 class ProductService {
@@ -384,7 +385,85 @@ class ProductService {
     //하랑
     async showProdDetail(product_no) {
         let result = await productDAO.showProductDetailQuery(product_no);
-        return result[0];
+        let result2 = await productDAO.relationProductListQuery(result[0].category_no);
+        const result3 = {
+            selectResult: result[0],
+            relationResult: result2
+        }
+        return result3;
+    }
+    async addCart(product_no, product_sel_cnt, user_no) {
+        let cartProduct = await productDAO.showProductDetailQuery(product_no);
+        let cartInresult = await productDAO.cartInfoQuery(user_no, product_no);
+
+        let isExistCartProduct = false;
+        for (let i = 0; i < cartInresult.length; ++i) {
+            if (cartInresult[i].product_no == product_no) {
+                isExistCartProduct = true;
+                break;
+            }
+        }
+        if (isExistCartProduct == true) {
+            if (Number(cartInresult[0].product_sel_cnt) + Number(product_sel_cnt) <= Number(cartProduct[0].product_stock)) {
+                let result = await productDAO.updateCartQuery(product_sel_cnt, user_no, product_no);
+                return result;
+            }
+        } else {
+            let result = await productDAO.addCartQuery(product_no, product_sel_cnt, user_no);
+            return result;
+        }
+    }
+    async showCartInfo(userNo, productNo) {
+        let result = await productDAO.cartInfoQuery(userNo, productNo);
+        return result;
+    }
+
+    async addWish(product_no, user_no) {
+        let result = await productDAO.addWishQuery(product_no, user_no);
+        return result;
+    }
+    async wishInfo(user_no) {
+        let result = await productDAO.wishInfoQuery(user_no);
+        return result;
+    }
+    async delWish(user_no, product_no) {
+        let result = await productDAO.delWishQuery(user_no, product_no);
+        return result;
+    }
+    //구매후기 리스트
+    async showReviewList(product_no, pageno) {
+        const result = await reviewLikeDAO.selectReviewLikeQuery(product_no, pageno);
+        return result;
+    }
+    //구매후기 개수
+    async showReviewListCnt(product_no, userNo, pageno) {
+        const result = await reviewLikeDAO.selectReviewLikeQuery(userNo, product_no, pageno);
+        const countResult = await reviewLikeDAO.selectReviewLikeCntQuery(product_no);
+        const pageDTO = new PageDTO(countResult[0].cnt, Number(pageno), 5);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+        return resResult;
+    }
+
+    async addReviewLikeCnt(rno, user_no, pno) {
+        let result = await reviewLikeDAO.updateAddReviewLikeCntQuery(rno);
+        let result2 = await reviewLikeDAO.insertAddReviewLikeCntQuery(rno, user_no);
+        if (result.changedRows <= 0) {
+            return null;
+        }
+        if (result2.affectedRows <= 0) {
+            return null;
+        }
+
+        const result3 = await reviewLikeDAO.selectReviewLikeQuery(pno);
+        return result3;
+    }
+    //관련상품 4개 리스트
+    async getrelationProductList(cno) {
+        let result = await productDAO.relationProductListQuery(cno);
+        return result;
     }
 }
 

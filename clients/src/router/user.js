@@ -12,13 +12,18 @@ import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
+
+import MyReview from '../views/userview/mypage/MyReviewList.vue'
 import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
+import WishList from '../views/userview/mypage/WishList.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
+import CreateReview from '../views/userview/noticeboard/CreateReview.vue'
+import ReviewInfo from '../views/userview/noticeboard/ReviewContent.vue'
 
 //결제
 import PaymentForm from '../views/userview/payment/PaymentForm.vue'
@@ -91,9 +96,19 @@ export default {
           component: ChangeMyInfo
         },
         {
+          path: "/myreview",
+          name: "myreview",
+          component: MyReview
+        },
+        {
           path: "/paymentDetail",
           name: "paymentDetail",
           component : PaymentDetailPage
+        },
+        {
+          path: "/wishList",
+          name: "wishList",
+          component : WishList
         }
       ]
     },
@@ -135,12 +150,22 @@ export default {
     {
       path: "/user-pass",
       name: "userPass",
-      component : CgPasswordAndAccountLeave
+      component: CgPasswordAndAccountLeave
+    },
+    {
+      path: "/myreview/write",
+      name: "myreviewWrite",
+      component: CreateReview
+    },
+    {
+      path: "/myreview/info",
+      name: "myreviewinfo",
+      component: ReviewInfo
     },
     {
       path: "/leave",
       name: "leave",
       component: CgPasswordAndAccountLeave
-    },
+    }
   ]
 };

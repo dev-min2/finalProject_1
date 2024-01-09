@@ -1,4 +1,4 @@
-g<template>
+<template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light">
       <!-- bg-light -->
@@ -46,9 +46,11 @@ g<template>
             </button>
             <button @click="$router.push('/cart')" class="btn" type="button">
               <i class="bi-cart-fill me-1"> </i>
-              <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCnt">
+              <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCnt" v-if="$store.state.userNo == -1">
                 0
-                <!-- 변경해야함 -->
+              </span>
+              <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCnt" v-else>
+                {{$store.state.cartCnt}}
               </span>
             </button>
           </div>
@@ -120,10 +122,8 @@ g<template>
     },
     created() {
       this.getCategoryData();
-
     },
     methods: {
-  
       async getCategoryData() {
         // 서버에 요청
         const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));

@@ -13,6 +13,13 @@ const myCartDAO = {
         `;
         return query(showCartQuery, user_no);
     },
+    showCartCountQuery: async function (user_no) {
+        const showCartCountQuery = `
+            SELECT COUNT(*) AS CNT FROM cart
+            WHERE user_no = ?
+        `;
+        return query(showCartCountQuery, user_no);
+    },
     selectProductStockQuery: async function (product_no) {
         const selectProductStockQuery = `
         SELECT p.product_no, p.product_stock ,c.product_sel_cnt

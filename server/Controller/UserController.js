@@ -100,6 +100,8 @@ userRouter.post('/login', async(req,res) =>{
         let result = await userService.loginUser(user);
         if(result.length > 0) {
             req.session.userNo = result[0].user_no; //session저장
+            req.session.userName = result[0].user_name;
+            console.log(req.session.userName);
         }
         res.send(result);
     }
@@ -170,11 +172,24 @@ userRouter.post('/forgot-account', async(req, res) => {
 userRouter.get('/carts/:userNo', async (req, res) => {
     let userNo = req.params.userNo;
     try {
+        console.log(userNo);
         const userService = new UserService();
         let result = await userService.showCart(userNo);
         res.send(result);
     } catch (error) {
         console.log(error);
+    }
+})
+
+userRouter.get('/cart-count/:userNo', async (req, res) => {
+    let userNo = req.params.userNo;
+    try {
+        console.log(userNo);
+        const userService = new UserService();
+        let result = await userService.showCartCount(userNo);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
     }
 })
 
@@ -239,7 +254,24 @@ userRouter.put('/info', async(req, res) => {
         console.log(e);
         res.status(500).send("FAIL");
     }
-})
+});
+
+//작성한 리뷰 목록
+userRouter.get('/myreview', async(req, res)=>{
+    const userNo = req.query.userNo;
+    const pageNo = req.query.pageNo;
+    try{
+        const userService = new UserService();
+        const result = await userService.getMyReviewList(userNo,pageNo);
+        res.send(result);
+    }catch(e) {
+        console.log(e);
+    }
+});
+
+//리뷰 작성하기
+
+
 
 userRouter.put('/password', async(req, res) => {
     try {
