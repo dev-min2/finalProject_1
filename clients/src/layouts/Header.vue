@@ -85,7 +85,18 @@
           </li>
 
         </ul>
+
         <ul class="navbar-nav">
+          <div class="btn-group">
+            <a type="button" class="dropdown-toggle" style="padding-top:8px; color:gray;" data-bs-toggle="dropdown" aria-expanded="false">
+              게시판
+            </a>
+            <ul class="dropdown-menu nav-item">
+              <li><router-link class="dropdown-item" to="/notice" href="#">공지사항</router-link></li>
+              <li><router-link class="dropdown-item" to="/notice" href="#">자유게시판</router-link></li>
+              <li><router-link class="dropdown-item" to="/notice" href="#">고객센터</router-link></li>
+            </ul>
+          </div>
           <li class="nav-item">
             <router-link class="nav-link" aria-current="page" to="/notice">공지사항</router-link>
           </li>
