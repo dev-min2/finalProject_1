@@ -21,7 +21,7 @@
                             <tr v-for="(review, idx) in reviewList" :key="idx" :review="review" @click="goReviewBoard(review.review_no,review.product_name)">
                                 <td>{{ review.review_no }}</td>
                                 <td>{{ review.product_name }}</td>
-                                <td>{{ review.product_price }}</td>
+                                <td>{{ $printPriceComma(review.product_price) }}</td>
                                 <td>{{ review.buy_cnt }}</td>
                                 <td>{{ this.$dateFormat(review.payment_date) }}</td>
                                 <!-- <td><button class="btn btn-primary my-2" style="background-color:#fc97bf; border:0;"
