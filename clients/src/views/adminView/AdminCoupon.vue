@@ -111,7 +111,7 @@
 
 <script>
     import PaginationComp from '../../components/common/PaginationComp.vue'
-
+    import PaginationComp2 from '../../components/common/PaginationComp.vue'
     import axios from 'axios';
 
     export default {
@@ -138,6 +138,7 @@
         },
         components: {
             PaginationComp,
+            PaginationComp2
         },
         created() {
             this.getAdminCouponList(1)
