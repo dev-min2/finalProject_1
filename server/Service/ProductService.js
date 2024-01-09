@@ -53,7 +53,6 @@ class ProductService {
         } catch (e) {
             console.log(e);
             await connection.rollback(); //결제처리 실패
-<<<<<<< HEAD
             isCompletePayment = false;
         }
         finally {
