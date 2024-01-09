@@ -127,13 +127,24 @@ boardRouter.put('/notice', async(req, res) => {
     }
 })
 //하랑
-boardRouter.get('/qna/:productNo', async (req, res) => {
+boardRouter.get('/qna/:productNo/:pageNo', async (req, res) => {
     let productNo = req.params.productNo
+    let pageNo = req.params.pageNo
     try {
         const boardService = new BoardService();
-        let result = await boardService.getQnaList(productNo);
+        let result = await boardService.getQnaList(productNo, pageNo);
         res.send(result);
     } catch(err) {
+        console.log(err);
+    }
+})
+boardRouter.get('/allqna/:pageNo', async (req, res) => {
+    let pageNo = req.params.pageNo
+    try {
+        const boardService = new BoardService();
+        let result = await boardService.allQnaList(pageNo);
+        res.send(result);
+    } catch (err) {
         console.log(err);
     }
 })
@@ -142,7 +153,7 @@ boardRouter.post('/qna', async (req, res) => {
     let title = req.body.title;
     let boardPublic = req.body.boardPublic;
     let content = req.body.content;
-    let productNo = req.query.pno;
+    let productNo = req.body.pno;
     let userNo = req.body.userNo;
     try {
         const boardService = new BoardService();
@@ -159,6 +170,51 @@ boardRouter.get('/qna', async (req, res) => {
         let result = await boardService.detailQna(qno);
         res.send(result);
     } catch (err) {
+        console.log(err);
+    }
+})
+boardRouter.put('/qnamod', async (req, res) => {
+    let qnaCategory = req.body.qnaCategory;
+    let title = req.body.title;
+    let boardPublic = req.body.boardPublic;
+    let content = req.body.content;
+    let qno = req.body.qno
+    try {
+        const boardService = new BoardService();
+        let result = await boardService.modQna(qnaCategory, title, boardPublic, content, qno);
+        res.send(result);
+    } catch(err) {
+        console.log(err);
+    }
+})
+boardRouter.delete('/qnadel', async (req, res) => {
+    let qno = req.query.qno
+    try {
+        const boardService = new BoardService();
+        let result = await boardService.delQna(qno);
+        res.send(result);
+    } catch(err) {
+        console.log(err);
+    }
+})
+boardRouter.post('/reqna', async (req, res) => {
+    let content = req.body.content
+    let qno = req.body.qno
+    try {
+        const boardService = new BoardService();
+        let result = await boardService.addReQna(content, qno);
+        res.send(result);
+    } catch (err) {
+        console.log(err);
+    }
+})
+boardRouter.get('/myqna', async (req, res) => {
+    let userNo = req.query.userNo
+    try {
+        const boardService = new BoardService();
+        let result = await boardService.myQna(userNo);
+        res.send(result);
+    } catch(err) {
         console.log(err);
     }
 })

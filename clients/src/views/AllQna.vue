@@ -1,7 +1,7 @@
 <template>
-<div id="layoutSidenav_content">
+<div >
 		<main>
-			<div class="container-fluid px-4">
+			<div class="container px-4">
 				<div class="px-4 py-1 my-3 text-center">
 					<h2 class="fw-bold mb-3">문의사항</h2>
 				</div>
@@ -18,8 +18,8 @@
 							</tr>
 						</thead>
 						<tbody>
-					<tr v-if="myQnaList.length <= 0"><td style=color:gray; colspan="7">아직 작성된 문의가 없습니다.</td></tr>
-                    <tr v-else v-for="(qna,idx) in myQnaList" :key="idx">
+					<tr v-if="allQnaList.length <= 0"><td style=color:gray; colspan="7">아직 작성된 문의가 없습니다.</td></tr>
+                    <tr v-else v-for="(qna,idx) in allQnaList" :key="idx">
                         <th v-if="qna.board_public == 'H1'">공개글</th>
                         <th v-else-if="qna.board_public == 'H2'">비공개글</th>
                         <th>{{qna.qna_board_no}}</th>
@@ -36,11 +36,13 @@
                         <th v-if="qna.qna_state == 'K1'" style="color : red">답변대기중</th>
                         <th v-if="qna.qna_state == 'K2'" style="color : blue">답변완료</th>
                     </tr>
+                    
 				</tbody>
-                   
+                
 			</table>
-            <PaginationComp2 v-if="qnaPage !== null" :page="qnaPage" @go-page="getQnaResult"/>
+                
 				</div>
+                <PaginationComp v-if="qnaPage !== null" :page="qnaPage" @go-page="getAllQna"/>       
 			 <button @click="toAddQnaForm">
                 문의글 작성
              </button>
@@ -51,25 +53,29 @@
 
 <script>
     import axios from 'axios'
-
+    import PaginationComp from '../components/common/PaginationComp.vue';
     export default {
         components: {
+            PaginationComp
         },
         data() {
             return {
-                myQnaList : [],
+                allQnaList : [],
+                qnaPage : null,
+                qnaPageNo : 1,
             }
         },
         created() {
-            this.getMyQna();
+            this.getAllQna(this.qnaPageNo);
         },
         methods: {
-            async getMyQna(){
+            async getAllQna(qnaPage){
                 this.$showLoading();
-                let result = await axios
-                                    .get(`/api/board/myqna?userNo=${this.$store.state.userNo}`)
+                const result = await axios
+                                    .get(`/api/board/allqna/${qnaPage}`)
                                     .catch(err => console.log(err));
-                this.myQnaList = result.data;
+                this.allQnaList = result.data.selectResult;
+                this.qnaPage = result.data.page;
                 this.$hideLoading();
             },
             toAddQnaForm(){

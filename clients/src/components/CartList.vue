@@ -2,7 +2,7 @@
   <div class="container">
     <template
       v-for="(company, companyIndex, idx) in cartList" :key="idx">
-      <h2>업체명 : {{company[0].company_name}}</h2>
+      <h3>업체명 : {{company[0].company_name}}</h3>
       <table class="cart_list">
         <thead>
           <tr>
@@ -56,12 +56,12 @@
                   </router-link>               
               </td>
             <td>
-              <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}">{{products.product_name}}</router-link>
-              <br />
-              <span class="price">가격 : {{ products.product_price }}</span>
+              <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}" style="text-decoration : none; color : black"><span style="font-weight : bold; font-size : medium">{{products.product_name}}</span></router-link>
+              <hr />
+              <span class="price" style="font-weight : bold; font-size : medium">가격 : {{ products.product_price }}</span>
             </td>
             <td class="cart_list_option" v-if="products.product_stock > 0">
-              <p>선택수량 : {{ products.product_sel_cnt }}</p>
+              <h6 style="font-weight : bold">선택수량 : {{ products.product_sel_cnt }}</h6>
               <input
                 type="button"
                 value="▲"
@@ -77,6 +77,7 @@
               <input
                 type="button"
                 value="상품 삭제"
+                style="font-weight : bold"
                 class="cart_list_optionbtn"
                 @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
               />
@@ -100,7 +101,7 @@
               />
             </td>  
             <td>
-              <span class="price">{{products.product_price * products.product_sel_cnt}}</span>
+              <span class="price" style="font-weight : bold; font-size : medium">{{products.product_price * products.product_sel_cnt}}</span>
               <br />
             </td>
           </tr>
@@ -110,7 +111,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td colspan="2"><h4>선택 상품금액 : {{companyPriceList[idx]}}원 <br> 배송비 : {{deliveryPriceList[idx]}}원 <hr>결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
+            <td colspan="2"><h4>◀{{company[0].company_name}}▶ 선택 상품금액 : {{companyPriceList[idx]}}원 <br>◀{{company[0].company_name}}▶ 배송비 : {{deliveryPriceList[idx]}}원 <hr>결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
           </tr>
           <br>
           <br>
@@ -444,7 +445,7 @@ td {
 }
 .cart_list_optionbtn {
     background-color: white;
-    font-size: 10px;
+    font-size: 12px;
     border: lightgrey solid 1px;
     padding: 7px;
 }

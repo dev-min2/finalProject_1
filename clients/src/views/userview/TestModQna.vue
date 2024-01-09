@@ -1,23 +1,24 @@
 <template>   
+{{this.qnaDetail}}
 <section class="py-5">
 <div class="container px-4 px-lg-5 mt-5">
     <div class="container-fluid">
         <form action="addUserQna.do" name="addQnaForm" method="post"
             style="text-align: center">
             
-            <h3>문의글 작성</h3>
+            <h3>문의글 수정</h3>
             <br>
             <hr>
             <table class="table" border="1">
             <tr>
-                <th colspan="3">작성자</th>
+                <th>글번호</th>
+							<td>{{qnaDetail.qna_board_no}}</td>	
+                <th colspan="2">작성자</th>
                 <td><input type="hidden" name="userName"
                     value="">{{this.$store.state.userName}}</td>
 
-                <th colspan="2">문의상태</th>
-                <td>
-                        문의대기중
-                </td>
+                <th>문의상태</th>
+                <td>문의대기중</td>
             </tr>
             <tr>
             
@@ -67,9 +68,12 @@
             </tr>
             <tr>
                 <td colspan="14" align="center">
-                <button type="button" @click="addQna()">등록하기</button></td>
+                <button type="button" @click="modQna()">수정하기</button></td>
             </tr>
             </table>
+            <router-link to="" style="text-decoration : none; color : black">
+                전체 문의 목록으로
+            </router-link>
         </form>
     </div>
 </div>
@@ -83,29 +87,38 @@ export default {
             pno : '',
             pname : '',
             radio : '',
-            category : ''
+            category : '',
+            qnaDetail:[],
         }
     },
     created(){
-        this.pno = this.$route.query.pno;
+        this.qno = this.$route.query.qno;
         this.pname = this.$route.query.pname;
+        this.getDetailQna();
     },
     methods:{
-        async addQna(){
+        async getDetailQna(){
+            this.$showLoading();
+            let result = await axios
+                        .get(`/api/board/qna?qno=${this.qno}`)
+                        .catch(err => console.log(err));
+            this.qnaDetail = result.data;
+            this.$hideLoading();
+        },
+        async modQna(){
             this.$showLoading();
             let obj = {
                 qnaCategory : this.category,
                 title : this.title,
                 boardPublic : this.radio,
                 content : this.content,
-                userNo : this.$store.state.userNo,
-                pno : this.pno
+                qno : this.qno,
             }
             let result = await axios
-                        .post(`/api/board/qna`,obj)
+                        .put(`/api/board/qnamod`,obj)
                         .catch(err => console.log(err));
         if(result.data.affectedRows > 0){
-            this.$showSuccessAlert("문의 등록이 완료되었습니다.");
+            this.$showSuccessAlert("문의 수정이 완료되었습니다.");
         }
         this.$hideLoading();
         },

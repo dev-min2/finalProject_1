@@ -3,129 +3,88 @@
     <section class="py-5">
 	<div class="container px-4 px-lg-5 mt-5">
 		<div class="container-fluid">
-			<!-- <form action="modifyUserQnaForm.do" name="userQnaDetailForm" method="post" style=text-align:center;>
-				<input type="hidden" name="qnaNo" value="${vo.qnaNo }">
+			<form action="modifyUserQnaForm.do" name="userQnaDetailForm" method="post" style=text-align:center;>
+				<input type="hidden" name="qnaNo" value="">
 				<h3>문의글</h3>
 				<br><hr>
 				<table class="table" border="1">
 					<tr>
-						<th colspan="2">글번호</th>
-							<td>${vo.qnaNo }</td>	
+						<th>글번호</th>
+							<td>{{qnaDetail.qna_board_no}}</td>	
 						<th colspan="2">작성자</th>
-							<td>${userVo.nickName }</td>
+							<td>{{this.$store.state.userName}}</td>
 						<th colspan="2">작성일시</th>
-							<td>
-								<fmt:formatDate value="${vo.registDate }"
-								pattern="yyyy-MM-dd  hh:mm"></fmt:formatDate>
+							<td>{{$dateFormat(qnaDetail.created_date)}}</td>
+						<th colspan="2">문의상태</th>
+							<td v-if="qnaDetail.qna_state == 'K2' " >
+							<span><b style="color: blue;">답변완료</b></span>
 							</td>
-						<th colspan="1">문의상태</th>
-							<td>
-								<c:if test="${not empty vo.qnaNo}">
-	                    				<c:choose>
-	                    					<c:when test="${vo.qnaState==1 }" >
-	                    						<p style="color: blue;"><b>답변완료</b></p>
-	                    					</c:when>
-	                    					<c:otherwise>
-	                    						<p style="color: red;"><b>문의대기중</b></p>
-	                    					</c:otherwise>
-	                    				</c:choose>
-                    				</c:if>
+							<td v-else >
+							<span><b style="color: red;">답변대기중</b></span>		
 							</td>
 					</tr>
 
 
 					<tr>
-						<th colspan="2">글제목</th>
-						<td>${vo.title }</td>
 						<th colspan="1">문의종류</th>
-						<td>${vo.qnaType }<td>
+							<td v-if="qnaDetail.qna_category == 'G1'">상품문의</td>
+							<td v-else-if="qnaDetail.qna_category == 'G2'">배송문의</td>
+							<td v-else-if="qnaDetail.qna_category == 'G3'">교환/환불문의</td>
+							<td v-else-if="qnaDetail.qna_category == 'G4'">기타문의</td>
+						<th colspan="2">글제목</th>
+							<td>{{qnaDetail.title}}</td>
+							
 						
-						<c:if test="${vo.qnaType =='상품문의'}">
 							<th colspan="2">상품명</th>
-							<td>${productVo.productName }<td>
-						</c:if>
+								<td>{{this.pname}}</td>
+							<th colspan="2">공개여부</th>
+								<td v-if="qnaDetail.board_public == 'H1'">공개글</td>
+								<td v-else-if="qnaDetail.board_public == 'H2'">비공개글</td>
 					</tr>
-
-
 					<tr>
 						<td colspan="14"><textarea rows="10" cols="40"
-								class="form-control" disabled>${vo.contents }</textarea></td>
+								class="form-control" disabled>{{qnaDetail.content}}</textarea></td>
 					</tr>
-
 					<tr>
-						
-					</tr>
-
-					<tr>
-						<td colspan="14" align="center" >
-						<c:choose>
-							<c:when test="${not empty uno && uno ==userVo.userNo }">
-								<c:choose>
-									<c:when test="${vo.qnaState==1 }">
-										<input disabled type="submit" value="수정">
-										<input type="button" value="삭제">
-									</c:when>
-									<c:otherwise>
-										<input type="submit" value="수정">
-										<input type="button" value="삭제">
-									</c:otherwise>
-								</c:choose>
-							
-							
-								
-							</c:when>
-							<c:otherwise>
-								<input disabled type="submit" value="수정">
-								<input disabled type="button" value="삭제">
-							</c:otherwise>
-						</c:choose>
-						
-						
+						<td v-if="qnaDetail.user_no == this.$store.state.userNo && qnaDetail.qna_admin_reply == null" colspan="14" align="center" >
+										<router-link :to="{
+											path : '/modqnaform',
+											query: {qno: qnaDetail.qna_board_no, pname : this.pname}
+											}">
+										<input type="button" value="수정">
+										</router-link>
+										<input type="button" value="삭제" @click="delqna()">
 						</td>
 					</tr>
 				</table>
-			</form> -->
+			</form>
 			
 			
 			<br><br>
-			<!-- <form style=text-align:center action="qnaReply.do" method="post">
-				<input type="hidden" name="qnaNo" value="${vo.qnaNo }">
+			<form style=text-align:center method="post">
+				<input type="hidden" name="qnaNo" value="">
 				<h3>문의답변</h3>
 				<br><hr>
 				<table class="table">
-				
-						<c:choose>
-							<c:when test="${vo.qnaState ==1 }">
-								<tr>
-									<td><textarea rows="10" cols="40" class="form-control" disabled>${vo.qnaReply }</textarea></td>
+								<tr v-if="this.$store.state.userPermission == 'F3'">
+									<td v-if="qnaDetail.qna_admin_reply == null"><textarea rows="10" cols="40" class="form-control" name="reply" v-model="content"></textarea></td>
+									<td v-else><textarea rows="10" cols="40" class="form-control" name="reply" v-model="content"></textarea></td>
 								</tr>
-							</c:when>
-							
-							
-							<c:otherwise>
-								<c:choose>
-								
-									<c:when test="${permission =='0'}">
-									<tr>
-										<td><textarea rows="10" cols="40" class="form-control" name="reply"></textarea></td>
-									</tr>
-									<tr>
-										<td><input type="submit" value="등록하기"></td>
-									</tr>
-									</c:when>
-									
-									<c:otherwise>
-										<td><textarea rows="" cols="40" class="form-control" disabled>*아직 답변이 달리지 않았습니다.*</textarea></td>
-									</c:otherwise>
-									
-								</c:choose>
-							</c:otherwise>
-						</c:choose>	
+								<tr v-else>	
+									<td v-if="qnaDetail.qna_admin_reply == null"><textarea rows="" cols="40" class="form-control" disabled>*아직 답변이 달리지 않았습니다.*</textarea></td>							
+									<td v-else><textarea rows="10" cols="40" class="form-control" disabled>{{qnaDetail.qna_admin_reply}}</textarea></td>
+								</tr>
+								<tr v-if="this.$store.state.userPermission == 'F3'">
+									<td><input type="button" value="등록하기" @click="reqna()"></td>
+								</tr>
+								<tr v-else>
+									<!-- <td><input type="button" value="등록하기" @click="reqna()" disabled></td> -->
+								</tr>
 				</table>
-				<p>
-					<a href="getUserQnaAllList.do">목록으로</a>
-				</p>
-			</form> -->
+				<!-- <p>
+					<a href="">목록으로</a>
+				</p> -->
+			</form>
 			
 			
 		</div>
@@ -138,11 +97,13 @@ export default {
     data(){
         return{
             qno : '',
+			pname : '',
             qnaDetail:[],
         };
     },
     created(){
         this.qno = this.$route.query.qno;
+		this.pname = this.$route.query.pname;
         this.getDetailQna();
     },
     methods:{
@@ -152,9 +113,41 @@ export default {
                         .get(`/api/board/qna?qno=${this.qno}`)
                         .catch(err => console.log(err));
             this.qnaDetail = result.data;
+			if(this.qnaDetail.qna_admin_reply != null){
+				this.content = this.qnaDetail.qna_admin_reply;
+			}
             this.$hideLoading();
-        }
-    }
-    
+        },
+		async delqna(){
+			this.$showLoading();
+            let result = await axios
+                        .delete(`/api/board/qnadel?qno=${this.qno}`)
+                        .catch(err => console.log(err));
+            this.qnaDetail = result.data;
+			if(result.data.affectedRows > 0){
+        this.$showSuccessAlert("문의가 삭제되었습니다.");
+            this.$hideLoading();
+			}
+    },
+		async reqna(){
+			this.$showLoading();
+			let obj = {
+				content : this.content,
+				qno : this.qno,
+			}
+			let result = await axios
+						.post(`/api/board/reqna`,obj)
+						.catch(err => console.log(err));
+			if(result.data.affectedRows > 0){
+				this.$showSuccessAlert("문의답변이 등록되었습니다.")
+			}
+			this.$hideLoading();
+		}
+	}  
 }
 </script>
+<style scoped>
+th, td{
+	vertical-align: middle;
+}
+</style>

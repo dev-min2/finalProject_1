@@ -7,6 +7,8 @@ import CartView from '../views/userview/CartView.vue'
 import TestProductDetailView from '../views/userview/TestProductDetail.vue'
 import TestAddQna from '../views/userview/TestAddQna.vue'
 import TestDetailQna from '../views/userview/DetailQna.vue'
+import TestModQna from '../views/userview/TestModQna.vue'
+import AllQna from '../views/AllQna.vue'
 
 //마이페이지
 import MyPageSide from '../components/common/MypageSidebar.vue'
@@ -75,6 +77,16 @@ export default {
       path: "/detailqnaform",
       name: "detailqnaform",
       component: TestDetailQna,
+    },
+    {
+      path: "/modqnaform",
+      name: "modqnaform",
+      component: TestModQna,
+    },
+    {
+      path: "/allqna",
+      name: "allqna",
+      component: AllQna,
     },
     {
       path: "/mypageside",

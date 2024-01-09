@@ -150,22 +150,21 @@
                         <th><router-link style="text-decoration : none" 
                             :to="{
                                 path: '/detailqnaform',
-                                query: {qno: qna.qna_board_no},
+                                query: {qno: qna.qna_board_no, pname : this.productDetail.product_name},
                                 }">{{qna.title}}</router-link></th>
                         <th>{{qna.user_name}}</th>
                         <th>{{$dateFormat(qna.created_date)}}</th>
-                        <th v-if="qna.qna_state == 'K1'" style="color : blue">답변대기중</th>
-                        <th v-if="qna.qna_state == 'K2'" style="color : red">답변완료</th>
+                        <th v-if="qna.qna_state == 'K1'" style="color : red">답변대기중</th>
+                        <th v-if="qna.qna_state == 'K2'" style="color : blue">답변완료</th>
                     </tr>
-		          
-				
-				
-				
 				</tbody>
+                   
 			</table>
+            <PaginationComp2 v-if="qnaPage !== null" :page="qnaPage" @go-page="getQnaResult"/>
 			 <button @click="toAddQnaForm">
                 문의글 작성
              </button>
+             
 		</div>
 		<hr>
 		</form>
@@ -314,8 +313,13 @@
 <script>
 import axios from 'axios'
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
+
+import PaginationComp2 from '../../components/common/PaginationComp.vue';
 let toastViewer = null;
 export default {
+    components : {
+        PaginationComp2
+    },
     data(){
         return{
             productDetail:[],
@@ -323,11 +327,13 @@ export default {
             cnt: 1,
             wishInfo : [],
             qnaInfo : [],
+            qnaPage : null,
+            qnaPageNo : 1
         };
     },
     async created(){
         await this.getProductDetail(this.$route.query.pno);
-        
+        await this.getQnaResult(this.qnaPageNo);
         const viewDiv = this.$refs.viewer;
         const html = this.productDetail.product_detail_desc;
         toastViewer = new Viewer({
@@ -347,14 +353,18 @@ export default {
                         .catch(err => console.log(err));
             const wishResult = await axios
                         .get(`/api/product/wish/${this.$store.state.userNo}`)
-                        .catch(err => console.log(err));
-            const qnaResult = await axios
-                        .get(`/api/board/qna/${this.productDetail.product_no}`)
-                        .catch(err => console.log(err));            
+                        .catch(err => console.log(err)); 
             this.cartInfo = cartResult.data;
             this.wishInfo = wishResult.data;
-            this.qnaInfo = qnaResult.data;
+            
             this.$hideLoading();
+        },
+        async getQnaResult(qnaPage) {
+            const qnaResult = await axios
+                        .get(`/api/board/qna/${this.productDetail.product_no}/${qnaPage}`)
+                        .catch(err => console.log(err));           
+            this.qnaInfo = qnaResult.data.selectResult;
+            this.qnaPage = qnaResult.data.page;
         },
         async addWishfunction(){
             if(this.$store.state.userNo <= 0) {
