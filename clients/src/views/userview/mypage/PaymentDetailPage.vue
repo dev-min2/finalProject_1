@@ -38,7 +38,7 @@
                                         <br>
                                         <!---->
                                         <div name="reviewBtn" v-if= "product.delivery_state == 'C1' && myCouponNo == null" >
-                                            <button class="btn btn-primary" style="background-color: #fab3cc; border: none; margin : 5px;"><router-link :to="{ path: '/myreview/write/${this.reviewBoardInfo/${this.product_no}}', params : {reviewBoardInfo : this.reviewBoardInfo, product_no : this.reviewBoardInfo.product_no}}" >후기작성</router-link></button>
+                                            <button class="btn btn-primary" style="background-color: #fab3cc; border: none; margin : 5px;"><router-link to="'/myreview/write/' + this.reviewBoardInfo.product_no">후기작성</router-link></button>
                                             <button class="btn btn-primary" @click="cancelSelectPayment(product)" style="background-color: #acb1f8; border: none; margin : 5px;">주문취소</button>
                                         <!--주문취소상태일 경우 리뷰버튼 비활성화-->
                                         </div>

@@ -109,16 +109,23 @@
                                 <td>아직 작성된 리뷰가 없습니다.</td>
                             </tr>
                             <tr v-else v-for="(review, idx) in reviewList" :key="idx">
-                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal"> {{ review.review_no }}</td>
-                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal"> {{ review.content }}</td>
-                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal"> {{ review.star_cnt }}</td>
-                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal"> {{ review.user_name }}</td>
-                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal"> {{ $dateFormat(review.review_date) }}</td>
-                                          <!-- 리뷰좋아요버튼 -->
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.review_no }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.content }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.star_cnt }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.user_name }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ $dateFormat(review.review_date) }}</td>
+                                <!-- 리뷰좋아요버튼 -->
                                 <td v-if="review.like_click == 0">
-                                        <button @click="addReviewLikeCnt(review.review_no)" style="border:0;background:none;">🤍</button>
+                                    <button @click="addReviewLikeCnt(review.review_no)"
+                                        style="border:0;background:none;">🤍</button>
                                     {{ review.review_like_cnt }} </td>
-                                <td v-else><button @click="cancleReviewLikeCnt(review.review_no)" style="border:0;background:none;">❤</button>
+                                <td v-else><button @click="cancleReviewLikeCnt(review.review_no)"
+                                        style="border:0;background:none;">❤</button>
                                     {{ review.review_like_cnt }} </td>
 
                             </tr>
@@ -127,44 +134,45 @@
                     <PaginationComp v-if="page !== null" :page="page" @go-page="showReviewList" />
                 </div>
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel"> 리뷰 상세내용 </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container mt-3">
-                                <div class="row">
-                                    <div class="col-md-12 offset-md-0">
-                                        <h2 class="my-3">리뷰내용</h2>
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title"></h3>
-                                                <div style="float:left" ref="title">
-                                                    
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"> 리뷰 상세내용 </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container mt-3">
+                                    <div class="row">
+                                        <div class="col-md-12 offset-md-0">
+                                            <h2 class="my-3">리뷰내용</h2>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title"></h3>
+                                                    <div style="float:left" ref="title">
+
+                                                    </div>
+                                                    <div style="float:right" ref="starPos">
+
+                                                    </div>
                                                 </div>
-                                                <div style="float:right" ref="starPos">
-                                                    
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div ref="viewer2">
-                                                
+                                                <div class="card-body">
+                                                    <div ref="viewer2">
+
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
                 <!-- 문의게시판 -->
                 <form action=addUserQnaForm.do name=productDetail method="post">
                     <div id="qna" class="qnaTable">
@@ -254,11 +262,12 @@
                 product_no: 0,
                 reviewLikeArray: [],
                 page: null,
-                relationCategoryList: []
+                relationCategoryList: [],
             };
         },
         async created() {
             this.product_no = this.$route.query.pno;
+
             await this.getProductDetail(this.$route.query.pno);
             await this.showReviewList(1);
             const viewDiv = this.$refs.viewer;
@@ -272,10 +281,10 @@
             async getProductDetail(pno) {
                 this.$showLoading();
                 let result = await axios
-                    .get(`/api/product/productDetail?pno=${pno}`)
+                    .get(`/api/product/productDetail?pno=${pno}&ptype=${this.$store.state.curShowPetType}`)
                     .catch(err => console.log(err));
                 this.productDetail = result.data.selectResult;
-                this.relationCategoryList = result.data.relationResult
+                this.relationCategoryList = result.data.relationResult;
                 const cartResult = await axios
                     .get(`/api/product/productDetail/${this.$store.state.userNo}/${this.productDetail.product_no}`)
                     .catch(err => console.log(err));
@@ -315,6 +324,7 @@
                         .catch(err => console.log(err));
                     this.wishInfo = wishResult.data;
                 }
+
                 this.$hideLoading();
             },
             async addCartfunction() {
@@ -441,7 +451,7 @@
 
                 modalTitle.innerHTML = `<p>${this.productDetail.product_name}</p>`;
                 let starTag = "<p style='color:#fab3cc; display:inline-block;'>별점 | ";
-                for(let i = 0; i < review.star_cnt; ++i) {
+                for (let i = 0; i < review.star_cnt; ++i) {
                     starTag += '★';
                 }
                 starTag += '</p>';
@@ -458,7 +468,7 @@
     }
 </script>
 <style scoped>
-.modal-dialog {
+    .modal-dialog {
         max-width: 50%;
     }
 </style>

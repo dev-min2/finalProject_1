@@ -1,4 +1,3 @@
-
 const productDAO = require('../DAO/product/ProductDAO');
 const ReviewDAO = require('../DAO/user/ReviewDAO');
 const DeliveryDAO = require('../DAO/user/DeliveryDAO');
@@ -15,7 +14,7 @@ const userDAO = require("../DAO/user/UserDAO");
 const PageDTO = require("../commonModule/PageDTO");
 const fs = require('fs');
 const reviewLikeDAO = require('../DAO/user/ReviewLikeDAO');
-const axios = require ('axios');
+const axios = require('axios');
 
 
 class ProductService {
@@ -33,7 +32,7 @@ class ProductService {
     }
 
     //결제 완료 처리
-    async completePayment(paymentObj, paymentData, userNo, cartNo, couponNo){ 
+    async completePayment(paymentObj, paymentData, userNo, cartNo, couponNo) {
         let isCompletePayment = true;
 
         const connection = await getConnection();
@@ -44,8 +43,8 @@ class ProductService {
             for (let i = 0; i < paymentData.length; ++i) {
                 let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData[i], connection); //개별상품결제정보 삽입
             }
-            let result3 = await paymentProductsDAO.deleteCartQuery(userNo,cartNo,connection); //장바구니 삭제
-            if(couponNo != null){
+            let result3 = await paymentProductsDAO.deleteCartQuery(userNo, cartNo, connection); //장바구니 삭제
+            if (couponNo != null) {
                 let result4 = await couponDAO.updateMyCouponQuery(couponNo, connection);
             }
 
@@ -54,8 +53,7 @@ class ProductService {
             console.log(e);
             await connection.rollback(); //결제처리 실패
             isCompletePayment = false;
-        }
-        finally {
+        } finally {
             connection.release(); //사용한 커넥션 다시 풀에 반납
         }
 
@@ -63,29 +61,31 @@ class ProductService {
     }
 
     //결제 환불취소를 위해 토큰 받아오기
-    async getImpAccessToken(){
+    async getImpAccessToken() {
         const getToken = await axios({
             url: 'https://api.iamport.kr/users/getToken',
             method: 'post',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             data: {
-              imp_key: '0833153213402854', // REST API
-              imp_secret: 'hkzGl1ceMe9P7BqdugRuaoXji3Kpi2gAURNPZbmeb7uQ74xWPDvwQjLINIj1QCP1gS8MUPPw87QCUhqq' // REST API Secret
+                imp_key: '0833153213402854', // REST API
+                imp_secret: 'hkzGl1ceMe9P7BqdugRuaoXji3Kpi2gAURNPZbmeb7uQ74xWPDvwQjLINIj1QCP1gS8MUPPw87QCUhqq' // REST API Secret
             }
         });
-        
+
         const accessToken = getToken.data.response.access_token;
         return accessToken;
     }
 
-     /* 결제 전체 취소 */
-    async cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount){
-        
+    /* 결제 전체 취소 */
+    async cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount) {
+
         const accessToken = await this.getImpAccessToken();
         //deliveryState로 배송상태 검증하기 (수정하기)
 
         // 포트원 REST API로 결제환불 요청
-        try{
+        try {
             const getCancelData = await axios({
                 url: "https://api.iamport.kr/payments/cancel",
                 method: "post",
@@ -102,7 +102,7 @@ class ProductService {
             });
             console.log('포트원 데이터뽑아요', getCancelData);
 
-            if(getCancelData.status != 200 || getCancelData.data.code != 0 ){
+            if (getCancelData.status != 200 || getCancelData.data.code != 0) {
                 console.log('취소 실패');
                 return;
             }
@@ -119,26 +119,26 @@ class ProductService {
 
     /* 결제 부분 취소 */
     //1)전체/부분 가격 가져오기
-    async cancelSelectPayPrice(paymentProductNo){
+    async cancelSelectPayPrice(paymentProductNo) {
         const result = await paymentDAO.cancelSelectPayPrice(paymentProductNo);
         return result;
     }
 
     //2)업체별 합계 가져오기
-    async cancelCompanySum(sellerNo, paymentNo){
+    async cancelCompanySum(sellerNo, paymentNo) {
         const result = await paymentDAO.cancelCompanySum(sellerNo, paymentNo);
         return result;
     }
 
     //3) REST API로 결제환불 요청
     async cancelSelectAPI(
-                    paymentNo, impUid, cancelRequestAmount, cancelableAmount, 
-                            paymentObj, paymentProductNo, deliveryFee, sellerNo
-    ){
+        paymentNo, impUid, cancelRequestAmount, cancelableAmount,
+        paymentObj, paymentProductNo, deliveryFee, sellerNo
+    ) {
         let cancelOk = true;
         const connection = await getConnection();
         const accessToken = await this.getImpAccessToken();
-        try{
+        try {
             const getCancelData = await axios({
                 url: "https://api.iamport.kr/payments/cancel",
                 method: "post",
@@ -154,24 +154,22 @@ class ProductService {
                 }
             });
 
-            if(getCancelData.status != 200 || getCancelData.data.code != 0 ){
+            if (getCancelData.status != 200 || getCancelData.data.code != 0) {
                 console.log('취소 실패');
                 return;
             }
             //트랜잭션 시작
-            await connection.beginTransaction(); 
+            await connection.beginTransaction();
             const result1 = await paymentDAO.cancelUpdatePayment(paymentObj, paymentNo, connection); //update payment
             const result2 = await paymentDAO.cancelUpdatePaymentProduct(deliveryFee, paymentNo, sellerNo, connection);
             const result3 = await paymentDAO.cancelPaymentDelivery(paymentProductNo, connection);
             await connection.commit();
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
             console.log('실패');
             await connection.rollback(); //결제취소처리 실패
             cancelOk = false;
-        }
-        finally {
+        } finally {
             connection.release(); //사용한 커넥션 다시 풀에 반납
         }
         return cancelOk;
@@ -187,20 +185,20 @@ class ProductService {
 
     /* 주문내역 전제조회 */
     //주문 전체 내역 리스트 가져오기
-    async getPaymentList(userNo){
+    async getPaymentList(userNo) {
         const result = await paymentDAO.selectPaymentList(userNo);
         return result;
     }
 
     /*주문내역 상세조회*/
     //주문 전체내역 중 단건 조회 
-    async getPaymentInfo(paymentNo){
+    async getPaymentInfo(paymentNo) {
         const result = await paymentDAO.selectPaymentInfo(paymentNo);
         return result;
     }
 
     //주문 세부 내역 가져오기
-    async getPaymentDetail(paymentNo){
+    async getPaymentDetail(paymentNo) {
         const result = await paymentProductsDAO.selectPaymentDetail(paymentNo);
         return result;
     }
@@ -337,7 +335,7 @@ class ProductService {
             receive_date: sendObj.receiveDate,
             coupon_state: sendObj.couponState,
             user_no: sendObj.userNo,
-            coupon_no : sendObj.couponNo
+            coupon_no: sendObj.couponNo
         }
         let result = await CouponDAO.giveAdminCoupon(giveCouponInfo);
         return result;
@@ -520,9 +518,9 @@ class ProductService {
         return resResult;
     }
     //하랑
-    async showProdDetail(product_no) {
+    async showProdDetail(product_no, ptype) {
         let result = await productDAO.showProductDetailQuery(product_no);
-        let result2 = await productDAO.relationProductListQuery(result[0].category_no);
+        let result2 = await productDAO.relationProductListQuery(result[0].category_no, ptype);
         const result3 = {
             selectResult: result[0],
             relationResult: result2
@@ -597,20 +595,20 @@ class ProductService {
         return true;
     }
     //리뷰좋아요 취소
-    async cancelReviewLikeCnt(rno, user_no){
+    async cancelReviewLikeCnt(rno, user_no) {
         let result2 = await reviewLikeDAO.updateMinusReviewLikeCntQuery(rno);
         let result3 = await reviewLikeDAO.deleteMinusReviewLikeCntQuery(rno, user_no);
-        if(result2.changedRows >= 0){
+        if (result2.changedRows >= 0) {
             return null;
         }
-        if(result3.affectedRows >= 0){
+        if (result3.affectedRows >= 0) {
             return null;
         }
         return true;
     }
     //관련상품 4개 리스트
-    async getrelationProductList(cno) {
-        let result = await productDAO.relationProductListQuery(cno);
+    async getrelationProductList(cno, ptype) {
+        let result = await productDAO.relationProductListQuery(cno, ptype);
         return result;
     }
 }

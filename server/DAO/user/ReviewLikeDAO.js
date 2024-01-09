@@ -45,14 +45,14 @@ let reviewLikeDAO = {
         return query(insertAddReviewLikeCntQuery, [rno, user_no])
     },
     updateMinusReviewLikeCntQuery: async function (rno) {
-        const updateMinusReviewLikeCntQuery = 
-        `update review set review_like_cnt = review_like_cnt - 1 where review_no =?`;
+        const updateMinusReviewLikeCntQuery =
+            `update review set review_like_cnt = review_like_cnt - 1 where review_no =?`;
         return query(updateMinusReviewLikeCntQuery, rno)
     },
     deleteMinusReviewLikeCntQuery: async function (rno, user_no) {
-        const deleteMinusReviewLikeCntQuery = 
-        `delete from review_like WHERE review_no = ? AND user_no = ?`;
-        return query(deleteMinusReviewLikeCntQuery,[rno, user_no]);
+        const deleteMinusReviewLikeCntQuery =
+            `delete from review_like WHERE review_no = ? AND user_no = ?`;
+        return query(deleteMinusReviewLikeCntQuery, [rno, user_no]);
     },
 
 };
