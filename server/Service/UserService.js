@@ -5,9 +5,13 @@ const nodemailer = require('nodemailer');
 const { decryptAES256, encryptSHA256 } = require('../commonModule/commonModule');
 const userDAO = require('../DAO/user/UserDAO');
 const myCartDAO = require('../DAO/user/MyCartDAO');
+const mainCodeDAO = require('../DAO/MainCodeDAO');
 
 //마이페이지
 const myPetDAO = require('../DAO/user/MyPetDAO');
+const reviewDAO = require('../DAO/user/ReviewDAO');
+const PageDTO = require("../commonModule/PageDTO");
+
 
 class UserService {
     constructor() {
@@ -15,12 +19,12 @@ class UserService {
     }
     //마이페이지-내반려동물정보
     async getPetList(userNo){
-        const result = myPetDAO.selectPetQuery(userNo);
+        const result = await myPetDAO.selectPetQuery(userNo);
         return result;
     }
 
     async getPetInfo(petNo){
-        const result = myPetDAO.infoPetQuery(petNo);
+        const result = await myPetDAO.infoPetQuery(petNo);
         return result;
     }
 
@@ -71,7 +75,16 @@ class UserService {
         return result;
     }
 
-    async createEmailAuthInfo(email) {
+    async createEmailAuthInfo(email,isCreateAccount) {
+        console.log(email);
+        console.log(isCreateAccount);
+        if(isCreateAccount) {
+            const cnt = await emailAuthDAO.selectEmailCountQuery(email);
+            if(cnt[0].cnt >= 5) {
+                return '0';
+            }
+        }
+        
         const { NODEMAILER_ID, NODEMAILER_PW } = process.env;
 
         // 해당 이메일 인증하는 번호가 있다면 지워준다.
@@ -96,7 +109,7 @@ class UserService {
 
         const result = await this.sendMail(transporter, mailOptions);
         if(result == false) {
-            return false;
+            return '1';
         }
 
         let expireDate = new Date();
@@ -113,14 +126,14 @@ class UserService {
         }
         catch(e) {
             console.log(e);
-            return false;
+            return '1';
         }
 
         if(insertResult.affectedRows > 0) {
-            return true;
+            return '2';
         }
         else {
-            return false;
+            return '1';
         }
     }
 
@@ -228,6 +241,11 @@ class UserService {
         let result = await myCartDAO.showCartQuery(user_no);
         return result;
     }
+    async showCartCount(user_no) {
+        let result = await myCartDAO.showCartCountQuery(user_no);
+        console.log(result);
+        return result[0];
+    }
     async UpCnt(product_no) {
         let stock = await myCartDAO.selectProductStockQuery(product_no);
         if ((stock[0].product_stock - stock[0].product_sel_cnt) <= 0) {
@@ -260,6 +278,52 @@ class UserService {
             return true;
         else
             return false;
+    }
+    // 내 리뷰 내역 조회
+    async getMyReviewList(userNo, pageNo){
+        const result = await reviewDAO.selectReviewListQuery(userNo, pageNo);
+        const countResult = await reviewDAO.selectReviewCntQuery(userNo);
+        const pageDTO = new PageDTO(countResult[0].cnt, Number(pageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+        console.log(pageDTO);
+        return resResult;
+    }
+
+    async changePassword(object) {
+        const { user_no, prevPassword, nextPassword } = object;
+        
+        const hashPrevPW = encryptSHA256(decryptAES256(prevPassword));
+        const hashNextPW = encryptSHA256(decryptAES256(nextPassword));
+        const checkPassword = await userDAO.selectUserPasswordQuery(hashPrevPW, user_no);
+        if(checkPassword.length <= 0) {
+            return "FAIL";
+        }
+        
+        const result = await userDAO.updateUserPasswordQuery(hashPrevPW,user_no,hashNextPW);
+        if(result.affectedRows > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async leaveAccount(userNo) {   
+        const result = await userDAO.updateUserLeaveDateQuery(userNo);
+        return result;
+    }
+
+    async cancleLeaveAccount(userNo) {
+        const result = await userDAO.updateUserNullLeaveDateQuery(userNo);
+        return result;
+    }
+
+    async getSubcode() {
+        const result = await mainCodeDAO.selectSubcodeQuery();
+        return result;
     }
 
     // 테스트용

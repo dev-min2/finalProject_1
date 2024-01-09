@@ -15,7 +15,8 @@
               @change="checkComp($event.target.checked, companyIndex, idx)"
               />
               </td>
-            <td>상품이미지</td>
+            <td>나중에 hidden하기 </td>
+            <td class="fixedcol0">상품이미지</td>
             <td class="fixedcol1">상품정보</td>
             <td class="fixedcol2">옵션</td>
             <td>상품금액</td>
@@ -25,16 +26,29 @@
           <tr
             class="cart_list_detail"
             v-for="(products, productsIndex) in cartList[companyIndex]" :key="productsIndex">
-            <td>
+            <td v-if="products.product_stock > 0">  
               <input
                 type="checkbox"
                 name="product"
                 value="products.product_price"
                 id="products.product_no"
                 v-model="products.selected"
-                @change="checkProd($event.target, products, idx, companyIndex)"
+                @change="checkProd($event.target, products, idx, companyIndex,productsIndex)"
               />
             </td>
+            <td v-else>
+              <input
+                type="checkbox"
+                name="product"
+                value="products.product_price"
+                id="products.product_no"
+                v-model="products.selected"
+                checked = "checked" 
+                disabled ="disabled" 
+                @change="checkProd($event.target, products, idx, companyIndex)" 
+              />
+            </td>
+            <td>{{products.cart_no}}</td>
             <td>
               <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}">
                   <img v-if="products.pet_type == 'd1'" :src="$store.state.prImg + `dog/` + products.product_image" style="width:100px" />
@@ -46,7 +60,7 @@
               <br />
               <span class="price">가격 : {{ products.product_price }}</span>
             </td>
-            <td class="cart_list_option">
+            <td class="cart_list_option" v-if="products.product_stock > 0">
               <p>선택수량 : {{ products.product_sel_cnt }}</p>
               <input
                 type="button"
@@ -67,6 +81,24 @@
                 @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
               />
             </td>
+            <td class="cart_list_option" v-else-if="products.product_stock == 0">
+            <h6 style="color : red; font-weight : bold">품절 되었습니다.</h6>
+              <input
+                type="button"
+                value="상품 삭제"
+                class="cart_list_optionbtn"
+                @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
+              />
+            </td>  
+            <td class="cart_list_option" v-else-if="products.product_stock < 0">
+            <h6 style="color : red; font-weight : bold">판매가 종료 되었습니다.</h6>
+              <input
+                type="button"
+                value="상품 삭제"
+                class="cart_list_optionbtn"
+                @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
+              />
+            </td>  
             <td>
               <span class="price">{{products.product_price * products.product_sel_cnt}}</span>
               <br />
@@ -109,6 +141,8 @@ export default {
       companyPriceList : [],
       //업체별 선택한 상품 배송비 배열
       deliveryPriceList : [],
+      //선택상품 cart_no
+      CartNoList : []
     };
   },
   created() {
@@ -210,7 +244,6 @@ export default {
       let result = await axios  
                             .delete(`/api/user/carts/${this.$store.state.userNo}/${products.product_no}`)
                             .catch(err => console.log(err));
-      this.$hideLoading();
       if(result.data.affectedRows > 0){
         this.$showSuccessAlert("상품이 삭제되었습니다.");
       
@@ -223,7 +256,9 @@ export default {
               companyPrArray.splice(i,1);
             break;
         }
-      }  
+      }
+      this.$store.state.cartCnt -= 1;  
+      this.$hideLoading();
       }
       if(products.selected){
         this.checkedPrice -= products.product_price * products.product_sel_cnt;
@@ -238,19 +273,28 @@ export default {
       }  
     },
     //상품별 체크박스
-    checkProd(target, products,idx,companyIndex){
+    checkProd(target, products,idx,companyIndex, productsIndex){
       if(target.checked) {
+        //상품 체크됐을 때 가격
         this.companyPriceList[idx] += products.product_price * products.product_sel_cnt ;
         this.checkedPrice += products.product_price * products.product_sel_cnt;
         const productArray = this.cartList[companyIndex];
+
+
+        //선택한 카트 번호 배열에 담기 (민)
+        if(this.CartNoList.indexOf(productArray[productsIndex].cart_no) < 0){
+              this.CartNoList.push(productArray[productsIndex].cart_no); //선택한 번호 추가
+        }
+
         let isAllCheck = true;
         for(let i = 0; i < productArray.length; ++i) {
           if(!this.cartList[companyIndex][i].selected) {
             isAllCheck = false;
             break;
           }
-        }
 
+        }
+        //상품 체크했을 때 배송비 추가
         if(isAllCheck && !this.companyChecked[idx]) {
           this.companyChecked[idx] = true;
         }
@@ -263,6 +307,7 @@ export default {
             }      
       }
       else {
+        //체크 해제했을 때 상품 총가격, 배송비 빼기
         this.companyPriceList[idx] -= products.product_price * products.product_sel_cnt;
         this.checkedPrice -= products.product_price * products.product_sel_cnt;
         if(this.companyChecked[idx]) {
@@ -275,8 +320,16 @@ export default {
             }else if(this.companyPriceList[idx] <= 0){
               this.deliveryPriceList[idx] = 0;
             }    
+
+        //선택한 카트 번호 배열에서 삭제 (민)
+        const productArray = this.cartList[companyIndex];
+        const index = this.CartNoList.indexOf(productArray[productsIndex].cart_no);
+        this.CartNoList.splice(index, 1);
+
         return;
       }
+      //데이터 부모한테 보내기 (민)
+      this.$emit('productNo', this.CartNoList, this.deliveryPriceList);
     },
     //총배송비 함수
     totalPrice() {
@@ -290,12 +343,15 @@ export default {
     //그룹별 체크박스
     checkComp(checked, companyIndex, idx){
       const productArray = this.cartList[companyIndex];
+      console.log(productArray);
       if(checked) {
           let sum = 0;
           for(let i = 0; i < productArray.length; ++i) {
+            if(this.cartList[companyIndex][i].product_stock > 0){
             if(!this.cartList[companyIndex][i].selected) {
               sum += productArray[i].product_price * productArray[i].product_sel_cnt;
               this.cartList[companyIndex][i].selected = true;
+            }
             }
           }
           this.companyPriceList[idx] += sum;
@@ -306,6 +362,14 @@ export default {
               this.deliveryPriceList[idx] = 3000;
             }else if(this.companyPriceList[idx] <= 0){
               this.deliveryPriceList[idx] = 0;
+            }
+
+            //선택한 카트 번호 배열에 담기 (민)
+            for(let i = 0; i<productArray.length; i++ ){
+                if(this.CartNoList.indexOf(productArray[i].cart_no) >= 0){
+                  continue;
+                }
+                this.CartNoList.push(productArray[i].cart_no)
             }
       }
       else { // 그룹별 체크가 풀린상태. (기존에 풀린건 냅두고, 선택된것만 풀어야함.)
@@ -325,8 +389,14 @@ export default {
             }else if(this.companyPriceList[idx] <= 0){
               this.deliveryPriceList[idx] = 0;
             }
+          //선택한 번호 카트번호 배열에서 삭제 (민)
+          for(let i = 0; i< productArray.length; i++ ){
+                const index = this.CartNoList.indexOf(productArray[i].cart_no);
+                this.CartNoList.splice(index, 1);
+          }
       }
-
+      //데이터 부모한테 보내기 (민)
+      this.$emit('productNo', this.CartNoList, this.deliveryPriceList); 
     },
     //그룹바이함수
     groupBy: function(data, key){
@@ -357,11 +427,14 @@ thead {
 tbody {
   font-size: 12px;
 }
+td.fixedcol0{
+  width: 200px;
+}
 td.fixedcol1{
-  width: 450px;
+  width: 300px;
 }
 td.fixedcol2{
-  width: 400px;
+  width: 350px;
 }
 td {
   padding: 15px 0px;

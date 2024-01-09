@@ -3,7 +3,8 @@
 <template>
     <section class="pt-2 pb-4">
 		<div class="container px-4 px-lg-5 mt-3">
-			<h3>공지사항 작성</h3>
+			<h3 v-if="curModifyForm == false">공지사항 작성</h3>
+			<h3 v-else>공지사항 수정</h3>
 			<form @submit.prevent="uploadProduct" ref="uploadForm" class="row">
 				<table class="table">
 					<tr>

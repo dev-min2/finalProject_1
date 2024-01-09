@@ -1,4 +1,4 @@
-g<template>
+<template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light">
       <!-- bg-light -->
@@ -46,9 +46,11 @@ g<template>
             </button>
             <button @click="$router.push('/cart')" class="btn" type="button">
               <i class="bi-cart-fill me-1"> </i>
-              <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCnt">
+              <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCnt" v-if="$store.state.userNo == -1">
                 0
-                <!-- 변경해야함 -->
+              </span>
+              <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCnt" v-else>
+                {{$store.state.cartCnt}}
               </span>
             </button>
           </div>
@@ -90,7 +92,7 @@ g<template>
           <li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
           <li class="nav-item">
             <router-link v-if="$store.state.userNo == -1" to="/login" class="nav-link">로그인</router-link>
-            <a v-else class="nav-link" @click="logout">로그아웃</a>
+            <a v-else class="nav-link" @click="logout" href="#">로그아웃</a>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/admin">관리자테스트</router-link>
@@ -121,10 +123,8 @@ g<template>
     },
     created() {
       this.getCategoryData();
-
     },
     methods: {
-  
       async getCategoryData() {
         // 서버에 요청
         const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));
