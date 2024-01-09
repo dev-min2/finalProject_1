@@ -33,26 +33,7 @@ let reviewLikeDAO = {
         WHERE product_no=?`;
         return query(selectReviewLikeCntQuery, pno);
     },
-    selectReviewLikeUserNoQuery: async function (reviewNoArray, userNo) {
-        let array = [];
-        for (let i = 0; i < reviewNoArray.length; ++i) {
-            array.push(reviewNoArray[i].review_no);
-        }
-        let reviewNoStr = '';
-        for (let i = 0; i < array.length; ++i) {
-            if (array.length - 1 == i) {
-                reviewNoStr += '?)'
-            } else {
-                reviewNoStr += '?,'
-            }
-        }
-        const myQuery = `
-            SELECT *
-	            FROM review_like
-                WHERE user_no = ? AND review_no IN(${reviewNoStr}
-        `
-        return query(myQuery, [userNo, ...array]);
-    },
+
     updateAddReviewLikeCntQuery: async function (rno) {
         const updateAddReviewLikeCntQuery =
             `update review set review_like_cnt = review_like_cnt + 1 where review_no =?`;

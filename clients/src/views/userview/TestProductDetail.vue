@@ -116,9 +116,9 @@
                                 <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal"> {{ $dateFormat(review.review_date) }}</td>
                                           <!-- 리뷰좋아요버튼 -->
                                 <td v-if="review.like_click == 0">
-                                        <button @click="addReviewLikeCnt(review.review_no)" style="border:0;background:none;">❤</button>
+                                        <button @click="addReviewLikeCnt(review.review_no)" style="border:0;background:none;">🤍</button>
                                     {{ review.review_like_cnt }} </td>
-                                <td v-else><button @click="cancleReviewLikeCnt(review.review_no)" style="border:0;background:none;">🤍</button>
+                                <td v-else><button @click="cancleReviewLikeCnt(review.review_no)" style="border:0;background:none;">❤</button>
                                     {{ review.review_like_cnt }} </td>
 
                             </tr>
