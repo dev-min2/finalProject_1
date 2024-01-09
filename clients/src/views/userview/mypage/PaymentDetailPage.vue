@@ -26,15 +26,24 @@
                                     <div>
                                         <!-- 상품명 가격 구매갯수-->
                                         <h5>{{product.product_name}}</h5>
-                                        <p>{{(product.product_price)}}원 {{product.buy_cnt}}개</p>
+                                        <p>{{$printPriceComma(product.product_price)}}원 {{product.buy_cnt}}개</p>
                                     </div>
                                     <div>
-                                        <h5 class="mx-4" style="display:inline-block;" >{{product.delivery_state}}</h5>
+                                        <h5 class="mx-4" style="display:inline-block;">{{$getSubCodeName(product.delivery_state)}}</h5>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary" @click="cancelSelectPayment()" style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
+                                        <!--테스트
+                                        <button @click="testBtn(objectIdx)" class="btn btn-primary" style="background-color: #bbbbbb; border: none; margin : 5px;">테스트</button>
+                                        -->
+                                        <!---->
                                         <br>
-                                        <button class="btn btn-primary" style="background-color: #acb1f8; border: none; margin : 5px;">주문취소</button>
+                                        <div id="reviewBtn" v-if= "product.delivery_state == 'C1'">
+                                            <button class="btn btn-primary" style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
+                                            <button class="btn btn-primary" @click="cancelSelectPayment(product)" style="background-color: #acb1f8; border: none; margin : 5px;">주문취소</button>
+                                        </div>
+                                        <div v-else>
+                                            <button disabled class="btn btn-primary" style="background-color: #bbbbbb; border: none; margin : 5px;">환불완료</button>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -44,23 +53,22 @@
                     </li>
                 </ul>
             </div>
-            <!--주문취소버튼-->
-            <div v-if= "orderState == 'C1'">
+            <!--주문취소버튼 주문 상태에 따라 다르게-->
+            <div v-if= "orderBtn == true">
                 <div class="d-flex justify-content-center mt-5">
-                    <button class="btn btn-primary" @click="cancelAllPayment(paymentNo)" style="background-color:#acb1f8; color:white; border:none; height:60px;">전체 상품 주문 취소</button>        
+                    <button class="btn btn-primary" @click="cancelAllPayment()" style="background-color:#acb1f8; color:white; border:none; height:60px;">전체 상품 주문 취소</button>        
                 </div>
             </div>
             <div v-else>
                 <div class="d-flex justify-content-center mt-5">
-                    <button class="btn btn-primary"  style="background-color:#bbbbbb; color:white; border:none; height:60px;">주문 취소 불가능</button>        
+                    <button disabled class="btn btn-primary" style="background-color:#bbbbbb; color:white; border:none; height:60px;">주문 취소 불가능</button>        
                 </div>
             </div>
             <div class="d-flex justify-content-center mt-2">
-                <p style="color:gray;">주문취소는[주문완료] 상태일 경우에만 가능합니다.</p>
+                <p style="color:gray;"> 주문취소는 모든 주문이 [주문완료] 상태일 경우에만 가능합니다.</p>
             </div>
-
             <!-- 주문 및 배송정보 -->
-                        <div class="mt-5">
+                <div class="mt-5">
                 <h4 class="text-left">결제정보</h4>
                 <hr style="border: 1px solid black;">
                 <table class="table">
@@ -85,7 +93,11 @@
                         <td>{{this.$printPriceComma(totalDeliveryFee)}}원</td>
                     </tr>
                     <tr>
-                        <th>결제금액</th>
+                        <th>환불금액</th>
+                        <td>{{ this.$printPriceComma(paymentPrice - realPaymentPrice) }}원</td>
+                    </tr>
+                    <tr>
+                        <th>실결제금액</th>
                         <td>{{this.$printPriceComma(realPaymentPrice)}}원</td>
                     </tr>
                 </table>
@@ -118,20 +130,25 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    import axios from 'axios';
+
     export default {
         data() {
             return {
                 test: '...',
-                paymentList : [],
-                paymentProductsList : [], //주문내역 전체
-                paymentProductsListByCompany : {}, //업체별로 분류
+                paymentList : [], //주문내역
+                paymentProductsList : [], //상세품목 전체
+                paymentProductsListByCompany : {}, //상세내역 업체별로 분류
 
+                orderBtn : true,
+                
                 //주문정보
+                sellerNo:'',
                 userNo:'',
+                impNo: '',
                 paymentNo : '',
-                paymentSubNo : '',
-                userNo : '',
+                accessToken:'',
+
                 orderState : '',
                 myCouponNo : '',
                 paymentDate : '',
@@ -150,53 +167,183 @@
                 receiverAddr : '',
                 receiverPostCode : '',
                 deliveryRequest : '',
+
+                //단건취소정보
+                productInfoTotal: 0 //업체별 품목 합계 계산
             }
         },
-         created() {
+        async created() {
             this.userNo = this.$store.state.userNo;
             this.paymentNo = this.$route.query.paymentNo;
             
-            this.getSelectPayment();
-            this.getSelectPaymentDetail();
+            await this.getSelectPayment();
+            await this.getSelectPaymentDetail();
+            this.orderBtnStatus();
         },
         methods : {
+            //부분주문취소 테스트 버튼
+            testBtn: function(sellerNo){
+                console.log(this.paymentProductsList);
+                let productsListByCompany = this.paymentProductsListByCompany;
+
+                for(let company in this.paymentProductsList){
+                    console.log(company, this.paymentProductsList[company].delivery_state);
+                    if(this.paymentProductsList[company].delivery_state != 'C1'){
+                        this.orderBtn = false;
+                    }
+                 }
+            },
+            //버튼 비활성화 체크
+            orderBtnStatus(){
+                for(let company in this.paymentProductsList){
+                    if(this.paymentProductsList[company].delivery_state != 'C1'){
+                        this.orderBtn = false;
+                    }
+                }  
+            },
             //주문전체정보 가져오기(payment)
             async getSelectPayment(){
-			let result 
-				= await axios.get(`/api/product/paymentdetail/all/${this.userNo}`)
-							.catch(err => console.log(err));
-			this.paymentList = result.data;
-            let payment = this.paymentList[0];
-            //주문정보
-            this.orderState = payment.order_state;
-            this.myCouponNo = payment.my_coupon_no;
-            this.paymentDate = payment.payment_date;
-            this.paymentProduct = payment.payment_product;
-            this.totalProductCnt = payment.total_product;
+                //모두 C1일 때만 취소 가능하게 수정
+                let result 
+                    = await axios.get(`/api/product/paymentdetail/all/${this.paymentNo}`)
+                                .catch(err => console.log(err));
+                console.log(result);
+                this.paymentList = result.data;
+                let payment = this.paymentList[0];
 
-            //결제정보
-            this.paymentPrice = payment.payment_amount;
-            this.paymentDiscountPrice = payment.payment_discount_amount;
-            this.totalDeliveryFee = payment.total_delivery_fee;
-            this.realPaymentPrice = payment.real_payment_amount;
+                //주문정보
+                this.impNo = payment.payment_sub_unique_no;
+                this.orderState = payment.order_state;
+                // if (this.orderState != 'C1'){
+                //     //여기서 전체 순회하기 개별주문건
+                //     this.orderBtn = false;
+                // }
+                this.myCouponNo = payment.my_coupon_no;
+                if(this.myCouponNo != null){
+                    this.orderBtn = false;
+                }
+                this.paymentDate = payment.payment_date;
+                this.paymentProduct = payment.payment_product;
+                this.totalProductCnt = payment.total_product;
 
-            //배송정보
-            this.receiverName = payment.receiver_name;
-            this.receiverPhone = payment.receiver_phone;
-            this.receiverAddr = payment.receiver_addr;
-            this.receiverPostCode = payment.receiver_postcode;
-            this.deliveryRequest = payment.delivery_request;
+                //결제정보
+                this.paymentPrice = payment.payment_amount;
+                this.paymentDiscountPrice = payment.payment_discount_amount;
+                this.totalDeliveryFee = payment.total_delivery_fee;
+                this.realPaymentPrice = payment.real_payment_amount;
+
+                //배송정보
+                this.receiverName = payment.receiver_name;
+                this.receiverPhone = payment.receiver_phone;
+                this.receiverAddr = payment.receiver_addr;
+                this.receiverPostCode = payment.receiver_postcode;
+                this.deliveryRequest = payment.delivery_request;
+                console.log('test');
+                console.log(this.myCouponNo);
+                
 		    },
 
-            //주문상세내역 전체 가져오기
+            //주문상세내역 전체 가져오기, 업체별로 분류
             async getSelectPaymentDetail(){
                 let result 
                     = await axios.get(`/api/product/paymentdetail/${this.paymentNo}`)
                                 .catch(err => console.log(err));
                 this.paymentProductsList = result.data;
+                //업체별로 분류
                 const company = this.groupBy(this.paymentProductsList, 'user_no');
                 this.paymentProductsListByCompany = company;
+                console.log('업체별로', this.paymentProductsListByCompany);
 		    },
+
+            //전체 주문취소
+            async cancelAllPayment(){
+                this.$showLoading();
+
+                let productsListByCompany = this.paymentProductsListByCompany;
+                for (let companyName in productsListByCompany) {
+                   for(let i in productsListByCompany[companyName]){
+                        if(productsListByCompany[companyName][i].delivery_state != 'C1'){
+                            this.orderBtn = false;
+                            this.$showFailAlert('전체 주문 취소가 불가능합니다');
+                            this.$hideLoading();
+                            return;
+                        }
+                   }
+                }
+                //api에 보낼 정보
+                let paymentNo = this.paymentNo;
+                let impUid = this.impNo;
+                let cancelRequestAmount = this.realPaymentPrice;
+                let cancelableAmount = this.realPaymentPrice;
+
+                const sendObj = {
+                     param: {
+                        paymentNo: paymentNo,
+                        impUid: impUid,
+                        cancelRequestAmount: cancelRequestAmount,
+                        cancelableAmount: cancelableAmount,
+                    }
+                }
+
+                //아임포트 결제취소 성공하면> DB 주문상태 변경
+                if (confirm("정말 취소하시겠습니까?") == true){
+                    let result = await axios.post(`/api/product/paymentdetail/cancel`, sendObj)
+                                            .catch(err=>console.log(err));
+    
+                    if(result.data.affectedRows > 0){
+                        this.$showSuccessAlert('전체 주문이 취소되었습니다. ');
+                    }else{
+                        this.$showFailAlert('주문이 취소되지 않았습니다. ');
+                    }
+                    this.$router.go(this.$router.currentRoute); //새로고침
+                }
+                else{   //취소
+                    this.$showFailAlert('','선택한 상품의 주문이 취소되지 않았습니다. ');
+                }
+                this.$hideLoading();
+            },
+
+
+            //일부 상품 주문 취소
+            async cancelSelectPayment(product){
+                //api에 보낼 정보
+                let sellerNo = product.user_no;
+                let paymentProductNo = product.payment_product_no;
+                let paymentNo = this.paymentNo;
+                let impUid = this.impNo;
+
+                 const sendObj = {
+                     param: {
+                        //업체별 합계, 선택상품 계산, API
+                        sellerNo: sellerNo,
+                        paymentNo: paymentNo,
+                        impUid: impUid,
+                        paymentProductNo :paymentProductNo
+                    }
+                }
+                
+                if (confirm("정말 취소하시겠습니까?") == true){    //확인
+                    this.$showLoading();
+                    console.log(paymentProductNo);
+                    let result = await axios.post(`/api/product/paymentdetail/cancelselect/`, sendObj)
+                                            .catch(err=>console.log(err));
+                    console.log(result);
+                    if(result.data == true){
+                        this.$showSuccessAlert('','선택한 상품의 주문이 취소되었습니다. ');
+                        this.orderBtnStatus();
+                    }else{
+                        this.$showFailAlert('','선택한 상품의 주문이 취소되지 않았습니다. ');
+                    }
+                    this.$hideLoading();
+                    
+                }else{   //취소
+                    this.$showFailAlert('','선택한 상품의 주문이 취소되지 않았습니다. ');
+                    
+                    return;
+                }
+                this.$router.go(this.$router.currentRoute); //새로고침
+            },
+            
             groupBy: function (data, key) {
                 return data.reduce(function (carry, el) {
                     var group = el[key];
@@ -207,33 +354,22 @@
                     return carry
                 }, {})
             },
-            //전체 주문취소
-            async cancelAllPayment(paymentNo){
-            console.log(paymentNo);
-            this.$showLoading();
-            let result = await axios.put(`/api/product/paymentdetail/cancel/${this.paymentNo}`)
-                                     .catch(err=>console.log(err));
-            if(result.data.affectedRows > 0){
-                this.$showSuccessAlert('전체 주문이 취소되었습니다. ');
-            }else{
-                this.$showFailAlert('취소에 실패했습니다. ');
-            }
-            this.$hideLoading();
-
-            this.$router.push({ path: '/paymentdetail'});
-            },
-            //일부 주문 취소
-            cancelSelectPayment(){
-
-            }
-         
-            
         },
        
     }
 </script>
 
 <style scoped>
+   #reviewBtn{
+        display : flex;
+        flex-direction: column;
+        padding-bottom: 0.5em;
+    }
+     /* 
+    #deliveryDetail{
+        display : flex;
+        justify-content: center;
+    } */
     ul li {
         list-style: none;
     }

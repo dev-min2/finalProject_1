@@ -15,6 +15,7 @@ const userDAO = require("../DAO/user/UserDAO");
 const PageDTO = require("../commonModule/PageDTO");
 const fs = require('fs');
 const reviewLikeDAO = require('../DAO/user/ReviewLikeDAO');
+const axios = require ('axios');
 
 
 class ProductService {
@@ -32,7 +33,9 @@ class ProductService {
     }
 
     //결제 완료 처리
-    async completePayment(paymentObj, paymentData, userNo, cartNo, couponNo) {
+    async completePayment(paymentObj, paymentData, userNo, cartNo, couponNo){ 
+        let isCompletePayment = true;
+
         const connection = await getConnection();
         try {
             //트랜잭션 시작
@@ -41,35 +44,170 @@ class ProductService {
             for (let i = 0; i < paymentData.length; ++i) {
                 let result2 = await paymentProductsDAO.insertPaymentQuery(paymentData[i], connection); //개별상품결제정보 삽입
             }
-            let result3 = await paymentProductsDAO.deleteCartQuery(userNo, cartNo, connection); //장바구니 삭제
-            let result4 = await couponDAO.updateMyCouponQuery(couponNo);
+            let result3 = await paymentProductsDAO.deleteCartQuery(userNo,cartNo,connection); //장바구니 삭제
+            if(couponNo != null){
+                let result4 = await couponDAO.updateMyCouponQuery(couponNo, connection);
+            }
+
             await connection.commit(); //결제처리 성공
         } catch (e) {
             console.log(e);
             await connection.rollback(); //결제처리 실패
-        } finally {
+<<<<<<< HEAD
+            isCompletePayment = false;
+        }
+        finally {
             connection.release(); //사용한 커넥션 다시 풀에 반납
         }
 
+        return isCompletePayment;
     }
-    //결제 전체 취소 처리
-    async cancelAllPayment(paymentNo) {
-        const result = await paymentDAO.cancelAllPayment(paymentNo);
+
+    //결제 환불취소를 위해 토큰 받아오기
+    async getImpAccessToken(){
+        const getToken = await axios({
+            url: 'https://api.iamport.kr/users/getToken',
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            data: {
+              imp_key: '0833153213402854', // REST API
+              imp_secret: 'hkzGl1ceMe9P7BqdugRuaoXji3Kpi2gAURNPZbmeb7uQ74xWPDvwQjLINIj1QCP1gS8MUPPw87QCUhqq' // REST API Secret
+            }
+        });
+        
+        const accessToken = getToken.data.response.access_token;
+        return accessToken;
+    }
+
+     /* 결제 전체 취소 */
+    async cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount){
+        
+        const accessToken = await this.getImpAccessToken();
+        //deliveryState로 배송상태 검증하기 (수정하기)
+
+        // 포트원 REST API로 결제환불 요청
+        try{
+            const getCancelData = await axios({
+                url: "https://api.iamport.kr/payments/cancel",
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": accessToken // 포트원 서버로부터 발급받은 엑세스 토큰
+                },
+                data: {
+                    reason: '주문 취소', // 가맹점 클라이언트로부터 받은 환불사유
+                    imp_uid: impUid, // imp_uid를 환불 `unique key`로 입력
+                    amount: cancelRequestAmount, // 가맹점 클라이언트로부터 받은 환불금액
+                    checksum: cancelableAmount // [권장] 환불 가능 금액 입력
+                }
+            });
+            console.log('포트원 데이터뽑아요', getCancelData);
+
+            if(getCancelData.status != 200 || getCancelData.data.code != 0 ){
+                console.log('취소 실패');
+                return;
+            }
+
+            //배송상태 변경
+            const result = await paymentDAO.cancelAllPayment(paymentNo);
+            //재고 돌려주기
+            return result;
+        } catch (error) {
+            console.log(e);
+        }
+    }
+
+
+    /* 결제 부분 취소 */
+    //1)전체/부분 가격 가져오기
+    async cancelSelectPayPrice(paymentProductNo){
+        const result = await paymentDAO.cancelSelectPayPrice(paymentProductNo);
         return result;
     }
 
-    //주문 전체 내역 가져오기
-    async getPaymentList(userNo) {
+    //2)업체별 합계 가져오기
+    async cancelCompanySum(sellerNo, paymentNo){
+        const result = await paymentDAO.cancelCompanySum(sellerNo, paymentNo);
+        return result;
+    }
+
+    //3) REST API로 결제환불 요청
+    async cancelSelectAPI(
+                    paymentNo, impUid, cancelRequestAmount, cancelableAmount, 
+                            paymentObj, paymentProductNo, deliveryFee
+    ){
+        let cancelOk = true;
+        const connection = await getConnection();
+        const accessToken = await this.getImpAccessToken();
+        try{
+            const getCancelData = await axios({
+                url: "https://api.iamport.kr/payments/cancel",
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": accessToken // 포트원 서버로부터 발급받은 엑세스 토큰
+                },
+                data: {
+                    reason: '주문 취소', // 가맹점 클라이언트로부터 받은 환불사유
+                    imp_uid: impUid, // imp_uid를 환불 `unique key`로 입력
+                    amount: cancelRequestAmount, // 가맹점 클라이언트로부터 받은 환불금액
+                    checksum: cancelableAmount // [권장] 환불 가능 금액 입력
+                }
+            });
+
+            if(getCancelData.status != 200 || getCancelData.data.code != 0 ){
+                console.log('취소 실패');
+                return;
+            }
+            //트랜잭션 시작
+            await connection.beginTransaction(); 
+            const result1 = await paymentDAO.cancelUpdatePayment(paymentObj, paymentNo, connection); //update payment
+            const result2 = await paymentDAO.cancelUpdatePaymentProduct(deliveryFee, paymentNo, connection);
+            const result3 = await paymentDAO.cancelPaymentDelivery(paymentProductNo, connection);
+            await connection.commit();
+        }
+        catch (error) {
+            console.log(error);
+            console.log('실패');
+            await connection.rollback(); //결제취소처리 실패
+            cancelOk = false;
+        }
+        finally {
+            connection.release(); //사용한 커넥션 다시 풀에 반납
+        }
+        return cancelOk;
+    }
+
+    // //4)payment_product 테이블 배송상태 변경
+    // async cancelPaymentDelivery(paymentProductNo){
+    //     const result = await paymentDAO.cancelPaymentDelivery(paymentProductNo);
+    //     return result;
+    // }
+
+
+
+    /* 주문내역 전제조회 */
+    //주문 전체 내역 리스트 가져오기
+    async getPaymentList(userNo){
         const result = await paymentDAO.selectPaymentList(userNo);
         return result;
     }
-    //주문 상세 내역 가져오기
-    async getPaymentDetail(paymentNo) {
+
+    /*주문내역 상세조회*/
+    //주문 전체내역 중 단건 조회 
+    async getPaymentInfo(paymentNo){
+        const result = await paymentDAO.selectPaymentInfo(paymentNo);
+        return result;
+    }
+
+    //주문 세부 내역 가져오기
+    async getPaymentDetail(paymentNo){
         const result = await paymentProductsDAO.selectPaymentDetail(paymentNo);
         return result;
     }
 
 
+    /*상품조회*/
     // 상품리스트 가져오기
     async getMainpageProductList(ptype) {
         let result = await productDAO.selectMainpageFirstProductQuery(ptype);

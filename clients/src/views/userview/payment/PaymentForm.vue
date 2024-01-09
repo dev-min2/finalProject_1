@@ -11,6 +11,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            <p style="color:red;line-height: 1.8;">쿠폰을 사용할 경우 부분취소를 할 수 없습니다.</p>
                             <select name="coupon" v-model="coupon" class="form-select" >
                                 <option disabled value="">쿠폰을 선택해주세요</option>
                                 <option value="coupon"> 쿠폰 취소 </option>
@@ -212,9 +213,9 @@
 
                 //결제관련 정보
                 coupon:'', // 쿠폰 정보
-                couponNo:'', //사용 쿠폰 번호
+                couponNo: null, //사용 쿠폰 번호
                 couponName:'',
-                couponPercent:'', //선택한 쿠폰 퍼센트 / ex)10
+                couponPercent: 0, //선택한 쿠폰 퍼센트 / ex)10
                 selectPayment: 'html5_inicis', //결제방식
                 orderCheck: '', //주문동의 확인
 
@@ -261,7 +262,6 @@
                 console.log(this.coupon);
                 console.log(this.couponPercent);
                 console.log('쿠폰번호', this.couponNo);
-
             },
             //쿠폰 적용버튼
             CouponBtn : async function(){
@@ -274,6 +274,17 @@
                 this.couponName = this.coupon.coupon_name;                
                 this.couponPrice = this.totalPrice * this.couponPercent/100;
                 this.realTotalPrice = this.totalPrice + this.totalDelivery - this.couponPrice;
+                if(this.coupon.my_coupon_no === undefined ){
+                    this.couponNo = null; //쿠폰 사용 안할 경우
+                }
+                console.log('할수잇당',this.coupon);
+                console.log('퍼센트',this.couponPercent);
+                console.log(this.coupon.my_coupon_no)
+                console.log('쿠폰번호', this.couponNo);
+                // if(this.couponPercent = 0){
+                //     this.my_coupon_no = '';
+
+                // }
             },
             //회원 장바구니, 쿠폰리스트, 회원정보 가져오기
             async getUserInfo() {
@@ -343,9 +354,9 @@
                     payment_sub_unique_no: this.impUid, //imp_uid,
                     payment_date: this.orderDate,
                     payment_amount: this.totalPrice,
-                    payment_discount_amount: this.couponPrice, //쿠폰 생성 후에 수정하기
+                    payment_discount_amount: this.couponPrice, 
                     real_payment_amount: this.realTotalPrice,
-                    order_state: 'c1',
+                    order_state: 'C1', //기본적으로 주문완료상태
                     total_product: this.totalCount,
                     total_delivery_fee: this.totalDelivery,
                     receiver_phone: this.receiverPhone,
@@ -361,21 +372,19 @@
                 let paymentData = [];
                 for (let object in this.testCartQuery) {
                     let companyDelivery = 0;
+                    let fee = 0;
                     //업체별 합계 > 배송비 계산
                     for (let i = 0; i < this.testCartQuery[object].length; i++) {
                         companyDelivery += this.testCartQuery[object][i].price_sum;
                     }
-                    if (companyDelivery > 30000) {
-                        companyDelivery = 0;
+                    if (companyDelivery >= 30000) {
+                        fee = 0;
                     } else {
-                        companyDelivery = 3000;
+                        fee = 3000;
                     }
-                    console.log(object, '번 배송비', companyDelivery);
+                    console.log(object, '번 ', companyDelivery);
                     //payment_product에 데이터 넣어주기
                     for (let i = 0; i < this.testCartQuery[object].length; i++) {
-                        console.log('2. for문------');
-                        console.log('장바구니 개별', this.testCartQuery[object][i]);
-                        //console.log('데이터찍어바요',this.testCartQuery[object][i].product_no);
                         let cartProduct = {
                             payment_no: this.orderNo,
                             product_no: this.testCartQuery[object][i].product_no,
@@ -383,8 +392,8 @@
                             payment_amount: this.testCartQuery[object][i].price_sum,
                             payment_discount_amount: this.testCartQuery[object][i].price_sum * this.couponPercent/100,
                             real_payment_amount: this.testCartQuery[object][i].price_sum - this.testCartQuery[object][i].price_sum * this.couponPercent/100,
-                            delivery_state: 'c1',
-                            delivery_fee: companyDelivery
+                            delivery_state: 'C1',
+                            delivery_fee: fee
                         };
                         paymentData.push(cartProduct);
                     }
@@ -407,6 +416,7 @@
                     .catch(err => console.log(err));
                 console.log('결제완료', result);
                 this.$hideLoading();
+                return result.data;
             },
             groupBy: function (data, key) {
                 return data.reduce(function (carry, el) {
@@ -445,7 +455,7 @@
 
                 //결제 넘기기
                 const myThis = this;
-                IMP.request_pay(paymentInfo, rsp => { // callback
+                IMP.request_pay(paymentInfo, async rsp => { // callback
                     if (rsp.success) {
                         //결제완료 페이지에 넘길 정보
                         let paymentDetail = {
@@ -456,11 +466,19 @@
                         }
                         //주문 DB저장, 장바구니 비우기
                         myThis.impUid = rsp.imp_uid;
-                        this.getPaymentInfo();
-                        myThis.$router.push({
-                            name: 'paymentcomplete',
-                            query: paymentDetail
-                        }); //주문완료 페이지 이동
+                        const result = await this.getPaymentInfo();
+                        console.log('ProductService에서 넘겨받은' ,result);
+                        if (result == true){
+                            myThis.$router.push({
+                                name: 'paymentcomplete',
+                                query: paymentDetail
+                            }); //주문완료 페이지 이동
+                        }
+                        else{
+                            myThis.$showWarningAlert('결제 실패');
+                            //결제 환불 (수정하기)
+
+                        }
                     } else {
                         myThis.$showWarningAlert('결제 실패');
                         console.log("결제 실패");
@@ -471,6 +489,9 @@
     }
 </script>
 
-<style>
+<style scoped>
+    .modal-dialog {
+        max-width: 55%;
+    }
 
 </style>

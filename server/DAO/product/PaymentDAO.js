@@ -36,20 +36,29 @@ let paymentDAO = {
             `INSERT INTO payment SET ?`;
 
         if (conn != null){
-            return query (insertPaymentQuery, paymentObj);
+            return conn.query (insertPaymentQuery, paymentObj);
         }
         return query (insertPaymentQuery, paymentObj);
     },
 
-    //결제 전체 주문내역 불러오기
+    /* 결제 조회 기능*/
+    //결제 전체 주문내역 불러오기 (유저기준)
     selectPaymentList : async function(userNo){
         const selectPaymentList =
             `SELECT * FROM payment WHERE user_no = ?`;
             
             return query(selectPaymentList, userNo);
     },
-    
 
+    //결제 전체 주문내역 단건 불러오기
+    selectPaymentInfo : async function(paymentNo){
+        const selectPaymentInfo =
+            `SELECT * FROM payment WHERE payment_no = ?`;
+            
+            return query(selectPaymentInfo, paymentNo);
+    },
+
+    /* 결제 전체 취소 */
     //결제 전체 취소 (Update payment + payment_product)
     cancelAllPayment: async function(paymentNo){
        const cancelAllPayment = 
@@ -59,7 +68,67 @@ let paymentDAO = {
                 SET p.order_state = 'C5', p2.delivery_state = 'C5'
                 WHERE p.payment_no = ?`;
        return query (cancelAllPayment, paymentNo);
-    }
+    },
+
+    /* 결제 부분 취소 */
+    //1) API 결제 부분취소를 위해 환불 금액, 배송금액 가져오기
+    cancelSelectPayPrice: async function(paymentProductNo){
+        const cancelSelectPayPrice
+            = `SELECT p1.real_payment_amount as payment_price, p1.total_delivery_fee, p1.total_product,
+                        p2.real_payment_amount as prod_payment_price, p2.delivery_fee, p2.buy_cnt
+                FROM payment_product p2 JOIN payment p1
+                WHERE p1.payment_no = p2.payment_no
+                AND p2.payment_product_no = ?`
+        return query(cancelSelectPayPrice, paymentProductNo); 
+    },
+
+    //2) 결제 부분취소를 위해 업체 합계금액 가져오기
+    cancelCompanySum: async function(sellerNo, paymentNo){
+        const cancelCompanySum =
+            `SELECT SUM(p2.payment_amount) as companyTotalPrice
+            FROM payment_product AS p2 LEFT JOIN product AS pd
+            ON pd.product_no = p2.product_no
+            WHERE pd.user_no = ?
+            AND p2.delivery_state ='C1'
+            AND p2.payment_no = ?`;
+        
+        return query(cancelCompanySum, [sellerNo, paymentNo]);
+    },
+
+    //3-1) payment테이블 변경
+    cancelUpdatePayment: async function(paymentObj, paymentNo, conn = null){
+        const cancelUpdatePayment = 
+        `UPDATE payment
+            SET ?
+            WHERE payment_no = ?`;
+        if (conn != null){
+            return conn.query(cancelUpdatePayment, [paymentObj, paymentNo]);
+        }
+        return query(cancelUpdatePayment, [paymentObj, paymentNo]);
+    },
+    //3-2) payment_product 테이블 변경
+    cancelUpdatePaymentProduct: async function(deliveryFee, paymentNo, conn = null){
+        const  cancelUpdatePaymentProduct =
+            `UPDATE payment_product
+            SET delivery_fee = ?
+            WHERE payment_no = ? `;
+
+        if (conn != null){
+            return conn.query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
+        }
+        return query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
+    },
+    //3-3) 배송상태 변경 (update payment_product)
+    cancelPaymentDelivery: async function(paymentProductNo, conn = null){
+        const cancelPaymentDelivery = 
+             `UPDATE payment_product 
+             SET delivery_state = 'C5' 
+             WHERE payment_product_no = ?`;
+        if (conn != null){
+            return conn.query (cancelPaymentDelivery, paymentProductNo);
+        }
+        return query (cancelPaymentDelivery, paymentProductNo);
+     },
 };
 
 module.exports = paymentDAO;
