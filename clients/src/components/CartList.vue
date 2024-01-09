@@ -282,6 +282,8 @@ export default {
 
 
         //선택한 카트 번호 배열에 담기 (민)
+        console.log(productArray);
+        console.log(productsIndex);
         if(this.CartNoList.indexOf(productArray[productsIndex].cart_no) < 0){
               this.CartNoList.push(productArray[productsIndex].cart_no); //선택한 번호 추가
         }

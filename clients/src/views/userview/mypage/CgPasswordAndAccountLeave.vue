@@ -29,7 +29,7 @@
                                 <b><strong>*주의</strong><br>회원 탈퇴 시 해당 계정을 통한 로그인 시 정상적인 서비스 이용이 불가능하며, 30일간의 유예 기간동안 회원 탈퇴 철회가 가능합니다.<br>유예기간이 지난 후 실제 계정정보가 제거 되오니 유의 바랍니다.</b>
                             </div>
                             <div class="mb-4"></div>
-                            <input class="btn btn-primary btn-lg btn-block" @click="leaveAccount" type="button" value="회원 탈퇴" style="background-color:pink;border:1px white;width:200px;margin:auto;">
+                            <input class="btn btn-primary btn-lg btn-block" @click="leaveAccount" type="button" value="회원 탈퇴" style="background-color:#fab3cc;border:1px white;width:200px;margin:auto;">
                         </div>
                     </template>
                 <footer class="my-3 text-center text-small"> </footer>

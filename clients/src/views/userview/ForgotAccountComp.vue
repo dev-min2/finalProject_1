@@ -23,7 +23,7 @@
                             </div>
                         </template>
                         <div class="mb-4"></div>
-                        <input class="btn btn-primary btn-lg btn-block" @click="sendMail" type="button" value="이메일 전송" style="background-color:pink;border:1px white;width:200px;margin:auto;">
+                        <input class="btn btn-primary btn-lg btn-block" @click="sendMail" type="button" value="이메일 전송" style="background-color:#fab3cc; border:0;width:200px;margin:auto;">
                     </div>
                 <footer class="my-3 text-center text-small"> </footer>
                 </div>
