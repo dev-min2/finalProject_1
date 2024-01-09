@@ -61,7 +61,6 @@
         async created() {
             this.boardNo = this.$route.params.no;
             await this.getNoticeData();
-            
             const viewDiv = this.$refs.viewer;
             const html = this.boardInfo.content;
             toastViewer = new Viewer({
