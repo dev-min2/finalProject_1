@@ -56,6 +56,7 @@
                             <li class="nav-item"><router-link class="nav-link" to="/ProductResearchBar">차트테스트</router-link></li>
                             <li class="nav-item"><router-link class="nav-link" to="/SellerProductList">판매상품목록</router-link></li>
                             <li class="nav-item"><router-link class="nav-link" to="/SellerDelivery">배송 관리</router-link></li>
+                            <li class="nav-item"><router-link class="nav-link" to="/userMyCouponView">내 쿠폰</router-link></li>
             
               
                             
