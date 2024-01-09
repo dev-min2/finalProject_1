@@ -66,13 +66,13 @@
                 type="button"
                 value="▲"
                 class="cart_list_optionbtn"
-                @click="upfunction($event.target, products, idx, companyIndex)"
+                @click="upfunction($event.target, products, idx, companyIndex,productsIndex)"
               />
               <input
                 type="button"
                 value="▼"
                 class="cart_list_optionbtn"
-                @click="downfunction($event.target, products, idx, companyIndex)"
+                @click="downfunction($event.target, products, idx, companyIndex,productsIndex)"
               />
               <input
                 type="button"
@@ -175,7 +175,7 @@ export default {
       this.$hideLoading();
     },
     //상품선택수량증가
-    async upfunction(target, products, idx, companyIndex){
+    async upfunction(target, products, idx, companyIndex,productsIndex){
      companyIndex
       this.$showLoading();
       let result = await axios
@@ -204,12 +204,12 @@ export default {
         if(!products.selected) {
           products.selected = true;
           target.checked = true;
-          this.checkProd(target,products,idx,companyIndex);
+          this.checkProd(target,products,idx,companyIndex,productsIndex);
         }
       }
     },
     //상품선택수량감소
-    async downfunction(target, products, idx, companyIndex){
+    async downfunction(target, products, idx, companyIndex,productsIndex){
       this.$showLoading();
       let result = await axios
                           .put(`/api/user/carts/${products.product_no}/down`)
@@ -234,7 +234,7 @@ export default {
         }if(!products.selected) {
           products.selected = true;
           target.checked = true;
-          this.checkProd(target,products,idx,companyIndex);
+          this.checkProd(target,products,idx,companyIndex,productsIndex);
         }
       }
     },
