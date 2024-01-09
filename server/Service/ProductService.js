@@ -1,14 +1,19 @@
+
+const productDAO = require('../DAO/product/ProductDAO');
+const ReviewDAO = require('../DAO/user/ReviewDAO');
+const DeliveryDAO = require('../DAO/user/DeliveryDAO');
 const paymentDAO = require('../DAO/product/PaymentDAO');
 const paymentProductsDAO = require('../DAO/product/PaymentProductsDAO');
 const {
     getConnection
 } = require('../config/dbPool');
 
-const productDAO = require("../DAO/product/ProductDAO");
 const categoryDAO = require("../DAO/product/CategoryDAO");
 const couponDAO = require("../DAO/product/CouponDAO");
+const CouponDAO = require("../DAO/product/CouponDAO");
 const userDAO = require("../DAO/user/UserDAO");
 const PageDTO = require("../commonModule/PageDTO");
+const fs = require('fs');
 const reviewLikeDAO = require('../DAO/user/ReviewLikeDAO');
 
 
@@ -134,7 +139,238 @@ class ProductService {
         }
         return resResult;
     }
+    //////////////////
+    /////관리자///////
+    /////////////////
 
+    //관리자 메인
+    async selectQueryByPeriodAdmin(period, minPrice, maxPrice, pageNo) {
+        let result = await productDAO.selectQueryByPeriodAdmin(period, minPrice, maxPrice, pageNo);
+        let cntResult = await productDAO.selectQueryByPeriodCntAdmin(period, minPrice, maxPrice);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+
+        }
+        return resResult;
+
+    }
+    //관리자-회원조회
+    async getAdminMemberList(permission, leave, pageNo) {
+        let result = await productDAO.getAdminMemberList(permission, leave, pageNo);
+        let cntResult = await productDAO.getAdminMemberListCnt(permission, leave);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+
+        return resResult;
+    }
+
+    //관리자 쿠폰 정보 조회
+    async getAdminCouponList(pageNo) {
+        let result = await CouponDAO.getAdminCouponInfo(pageNo);
+        let cntResult = await CouponDAO.getAdminCouponInfoCnt();
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+
+        }
+
+        return resResult;
+
+    }
+    //관리자-쿠폰생성
+    async createAdminCouponInfo(sendObj) {
+        const couponInfo = {
+            coupon_name: sendObj.couponName,
+            discount_pct: sendObj.discountPct,
+            expire_date: sendObj.expireDate,
+        }
+        let result = await CouponDAO.createAdminCouponInfo(couponInfo);
+        return result;
+    }
+
+    //관리자-쿠폰지급
+    async giveAdminCoupon(sendObj) {
+        const giveCouponInfo = {
+            receive_date: sendObj.receiveDate,
+            coupon_state: sendObj.couponState,
+            user_no: sendObj.userNo,
+            coupon_no : sendObj.couponNo
+        }
+        let result = await CouponDAO.giveAdminCoupon(giveCouponInfo);
+        return result;
+    }
+
+    //판매자 메인-기간,가격으로 검색
+    async selectQueryByPeriod(userNo, period, minPrice, maxPrice, pageNo) {
+        let result = await productDAO.selectQueryByPeriod(userNo, period, minPrice, maxPrice, pageNo);
+        let cntResult = await productDAO.selectQueryByPeriodCnt(userNo, period, minPrice, maxPrice);
+        console.log('qweqwdsa', cntResult);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+
+        return resResult;
+    }
+    //판매자-상품리스트
+    async getMyProductList(userNo, publicStateNo, pageNo, showCnt) {
+        let result = await productDAO.getMyProductList(userNo, publicStateNo, pageNo, showCnt);
+        let cntResult = await productDAO.sellerProductCnt(userNo, publicStateNo);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
+
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+
+        return resResult;
+    }
+
+    //판매자 상품관리-필터검색
+    async getMyProductListFilter(userNo, publicStateNo, categoryArray) {
+        let result = '';
+        try {
+
+            if (categoryArray == -1) //-1 특별한 의미는 없다..
+                result = await productDAO.getMyProductList(userNo); //카테고리를 선택하지 않았을때 전체상품 리스트를 조회함
+            else //카테고리를 선택했을때 공개상태와 categoryArray를 인수로 보냄
+                result = await productDAO.getMyProductListFilter(userNo, publicStateNo, categoryArray);
+        } catch (e) {
+            console.log(e);
+        }
+
+        return result;
+    }
+
+    //판매자 상품삭제
+    async deleteProduct(productArray) {
+        let result = await productDAO.deleteProduct(productArray);
+        return result;
+    }
+
+    //판매자 상품숨김
+    async hidingProduct(productArray) {
+        let result = await productDAO.hidingProduct(productArray);
+        return result;
+    }
+
+    //상품등록
+    async uploadProduct(sendObj, fileImage) {
+        const productImage = fileImage;
+        const petTypeName = sendObj.petType == 'd1' ? 'dog' : 'cat';
+
+        let savePath = __dirname + `/../uploads/productImage/${petTypeName}/${productImage.originalFilename}`;
+        const rs = fs.createReadStream(productImage.path);
+        const ws = fs.createWriteStream(savePath);
+        rs.pipe(ws);
+
+        const object = {
+            pet_type: sendObj.petType,
+            category_no: sendObj.categoryNo,
+            product_name: sendObj.productName,
+            product_detail_desc: sendObj.productDetailDesc,
+            product_price: sendObj.productPrice,
+            product_stock: sendObj.productStock,
+            product_desc: sendObj.product_desc,
+            user_no: sendObj.user_no,
+            product_public_state: sendObj.product_public_state,
+            product_image: productImage.originalFilename
+        }
+        let result = await productDAO.uploadProduct(object);
+        return result;
+    }
+    //판매자-리뷰조회
+    async getSellerReview(userNo, pageNo, showCnt) {
+        let result = await ReviewDAO.getSellerReview(userNo, pageNo, showCnt);
+        let cntResult = await ReviewDAO.sellerReviewCnt(userNo);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
+
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+
+        return resResult;
+    }
+
+    //판매자-리뷰검색
+    async searchSellerReview(search) {
+        let result = await ReviewDAO.searchSellerReview(search);
+        return result;
+    }
+
+    //판매자-리뷰삭제
+    async removeSellerReview(reviewNo) {
+        let result = await ReviewDAO.removeSellerReview(reviewNo);
+        return result;
+    }
+
+    //판매자-배송관리
+    async sellerDelivery(userNo, pageNo, showCnt) {
+        let result = await DeliveryDAO.sellerDelivery(userNo, pageNo, showCnt);
+        let cntResult = await DeliveryDAO.sellerDeliveryCnt(userNo);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
+
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+
+        return resResult;
+    }
+
+    //판매자-배송관리-회원이름으로 검색
+    async sellerDeliverySearchUserName(search) {
+
+        let result = await DeliveryDAO.sellerDeliverySearchUserName(search);
+        console.log('asdasd', result)
+        return result;
+
+    }
+
+    //판매자-배송관리-주소 업데이트
+    async sellerDeliveryUpdate(deliveryNumber, paymentProductNo) {
+
+        let result = await DeliveryDAO.sellerDeliveryNumberUpdate(deliveryNumber, paymentProductNo);
+        return result;
+
+    }
+
+    //판매자-배송관리-C1에서 C2로
+    async DeliveryStateChangeC2(paymentProductNo) {
+
+        let result = await DeliveryDAO.DeliveryStateChangeC2(paymentProductNo);
+        return result;
+
+    }
+
+
+
+    //트랜잭션 예시코드임
+    // async completePayment() {
+    //     const connection = await getConnection();
+    //     // 트랜잭션 시작
+    //     try {
+    //         await connection.beginTransaction(); // 트랜잭션 시작
+    //         let result = await paymentDAO.결제정보삽입(data);
+    //         let result2 = await paymentProductsDAO.결제상품들삽입(data);
+    //         let result3 = await MyCartDAO.장바구니삭제(data);
+    //         await connection.commit(); // 트랜잭션 끝(성공)
+    //     }
+    //     catch(e) {
+    //         await connection.rollback(); // 트랜잭션 끝(실패)
+    //     }
+    //     finally {
+    //         connection.release(); // 사용한 커넥션은 다시 풀에 반납
+    //     }
+    // }
     // 추천상품
     async getRecProductList(ptype, pageno) {
         const result = await productDAO.selectRecProductQuery(ptype, pageno);

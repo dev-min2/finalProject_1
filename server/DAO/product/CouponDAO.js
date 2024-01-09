@@ -2,6 +2,43 @@ let { pool,query } = require('../../config/dbPool');
 
 // 쿼리문 만들기
 let couponDAO = {
+    /////////////////////////////////////////////////////////
+    ///////관리자쿠폰/////////////////////////////////////////
+
+    //쿠폰 정보 조회
+    getAdminCouponInfo : async function(pageNo) {
+        let startPage = (pageNo - 1) * 10;
+        let endPage = 10;
+        const getCouponInfo = 
+            `SELECT coupon_no,coupon_name,discount_pct,expire_date
+            FROM coupon
+            LIMIT ?,?`
+            return query(getCouponInfo,[startPage,endPage]);
+    },
+
+    //쿠폰정보 조회 CNT
+    getAdminCouponInfoCnt : async function() {
+        const getCouponInfoCnt = 
+            ` SELECT count(*) as CNT
+            FROM coupon`;
+            return query(getCouponInfoCnt);
+    },
+
+    //쿠폰정보 생성
+    createAdminCouponInfo : async function(couponInfo) {
+        const createAdminCouponInfo = 
+            ` INSERT INTO COUPON SET ?`;
+            return query(createAdminCouponInfo,couponInfo);
+    },
+
+      //관리자-쿠폰 지급
+      giveAdminCoupon : async function(giveCouponInfo){
+        const giveAdminCoupon = `
+        insert into my_coupon set ?
+        `;
+        return query(giveAdminCoupon,giveCouponInfo)
+      },
+
     //My쿠폰 가져오기
     selectMyCouponQuery : async function(userNo) {
         const selectMyCouponQuery = 
