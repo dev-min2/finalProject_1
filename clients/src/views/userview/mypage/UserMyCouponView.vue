@@ -16,7 +16,7 @@
           <td>{{coupon.coupon_name}}</td>
           <td>{{coupon.discount_pct}}</td>
           <td>{{coupon.receive_date}}</td>
-          <td>{{coupon.expire_date}}</td>
+          <td>{{coupon.expire_date}}일 후 만료</td>
           <td>{{coupon.coupon_state}}</td>
         </tr>
       </tbody>
