@@ -15,7 +15,7 @@
             <!-- 결제상품목록 -->
             <p class="text-left">결제 목록</p>
             <div class="mt-2 mb-4">
-        <!---->
+            <!---->
             	<ul>
                     <li v-for="(companyName, objectIdx, idx) in paymentProductsListByCompany" :key="idx">
                         <!-- 업체명 -->
@@ -33,17 +33,25 @@
                                     </div>
                                     <div>
                                         <!--테스트
-                                        <button @click="testBtn(objectIdx)" class="btn btn-primary" style="background-color: #bbbbbb; border: none; margin : 5px;">테스트</button>
                                         -->
-                                        <!---->
+                                        <button @click="testBtn(objectIdx)" class="btn btn-primary" style="background-color: #bbbbbb; border: none; margin : 5px;">테스트</button>
                                         <br>
-                                        <div id="reviewBtn" v-if= "product.delivery_state == 'C1'">
+                                        <!---->
+                                        <div name="reviewBtn" v-if= "product.delivery_state == 'C1' && myCouponNo == null" >
                                             <button class="btn btn-primary" style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
                                             <button class="btn btn-primary" @click="cancelSelectPayment(product)" style="background-color: #acb1f8; border: none; margin : 5px;">주문취소</button>
+                                        <!--주문취소상태일 경우 리뷰버튼 비활성화-->
                                         </div>
-                                        <div v-else>
+                                        <div name="reviewBtn" v-else-if= "product.delivery_state == 'C5'">
+                                            <button disabled class="btn btn-primary" style="background-color: #bbbbbb; border: none; margin : 5px;">후기작성</button>
                                             <button disabled class="btn btn-primary" style="background-color: #bbbbbb; border: none; margin : 5px;">환불완료</button>
                                         </div>
+                                        <!--쿠폰사용했을 경우 부분취소 불가능-->
+                                        <div name="reviewBtn" v-else>
+                                            <button class="btn btn-primary" style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
+                                            <button disabled class="btn btn-primary" @click="cancelSelectPayment(product)" style="background-color: #bbbbbb; border: none; margin : 5px;">주문취소</button>
+                                        </div>
+
                                     </div>
                                 </div>
                             </li>
@@ -65,7 +73,7 @@
                 </div>
             </div>
             <div class="d-flex justify-content-center mt-2">
-                <p style="color:gray;"> 주문취소는 모든 주문이 [주문완료] 상태일 경우에만 가능합니다.</p>
+                <p style="color:gray;"> 주문취소는 모든 주문이 [주문완료] 상태이거나 쿠폰을 사용하지 않았을 경우에만 가능합니다.</p>
             </div>
             <!-- 주문 및 배송정보 -->
                 <div class="mt-5">
@@ -86,19 +94,19 @@
                     </tr>
                      <tr>
                         <th>할인금액</th>
-                        <td style="color:red;">{{this.$printPriceComma(paymentDiscountPrice)}}원</td>
+                        <td style="color:red;">{{$printPriceComma(paymentDiscountPrice)}}원</td>
                     </tr>
                     <tr>
                         <th>배송비</th>
-                        <td>{{this.$printPriceComma(totalDeliveryFee)}}원</td>
+                        <td>{{$printPriceComma(totalDeliveryFee)}}원</td>
                     </tr>
                     <tr>
                         <th>환불금액</th>
-                        <td>{{ this.$printPriceComma(paymentPrice - realPaymentPrice) }}원</td>
+                        <td>{{$printPriceComma(Number(refundPrice))}}원</td>
                     </tr>
                     <tr>
                         <th>실결제금액</th>
-                        <td>{{this.$printPriceComma(realPaymentPrice)}}원</td>
+                        <td>{{$printPriceComma(realPaymentPrice)}}원</td>
                     </tr>
                 </table>
             </div>
@@ -160,6 +168,7 @@
                 paymentDiscountPrice : '',
                 totalDeliveryFee : '',
                 realPaymentPrice : '',
+                refundPrice : 0,
 
                 //배송정보
                 receiverName : '',
@@ -167,9 +176,6 @@
                 receiverAddr : '',
                 receiverPostCode : '',
                 deliveryRequest : '',
-
-                //단건취소정보
-                productInfoTotal: 0 //업체별 품목 합계 계산
             }
         },
         async created() {
@@ -183,16 +189,10 @@
         methods : {
             //부분주문취소 테스트 버튼
             testBtn: function(sellerNo){
-                console.log(this.paymentProductsList);
+                console.log(this.paymentProductsListByCompany);
                 let productsListByCompany = this.paymentProductsListByCompany;
-
-                for(let company in this.paymentProductsList){
-                    console.log(company, this.paymentProductsList[company].delivery_state);
-                    if(this.paymentProductsList[company].delivery_state != 'C1'){
-                        this.orderBtn = false;
-                    }
-                 }
             },
+           
             //버튼 비활성화 체크
             orderBtnStatus(){
                 for(let company in this.paymentProductsList){
@@ -210,18 +210,15 @@
                 console.log(result);
                 this.paymentList = result.data;
                 let payment = this.paymentList[0];
+                console.log('할수잇당',payment.refund_price);
 
                 //주문정보
                 this.impNo = payment.payment_sub_unique_no;
                 this.orderState = payment.order_state;
-                // if (this.orderState != 'C1'){
-                //     //여기서 전체 순회하기 개별주문건
+                this.myCouponNo = payment.my_coupon_no;
+                // if(this.myCouponNo != null){
                 //     this.orderBtn = false;
                 // }
-                this.myCouponNo = payment.my_coupon_no;
-                if(this.myCouponNo != null){
-                    this.orderBtn = false;
-                }
                 this.paymentDate = payment.payment_date;
                 this.paymentProduct = payment.payment_product;
                 this.totalProductCnt = payment.total_product;
@@ -231,6 +228,11 @@
                 this.paymentDiscountPrice = payment.payment_discount_amount;
                 this.totalDeliveryFee = payment.total_delivery_fee;
                 this.realPaymentPrice = payment.real_payment_amount;
+                this.refundPrice = payment.refund_price;
+                if(payment.refund_price= null){
+                    this.refundPrice = 0;
+                }
+                console.log(this.refundPrice);
 
                 //배송정보
                 this.receiverName = payment.receiver_name;
@@ -242,7 +244,6 @@
                 console.log(this.myCouponNo);
                 
 		    },
-
             //주문상세내역 전체 가져오기, 업체별로 분류
             async getSelectPaymentDetail(){
                 let result 
@@ -254,7 +255,6 @@
                 this.paymentProductsListByCompany = company;
                 console.log('업체별로', this.paymentProductsListByCompany);
 		    },
-
             //전체 주문취소
             async cancelAllPayment(){
                 this.$showLoading();
@@ -302,8 +302,6 @@
                 }
                 this.$hideLoading();
             },
-
-
             //일부 상품 주문 취소
             async cancelSelectPayment(product){
                 //api에 보낼 정보
@@ -343,7 +341,6 @@
                 }
                 this.$router.go(this.$router.currentRoute); //새로고침
             },
-            
             groupBy: function (data, key) {
                 return data.reduce(function (carry, el) {
                     var group = el[key];
@@ -360,7 +357,7 @@
 </script>
 
 <style scoped>
-   #reviewBtn{
+   .reviewBtn{
         display : flex;
         flex-direction: column;
         padding-bottom: 0.5em;

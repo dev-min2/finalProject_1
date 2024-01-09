@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <BoardReply v-if="noticeReply !== null" :noticeReply="noticeReply" :noticeReplyCount="noticeReplyCount"  
+        <BoardReply v-if="noticeReply !== null" :boardReply="noticeReply" :replyCount="noticeReplyCount"  
             @regist-reply="registReply"
             @delete-reply="deleteReply"
             @update-reply="updateReply"

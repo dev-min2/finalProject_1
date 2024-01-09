@@ -133,7 +133,7 @@ class ProductService {
     //3) REST API로 결제환불 요청
     async cancelSelectAPI(
                     paymentNo, impUid, cancelRequestAmount, cancelableAmount, 
-                            paymentObj, paymentProductNo, deliveryFee
+                            paymentObj, paymentProductNo, deliveryFee, sellerNo
     ){
         let cancelOk = true;
         const connection = await getConnection();
@@ -161,7 +161,7 @@ class ProductService {
             //트랜잭션 시작
             await connection.beginTransaction(); 
             const result1 = await paymentDAO.cancelUpdatePayment(paymentObj, paymentNo, connection); //update payment
-            const result2 = await paymentDAO.cancelUpdatePaymentProduct(deliveryFee, paymentNo, connection);
+            const result2 = await paymentDAO.cancelUpdatePaymentProduct(deliveryFee, paymentNo, sellerNo, connection);
             const result3 = await paymentDAO.cancelPaymentDelivery(paymentProductNo, connection);
             await connection.commit();
         }
