@@ -16,7 +16,7 @@
             <label :class="{ active: selectedPeriod === '6month' }" @click="changePeriod(4)">6개월</label>
             </div>
             <div class = "date">
-            <input type="date" v-model="date1">~<input type="date" v-model="date2">
+            <input type="date" v-model="date1" @click="dateInit">~<input type="date" v-model="date2" @click="dateInit">
             </div>
           </td>
         </tr>
@@ -28,8 +28,7 @@
           </td>
           <td class="B">
             <input type="text" v-model="minPrice"  style="width: 80px" placeholder="최소 가격" /> ~
-            <input type="text" v-model="maxPrice"  style="width: 80px" placeholder="최대 가격"/>
-            
+            <input type="text" v-model="maxPrice"  style="width: 80px" placeholder="최대 가격" /> 
           </td>
         </tr>
       </table>
@@ -60,24 +59,38 @@ export default {
 
   methods: {
     changePeriod(period) {
+       const today = new Date();
+       this.date2 = today.toISOString().split('T')[0];
+       const startDate = new Date(today);
+
       if(period == 0) {
         this.selectedPeriod = 'today'
+        this.date1 = startDate.toISOString().split('T')[0];
+
       }
       else if(period == 1){
         this.selectedPeriod = '1week'
+        startDate.setDate(today.getDate() - 6);
+        this.date1 = startDate.toISOString().split('T')[0];
       }
       else if(period == 2){
-        this.selectedPeriod = '1month'
+       this.selectedPeriod = '1month'
+       startDate.setMonth(today.getMonth() - 1);
+       this.date1 = startDate.toISOString().split('T')[0];
       }
       else if(period == 3){
         this.selectedPeriod = '3month'
+        startDate.setMonth(today.getMonth() - 3);
+        this.date1 = startDate.toISOString().split('T')[0];
       }
       else if(period == 4){
        this.selectedPeriod = '6month'
+       startDate.setMonth(today.getMonth() - 6);
+       this.date1 = startDate.toISOString().split('T')[0];
       }
+      
       this.period = period
-      // this.$emit('emit-name',period);
-      // this.$emit('emit2-name',period);
+
 
     },
 
@@ -88,10 +101,16 @@ export default {
         minPrice : this.minPrice == '' ? 0.1 : this.minPrice,
         maxPrice : this.maxPrice == '' ? 99999999999999 : this.maxPrice
       }
-
+    
       this.$emit('send-period-price',sendObject);
+      
    
     },
+    dateInit(){
+      this.period = null;
+      this.selectedPeriod = null; // 기간 선택 해제
+
+    }
   },
   watch : {
     minPrice(newVal, o) {

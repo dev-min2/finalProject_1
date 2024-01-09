@@ -65,9 +65,6 @@
             </div>
         </table>
         <PaginationComp v-if="page !== null" :page="page" @go-page="getPage" style="margin-top:5px" />
-        <button>
-            <router-link class="nav-link" to="/adminCreateCoupon">쿠폰 생성</router-link>
-        </button>
 
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             쿠폰 생성
@@ -89,11 +86,11 @@
                         <li>유효 일수<input type="number" v-model="couponInfo.expire_date"></li>
                         <li>할인율
                             <select v-model="couponInfo.discount_pct">
-                                <option value="0">0%</option>
                                 <option value="10" selected>10%</option>
                                 <option value="15">15%</option>
                                 <option value="20">20%</option>
                                 <option value="25">25%</option>
+                                <option value="25">30%</option>
                             </select>
                         </li>
                         <hr>
@@ -155,7 +152,7 @@
                 }
                 let result = await axios.post(`/api/product/adminCreateCoupon`, obj);
                 if (result.data.insertId > 0) {
-                    this.$showSuccessAlert('ㅋㅋ성공');
+                    this.$showSuccessAlert('쿠폰 정보 생성됨');
 
                     if (this.pageNo < this.page.endPage) { //
                         this.getAdminCouponList(this.page.endPage);
@@ -164,7 +161,7 @@
                         this.getAdminCouponList(this.pageNo);
                     }
                 } else {
-                    this.$showFailAlert('실패');
+                    this.$showFailAlert('쿠폰 정보 생성 실패');
                 }
             },
             async getAdminCouponList(pageNo) {
@@ -213,9 +210,9 @@
                 try {
                     const result = await axios.post(`/api/product/giveAdminCoupon`, obj);
                     if (result.data.insertId > 0) {
-                        this.$showSuccessAlert('쿠폰 생성 성공');
+                        this.$showSuccessAlert('쿠폰 발급 성공');
                     } else {
-                        this.$showFailAlert('쿠폰 생성 실패');
+                        this.$showFailAlert('쿠폰 발급 실패');
                     }
                 } catch (e) {
                     console.log(e)

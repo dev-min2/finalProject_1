@@ -1,6 +1,11 @@
 <template>
   <div class="container">
     <div class="top-bar">내 쿠폰 목록</div>
+    <div class="labels">
+     <label :class="{ active: selectedCouponType === '사용가능' }" @click="changeCouponType(0)">사용가능</label>
+     <label :class="{ active: selectedCouponType === '사용완료' }" @click="changeCouponType(1)">사용완료</label>
+     <label :class="{ active: selectedCouponType === '기간만료' }" @click="changeCouponType(2)">기간만료</label>
+    </div>
     <table>
       <thead>
         <tr>
@@ -10,7 +15,6 @@
           <td>쿠폰상태</td>
           <td>쿠폰 수령일</td>
           <td>쿠폰 만료일</td>
-
         </tr>
       </thead>
       <tbody>
@@ -66,10 +70,6 @@
         </tr>
       </tbody>
     </table>
-
-    
-
-
     <PaginationComp v-if="page !== null" :page="page" @go-page="getPage" style="margin-top:10px"/>
   </div>
 </template>
@@ -87,6 +87,8 @@
         UserCouponList: [],
         page: null,
         pageNo: 1,
+        couponType: '0',
+        selectedCouponType: '사용가능'
       }
     },
     created() {
@@ -100,6 +102,18 @@
       return '';
     }
   },
+   changeCouponType(couponType) {
+        if (couponType == 0) {
+          this.selectedCouponType = '사용가능'
+        } else if (couponType == 1) {
+          this.selectedCouponType = '사용완료'
+        } else if (couponType == 2) {
+          this.selectedCouponType = '기간만료'
+        }
+
+        this.couponType = couponType
+        this.getUserCouponList(1);
+      },
       async getPage(pageNo) {
         this.pageNo = pageNo;
         this.getUserCouponList(this.pageNo);
@@ -109,12 +123,13 @@
         let result = '';
         this.$showLoading();   
         try {
-          result = await axios.get(`/api/user/myCoupon/${this.userNo}/${this.pageNo}`);
+          result = await axios.get(`/api/user/myCoupon/${this.couponType}/${this.userNo}/${this.pageNo}`);
         } catch (e) {
           console.log(e);
         }
           this.UserCouponList = result.data.selectResult;
           this.page = result.data.pageDTO;      
+          console.log(this.page)
           this.$hideLoading();
       },
 
@@ -154,6 +169,28 @@
     border: 2px solid #bbbbbb;
     background-color: #f2f2f2;
 
+  }
+  label {
+    display: inline-block;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-right: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ababab;
+    border-radius: 4px;
+  }
+
+  label.active {
+    background-color: rgb(233, 179, 222);
+    color: rgb(255, 255, 255);
+  }
+
+  .labels {
+    display: inline-block;
+    margin: 10px;
+    padding-top: 8px;
+    padding-left: 10px;
+    margin: 0px;
   }
   
 </style>

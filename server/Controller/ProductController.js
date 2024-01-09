@@ -98,6 +98,35 @@ productRouter.post('/giveAdminCoupon', async (req, res) => {
    }
 })
 
+//관리자 - 리뷰 조회
+productRouter.get('/AdminReviewList', async (req, res) => {
+   const pageNo = req.query.pg;
+   const showCnt = req.query.showCnt;
+   try {
+      const productService = new ProductService();
+      result = await productService.getAdminReview(pageNo,showCnt);
+      console.log(result);
+      res.send(result);
+
+   } catch (e) {
+      console.log(e)
+   }
+})
+
+
+//관리자-리뷰 삭제
+productRouter.delete('/DeleteAdminReview/:reviewNo', async (req, res) => {
+   let reviewNo = req.params.reviewNo;
+   
+   try {
+      const productService = new ProductService();
+      result = await productService.deleteAdminReview(reviewNo);
+      res.send(result);
+   } catch (e) {
+      console.log(e)
+   }
+})
+
 //판매자 기간지정 상품조회
 
 productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice/:pageNo', async (req, res) => {
@@ -236,19 +265,6 @@ productRouter.get('/SellerReviewList', async (req, res) => {
    }
 })
 
-//판매자-리뷰 삭제
-productRouter.get('/SellerReviewList/:reviewNo', async (req, res) => {
-   let reviewNo = req.params.reviewNo;
-   try {
-      const productService = new ProductService();
-      result = await productService.removeSellerReview(reviewNo);
-
-      res.send(result);
-
-   } catch (e) {
-      console.log(e)
-   }
-})
 
 //판매자 - 리뷰 검색
 productRouter.get('/SellerReviewList/:userNo/:search', async (req, res) => {

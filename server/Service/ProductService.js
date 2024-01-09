@@ -305,6 +305,29 @@ class ProductService {
 
         return resResult;
     }
+//판매자-리뷰조회
+async getAdminReview( pageNo, showCnt) {
+    let result = await ReviewDAO.getAdminReview(pageNo, showCnt);
+    let cntResult = await ReviewDAO.adminReviewCnt();
+    const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
+    const resResult = {
+        selectResult: result,
+        pageDTO: pageDTO
+    }
+    return resResult;
+}
+
+    //관리자-리뷰삭제
+    async deleteAdminReview(reviewNo) {
+        let result = await ReviewDAO.deleteAdminReview(reviewNo);
+        return result;
+    }
+
+    //관리자-리뷰검색
+    async searchAdminReview(search) {
+        let result = await ReviewDAO.searchAdminReview(search);
+        return result;
+    }
 
     //관리자 쿠폰 정보 조회
     async getAdminCouponList(pageNo) {
@@ -343,6 +366,8 @@ class ProductService {
         return result;
     }
 
+
+
     //판매자 메인-기간,가격으로 검색
     async selectQueryByPeriod(userNo, period, minPrice, maxPrice, pageNo) {
         let result = await productDAO.selectQueryByPeriod(userNo, period, minPrice, maxPrice, pageNo);
@@ -353,7 +378,6 @@ class ProductService {
             selectResult: result,
             pageDTO: pageDTO
         }
-
         return resResult;
     }
     //판매자-상품리스트

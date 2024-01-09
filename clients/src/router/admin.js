@@ -4,7 +4,7 @@ import adminMain from '../views/adminview/adminMain.vue'
 import ProductResearchBar from '../views/adminview/ProductResearchBar.vue'
 import AdminMemberList from '../views/adminview/AdminMemberList.vue'
 import AdminCoupon from '../views/adminview/AdminCoupon.vue'
-import AdminCreateCoupon from '../views/adminview/AdminCreateCoupon.vue'
+import AdminReviewList from '../views/adminview/AdminReviewList.vue'
 
 export default {
     path : '/admin',
@@ -31,6 +31,11 @@ export default {
             path: '/adminCoupon',
             name: 'adminCoupon',
             component : AdminCoupon
+          },
+          {
+            path: '/adminReviewList',
+            name: 'adminReviewList',
+            component : AdminReviewList
           },
 
     ]

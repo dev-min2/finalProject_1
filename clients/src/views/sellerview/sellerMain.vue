@@ -87,7 +87,7 @@
                 const userNo = 1; // 나중에 위코드로 수저해야함.
                 try {
                     result = await axios.get(`/api/product/seller-main/${userNo}/${obj.period}/${obj.minPrice}/${obj.maxPrice}/${this.pageNo}`);
-                   // let period = req.params.period;
+                    let period = req.params.period;
 
                 } catch (e) {
                     console.log(e);

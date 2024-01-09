@@ -304,14 +304,14 @@ getAdminMemberListCnt: async function (permission,leave) {
         return query(getMyProductList, [userNo,publicStateNo])
     },
 
-    sellerProductCnt : async function(userNo, state) {
+    sellerProductCnt : async function(userNo, publicStateNo) {
         const sellerProductCnt = `
             SELECT count(*) AS CNT
                 FROM user AS A
                 JOIN product AS B ON A.user_no = B.user_no
                 WHERE A.user_no = ${userNo} AND B.product_public_state = ?
         `;
-        return query(sellerProductCnt, state);
+        return query(sellerProductCnt, publicStateNo);
     },
 
     //판매자 상품 필터 조회

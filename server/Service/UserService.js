@@ -20,9 +20,9 @@ class UserService {
     }
 
     //경석 마이페이지-내 쿠폰 조회
-    async getMyCoupon(userNo,pageNo){
-        const result = await CouponDAO.selectMyCouponQuery(userNo,pageNo);
-        const cntResult = await CouponDAO.selectMyCouponQueryCnt(userNo);
+    async getMyCoupon(couponType,userNo,pageNo){
+        const result = await CouponDAO.selectMyCouponQuery(couponType,userNo,pageNo);
+        const cntResult = await CouponDAO.selectMyCouponQueryCnt(couponType,userNo);
         const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
         const resResult = {
             selectResult: result,

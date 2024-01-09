@@ -5,14 +5,16 @@ const UserService = require("../Service/UserService");
 
 
 //경석-마이페이지 내 쿠폰조회
-userRouter.get('/myCoupon/:userNo/:pageNo', async(req, res)=>{
+userRouter.get('/myCoupon/:couponType/:userNo/:pageNo', async(req, res)=>{
+    const couponType = req.params.couponType;
     const pageNo = req.params.pageNo;
     const userNo = 1;
     //let userNo = req.params.userNo;
     try{
         const userService = new UserService();
-        const result = await userService.getMyCoupon(userNo,pageNo);
+        const result = await userService.getMyCoupon(couponType,userNo,pageNo);
         res.send(result);
+        console.log('asd',result)
     }catch(e) {
         console.log(e);
     }

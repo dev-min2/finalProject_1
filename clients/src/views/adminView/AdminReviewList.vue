@@ -17,17 +17,18 @@
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="리뷰 내용 검색" v-model="search" />
-                <button @click="searchSellerReview(search)" style="border-radius:8px">검색</button>
+                <button @click="searchAdminReview(search)" style="border-radius:8px">검색</button>
             </div>
         </div>
 
-        <table class="sellerReview">
+        <table class="adminReview">
             <thead>
                 <tr>
                     <th>닉네임</th>
                     <th>상품명</th>
                     <th>리뷰내용</th>
                     <th>좋아요 수</th>
+                    <th>리뷰 삭제</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,10 +37,11 @@
                     <td class="pName">{{ review.product_name }}</td>
                     <td><router-link :to="{path : '/myreview/info', query : {rno : review.review_no }}">{{ review.content }}</router-link></td>
                     <td class="likecnt">{{ review.review_like_cnt }}</td>
+                    <td class="Del"><button @click="deleteReview(review.review_no)">리뷰 삭제</button></td>
                 </tr>
             </tbody>
         </table>
-               <PaginationComp v-if="page !== null" :page="page" @go-page="getSellerReview" />
+        <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminReview" />
 
     </div>
 </template>
@@ -51,69 +53,79 @@
     export default {
         data() {
             return {
-                sellerReviewList: [],
+
+                adminReviewList: [],
                 search: '',
                 reviewsPerPage: 5,
                 currentPage: 1,
-                page : null
+                page: null
             };
         },
         components: {
             PaginationComp
         },
         created() {
-            this.getSellerReview(1);
+            this.getAdminReview(1);
         },
         computed: {
             displayedReviews() {
                 const startIndex = (this.currentPage - 1) * this.reviewsPerPage;
                 const endIndex = startIndex + this.reviewsPerPage;
-                return this.sellerReviewList.slice(startIndex, endIndex);
+                return this.adminReviewList.slice(startIndex, endIndex);
             },
         },
-        watch : {
-            reviewsPerPage(newVal,oldVal) {
-                if(newVal != oldVal) {
-                    this.getSellerReview(1);
+        watch: {
+            reviewsPerPage(newVal, oldVal) {
+                if (newVal != oldVal) {
+                    this.getAdminReview(1);
                 }
             }
         },
         methods: {
-            async getSellerReview(pageNo) {
+            async getAdminReview(pageNo) {
                 this.$showLoading();
                 const userNo = 1;
-            
-                const result = await axios.get(`/api/product/SellerReviewList?pg=${pageNo}&showCnt=${this.reviewsPerPage}`);
-                if(result.status == 200) {
-                    this.sellerReviewList = result.data.selectResult;
+
+                const result = await axios.get(
+                    `/api/product/AdminReviewList?pg=${pageNo}&showCnt=${this.reviewsPerPage}`);
+                if (result.status == 200) {
+                    this.adminReviewList = result.data.selectResult;
                     this.page = result.data.pageDTO;
-                }   
-                //this.sellerReviewList = result.data;
+
+                }
+                //this.adminReviewList = result.data;
                 this.$hideLoading();
             },
             //리뷰검색
-            async searchSellerReview(search) {
+            async searchAdminReview(search) {
                 let result = '';
 
                 const userNo = 1;
                 try {
-                    result = await axios.get(`/api/product/SellerReviewList/${userNo}/${search}`)
+                    result = await axios.get(`/api/product/AdminReviewList/${userNo}/${search}`)
 
                 } catch (e) {
                     console.log(e);
                 }
-                this.sellerReviewList = result.data;
+                this.adminReviewList = result.data;
             },
+
             //리뷰삭제
             async deleteReview(reviewNo) {
-                let result = '';
-
+                let result = ''
                 try {
-                    result = await axios.get(`/api/product/SellerReviewList/${reviewNo}`)
-                } catch (e) {
-                    console.log(e)
+                    result = await axios.delete(`/api/product/DeleteAdminReview/${reviewNo}`)
+                    if (result.data.affectedRows > 0) {
+                        this.$showSuccessAlert('리뷰가 삭제되었습니다.')
+                       
+                        this.getAdminReview(this.currentPage);
+                    } else {
+                        this.$showFailAlert('리뷰를 삭제하지 못했습니다.');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    this.$showFailAlert('리뷰 삭제 중 오류가 발생했습니다.');
                 }
-                this.sellerReviewList = result.data;
 
             },
             // 페이지를 첫 번째 페이지로 초기화
@@ -148,8 +160,6 @@
     }
 
 
-    .sellerReview {}
-
     .display-options {
         display: flex;
         align-items: center;
@@ -175,6 +185,7 @@
     .Del {
         width: 200px;
     }
+
     .table-header {
         background-color: #5f5f5f;
         color: rgb(255, 255, 255);
