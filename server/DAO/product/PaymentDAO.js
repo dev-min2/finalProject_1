@@ -60,14 +60,15 @@ let paymentDAO = {
 
     /* 결제 전체 취소 */
     //결제 전체 취소 (Update payment + payment_product)
-    cancelAllPayment: async function(paymentNo){
+    cancelAllPayment: async function(refundPrice, realPaymentAmount, paymentNo){
        const cancelAllPayment = 
             `  UPDATE payment p 
                 JOIN payment_product p2
                 ON p.payment_no = p2.payment_no
-                SET p.order_state = 'C5', p2.delivery_state = 'C5'
+                SET p.order_state = 'C5', p2.delivery_state = 'C5',
+                p.refund_price = ?, p.real_payment_amount = ?
                 WHERE p.payment_no = ?`;
-       return query (cancelAllPayment, paymentNo);
+       return query (cancelAllPayment, [refundPrice, realPaymentAmount, paymentNo]);
     },
 
     /* 결제 부분 취소 */

@@ -73,7 +73,12 @@
                 </div>
             </div>
             <div class="d-flex justify-content-center mt-2">
-                <p style="color:gray;"> 주문취소는 모든 주문이 [주문완료] 상태이거나 쿠폰을 사용하지 않았을 경우에만 가능합니다.</p>
+                <p style="color:gray;"> 
+                    <br>
+                    주문취소는 모든 주문이 [주문완료] 상태일 경우에만 가능합니다. 
+                    <br> 일부 취소는 쿠폰을 사용하지 않았을 경우에만 가능합니다.
+                </p>
+
             </div>
             <!-- 주문 및 배송정보 -->
                 <div class="mt-5">

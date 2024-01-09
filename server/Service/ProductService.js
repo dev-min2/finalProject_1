@@ -79,7 +79,7 @@ class ProductService {
     }
 
      /* 결제 전체 취소 */
-    async cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount){
+    async cancelAllPayment(refundPrice, realPaymentAmount, paymentNo, impUid, cancelRequestAmount, cancelableAmount){
         
         const accessToken = await this.getImpAccessToken();
         //deliveryState로 배송상태 검증하기 (수정하기)
@@ -108,11 +108,11 @@ class ProductService {
             }
 
             //배송상태 변경
-            const result = await paymentDAO.cancelAllPayment(paymentNo);
+            const result = await paymentDAO.cancelAllPayment(refundPrice, realPaymentAmount, paymentNo);
             //재고 돌려주기
             return result;
         } catch (error) {
-            console.log(e);
+            console.log(error);
         }
     }
 

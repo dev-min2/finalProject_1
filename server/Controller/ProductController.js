@@ -372,12 +372,15 @@ productRouter.get('/paymentform', async (req, res) => {
     const impUid = req.body.param.impUid;
     const cancelRequestAmount= req.body.param.cancelRequestAmount;
     const cancelableAmount= req.body.param.cancelableAmount;    
+    const refundPrice = req.body.param.cancelableAmount;
+    const realPaymentAmount = cancelRequestAmount - refundPrice;
 
     console.log('prdController주문전체취소!',paymentNo);
     try{
 
         const productService = new ProductService();
-        let result = await productService.cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount);
+        let result 
+         = await productService.cancelAllPayment(refundPrice, realPaymentAmount, paymentNo, impUid, cancelRequestAmount, cancelableAmount);
         res.send(result);
     }
     catch(e){

@@ -6,7 +6,7 @@
 					<h2 class="fw-bold mb-3">내 주문내역</h2>
 				</div>
 				<div class="d-flex justify-content-center">
-					<table class="table w-85">
+					<table class="table table-hover">
 						<thead>
 							<tr align="center">
 								<th>주문번호</th>
