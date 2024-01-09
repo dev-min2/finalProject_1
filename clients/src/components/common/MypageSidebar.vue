@@ -8,7 +8,7 @@
 							<nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
 								<div class="sb-sidenav-menu">
 									<div class="nav">
-										<div class="sb-sidenav-menu-heading">@@님 환영합니다</div>
+										<div class="sb-sidenav-menu-heading">{{$store.state.userName}}님 환영합니다</div>
 										<a @click="$router.push('/myinfo')" class="nav-link" >
 											<div class="sb-nav-link-icon"><i class="bi bi-person"></i></div> 내정보관리
 										</a>

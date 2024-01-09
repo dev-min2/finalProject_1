@@ -102,6 +102,7 @@
                                             return;
                                         }
 
+                                        this.$store.commit('setUserName', result.data[0].user_name);
                                         this.$store.commit('setUserNo', result.data[0].user_no);
                                         this.$store.commit('setUserPermission', result.data[0].user_permission);
                                         this.cartCount();
@@ -139,6 +140,7 @@
                         return;
                     }
 
+                    this.$store.commit('setUserName', result.data[0].user_name);
                     this.$store.commit('setUserNo', result.data[0].user_no);
                     this.$store.commit('setUserPermission', result.data[0].user_permission);
                     this.cartCount();
@@ -172,6 +174,7 @@
 }
 .box__login-link span a {
     text-decoration-line: none;
-    color: #999;
+    color: #bbbbbb;
+    font-weight: bold;
 }
 </style>
