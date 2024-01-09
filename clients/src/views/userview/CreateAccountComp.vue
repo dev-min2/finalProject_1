@@ -14,14 +14,17 @@
                                 <input v-else type="text" class="form-control" v-model="userId" id="id" name="id" placeholder="아이디" value="" readonly required>
 								<div class="invalid-feedback">아이디를 입력해주세요.</div>
 							</div>
-								<input v-if="userIdDuplicateCheck == false" type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px">
+								<input v-if="userIdDuplicateCheck == false" type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px;">
                                 <input v-else type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px" disabled>
 							<hr>
 							<div class="col-md-6 mb-3">
 								<label for="upw">비밀번호</label> 
-                                <input type="password" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
+                                <input v-if="showPassword == false" type="password" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
+                                <input v-else type="text" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
 								<div class="invalid-feedback">비밀번호를 입력해주세요.</div>
 							</div>
+                                <i v-if="showPassword == false" class="fas fa-eye" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:gray;"></i>
+                                <i v-else class="fas fa-eye" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:#acb1f8;"></i>
 								<p class="ml-1" v-if="userPwCheck == false" id='alert' style="color:red;font-size:12px">비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자(!@#$%^)를 사용해 주세요.</p>
                                 <p class="ml-1" v-else id='alert' style="color:green;font-size:12px">통과!</p>
 							<hr>
@@ -115,6 +118,7 @@
     export default {
         data() {
             return {
+                showPassword : false,
                 socialAccount : false,
                 socialSubCode : '',
                 accessToken : '',
@@ -458,4 +462,5 @@
 	font-size:30px;
 	margin: 20px;
 }
+
 </style>

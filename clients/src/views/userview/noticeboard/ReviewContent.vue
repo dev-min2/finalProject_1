@@ -8,7 +8,7 @@
                         <h3 class="card-title"></h3>
                         <div style="float:left">
                             <p class="card-text" style="text-align='right'; display:inline-block;">상품명 |
-                                {{ product_name }}</p>
+                                <router-link :to="{ path: '/productDetail', query : {pno : reviewInfo.product_no }}" >{{ product_name }}</router-link></p>
                         </div>
                         <div style="float:right">
                             <p v-if="reviewInfo.star_cnt == 5" class="card-text" style="text-align='right'; display:inline-block;">별점 | 
@@ -54,12 +54,13 @@
             return {
                 reviewNo: 0,
                 reviewInfo: {},
-                product_name: ''
+                product_name: '',
             }
         },
         async created() {
 
             this.product_name = this.$route.query.pname;
+            this.product_no = this.$route.query.pno;
             this.reviewNo = this.$route.query.rno;
             await this.getReviewInfo();
 

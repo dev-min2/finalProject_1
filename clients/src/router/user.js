@@ -12,6 +12,7 @@ import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
+import UserMyCouponView from '../views/userview/mypage/UserMyCouponView.vue'
 
 import MyReview from '../views/userview/mypage/MyReviewList.vue'
 import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
@@ -94,6 +95,11 @@ export default {
           path: "/changeInfo",
           name: "changeInfo",
           component: ChangeMyInfo
+        },
+        {
+          path: "/userMyCouponView",
+          name: "userMyCouponView",
+          component: UserMyCouponView
         },
         {
           path: "/myreview",

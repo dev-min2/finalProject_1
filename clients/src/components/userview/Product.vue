@@ -37,7 +37,7 @@
           <br />
           <div class="text-left">
             <!-- Product price-->
-            <p style="text-align : right">{{ product.product_price }}원</p>
+            <p style="text-align : right">{{ $printPriceComma(product.product_price) }}원</p>
           </div>
           <div class="text-left">
             <p v-if="product.avg_cnt !== null">
