@@ -15,7 +15,7 @@
 										<a @click="$router.push('/orderdetail')" class="nav-link">
 											<div class="sb-nav-link-icon"><i class="bi bi-basket3-fill"></i></div> 주문내역
 										</a> 
-										<a class="nav-link">
+											<a @click="$router.push('/userMyCouponView')" class="nav-link">
 											<div class="sb-nav-link-icon"><i class="bi bi-upc-scan"></i></div> 내 쿠폰
 										</a> 
 										<a @click="$router.push('/wishList')" class="nav-link">

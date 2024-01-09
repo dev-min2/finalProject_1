@@ -213,9 +213,9 @@
                 try {
                     const result = await axios.post(`/api/product/giveAdminCoupon`, obj);
                     if (result.data.insertId > 0) {
-                        this.$showSuccessAlert('ㅋㅋ성공');
+                        this.$showSuccessAlert('쿠폰 생성 성공');
                     } else {
-                        this.$showFailAlert('실패');
+                        this.$showFailAlert('쿠폰 생성 실패');
                     }
                 } catch (e) {
                     console.log(e)

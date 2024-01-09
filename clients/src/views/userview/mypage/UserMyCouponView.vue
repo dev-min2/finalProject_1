@@ -51,7 +51,7 @@
             </tr>
             <tr>
               <td>주문 번호</td>
-              <td><a href="sellerMain">{{coupon.payment_no}}</a></td>
+              <td><router-link :to="{path : '/paymentdetail', query : {paymentNo : coupon.payment_no }}">{{coupon.payment_no}}</router-link></td>
             </tr>
           </table>
         </div>
