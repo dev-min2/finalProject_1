@@ -73,8 +73,7 @@
                             data-bs-target="#exampleModal" data-target="#couponmodal" >쿠폰선택</button>
                     </div>
                 </form>
-                 
-            
+
             </div>
             <!--장바구니 폼 끝-->
             <!--주문 폼-->
@@ -159,7 +158,6 @@
                             <label class="form-check-label" for="credit">신용카드</label>
                         </div>
                     </div>
-
                     <div class="my-3">
                         <div class="form-check">
                             <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="toss"

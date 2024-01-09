@@ -74,7 +74,7 @@ let paymentDAO = {
     //1) API 결제 부분취소를 위해 환불 금액, 배송금액 가져오기
     cancelSelectPayPrice: async function(paymentProductNo){
         const cancelSelectPayPrice
-            = `SELECT p1.real_payment_amount as payment_price, p1.total_delivery_fee, p1.total_product,
+            = `SELECT p1.real_payment_amount as payment_price, p1.total_delivery_fee, p1.total_product, p1.refund_price,
                         p2.real_payment_amount as prod_payment_price, p2.delivery_fee, p2.buy_cnt
                 FROM payment_product p2 JOIN payment p1
                 WHERE p1.payment_no = p2.payment_no
@@ -107,16 +107,19 @@ let paymentDAO = {
         return query(cancelUpdatePayment, [paymentObj, paymentNo]);
     },
     //3-2) payment_product 테이블 변경
-    cancelUpdatePaymentProduct: async function(deliveryFee, paymentNo, conn = null){
+    cancelUpdatePaymentProduct: async function(deliveryFee, paymentNo, sellerNo, conn = null){
         const  cancelUpdatePaymentProduct =
-            `UPDATE payment_product
-            SET delivery_fee = ?
-            WHERE payment_no = ? `;
+            `UPDATE payment_product p2
+                JOIN product pd
+                ON pd.product_no = p2.product_no
+                SET p2.delivery_fee = ?
+                WHERE p2.payment_no = ?
+                AND pd.user_no = ?`;
 
         if (conn != null){
-            return conn.query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
+            return conn.query(cancelUpdatePaymentProduct,[deliveryFee, paymentNo, sellerNo]);
         }
-        return query(cancelUpdatePaymentProduct,[deliveryFee,paymentNo]);
+        return query(cancelUpdatePaymentProduct,[deliveryFee, paymentNo, sellerNo]);
     },
     //3-3) 배송상태 변경 (update payment_product)
     cancelPaymentDelivery: async function(paymentProductNo, conn = null){
