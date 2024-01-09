@@ -15,7 +15,7 @@
               @change="checkComp($event.target.checked, companyIndex, idx)"
               />
               </td>
-            <td>나중에 hidden하기 </td>
+            <td hidden> 상품번호 hidden </td>
             <td class="fixedcol0">상품이미지</td>
             <td class="fixedcol1">상품정보</td>
             <td class="fixedcol2">옵션</td>
@@ -48,7 +48,7 @@
                 @change="checkProd($event.target, products, idx, companyIndex)" 
               />
             </td>
-            <td>{{products.cart_no}}</td>
+            <td hidden>{{products.cart_no}}</td>
             <td>
               <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}">
                   <img v-if="products.pet_type == 'd1'" :src="$store.state.prImg + `dog/` + products.product_image" style="width:100px" />

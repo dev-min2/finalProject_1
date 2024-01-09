@@ -33,6 +33,14 @@ export default {
             array : []
         }
     },
+    watch : {
+        page(newVal, oldVal) {
+            this.array = [];
+            for(let i = this.page.startPage; i <= this.page.endPage; ++i) {
+                this.array.push(i);
+            }   
+        }
+    },
     created() {
         for(let i = this.page.startPage; i <= this.page.endPage; ++i) {
             this.array.push(i);
