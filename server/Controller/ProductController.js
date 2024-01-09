@@ -4,34 +4,32 @@ const ProductService = require("../Service/ProductService");
 
 
 //결제폼-회원정보,쿠폰,장바구니 같이 불러오기
-productRouter.get('/paymentform', async(req, res)=>{
+productRouter.get('/paymentform', async (req, res) => {
     let userNo = req.query.userNo;
     let cartList = req.query.cno;
-    try{
+    try {
         const productService = new ProductService();
         let result = await productService.getUserPaymentInfo(userNo, cartList);
         res.send(result);
-    }
-    catch(e){
+    } catch (e) {
         console.log(e);
     }
 })
 
 //결제 완료 처리
  productRouter.post('/payment', async(req, res) => {
+
     let data = req.body.param;
 
     console.log(data);
-    try{
+    try {
         const productService = new ProductService();
-        let result 
-            = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo, data.cartNo, data.couponNo);
+        let result = await productService.completePayment(data.paymentObj, data.paymentData, data.userNo, data.cartNo, data.couponNo);
         res.send(result);
-    }
-    catch(e){
+    } catch (e) {
         console.log(e);
     }
- })
+})
 
 
 /*주문 전체 취소*/
@@ -43,6 +41,7 @@ productRouter.get('/paymentform', async(req, res)=>{
 
     console.log('prdController주문전체취소!',paymentNo);
     try{
+
         const productService = new ProductService();
         let result = await productService.cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount);
         res.send(result);
@@ -115,53 +114,50 @@ productRouter.get('/paymentform', async(req, res)=>{
                     );
 
         res.send(result);
-    }
-    catch(e){
+    } catch (e) {
         console.log(e);
     }
- })
+})
 
- 
 //주문 전체 내역 리스트 불러오기 (전체페이지)
  productRouter.get('/orderdetail/:userNo', async(req, res) => {
+
     let userNo = req.params.userNo;
-    try{
+    try {
         const productService = new ProductService();
         let result = await productService.getPaymentList(userNo);
         res.send(result);
-    }
-    catch(e){
+    } catch (e) {
         console.log(e);
     }
- })
+})
 
 
 //주문 전체내역 단건 조회(상세페이지)
  productRouter.get('/paymentdetail/all/:userNo', async(req, res) => {
+
     let userNo = req.params.userNo;
-    try{
+    try {
         const productService = new ProductService();
         let result = await productService.getPaymentInfo(userNo);
         res.send(result);
-    }
-    catch(e){
+    } catch (e) {
         console.log(e);
     }
  })
  
  //주문 상세 내역 불러오기 (상세페이지)
  productRouter.get('/paymentdetail/:paymentNo', async(req,res) => {
+
     let paymentNo = req.params.paymentNo;
-    try{
+    try {
         const productService = new ProductService();
         let result = await productService.getPaymentDetail(paymentNo);
         res.send(result);
-    }
-    catch(e){
+    } catch (e) {
         console.log(e);
     }
  })
-
 
 
 productRouter.get('/main', async (req, res) => {
@@ -215,38 +211,38 @@ productRouter.get('/search/category', async (req, res) => {
 });
 
 //신상품
-productRouter.get('/search/newproduct', async (req, res)=>{
-    try{
+productRouter.get('/search/newproduct', async (req, res) => {
+    try {
         const productService = new ProductService();
         let ptype = req.query.type;
         let pageno = req.query.pageno;
         const result = await productService.getNewProductList(ptype, pageno);
         res.send(result);
-    } catch (e){
+    } catch (e) {
         console.log(e);
     }
 });
 //베스트
-productRouter.get('/search/bestproduct', async (req, res)=>{
-    try{
+productRouter.get('/search/bestproduct', async (req, res) => {
+    try {
         const productService = new ProductService();
         let ptype = req.query.type;
         let pageno = req.query.pageno;
         const result = await productService.getBestProductList(ptype, pageno);
         res.send(result);
-    } catch (e){
+    } catch (e) {
         console.log(e);
     }
 });
 //추천
-productRouter.get('/search/recproduct', async (req, res)=>{
-    try{
+productRouter.get('/search/recproduct', async (req, res) => {
+    try {
         const productService = new ProductService();
         let ptype = req.query.type;
         let pageno = req.query.pageno;
         const result = await productService.getRecProductList(ptype, pageno);
         res.send(result);
-    } catch (e){
+    } catch (e) {
         console.log(e);
     }
 });
@@ -272,7 +268,7 @@ productRouter.post('/productDetail', async (req, res) => {
         res.send(result);
     } catch (err) {
         console.log(err);
-    }   
+    }
 });
 productRouter.get('/productDetail/:userNo/:productNo', async (req, res) => {
     let userNo = req.params.userNo;
@@ -285,7 +281,7 @@ productRouter.get('/productDetail/:userNo/:productNo', async (req, res) => {
         console.log(err);
     }
 });
-productRouter.post('/wish', async(req, res) => {
+productRouter.post('/wish', async (req, res) => {
     let productNo = req.body.pno;
     let userNo = req.body.uno
     try {
@@ -294,7 +290,7 @@ productRouter.post('/wish', async(req, res) => {
         res.send(result);
     } catch (err) {
         console.log(err);
-    }   
+    }
 });
 productRouter.get('/wish/:userNo', async (req, res) => {
     let userNo = req.params.userNo
@@ -313,36 +309,37 @@ productRouter.delete('/wish/:userNo/:productNo', async (req, res) => {
         const productService = new ProductService();
         let result = await productService.delWish(userNo, productNo);
         res.send(result);
-    }catch (err) {
+    } catch (err) {
         console.log(err);
     }
 });
 
-productRouter.get('/productdetails/review/:productNo', async(req, res)=>{
-    let productNo = req.params.productNo;
-    let userNo = req.session.userNo;
+
+productRouter.get('/productdetails/review/:productNo/:pageNo', async (req, res) => {
     try {
+        let productNo = req.params.productNo;
+        let userNo = req.session.userNo;
+        let pageNo = req.params.pageNo;
         const productService = new ProductService();
-        let result = await productService.showReviewList(productNo,userNo);
+        const result = await productService.showReviewListCnt(productNo, userNo, pageNo);
         res.send(result);
-    }catch(e){
+    } catch (e) {
         console.log(e);
     }
 });
 
-productRouter.put('/productdetails/review/:reviewNo/:productNo', async(req, res)=>{
-    try{
+productRouter.put('/productdetails/review/:reviewNo/:productNo', async (req, res) => {
+    try {
         let reviewNo = req.params.reviewNo;
         let productNo = req.params.productNo;
         let userNo = req.session.userNo;
         const productService = new ProductService();
-        let result = await productService.addReviewLikeCnt(reviewNo, userNo, productNo);
+        const result = await productService.addReviewLikeCnt(reviewNo, userNo, productNo);
         res.send(result);
-    }catch(e){
+    } catch (e) {
         console.log(e);
     }
 });
-
 
 
 
