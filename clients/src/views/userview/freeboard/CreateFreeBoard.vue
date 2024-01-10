@@ -9,17 +9,6 @@
                   <th>제목</th>
                   <td colspan="2"><input type="text" name="productName" class="form-control" v-model="freeBoardInfo.title"></td>
                 </tr>
-                <template v-if="showDate">
-                  <tr>
-                    <th>노출기간</th>
-                    <td>
-                      <input type="date" name="productName" class="form-control" v-model="freeBoardInfo.startDate">
-                    </td>
-                    <td>
-                      <input type="date" name="productName" class="form-control" v-model="freeBoardInfo.endDate">
-                    </td>
-                  </tr>
-                          </template>
                 <tr ref="target">
                   <th>내용</th>
                   <!-- <td colspan="3"><textarea cols="100" rows="6" name="productDesc"

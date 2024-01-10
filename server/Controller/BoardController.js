@@ -30,6 +30,18 @@ boardRouter.get('/freeboard/:no', async (req, res) => {
         console.log(e);
     }
 })
+boardRouter.put('/freeboard/:no', async (req, res) => {
+    const boardNo = req.params.no;
+    console.log('보드컨ㄴ트롤러', req.params);
+
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.updateFreeBoardViewCnt(boardNo);
+        res.status(200).send(result);
+    } catch (e) {
+        console.log(e);
+    }
+})
 //자유게시판 글 등록
 boardRouter.post('/freeboard', async (req, res) => {
     const {

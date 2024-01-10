@@ -216,7 +216,7 @@ class BoardService {
         const replyCountResult = await freeBoardDAO.selectFreeBoardReplyCountQuery(boardNo);
         replyResult = groupBy(replyResult, 'parent_reply_no');
 
-        const attachList = this.getAttachFileList('freeboard', result[0].free_board_no);
+        const attachList = this.getAttachFileList('free', result[0].free_board_no);
 
         const resResult = {
             freeBoard: result[0],
@@ -247,7 +247,7 @@ class BoardService {
             return null;
         }
         // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
-        const moveResult = this.moveAttachFile('freeboard', userNo, result.insertId, randFreeValue, curTimeVal);
+        const moveResult = this.moveAttachFile('free', userNo, result.insertId, randFreeValue, curTimeVal);
         if (!moveResult) {
             return null;
         }
@@ -284,7 +284,7 @@ class BoardService {
             return null;
         }
         // tempAttach폴더에 있는 첨부파일들을 모두 옮긴다.
-        const moveResult = this.moveAttachFile('freeboard', userNo, boardNo, randFreeValue, curTimeVal);
+        const moveResult = this.moveAttachFile('free', userNo, boardNo, randFreeValue, curTimeVal);
         if (!moveResult) {
             return null;
         }

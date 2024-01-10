@@ -2,18 +2,18 @@
  <div class="container mt-3">
         <div class="row" v-if="boardInfo !== null">
             <div class="col-md-12 offset-md-0">
-                <h1 class="my-3">공지사항</h1>
+                <h1 class="my-3">자유게시판</h1>
                 <div class="card">
                     <div class="card-header">
                         <!--
+                        -->
                         <h3 class="card-title">{{boardInfo.title}}</h3>
                         <div style="float:left">
-                            <p class="card-text" style="text-align='right'; display:inline-block;">관리자 | {{$dateTimeFormat(boardInfo.created_date)}}</p>
+                            <p class="card-text" style="text-align='right'; display:inline-block;">{{boardInfo.user_name}} | {{$dateTimeFormat(boardInfo.created_date)}}</p>
                         </div>
                         <div style="float:right">
                             <p class="card-text" style="text-align='right'; display:inline-block;">조회 {{boardInfo.view_cnt + 1}} | 댓글 {{noticeReplyCount}}</p>
                         </div>
-                        -->
                     </div>
                     <div class="card-body">
                         <div ref="viewer">
@@ -22,7 +22,7 @@
                     </div>
                     <div class="card-footer text-muted">
                         <h5 class="card-title">첨부파일 목록</h5>
-						<DownloadAttachFile :realAttachFileNameList="realAttachFileNameList" :boardType="'notice'" :pk="boardNo" />
+						<DownloadAttachFile :realAttachFileNameList="realAttachFileNameList" :boardType="'free'" :pk="boardNo" />
                     </div>
                 </div>
                 <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
