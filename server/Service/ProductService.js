@@ -293,6 +293,33 @@ class ProductService {
         return resResult;
 
     }
+
+    //관리자-상품리스트
+    async getAdminProductList( publicStateNo, pageNo, showCnt) {
+        let result = await productDAO.getAdminProductList( publicStateNo, pageNo, showCnt);
+        let cntResult = await productDAO.adminProductCnt( publicStateNo);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
+
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+
+        return resResult;
+    }
+    //관리자 상품관리-필터검색
+    async getAdminProductListFilter( publicStateNo, categoryArray) {
+        let result = '';
+        try {
+            if (categoryArray == -1) 
+                result = await productDAO.getAdminProductList(); //카테고리를 선택하지 않았을때 전체상품 리스트를 조회함
+            else //카테고리를 선택했을때 공개상태와 categoryArray를 인수로 보냄
+                result = await productDAO.getAdminProductListFilter( publicStateNo, categoryArray);
+        } catch (e) {
+            console.log(e);
+        }
+        return result;
+    }
     //관리자-회원조회
     async getAdminMemberList(permission, leave, pageNo) {
         let result = await productDAO.getAdminMemberList(permission, leave, pageNo);
@@ -305,7 +332,19 @@ class ProductService {
 
         return resResult;
     }
-//판매자-리뷰조회
+    //관리자-쿠폰지급-회원조회
+    async getAdminMemberList2(permission, leave, userPageNo) {
+        let result = await productDAO.getAdminMemberList2(permission, leave, userPageNo);
+        let cntResult = await productDAO.getAdminMemberListCnt2(permission, leave);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(userPageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+
+        return resResult;
+    }
+//관리자-리뷰조회
 async getAdminReview( pageNo, showCnt) {
     let result = await ReviewDAO.getAdminReview(pageNo, showCnt);
     let cntResult = await ReviewDAO.adminReviewCnt();

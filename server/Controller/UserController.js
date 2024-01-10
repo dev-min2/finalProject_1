@@ -8,8 +8,8 @@ const UserService = require("../Service/UserService");
 userRouter.get('/myCoupon/:couponType/:userNo/:pageNo', async(req, res)=>{
     const couponType = req.params.couponType;
     const pageNo = req.params.pageNo;
-    const userNo = 1;
-    //let userNo = req.params.userNo;
+    const userNo = req.params.userNo;
+
     try{
         const userService = new UserService();
         const result = await userService.getMyCoupon(couponType,userNo,pageNo);

@@ -36,7 +36,7 @@
                     <td>{{product.product_name}}</td>
                     <td>{{product.product_price}}</td>
                     <td>{{product.product_stock}}</td>
-                    <td>{{product.buy_cnt}}</td>
+                    <td>{{product.total_buy_cnt}}</td>
                     <td>{{product.allamount}}</td>
                 </tr>
             </tbody>
@@ -67,8 +67,18 @@
             };
         },
         created() {
+            if(this.$store.state.userPermission != 'F3') {
+                this.$showFailAlert('권한이 없습니다.');
+                this.$router.push({path : '/main'})
+                return;
+            }
+            //관리자 아니면 메인으로 보내기
+            if(this.$store.state.userPermission != 'F3') {
+                this.$showFailAlert('권한이 없습니다.');
+                this.$router.push({path : '/main'})
+                return;
+            }
             this.getProductList(this.searchObject);
-            //this.initSellerChart();
         },
 
 
@@ -86,7 +96,7 @@
                 //const userNo = this.$store.state.userNo;
                 const userNo = 1; // 나중에 위코드로 수저해야함.
                 try {
-                    result = await axios.get(`/api/product/seller-main/${userNo}/${obj.period}/${obj.minPrice}/${obj.maxPrice}/${this.pageNo}`);
+                    result = await axios.get(`/api/product/adminMain/${obj.period}/${obj.minPrice}/${obj.maxPrice}/${this.pageNo}`);
                    // let period = req.params.period;
 
                 } catch (e) {
@@ -113,15 +123,17 @@
                 function drawChart() {
                     let table = [];
                     table.push(['상품', '판매량']);
+                    
 
                     for (let i = 0; i < myThis.ProductList.length; ++i) {
                         let row = [];
-                        //console.log(myThis.ProductList[i]);
+                        
                         row.push(myThis.ProductList[i].product_name);
-                        row.push(myThis.ProductList[i].buy_cnt);
+                        row.push(Number(myThis.ProductList[i].total_buy_cnt));
 
                         table.push(row);
                     }
+                    console.log(table);
                     var data = google.visualization.arrayToDataTable(table);
                     var options = {
                         title: '상품 판매량',
@@ -146,7 +158,7 @@
                     for (let i = 0; i < myThis.ProductList.length; ++i) {
                         let row = [];
                         row.push(myThis.ProductList[i].product_name);
-                        row.push(myThis.ProductList[i].allamount);
+                        row.push(Number(myThis.ProductList[i].allamount));
 
                         table.push(row);
                     }
@@ -197,11 +209,11 @@
         border-collapse: collapse;
         padding: 8px;
         text-align: center;
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
     }
 
     th {
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
         background-color: #f2f2f2;
 
     }
@@ -219,9 +231,9 @@
     }
 
     .chart {
-        width: 48%;
+        width: 40%;
         /* 차트 너비 조절 */
-        height: 500px;
+        height: 450px;
     }
 
     .select {

@@ -36,7 +36,7 @@
                     <td>{{product.product_name}}</td>
                     <td>{{product.product_price}}</td>
                     <td>{{product.product_stock}}</td>
-                    <td>{{product.buy_cnt}}</td>
+                    <td>{{product.total_buy_cnt}}</td>
                     <td>{{product.allamount}}</td>
                 </tr>
             </tbody>
@@ -68,7 +68,11 @@
         },
         created() {
             this.getProductList(this.searchObject);
-            //this.initSellerChart();
+            if(this.$store.state.userPermission != 'F2') {
+                this.$showFailAlert('권한이 없습니다.');
+                this.$router.push({path : '/main'})
+                return;
+            }
         },
 
 
@@ -83,8 +87,7 @@
                 console.log('asd123',obj);
                 this.searchObject = obj;
                 let result = '';
-                //const userNo = this.$store.state.userNo;
-                const userNo = 1; // 나중에 위코드로 수저해야함.
+                const userNo = this.$store.state.userNo;
                 try {
                     result = await axios.get(`/api/product/seller-main/${userNo}/${obj.period}/${obj.minPrice}/${obj.maxPrice}/${this.pageNo}`);
                     let period = req.params.period;
@@ -112,12 +115,13 @@
                 function drawChart() {
                     let table = [];
                     table.push(['상품', '판매량']);
+                    console.log('조회',myThis.ProductList);
 
                     for (let i = 0; i < myThis.ProductList.length; ++i) {
                         let row = [];
                         //console.log(myThis.ProductList[i]);
                         row.push(myThis.ProductList[i].product_name);
-                        row.push(myThis.ProductList[i].buy_cnt);
+                        row.push(Number(myThis.ProductList[i].total_buy_cnt));
 
                         table.push(row);
                     }
@@ -145,7 +149,7 @@
                     for (let i = 0; i < myThis.ProductList.length; ++i) {
                         let row = [];
                         row.push(myThis.ProductList[i].product_name);
-                        row.push(myThis.ProductList[i].allamount);
+                        row.push(Number(myThis.ProductList[i].allamount));
 
                         table.push(row);
                     }

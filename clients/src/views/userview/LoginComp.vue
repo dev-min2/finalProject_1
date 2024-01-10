@@ -145,7 +145,14 @@
                         this.$router.push({path : '/myinfo'});
                     }
                     else {
-                        this.$router.push({path : '/main'});
+                        if(this.$store.state.userPermission=='F2'){
+                            this.$router.push({path : '/sellerMain'});
+                        }else if(this.$store.state.userPermission=='F3'){
+                            this.$router.push({path : '/adminMain'});
+                        }
+                        else{
+                            this.$router.push({path : '/main'});
+                        }
                     }
                 }
                 else {

@@ -3,48 +3,44 @@ let {
     query
 } = require('../../config/dbPool');
 let productDAO = {
-//////////////////////////
-////////관리자/////////////
-//////////////////////////
-selectQueryByPeriodAdmin: async function (period, minPrice, maxPrice,pageNo) {
-    let startPage = (pageNo-1)*10;
-    let endPage = 10;
-    let dateFilter = '';
-    
-    switch (period) {
-        case '0':
-            dateFilter = 'payment_date = CURRENT_DATE()';
-            break;
-        case '1':
-            dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY) AND CURRENT_DATE()';
-            break;
-        case '2':
-            dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) AND CURRENT_DATE()';
-            break;
-        case '3':
-            dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 3 MONTH) AND CURRENT_DATE()';
-            break;
-        case '4':
-            dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH) AND CURRENT_DATE()';
-            break;
-    }
-    let priceFilter = '';
+    //////////////////////////
+    ////////관리자/////////////
+    //////////////////////////
+    selectQueryByPeriodAdmin: async function (period, minPrice, maxPrice, pageNo) {
+        let startPage = (pageNo - 1) * 10;
+        let endPage = 10;
+        let dateFilter = '';
 
-    if (minPrice > 0 && maxPrice > 0) {
-        priceFilter = `AND product_price BETWEEN ${minPrice} AND ${maxPrice}`
-    } else if (minPrice > 0 && maxPrice == '') {
-        priceFilter = `AND product_price >= ${minPrice}`;
-    } else if (minPrice == '' && maxPrice > 0) {
-        priceFilter = `AND product_price <= ${maxPrice}`
-    } else if (minPrice == '' && maxPrice == '') {
-        priceFilter = ''
-    }
+        switch (period) {
+            case '0':
+                dateFilter = 'payment_date = CURRENT_DATE()';
+                break;
+            case '1':
+                dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY) AND CURRENT_DATE()';
+                break;
+            case '2':
+                dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) AND CURRENT_DATE()';
+                break;
+            case '3':
+                dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 3 MONTH) AND CURRENT_DATE()';
+                break;
+            case '4':
+                dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH) AND CURRENT_DATE()';
+                break;
+        }
+        let priceFilter = '';
 
-    
+        if (minPrice > 0 && maxPrice > 0) {
+            priceFilter = `AND product_price BETWEEN ${minPrice} AND ${maxPrice}`
+        } else if (minPrice > 0 && maxPrice == '') {
+            priceFilter = `AND product_price >= ${minPrice}`;
+        } else if (minPrice == '' && maxPrice > 0) {
+            priceFilter = `AND product_price <= ${maxPrice}`
+        } else if (minPrice == '' && maxPrice == '') {
+            priceFilter = ''
+        }
 
-
-
-    const selectQueryByPeriodAdmin = `
+        const selectQueryByPeriodAdmin = `
     SELECT
            A.product_no,
            A.product_name,
@@ -68,59 +64,182 @@ selectQueryByPeriodAdmin: async function (period, minPrice, maxPrice,pageNo) {
            LIMIT ?,?
        `;
 
-    return query(selectQueryByPeriodAdmin, [startPage,endPage]);
+        return query(selectQueryByPeriodAdmin, [startPage, endPage]);
+    },
+
+    selectQueryByPeriodCntAdmin: async function (period, minPrice, maxPrice) {
+        let dateFilter = '';
+        switch (period) {
+            case '0':
+                dateFilter = 'payment_date = CURRENT_DATE()';
+                break;
+            case '1':
+                dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY) AND CURRENT_DATE()';
+                break;
+            case '2':
+                dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) AND CURRENT_DATE()';
+                break;
+            case '3':
+                dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 3 MONTH) AND CURRENT_DATE()';
+                break;
+            case '4':
+                dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH) AND CURRENT_DATE()';
+                break;
+        }
+
+        let priceFilter = '';
+
+        if (minPrice > 0 && maxPrice > 0) {
+            priceFilter = `AND product_price BETWEEN ${minPrice} AND ${maxPrice}`
+        } else if (minPrice > 0 && maxPrice == '') {
+            priceFilter = `AND product_price >= ${minPrice}`;
+        } else if (minPrice == '' && maxPrice > 0) {
+            priceFilter = `AND product_price <= ${maxPrice}`
+        } else if (minPrice == '' && maxPrice == '') {
+            priceFilter = ''
+        }
+        const selectQueryByPeriodCntAdmin = `
+             SELECT  count(DISTINCT A.product_no) AS CNT
+              FROM
+                  product AS A
+              JOIN
+                  payment_product AS B ON A.product_no = B.product_no
+              JOIN
+                payment C ON B.payment_no = C.payment_no
+            WHERE
+                 ${dateFilter}
+                 ${priceFilter}
+                                    `;
+        return query(selectQueryByPeriodCntAdmin);
+    },
+    //관리자-회원조회
+    getAdminMemberList: async function (permission, leave, pageNo) {
+        let startPage = (pageNo - 1) * 10;
+        let endPage = 10;
+        let permissionFilter = '';
+
+        switch (permission) {
+            case '0':
+                permissionFilter = 'F1';
+                break;
+            case '1':
+                permissionFilter = 'F2';
+                break;
+            case '2':
+                permissionFilter = 'F1'
+                break;
+        }
+        let leaveFilter = ''
+        switch (leave) {
+            case '0':
+                leaveFilter = '';
+                break;
+            case '1':
+                leaveFilter = 'NOT';
+                break;
+        }
+        const getAdminMemberList = `
+    select user_no, user_id, user_name, user_joindate, user_phone, user_addr
+    from user
+    WHERE user_permission = '${permissionFilter}'
+    AND user_leavedate is ${leaveFilter} null
+    LIMIT ?,?`;
+
+        return query(getAdminMemberList, [startPage, endPage])
+    },
+
+
+    getAdminMemberListCnt: async function (permission, leave) {
+        let permissionFilter = '';
+        switch (permission) {
+            case '0':
+                permissionFilter = 'F1';
+                break;
+            case '1':
+                permissionFilter = 'F2';
+                break;
+            case '2':
+                permissionFilter = 'F1';
+                break;
+        }
+        let leaveFilter = ''
+        switch (leave) {
+            case '0':
+                leaveFilter = '';
+                break;
+            case '1':
+                leaveFilter = 'NOT';
+                break;
+        }
+        const getAdminMemberListCnt = `
+    SELECT count(*) AS CNT
+    from user
+    WHERE user_permission = '${permissionFilter}'
+    AND user_leavedate is ${leaveFilter} null
+            `;
+        return query(getAdminMemberListCnt)
+    },
+
+//관리자 상품 관리 전체조회
+getAdminProductList: async function ( publicStateNo, pageNo, showCnt) {
+    let startPage = (pageNo - 1) * showCnt;
+    let showPage = showCnt;
+
+    const getAdminProductList = `
+            SELECT false AS selected, A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
+            FROM product AS A
+            JOIN category AS B ON A.category_no = B.category_no
+            JOIN category AS C ON C.category_no = B.category_pno
+            WHERE A.product_public_state = ?
+            LIMIT ${startPage},${showPage}
+            `;
+    return query(getAdminProductList, [publicStateNo])
 },
 
-selectQueryByPeriodCntAdmin : async function(period, minPrice,maxPrice) {
-    let dateFilter = '';
-    switch (period) {
-        case '0':
-            dateFilter = 'payment_date = CURRENT_DATE()';
-            break;
-        case '1':
-            dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY) AND CURRENT_DATE()';
-            break;
-        case '2':
-            dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) AND CURRENT_DATE()';
-            break;
-        case '3':
-            dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 3 MONTH) AND CURRENT_DATE()';
-            break;
-        case '4':
-            dateFilter = 'payment_date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH) AND CURRENT_DATE()';
-            break;
-    }
-
-    let priceFilter = '';
-
-    if (minPrice > 0 && maxPrice > 0) {
-        priceFilter = `AND product_price BETWEEN ${minPrice} AND ${maxPrice}`
-    } else if (minPrice > 0 && maxPrice == '') {
-        priceFilter = `AND product_price >= ${minPrice}`;
-    } else if (minPrice == '' && maxPrice > 0) {
-        priceFilter = `AND product_price <= ${maxPrice}`
-    } else if (minPrice == '' && maxPrice == '') {
-        priceFilter = ''
-    }
-    const selectQueryByPeriodCntAdmin = `
+adminProductCnt: async function ( publicStateNo) {
+    const adminProductCnt = `
         SELECT count(*) AS CNT
-        FROM
-           product AS A
-       JOIN
-           payment_product AS B ON A.product_no = B.product_no
-       JOIN
-           payment C ON B.payment_no = C.payment_no
-       WHERE
-           ${dateFilter}
-           ${priceFilter}
-       GROUP BY
-           A.product_no, A.product_name, A.product_price, A.product_stock, B.product_no
+            FROM user AS A
+            JOIN product AS B ON A.user_no = B.user_no
+            WHERE B.product_public_state = ?
     `;
-    return query(selectQueryByPeriodCntAdmin);
+    return query(adminProductCnt, publicStateNo);
 },
-//관리자-회원조회
-getAdminMemberList: async function (permission,leave,pageNo) {
-    let startPage = (pageNo - 1) * 10;
+ //관리자 상품 필터 조회
+ getAdminProductListFilter: async function ( publicStateNo, categoryArray) {
+    let question = '';
+    //let categoryArray = [];
+    for (let i = 0; i < categoryArray.length; ++i) {
+        if (i == categoryArray.length - 1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
+            question += '?)';
+        } else {
+            question += '?,'; // 배열의 마지막이 아니면 ?후 ,를 넣어줌
+        }
+    }
+    console.log('1', categoryArray)
+    console.log('2', categoryArray.length)
+    console.log('3', question)
+
+    let getAdminProductListFilter = `
+            SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
+            FROM product AS A
+            JOIN category AS B ON A.category_no = B.category_no
+            JOIN category AS C ON C.category_no = B.category_pno
+            WHERE A.product_public_state = ?  
+            AND A.category_no IN(${question}
+            `;
+    // ...(스프레드 연산자)를 사용하지 않으면, query 함수에 배열 전체가 하나의 인수로 전달.
+    return query(getAdminProductListFilter, [publicStateNo, ...categoryArray])
+},
+
+
+
+
+
+
+//관리자-쿠폰지급-회원조회
+getAdminMemberList2: async function (permission, leave, userPageNo) {
+    let startPage = (userPageNo - 1) * 10;
     let endPage = 10;
     let permissionFilter = '';
 
@@ -144,18 +263,18 @@ getAdminMemberList: async function (permission,leave,pageNo) {
             leaveFilter = 'NOT';
             break;
     }
-    const getAdminMemberList = `
-    select user_no, user_id, user_name, user_joindate, user_phone, user_addr
-    from user
-    WHERE user_permission = '${permissionFilter}'
-    AND user_leavedate is ${leaveFilter} null
-    LIMIT ?,?`;
-            
-    return query(getAdminMemberList,[startPage,endPage])
-    },
+    const getAdminMemberList2 = `
+select user_no, user_id, user_name, user_joindate, user_phone, user_addr
+from user
+WHERE user_permission = '${permissionFilter}'
+AND user_leavedate is ${leaveFilter} null
+LIMIT ?,?`;
+
+    return query(getAdminMemberList2, [startPage, endPage])
+},
 
 
-getAdminMemberListCnt: async function (permission,leave) {
+getAdminMemberListCnt2: async function (permission, leave) {
     let permissionFilter = '';
     switch (permission) {
         case '0':
@@ -177,25 +296,24 @@ getAdminMemberListCnt: async function (permission,leave) {
             leaveFilter = 'NOT';
             break;
     }
-    const getAdminMemberListCnt = `
-    SELECT count(*) AS CNT
-    from user
-    WHERE user_permission = '${permissionFilter}'
-    AND user_leavedate is ${leaveFilter} null
-            `;
-    return query(getAdminMemberListCnt)
+    const getAdminMemberListCnt2 = `
+SELECT count(*) AS CNT
+from user
+WHERE user_permission = '${permissionFilter}'
+AND user_leavedate is ${leaveFilter} null
+        `;
+    return query(getAdminMemberListCnt2)
 },
 
 
-
-//////////////////////////
-////////판매자/////////////
-//////////////////////////
-    selectQueryByPeriod: async function (userNo, period, minPrice, maxPrice,pageNo) {
-        let startPage = (pageNo-1)*10;
+    //////////////////////////
+    ////////판매자/////////////
+    //////////////////////////
+    selectQueryByPeriod: async function (userNo, period, minPrice, maxPrice, pageNo) {
+        let startPage = (pageNo - 1) * 10;
         let endPage = 10;
         let dateFilter = '';
-        
+
         switch (period) {
             case '0':
                 dateFilter = 'AND payment_date = CURRENT_DATE()';
@@ -225,27 +343,34 @@ getAdminMemberListCnt: async function (permission,leave) {
             priceFilter = ''
         }
 
-        
-
-
-
         const SellerProductListQuery = `
-           SELECT A.product_no,A.product_name,A.product_price,A.product_stock,B.buy_cnt,(B.real_payment_amount * B.buy_cnt) as 'allamount', payment_date 
-               FROM product AS A
-               JOIN payment_product AS B ON A.product_no = B.product_no 
-               JOIN payment C ON B.payment_no = C.payment_no
-               WHERE A.user_no = ?
-               ${dateFilter}
-               ${priceFilter}
-               ORDER BY allamount desc
-               LIMIT ?,?
-
+                SELECT
+                A.product_no,
+                A.product_name,
+                A.product_price,
+                A.product_stock,
+                B.product_no AS buy_product_no,
+                SUM(B.buy_cnt) AS total_buy_cnt,
+                SUM(B.real_payment_amount * B.buy_cnt) AS allamount,
+                MAX(C.payment_date) AS latest_payment_date
+            FROM
+                product AS A
+            JOIN
+                payment_product AS B ON A.product_no = B.product_no
+            JOIN
+                payment C ON B.payment_no = C.payment_no
+            WHERE A.user_no= ?
+                 ${dateFilter}
+                 ${priceFilter}
+            GROUP BY
+                A.product_no
+                LIMIT ?,?
            `;
 
-        return query(SellerProductListQuery, [userNo,startPage,endPage]);
+        return query(SellerProductListQuery, [userNo, startPage, endPage]);
     },
 
-    selectQueryByPeriodCnt : async function(userNo,period, minPrice,maxPrice) {
+    selectQueryByPeriodCnt: async function (userNo, period, minPrice, maxPrice) {
         let dateFilter = '';
         switch (period) {
             case '0':
@@ -277,19 +402,22 @@ getAdminMemberListCnt: async function (permission,leave) {
             priceFilter = ''
         }
         const selectQueryByPeriodCnt = `
-            SELECT count(*) AS CNT
-            FROM product AS A
-            JOIN payment_product AS B ON A.product_no = B.product_no 
-            JOIN payment C ON B.payment_no = C.payment_no
-            ${dateFilter}
-            ${priceFilter}
-            WHERE A.user_no = ${userNo}
-        `;
-        return query(selectQueryByPeriodCnt);
+                 SELECT  count(DISTINCT A.product_no) AS CNT
+                 FROM
+                     product AS A
+                 JOIN
+                     payment_product AS B ON A.product_no = B.product_no
+                 JOIN
+                   payment C ON B.payment_no = C.payment_no
+                 WHERE A.user_no = ?
+                    ${dateFilter}
+                    ${priceFilter}
+                 `;
+                      return query(selectQueryByPeriodCnt,[userNo]);
     },
 
     //판매자 상품 조회
-    getMyProductList: async function (userNo,publicStateNo,pageNo, showCnt) {
+    getMyProductList: async function (userNo, publicStateNo, pageNo, showCnt) {
         let startPage = (pageNo - 1) * showCnt;
         let showPage = showCnt;
 
@@ -301,10 +429,10 @@ getAdminMemberListCnt: async function (permission,leave) {
                 WHERE user_no = ? AND A.product_public_state = ?
                 LIMIT ${startPage},${showPage}
                 `;
-        return query(getMyProductList, [userNo,publicStateNo])
+        return query(getMyProductList, [userNo, publicStateNo])
     },
 
-    sellerProductCnt : async function(userNo, publicStateNo) {
+    sellerProductCnt: async function (userNo, publicStateNo) {
         const sellerProductCnt = `
             SELECT count(*) AS CNT
                 FROM user AS A
@@ -315,22 +443,22 @@ getAdminMemberListCnt: async function (permission,leave) {
     },
 
     //판매자 상품 필터 조회
-    getMyProductListFilter: async function (userNo,publicStateNo,categoryArray) {
+    getMyProductListFilter: async function (userNo, publicStateNo, categoryArray) {
         console.log('dao');
         console.log(publicStateNo);
+        console.log('sdsd',categoryArray)
         let question = '';
         //let categoryArray = [];
-        for(let i = 0; i < categoryArray.length; ++i) {
-            if(i == categoryArray.length -1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
+        for (let i = 0; i < categoryArray.length; ++i) {
+            if (i == categoryArray.length - 1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
                 question += '?)';
-            }
-            else {
+            } else {
                 question += '?,'; // 배열의 마지막이 아니면 ?후 ,를 넣어줌
             }
         }
-        console.log('1',categoryArray)
-        console.log('2',categoryArray.length)
-        console.log('3',question)
+        console.log('1', categoryArray)
+        console.log('2', categoryArray.length)
+        console.log('3', question)
 
         let getMyProductListFilter = `
                 SELECT A.product_no,A.pet_type, A.product_name,A.product_price,A.product_registdate, A.product_image, A.product_public_state, C.category_name AS Parent_category_name, B.category_name AS child_category_name
@@ -341,8 +469,8 @@ getAdminMemberListCnt: async function (permission,leave) {
                 AND A.product_public_state = ?
                 AND A.category_no IN(${question}
                 `;
-                // ...(스프레드 연산자)를 사용하지 않으면, query 함수에 배열 전체가 하나의 인수로 전달.
-        return query(getMyProductListFilter, [userNo,publicStateNo, ...categoryArray])
+        // ...(스프레드 연산자)를 사용하지 않으면, query 함수에 배열 전체가 하나의 인수로 전달.
+        return query(getMyProductListFilter, [userNo, publicStateNo, ...categoryArray])
     },
 
 
@@ -371,18 +499,17 @@ getAdminMemberListCnt: async function (permission,leave) {
     //-9999로 두고 품절로 표시, 실제 재고가 0일때는 재고 없음으로 표시
     deleteProduct: async function (productArray) {
         let delQuestion = '';
-        for(let i = 0; i < productArray.length; ++i) {
-            if(i == productArray.length -1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
+        for (let i = 0; i < productArray.length; ++i) {
+            if (i == productArray.length - 1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
                 delQuestion += '?)';
-            }
-            else {
+            } else {
                 delQuestion += '?,'; // 배열의 마지막이 아니면 ?후 ,를 넣어줌
             }
         }
-        console.log('1',productArray)
-        console.log('2',productArray.length)
-        console.log('3',delQuestion)
-        console.log('4',...productArray)
+        console.log('1', productArray)
+        console.log('2', productArray.length)
+        console.log('3', delQuestion)
+        console.log('4', ...productArray)
 
         let deleteProduct = `
             UPDATE PRODUCT
@@ -394,22 +521,21 @@ getAdminMemberListCnt: async function (permission,leave) {
     },
 
     //판매자 상품숨김 
-    
-    hidingProduct: async function (productArray) {  
+
+    hidingProduct: async function (productArray) {
         let hidQuestion = '';
-        for(let i = 0; i < productArray.length; ++i) {
-            if(i == productArray.length -1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
+        for (let i = 0; i < productArray.length; ++i) {
+            if (i == productArray.length - 1) { // 배열의 마지막 항목이면 ?후 )로 식을 닫아줌
                 hidQuestion += '?)';
-            }
-            else {
+            } else {
                 hidQuestion += '?,'; // 배열의 마지막이 아니면 ?후 ,를 넣어줌
             }
         }
 
-        console.log('1',productArray)
-        console.log('2',productArray.length)
-        console.log('3',hidQuestion)
-        console.log('4',...productArray)
+        console.log('1', productArray)
+        console.log('2', productArray.length)
+        console.log('3', hidQuestion)
+        console.log('4', ...productArray)
         let hidingProduct = `
             update product
             set product_public_state = 'I2'
@@ -589,7 +715,7 @@ getAdminMemberListCnt: async function (permission,leave) {
         `;
         return query(updateCartQuery, [user_no, product_no]);
     },
-    cartInfoQuery : async function (userNo, productNo) {
+    cartInfoQuery: async function (userNo, productNo) {
         const cartInfoQuery = `
         SELECT *
         FROM cart
@@ -597,14 +723,14 @@ getAdminMemberListCnt: async function (permission,leave) {
         `;
         return query(cartInfoQuery, [userNo, productNo]);
     },
-    addWishQuery : async function (product_no, user_no){
+    addWishQuery: async function (product_no, user_no) {
         const addWishQuery = `
         INSERT wishlist
         SET product_no = ? , user_no = ?
         `;
         return query(addWishQuery, [product_no, user_no]);
     },
-    wishInfoQuery : async function (user_no){
+    wishInfoQuery: async function (user_no) {
         const wishInfoQuery = `
         SELECT *
         FROM product p join wishlist w on p.product_no = w.product_no
@@ -619,10 +745,10 @@ getAdminMemberListCnt: async function (permission,leave) {
         `;
         return query(delWishQuery, [user_no, product_no]);
     },
-    relationProductListQuery : async function(cno){
+    relationProductListQuery: async function (cno) {
         const limit = 4;
-        const relationProductListQuery = 
-        `select A.* , B.cnt,B.avg_cnt
+        const relationProductListQuery =
+            `select A.* , B.cnt,B.avg_cnt
         From
         (select A.product_no, count(review_no) as cnt, truncate(avg(B.star_cnt),1) as avg_cnt 
         from product A left join review B on A.product_no = B.product_no

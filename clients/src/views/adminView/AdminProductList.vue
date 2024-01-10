@@ -1,7 +1,7 @@
 <template>
     <div id="container">
         <div class="table-header">검색 조건</div>
-        <ProductFilterSearchBar @send-search="getMyProductListFilter" />
+        <ProductFilterSearchBar @send-search="getAdminProductListFilter" />
 
         <div class="product-toolbar">
             <div class="display-options">
@@ -17,7 +17,7 @@
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="       상품명 검색" v-model="search" />
-                <button @click="sellerProductSearchName()" style="border-radius:8px">검색</button>
+                <button @click="adminProductSearchName()" style="border-radius:8px">검색</button>
             </div>
         </div>
         <table class="productList">
@@ -47,12 +47,8 @@
                 </tr>
             </tbody>
         </table>
-    <!-- 상품등록,삭제,숨김 버튼 -->
-    <button class = "b1" @click="upload" style="border-radius:5px"><router-link class="nav-link" to="/upload">상품등록</router-link></button>
-    <button class = "b2" @click="productDelete" style="border-radius:5px">삭제</button>
-    <button class = "b3" @click="productHiding" style="border-radius:5px">숨김</button>
         
-       <PaginationComp v-if="page !== null" :page="page" @go-page="getSellerProductList" />
+       <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminProductList" />
     </div>
 </template>
 
@@ -68,144 +64,97 @@
         },
         data() {
             return {
-                sellerProductList: [],
+                adminProductList: [],
                 search: '',
                 productsPerPage: 5,
                 currentPage: 1,
                 pageNo : 1,
                 page : null,
                 publicStateNo : ''
-               // getMyProductListFilter:[]
+               // getAdminProductListFilter:[]
             };
         },
         created() {
-            if(this.$store.state.userPermission != 'F2') {
+            if(this.$store.state.userPermission != 'F3') {
                 this.$showFailAlert('권한이 없습니다.');
                 this.$router.push({path : '/main'})
                 return;
             }
-            this.getMyProductList('I1');
-            
+            this.getAdminProductList2('I1');
         },
         computed: {
             displayedProduct() {
                 const startIndex = (this.currentPage - 1) * this.productsPerPage;
                 const endIndex = startIndex + this.productsPerPage;
-                return this.sellerProductList.slice(startIndex, endIndex);
+                return this.adminProductList.slice(startIndex, endIndex);
             },
         },
         watch : {
             productsPerPage(newVal,oldVal) {
                 if(newVal != oldVal) {
-                    this.getMyProductList('I1');
+                    this.getAdminProductList2('I1');
                 }
             }
         },
         methods: {
-            async getSellerProductList(pageNo) {
+            async getAdminProductList(pageNo) {
                 this.$showLoading();
                 this.pageNo = pageNo;
-                this.getMyProductList(this.publicStateNo)
+                this.getAdminProductList2(this.publicStateNo)
             },
             test() {
                 this.isModal = true;
             },
-            async getMyProductList(publicStateNo) {
-                const userNo = 1;
+            async getAdminProductList2(publicStateNo) {
+              
                 const state = publicStateNo
                 this.publicStateNo = state;
                 
-                const result = await axios.get(`/api/product/SellerProductList?pg=${this.pageNo}&showCnt=${this.productsPerPage}&state=${state}`);
+                const result = await axios.get(`/api/product/AdminProductList?pg=${this.pageNo}&showCnt=${this.productsPerPage}&state=${state}`);
                 if(result.status == 200) {
-                    this.sellerProductList = result.data.selectResult;
+                    this.adminProductList = result.data.selectResult;
                     this.page = result.data.pageDTO;
                 }   
                 this.$hideLoading();
-                for(let product of this.sellerProductList) {
+                for(let product of this.adminProductList) {
                     product.selected = false;
                 }
             },
             //중분류가 선택되지 않았을때 전체조회 method로 공개상태를 인수로 보냄
-            async getMyProductListFilter(sendObj) {
+            async getAdminProductListFilter(sendObj) {
                 if(sendObj.categoryArray == -1){
-                    this.getMyProductList(sendObj.publicStateNo);
+                    this.getAdminProductList2(sendObj.publicStateNo);
                     return;
                 }
-                sendObj.userNo = this.$store.state.userNo;
                 let result = '';
                 
                 try {
                     result = await axios.post(
-                        `/api/product/SellerProductList`, sendObj
+                        `/api/product/AdminProductList`, sendObj
                     );
                  
                 } catch (e) {
                     console.log(e);
                 }
-               this.sellerProductList = result.data;
+               this.adminProductList = result.data;
             },
             //상품이름으로 검색
-            async sellerProductSearchName() {
+            async adminProductSearchName() {
                 let result = '';
                 try {
-                    result = await axios.get(`/api/product/sellerProductSearchName/${this.search}`)
+                    result = await axios.get(`/api/product/adminProductSearchName/${this.search}`)
                     console.log('상품이름검색 :', result);
 
                 } catch (e) {
                     console.log(e);
                 }
 
-                this.sellerProductList = result.data;
+                this.adminProductList = result.data;
             },
 
-            //판매자 상품삭제
-            async productDelete(){
-                let sendDeleteProductArray = [];
-                for(const object of this.sellerProductList) {
-                    if(object.selected) {
-                        sendDeleteProductArray.push(object.product_no);
-                    }
-                }
-                let result = '';
-                let obj = {
-                    param : sendDeleteProductArray
-                };
-                result = await axios.put(`/api/product/sellerDeleteProduct`, obj);
-                if(result.data.changedRows > 0) {
-                    this.$showSuccessAlert('상품이 삭제되었습니다.');    
-                    await this.getMyProductList('I1');
-                }
-                else {
-                    this.$showFailAlert('삭제 실패');
-                }
-                //this.$router.push('/SellerProductList')
-                
-                
-            },
-
-            //판매자 상품숨김
-             async productHiding(){
-                let sendHideProductArray = [];
-                for(const object of this.sellerProductList) {
-                    if(object.selected) {
-                        sendHideProductArray.push(object.product_no);
-                    }
-                }
-                 let result = '';
-                let obj = {
-                    param : sendHideProductArray
-                };
-                result = await axios.put(`/api/product/sellerHideProduct`, obj);
-                if(result.data.changedRows > 0) {
-                    this.$showSuccessAlert('상품이 숨김처리 되었습니다.');    
-                    await this.getMyProductList('I1');
-                }
-                else {
-                    this.$showFailAlert('숨김처리 실패');
-                }
-                
+            
        
-            },
+          
             updateProductsPerPage(target) {
                 this.currentPage = 1;
             },

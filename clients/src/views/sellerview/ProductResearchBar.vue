@@ -216,11 +216,11 @@ button:hover {
         border-collapse: collapse;
         padding: 8px;
         text-align: center;
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
     }
 
     th {
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
         background-color: #f2f2f2;
 
     }

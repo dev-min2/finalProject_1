@@ -6,11 +6,11 @@
         <table>
             <thead>
                 <tr>
-                    <td>쿠폰 번호</td>
-                    <td>쿠폰 이름</td>
-                    <td>할인율</td>
-                    <td>만료일</td>
-                    <td>쿠폰 지급</td>
+                    <th>쿠폰 번호</th>
+                    <th>쿠폰 이름</th>
+                    <th>할인율</th>
+                    <th>만료일</th>
+                    <th>쿠폰 지급</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,7 +54,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-
+                            <PaginationComp2 v-if="userPage !== null" :page="userPage" @go-page="getPage2" style="margin-top:5px" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button>
@@ -115,8 +115,11 @@
         data() {
             return {
                 AdminCouponInfoList: [],
+                AdminMemberList: [],
                 page: null,
                 pageNo: 1,
+                userPage : null,
+                userPageNo : 1,
                 permission: '0',
                 leave: '0',
                 couponInfo: {
@@ -138,8 +141,13 @@
             PaginationComp2
         },
         created() {
+            if(this.$store.state.userPermission != 'F3') {
+                this.$showFailAlert('권한이 없습니다.');
+                this.$router.push({path : '/main'})
+                return;
+            }
             this.getAdminCouponList(1)
-
+           
         },
         methods: {
             async createCouponInfo() {
@@ -184,15 +192,21 @@
                 this.getAdminCouponList(this.pageNo);
 
             },
+            async getPage2(userPageNo) {
+                this.userPageNo = userPageNo;
+                this.loadAdminMemberList(this.coupon);
+
+            },
 
             async loadAdminMemberList(coupon) {
                 this.selectedCoupon = coupon;
+                 this.AdminMemberList = [];
                 // 쿠폰 지급 버튼 클릭 시 회원 목록을 불러오는 메소드
                 try {
                     const result = await axios.get(
-                        `/api/product/AdminMemberList/${this.permission}/${this.leave}/${this.pageNo}`);
+                        `/api/product/AdminMemberList2/${this.permission}/${this.leave}/${this.userPageNo}`);
                     this.AdminMemberList = result.data.selectResult;
-                    this.page = result.data.pageDTO;
+                    this.userPage = result.data.pageDTO;
                 } catch (e) {
                     console.error(e);
                 }
@@ -230,7 +244,7 @@
     .Copon-toolbar {
         display: flex;
         justify-content: space-between;
-        background-color: #363636;
+        background-color: #5f5f5f;
         padding: 10px;
         color: white;
         margin: 10px;
@@ -258,11 +272,11 @@
         border-collapse: collapse;
         padding: 8px;
         text-align: center;
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
     }
 
     th {
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
         background-color: #f2f2f2;
 
     }
