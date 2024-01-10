@@ -99,6 +99,9 @@
     textarea {
         resize: none;
     }
+     .card-body {
+        min-height: 500px;
+    }
 
     .scroll_ul {
         overflow-y: scroll;

@@ -26,22 +26,12 @@
                         </h2>
                     </div>
                     <div class="col-md-6">
-                        <!--<div class="small mb-1">
-                            <span style="font-size : 25px">별점 : {{productDetail.star_cnt}} </span>
-                        </div>
-                        <div class="d-flex justify-content-center small text-warning mb-2" style="font-size : 20px;">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                        </div>-->
                         <h1 class="display-5 fw-bolder">{{productDetail.product_name}}</h1>
                         <br />
                         <p style="text-align : right; color : gray">♥ 3만원 이상 구매시 무료 배송♥</p>
                         <div class="fs-5 mb-5">
-                            <!-- <span class="text-decoration-line-through">$45.00</span> -->
-                            <h4 style="font-size : 30px; text-align : right">\ {{productDetail.product_price}}</h4>
+                            <h4 style="font-size : 30px; text-align : right">\
+                                {{ $printPriceComma(Number(productDetail.product_price)) }}</h4>
                         </div>
                         <p class="lead">{{productDetail.product_desc}}</p>
                         <br />
@@ -58,7 +48,7 @@
                             &nbsp;
                             <h4 v-if="productDetail.product_stock > 0" style="color : gray; margin-inline-start: auto">총
                                 상품
-                                금액 \ {{this.cnt * productDetail.product_price}}</h4>
+                                금액 \ {{ $printPriceComma(this.cnt * productDetail.product_price)}}</h4>
                         </div>
                         <br />
                         <br />
@@ -103,7 +93,7 @@
                 <!-- 구매후기  -->
                 <div id="review" class="reviewTable">
                     <h2 style="font: bolder; font-size: 30px; text-align: left">구매 후기</h2>
-                    <table class="table" style=text-align:center>
+                    <table class="table table-hover" style="text-align:center">
                         <thead>
                             <tr style=text-align:center>
                                 <th>리뷰번호</th>
@@ -119,40 +109,65 @@
                                 <td>아직 작성된 리뷰가 없습니다.</td>
                             </tr>
                             <tr v-else v-for="(review, idx) in reviewList" :key="idx">
-                                <td>{{ review.review_no }}</td>
-                                <td>{{ review.content }}</td>
-                                <td>{{ review.star_cnt }}</td>
-                                <td>{{ review.user_name }}</td>
-                                <td>{{ $dateFormat(review.review_date) }}</td>
-                                <td><input type="button" class="button" @click="addReviewLikeCnt(review.review_no)">
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.review_no }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.content }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.star_cnt }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.user_name }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ $dateFormat(review.review_date) }}</td>
+                                <!-- 리뷰좋아요버튼 -->
+                                <td v-if="review.like_click == 0">
+                                    <button @click="addReviewLikeCnt(review.review_no)"
+                                        style="border:0;background:none;">🤍</button>
                                     {{ review.review_like_cnt }} </td>
+                                <td v-else><button @click="cancleReviewLikeCnt(review.review_no)"
+                                        style="border:0;background:none;">❤</button>
+                                    {{ review.review_like_cnt }} </td>
+
                             </tr>
                         </tbody>
                     </table>
                     <PaginationComp v-if="page !== null" :page="page" @go-page="showReviewList" />
                 </div>
-                <!--리뷰 모달창-->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel"> review 모달 </h5>
+                                <h5 class="modal-title" id="exampleModalLabel"> 리뷰 상세내용 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <select name="review" v-model="review" class="form-select">
-                                    <div :key="i" :value="review" v-for="(review, i) in reviewList">
-                                        <div style="display:none;"> {{ review.review_no }} </div>
-                                        [ {{ review.content }} ] 작성자: {{review.user_name}} %
-                                        | 작성일자 : {{this.$dateFormat(review.review_date)}}
+                                <div class="container mt-3">
+                                    <div class="row">
+                                        <div class="col-md-12 offset-md-0">
+                                            <h2 class="my-3">리뷰내용</h2>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title"></h3>
+                                                    <div style="float:left" ref="title">
+
+                                                    </div>
+                                                    <div style="float:right" ref="starPos">
+
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div ref="viewer2">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </select>
+                                </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" @click="ReviewBtn()" class="btn btn-primary"
-                                    data-bs-dismiss="modal">확인</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                             </div>
                         </div>
@@ -229,7 +244,9 @@
     import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
     import PaginationComp from '../../components/common/PaginationComp.vue';
     import Product from '../../components/userview/Product.vue';
+    import Viewer2 from '@toast-ui/editor/dist/toastui-editor-viewer';
     let toastViewer = null;
+    let toastViewerModal = null;
     export default {
         components: {
             PaginationComp,
@@ -245,11 +262,12 @@
                 product_no: 0,
                 reviewLikeArray: [],
                 page: null,
-                relationCategoryList: []
+                relationCategoryList: [],
             };
         },
         async created() {
             this.product_no = this.$route.query.pno;
+
             await this.getProductDetail(this.$route.query.pno);
             await this.showReviewList(1);
             const viewDiv = this.$refs.viewer;
@@ -263,10 +281,10 @@
             async getProductDetail(pno) {
                 this.$showLoading();
                 let result = await axios
-                    .get(`/api/product/productDetail?pno=${pno}`)
+                    .get(`/api/product/productDetail?pno=${pno}&ptype=${this.$store.state.curShowPetType}`)
                     .catch(err => console.log(err));
                 this.productDetail = result.data.selectResult;
-                this.relationCategoryList = result.data.relationResult
+                this.relationCategoryList = result.data.relationResult;
                 const cartResult = await axios
                     .get(`/api/product/productDetail/${this.$store.state.userNo}/${this.productDetail.product_no}`)
                     .catch(err => console.log(err));
@@ -306,6 +324,7 @@
                         .catch(err => console.log(err));
                     this.wishInfo = wishResult.data;
                 }
+
                 this.$hideLoading();
             },
             async addCartfunction() {
@@ -399,6 +418,7 @@
                 // html 태그 삭제하고 리뷰내용 보이기
                 for (let i = 0; i < this.reviewList.length; ++i) {
                     const div = document.createElement('div');
+                    this.reviewList[i].realContent = this.reviewList[i].content;
                     div.innerHTML = this.reviewList[i].content;
                     this.reviewList[i].content = div.textContent || div.innerText || '';
                     if (this.reviewList[i].content.length >= 10) {
@@ -410,26 +430,45 @@
             },
             async addReviewLikeCnt(rno) {
                 this.$showLoading();
-                const result = await axios.put(`/api/product/productdetails/review/${rno}/${this.product_no}`)
+                const result = await axios.put(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
-                this.reviewList = result.data;
-                for (let i = 0; i < this.reviewList.length; ++i) {
-                    const div = document.createElement('div');
-                    div.innerHTML = this.reviewList[i].content;
-                    this.reviewList[i].content = div.textContent || div.innerText || '';
-                    if (this.reviewList[i].content.length >= 10) {
-                        this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
-                    }
-                    this.$hideLoading();
-                }
+                this.$hideLoading();
+                this.showReviewList(this.page.curPage);
             },
-            ReviewBtn : async function(){
-                
-                this.review_no = this.reviewList.review_no;
-            }
+            async cancleReviewLikeCnt(rno) {
+                this.$showLoading();
+                const result = await axios.delete(`/api/product/productdetails/review/${rno}`)
+                    .catch((err) => console.log(err));
+                this.$hideLoading();
+                this.showReviewList(this.page.curPage);
+            },
+            setViewer(review) {
+                const viewDiv = this.$refs.viewer2;
+                const modalTitle = this.$refs.title;
+                const modalStar = this.$refs.starPos;
+                modalStar.innerHTML = '';
+                modalTitle.innerHTML = '';
+
+                modalTitle.innerHTML = `<p>${this.productDetail.product_name}</p>`;
+                let starTag = "<p style='color:#fab3cc; display:inline-block;'>별점 | ";
+                for (let i = 0; i < review.star_cnt; ++i) {
+                    starTag += '★';
+                }
+                starTag += '</p>';
+
+                modalStar.innerHTML = starTag;
+                const html = review.realContent;
+
+                toastViewerModal = new Viewer2({
+                    el: viewDiv,
+                    initialValue: html
+                });
+            },
         }
     }
 </script>
 <style scoped>
-
+    .modal-dialog {
+        max-width: 50%;
+    }
 </style>

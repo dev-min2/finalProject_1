@@ -52,7 +52,7 @@ let paymentProductsDAO = {
     //주문 상세 개별 조회
     selectPaymentDetail : async function(paymentNo){
         const selectPaymentDetail = 
-        `SELECT p2.user_no, u.company_name, p2.product_name, p2.product_price,
+        `SELECT p2.user_no, u.company_name, p2.product_name, p2.product_price, p.product_no,
                 p.payment_product_no, p.payment_no, p.buy_cnt, p.payment_amount, p.payment_discount_amount, p.real_payment_amount, 
                 p.delivery_state, p.delivery_number, p.delivery_fee, p.delivery_updatedate
         FROM payment_product p LEFT JOIN product p2
