@@ -9,7 +9,7 @@
                     </a>
                 </li>
                 <li class="page-item" v-for="(n,idx) in array" :key="idx">
-                    <a v-if="(idx + 1) == page.curPage" class="page-link" href="#" style="background-color:#fc97bf; border-color:#dee2e6; color:white;" @click="goPage(n)">{{n}}</a>
+                    <a v-if="(n) == page.curPage" class="page-link" href="#" style="background-color:#fc97bf; border-color:#dee2e6; color:white;" @click="goPage(n)">{{n}}</a>
                     <a v-else class="page-link" href="#" style="border-color:#dee2e6; color:black;" @click="goPage(n)">{{n}}</a>
                 </li>
                 <li class="page-item" v-if="page.next == true">
