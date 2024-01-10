@@ -96,9 +96,9 @@ const userDAO = {
     },
     updateUserPasswordQuery : async function(prevUserPw, user_no, newUserPw) {
         const updateUserPasswordQuery = `
-            UPDATE user SET user_pw = ? WHERE user_no = ? AND user_pw = ?
+            UPDATE user SET user_pw = ?, forgot_pw_change = ? WHERE user_no = ? AND user_pw = ?
         `
-        return query(updateUserPasswordQuery, [newUserPw, user_no, prevUserPw]);
+        return query(updateUserPasswordQuery, [newUserPw, 'P1', user_no, prevUserPw]);
     },
     updateUserLeaveDateQuery : async function(userNo) {
         const updateUserLeaveDateQuery = `
