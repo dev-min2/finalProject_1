@@ -57,12 +57,11 @@ let reviewDAO = {
         const startpageList = (pageNo - 1) * 10;
         const endpageList = 10;
         const selectReviewListQuery =
-            `SELECT r.review_no, p.payment_no, a.product_no, a.product_name, a.product_price, b.buy_cnt, p.payment_date
+            `SELECT r.review_no, p.payment_no, a.product_no, a.product_name, a.product_price, p.payment_date
         FROM user u
         JOIN review r ON u.user_no = r.user_no
         JOIN payment p ON u.user_no = p.user_no
         JOIN product a ON a.product_no = r.product_no
-        LEFT JOIN payment_product b ON a.product_no = b.product_no
         WHERE u.user_no =?
         order by p.payment_date desc limit ?,?`;
         return query(selectReviewListQuery, [userNo, startpageList, endpageList]);

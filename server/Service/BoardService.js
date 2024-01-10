@@ -159,7 +159,6 @@ class BoardService {
             product_no: reviewBoardInfo.product_no,
             user_no: userNo
         }
-
         const result = await reviewDAO.insertReviewQuery(reviewVO);
         if (result == null && result.affectedRows <= 0) {
             return null;

@@ -86,9 +86,11 @@ export default {
 	},
 	methods : {
 		async registReviewBoard(){
+			console.log('왐?');
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
+			console.log(this.reviewBoardInfo);
 			const sendObj = {
 				param : {
 					reviewBoardInfo : this.reviewBoardInfo,
@@ -113,7 +115,7 @@ export default {
 				this.reviewBoardInfo.html = result.data.content;
 				this.reviewBoardInfo.product_no = result.data.product_no;
 				this.reviewBoardInfo.star_cnt = result.data.star_cnt;
-				this.starValue = this.registReviewBoard.star_cnt;
+				this.starValue = this.reviewBoardInfo.star_cnt;
 				if(this.reviewBoardInfo.star_cnt == 5) {
 					this.$refs.ra5.checked = true;
 				}
