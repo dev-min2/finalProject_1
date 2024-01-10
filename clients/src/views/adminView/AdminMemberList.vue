@@ -56,6 +56,11 @@
       };
     },
     created() {
+      if(this.$store.state.userPermission != 'F3') {
+                this.$showFailAlert('권한이 없습니다.');
+                this.$router.push({path : '/main'})
+                return;
+            }
       this.getAdminMemberList(1);
     },
     methods: {
@@ -85,7 +90,6 @@
         this.$showLoading()
         try {
           result = await axios.get(`/api/product/AdminMemberList/${this.permission}/${this.leave}/${this.pageNo}`);
-
         } catch (e) {
           console.log(e);
         }
@@ -130,7 +134,7 @@
 
   th {
     background-color: #646464;
-    color: white;
+    color: rgb(0, 0, 0);
   }
 
   /* .btn{
@@ -172,19 +176,18 @@
   }
 
   th,
-  td {
-    border-collapse: collapse;
-    padding: 8px;
-    text-align: center;
-    border: 2px solid #000000;
-  }
+    td {
+        border-collapse: collapse;
+        padding: 8px;
+        text-align: center;
+        border: 2px solid #bbbbbb;
+    }
 
-  th {
-    border: 2px solid #000000;
-    background-color: #e6e6e6;
-    color: black;
+    th {
+        border: 2px solid #bbbbbb;
+        background-color: #f2f2f2;
 
-  }
+    }
 
   .A {
     width: 180px;

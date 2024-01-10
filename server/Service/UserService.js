@@ -11,11 +11,24 @@ const mainCodeDAO = require('../DAO/MainCodeDAO');
 const myPetDAO = require('../DAO/user/MyPetDAO');
 const reviewDAO = require('../DAO/user/ReviewDAO');
 const PageDTO = require("../commonModule/PageDTO");
+const CouponDAO = require('../DAO/product/CouponDAO');
 
 
 class UserService {
     constructor() {
 
+    }
+
+    //경석 마이페이지-내 쿠폰 조회
+    async getMyCoupon(couponType,userNo,pageNo){
+        const result = await CouponDAO.selectMyCouponQuery(couponType,userNo,pageNo);
+        const cntResult = await CouponDAO.selectMyCouponQueryCnt(couponType,userNo);
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), 10);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+        return resResult;
     }
     //마이페이지-내반려동물정보
     async getPetList(userNo){
