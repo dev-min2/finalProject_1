@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
+                <div v-if="$store.state.userPermission == 'F1'" class="mt-1 text-right">
                     <button style="background-color:#fab3cc; border:0;" class="btn btn-primary"
                         @click="modifyReview">수정하기</button>
                 </div>

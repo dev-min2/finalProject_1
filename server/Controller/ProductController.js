@@ -675,7 +675,6 @@ productRouter.get('/productdetails/review/:productNo/:pageNo', async (req, res) 
 productRouter.put('/productdetails/review/:reviewNo', async (req, res) => {
     try {
         let reviewNo = req.params.reviewNo;
-        
         let userNo = req.session.userNo;
         const productService = new ProductService();
         const result = await productService.addReviewLikeCnt(reviewNo, userNo);
