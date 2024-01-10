@@ -37,7 +37,8 @@ const methods = {
             title : title,
             text : text,
             icon: 'error',
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc"
         })
     },
     showWarningAlert(title, text) {

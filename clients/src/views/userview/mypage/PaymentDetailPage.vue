@@ -56,6 +56,11 @@
                                                 <button disabled class="btn btn-primary"
                                                     style="background-color: #bbbbbb; border: none; margin : 5px;">주문취소</button>
                                             </div>
+                                            <div v-else class="reviewBtn">
+                                                  <button disabled class="btn btn-primary"
+                                                    style="background-color: #fab3cc; border: none; margin : 5px;">후기작성</button>
+                                                <button disabled class="btn btn-primary" style="background-color: #bbbbbb; border: none; margin : 5px;">주문취소</button>
+                                            </div>
                                         </div>
                                     <!--쿠폰사용했을 경우 -->
                                         <div v-else-if="myCouponNo != null">
@@ -123,10 +128,15 @@
                         <th>결제일시</th>
                         <td>{{this.$dateFormat(paymentDate)}}</td>
                     </tr>
-
+                <!--
                     <tr>
                         <th>상품금액</th>
                         <td>{{this.$printPriceComma(paymentPrice)}}원</td>
+                    </tr>
+                -->
+                    <tr>
+                        <th>최초 결제금액</th>
+                        <td>{{this.$printPriceComma(Number(realPaymentPrice + refundPrice))}}원</td>
                     </tr>
                     <tr>
                         <th>배송비</th>
@@ -136,10 +146,7 @@
                         <th>할인금액</th>
                         <td style="color:red;">{{$printPriceComma(paymentDiscountPrice)}}원</td>
                     </tr>
-                    <tr>
-                        <th>최초 결제금액</th>
-                        <td>{{this.$printPriceComma(Number(realPaymentPrice + refundPrice))}}원</td>
-                    </tr>
+                  
                     <tr>
                         <th>환불금액</th>
                         <td>{{$printPriceComma(Number(refundPrice))}}원</td>

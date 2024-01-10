@@ -93,7 +93,7 @@
             </a>
             <ul class="dropdown-menu nav-item">
               <li><router-link class="dropdown-item" to="/notice" href="#">공지사항</router-link></li>
-              <li><router-link class="dropdown-item" to="/notice" href="#">자유게시판</router-link></li>
+              <li><router-link class="dropdown-item" to="/freeboard" href="#">자유게시판</router-link></li>
               <li><router-link class="dropdown-item" to="/notice" href="#">고객센터</router-link></li>
             </ul>
           </div>
