@@ -24,7 +24,7 @@
             </tbody>
         </table>
         <button class="btn btn-primary my-2" 
-                style="text-align:left; background-color:#fc97bf; border:0;"
+                style="text-align:right; display: inline-block; margin: 0 5px;  float: right; background-color:#fab3cc; border:0;"
                 @click="goWriteFree">
             글쓰기
         </button>
