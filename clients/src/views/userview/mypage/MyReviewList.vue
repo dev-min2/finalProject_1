@@ -10,6 +10,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">리뷰번호</th>
+                                <th scope="col">주문번호</th>
                                 <th scope="col">상품명</th>
                                 <th scope="col">가격</th>
                                 <th scope="col">결제일</th>
@@ -19,6 +20,7 @@
                         <tbody>
                             <tr v-for="(review, idx) in reviewList" :key="idx" :review="review" @click="goReviewBoard(review.review_no,review.product_name)">
                                 <td>{{ review.review_no }}</td>
+                                <td>{{ review.payment_no }}</td>
                                 <td>{{ review.product_name }}</td>
                                 <td>{{ $printPriceComma(review.product_price) }}</td>
                                 <td>{{ this.$dateFormat(review.payment_date) }}</td>

@@ -157,7 +157,8 @@ class BoardService {
             star_cnt: reviewBoardInfo.star_cnt,
             review_date: new Date(),
             product_no: reviewBoardInfo.product_no,
-            user_no: userNo
+            user_no: userNo,
+            payment_no : reviewBoardInfo.payment_no
         }
         const result = await reviewDAO.insertReviewQuery(reviewVO);
         if (result == null && result.affectedRows <= 0) {

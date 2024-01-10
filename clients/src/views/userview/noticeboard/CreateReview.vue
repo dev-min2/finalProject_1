@@ -59,7 +59,8 @@ export default {
 				content : '',
 				star_cnt : '',
 				product_no : '',
-				html : null
+				html : null,
+				payment_no : ''
 			},
 			curTimeVal : '',
 			curModifyForm : false,
@@ -86,7 +87,6 @@ export default {
 	},
 	methods : {
 		async registReviewBoard(){
-			console.log('왐?');
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
@@ -94,7 +94,8 @@ export default {
 			const sendObj = {
 				param : {
 					reviewBoardInfo : this.reviewBoardInfo,
-					product_no : this.reviewBoardInfo.product_no
+					product_no : this.reviewBoardInfo.product_no,
+					payment_no : this.reviewBoardInfo.payment_no
 				}
 			}
 			const result = await axios.post(`/api/board/myreview/write`,sendObj);
