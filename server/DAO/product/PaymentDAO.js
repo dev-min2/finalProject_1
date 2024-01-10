@@ -43,11 +43,20 @@ let paymentDAO = {
 
     /* 결제 조회 기능*/
     //결제 전체 주문내역 불러오기 (유저기준)
-    selectPaymentList : async function(userNo){
+    selectPaymentList : async function(userNo, pageNo){
+        const startpageList = (pageNo - 1) * 10;
+        const endpageList = 10;
         const selectPaymentList =
-            `SELECT * FROM payment WHERE user_no = ?`;
+            `SELECT * FROM payment 
+             WHERE user_no = ?
+             ORDER BY payment_date desc limit ?,? `;
             
-            return query(selectPaymentList, userNo);
+            return query(selectPaymentList, [userNo, startpageList, endpageList]);
+    },
+    selectPaymentListCnt: async function(userNo){
+        const selectPaymentListCnt =
+            `SELECT count(*) as cnt FROM payment WHERE user_no = ?`;
+        return query(selectPaymentListCnt, userNo);
     },
 
     //결제 전체 주문내역 단건 불러오기
@@ -60,14 +69,15 @@ let paymentDAO = {
 
     /* 결제 전체 취소 */
     //결제 전체 취소 (Update payment + payment_product)
-    cancelAllPayment: async function(paymentNo){
+    cancelAllPayment: async function(refundPrice, realPaymentAmount, paymentNo){
        const cancelAllPayment = 
             `  UPDATE payment p 
                 JOIN payment_product p2
                 ON p.payment_no = p2.payment_no
-                SET p.order_state = 'C5', p2.delivery_state = 'C5'
+                SET p.order_state = 'C5', p2.delivery_state = 'C5',
+                p.refund_price = ?, p.real_payment_amount = ?
                 WHERE p.payment_no = ?`;
-       return query (cancelAllPayment, paymentNo);
+       return query (cancelAllPayment, [refundPrice, realPaymentAmount, paymentNo]);
     },
 
     /* 결제 부분 취소 */
