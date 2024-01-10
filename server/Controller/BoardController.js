@@ -293,13 +293,11 @@ boardRouter.put('/notice', async (req, res) => {
 
 //리뷰 작성
 boardRouter.post('/myreview/write', async (req, res) => {
-    const {
-        reviewBoardInfo
-    } = req.body.param;
+    const {reviewBoardInfo} = req.body.param;
     try {
         const boardService = new BoardService();
         const result = await boardService.registReviewBoard(req.session.userNo, reviewBoardInfo);
-        res.send("OK");
+        res.send(result);
     } catch (e) {
         console.log(e);
     }
