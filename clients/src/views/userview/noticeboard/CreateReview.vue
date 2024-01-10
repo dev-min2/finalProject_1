@@ -88,6 +88,7 @@ export default {
 	},
 	methods : {
 		async registReviewBoard(){
+			this.$showLoading();
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
@@ -105,6 +106,7 @@ export default {
 				this.$showSuccessAlert('등록성공',null);
 				this.$router.push({path : '/myreview'});
 			}
+			this.$hideLoading();
 		},
 		test(target) {
 			console.log(target);
@@ -146,6 +148,7 @@ export default {
 		},
 		//리뷰수정
 		async modifyReviewPost(){
+			this.$showLoading();
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
@@ -160,7 +163,7 @@ export default {
 				this.$showSuccessAlert('수정성공',null);
 				this.$router.push({path : `/myreview`});
 			}
-			
+			this.$hideLoading();
 		}
 	}
 }
