@@ -593,9 +593,10 @@ productRouter.get('/search/recproduct', async (req, res) => {
 //하랑
 productRouter.get('/productDetail', async (req, res) => {
    let productNo = req.query.pno;
+   let ptype = req.query.ptype;
    try {
       const productService = new ProductService();
-      let result = await productService.showProdDetail(productNo);
+      let result = await productService.showProdDetail(productNo,ptype);
       res.send(result);
    } catch (err) {
       console.log(err);
