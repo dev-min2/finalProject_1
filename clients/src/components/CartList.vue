@@ -2,7 +2,7 @@
   <div class="container">
     <template
       v-for="(company, companyIndex, idx) in cartList" :key="idx">
-      <h3>업체명 : {{company[0].company_name}}</h3>
+      <h3>업체명d : {{company[0].company_name}}</h3>
       <table class="cart_list">
         <thead>
           <tr>
