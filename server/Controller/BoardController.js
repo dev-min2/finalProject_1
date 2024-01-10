@@ -198,7 +198,8 @@ boardRouter.put('/notice', async (req, res) => {
 
     try {
         const boardService = new BoardService();
-        const result = await boardService.modifyNotice(req.session.userNo,
+        con
+        ult = await boardService.modifyNotice(req.session.userNo,
             notice_board_no, randNoticeValue, curTimeVal, noticeBoardInfo);
 
         res.send("OK");

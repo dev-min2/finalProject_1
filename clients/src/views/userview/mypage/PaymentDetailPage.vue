@@ -212,7 +212,6 @@
         methods: {
             //후기작성
             goWriteReview(payment_no, product_no, product_name){
-                console.log(product_no, product_name);
                 this.$router.push({path : "/myreview/write", query : {payno : payment_no, pno: product_no, pname : product_name}});
             },
             //부분주문취소 테스트 버튼
