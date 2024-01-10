@@ -150,7 +150,7 @@
   table {
     border-collapse: collapse;
     width: 100%;
-    border: 2px solid #000000;
+    border: 2px solid #bbbbbb;
     text-align: center;
     margin-left: 10px;
   }

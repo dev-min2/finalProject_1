@@ -8,7 +8,7 @@ const ProductService = require('../Service/ProductService');
 ///////////////////////////////////////////////
 
 //관리자 기간지정 상품조회
-productRouter.get('/seller-main/:period/:minPrice/:maxPrice/:pageNo', async (req, res) => {
+productRouter.get('/adminMain/:period/:minPrice/:maxPrice/:pageNo', async (req, res) => {
    //let userNo = req.params.userNo;
    let period = req.params.period;
    let minPrice = req.params.minPrice;
@@ -43,6 +43,38 @@ productRouter.get('/seller-main/:period/:minPrice/:maxPrice/:pageNo', async (req
    }
    
 })
+//관리자-내 상품 전체 조회
+productRouter.get('/AdminProductList', async (req, res) => {
+   console.log('asdasdasdasd')
+   let state = req.query.state
+   const pageNo = req.query.pg;
+   const showCnt = req.query.showCnt;
+   try {
+      const productService = new ProductService();
+      result = await productService.getAdminProductList(state, pageNo,showCnt);
+      res.send(result);
+
+   } catch (e) {
+      console.log(e)
+   }
+})
+//관리자 필터검색 - 카테고리 분류 조회
+productRouter.post('/AdminProductList', async (req, res) => {
+   //let userNo = req.params.userNo;
+   // const userNo = req.body.userNo
+   let categoryArray = req.body.categoryArray;
+   let publicStateNo = req.body.publicStateNo;
+   console.log('categoryNo', categoryArray)
+   console.log(publicStateNo)
+   try {
+      const productService = new ProductService();
+      result = await productService.getAdminProductListFilter(publicStateNo, categoryArray);
+      res.send(result);
+   } catch (e) {
+      console.log(e);
+   }
+})
+
 
 //관리자-회원 조회
 productRouter.get('/AdminMemberList/:permission/:leave/:pageNo', async (req, res) => {
@@ -55,6 +87,24 @@ productRouter.get('/AdminMemberList/:permission/:leave/:pageNo', async (req, res
    try {
       const productService = new ProductService();
       result = await productService.getAdminMemberList(permission, leave,pageNo);
+      console.log(result);
+      res.send(result);
+
+   } catch (e) {
+      console.log(e)
+   }
+})
+//관리자-쿠폰지급- 회원 조회
+productRouter.get('/AdminMemberList2/:permission/:leave/:userPageNo', async (req, res) => {
+   const permission = req.params.permission;
+   const leave = req.params.leave;
+   const userPageNo = req.params.userPageNo;
+   console.log('permission',permission)
+   console.log('leave',leave)
+   console.log('userPageNo',userPageNo)
+   try {
+      const productService = new ProductService();
+      result = await productService.getAdminMemberList2(permission, leave,userPageNo);
       console.log(result);
       res.send(result);
 
@@ -98,6 +148,35 @@ productRouter.post('/giveAdminCoupon', async (req, res) => {
    }
 })
 
+//관리자 - 리뷰 조회
+productRouter.get('/AdminReviewList', async (req, res) => {
+   const pageNo = req.query.pg;
+   const showCnt = req.query.showCnt;
+   try {
+      const productService = new ProductService();
+      result = await productService.getAdminReview(pageNo,showCnt);
+      console.log(result);
+      res.send(result);
+
+   } catch (e) {
+      console.log(e)
+   }
+})
+
+
+//관리자-리뷰 삭제
+productRouter.delete('/DeleteAdminReview/:reviewNo', async (req, res) => {
+   let reviewNo = req.params.reviewNo;
+   
+   try {
+      const productService = new ProductService();
+      result = await productService.deleteAdminReview(reviewNo);
+      res.send(result);
+   } catch (e) {
+      console.log(e)
+   }
+})
+
 //판매자 기간지정 상품조회
 
 productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice/:pageNo', async (req, res) => {
@@ -109,7 +188,7 @@ productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice/:pageNo', as
    console.log(minPrice);
    console.log(typeof minPrice);
 
-   const userNo = 1;
+   const userNo = req.params.userNo;
    //req.session.userNo;
    try {
       const productService = new ProductService();
@@ -141,9 +220,8 @@ productRouter.get('/seller-main/:userNo/:period/:minPrice/:maxPrice/:pageNo', as
 
 //판매자-내 상품 전체 조회
 productRouter.get('/SellerProductList', async (req, res) => {
-   // let userNo = req.params.userNo;
-   const userNo = 1;
-   let state = req.query.state
+   const userNo = req.session.userNo;
+   let state = req.query.state;
    const pageNo = req.query.pg;
    const showCnt = req.query.showCnt;
 
@@ -160,16 +238,15 @@ productRouter.get('/SellerProductList', async (req, res) => {
 
 //판매자 필터검색 - 카테고리 분류 조회
 productRouter.post('/SellerProductList', async (req, res) => {
-   //let userNo = req.params.userNo;
-   // const userNo = req.body.userNo
-   const userNo = 1;
+
+   const userNo = req.session.userNo
    let categoryArray = req.body.categoryArray;
    let publicStateNo = req.body.publicStateNo;
 
 
    console.log('categoryNo', categoryArray)
    console.log(publicStateNo)
-   //req.session.userNo;
+
    try {
       const productService = new ProductService();
       result = await productService.getMyProductListFilter(userNo, publicStateNo, categoryArray);
@@ -222,7 +299,7 @@ productRouter.put('/sellerHideProduct', async (req, res) => {
 //판매자 - 리뷰 조회
 productRouter.get('/SellerReviewList', async (req, res) => {
    // let userNo = req.params.userNo;
-   const userNo = 1;
+   const userNo = req.session.userNo
    const pageNo = req.query.pg;
    const showCnt = req.query.showCnt;
    try {
@@ -236,26 +313,14 @@ productRouter.get('/SellerReviewList', async (req, res) => {
    }
 })
 
-//판매자-리뷰 삭제
-productRouter.get('/SellerReviewList/:reviewNo', async (req, res) => {
-   let reviewNo = req.params.reviewNo;
-   try {
-      const productService = new ProductService();
-      result = await productService.removeSellerReview(reviewNo);
-
-      res.send(result);
-
-   } catch (e) {
-      console.log(e)
-   }
-})
 
 //판매자 - 리뷰 검색
 productRouter.get('/SellerReviewList/:userNo/:search', async (req, res) => {
+   let userNo = req.params.userNo;
    let search = req.params.search;
    try {
       const productService = new ProductService();
-      result = await productService.searchSellerReview(search);
+      result = await productService.searchSellerReview(userNo,search);
 
       res.send(result);
 
@@ -268,7 +333,7 @@ productRouter.get('/SellerReviewList/:userNo/:search', async (req, res) => {
 productRouter.get('/SellerDelivery', async (req, res) => {
    // let userNo = req.params.userNo;
    //0req.session.userNo;
-   const userNo = 1;
+   const userNo = req.session.userNo
    const pageNo = req.query.pg;
    const showCnt = req.query.showCnt;
    try {
