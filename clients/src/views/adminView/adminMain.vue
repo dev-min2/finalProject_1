@@ -231,9 +231,9 @@
     }
 
     .chart {
-        width: 40%;
+        width: 98%;
         /* 차트 너비 조절 */
-        height: 450px;
+        height: 500px;
     }
 
     .select {

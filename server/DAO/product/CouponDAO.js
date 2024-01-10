@@ -39,6 +39,8 @@ let couponDAO = {
         return query(giveAdminCoupon,giveCouponInfo)
       },
 
+    
+
     //My쿠폰 가져오기
     selectMyCouponQuery : async function(couponType,userNo,pageNo) {
         let startPage = (pageNo - 1) * 10;
