@@ -99,7 +99,7 @@
     textarea {
         resize: none;
     }
-     .card-body {
+    .card-body {
         min-height: 500px;
     }
 

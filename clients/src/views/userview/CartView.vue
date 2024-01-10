@@ -123,4 +123,7 @@ td {
   color: white;
   border: none;
 }
+li{
+  font-weight: bold;
+}
 </style>
