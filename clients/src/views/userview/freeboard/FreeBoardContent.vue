@@ -24,7 +24,9 @@
                     </div>
                 </div>
                 <div class="mt-1 text-right">
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="modifyFree(boardNo)" >수정하기</button>
+                    <button style="background-color:#acb1f8; border:0; margin : 10px;" class="btn btn-primary" @click="modifyFree(boardNo)" >수정하기</button>
+                    <button style="background-color:#bbbbbb; border:0;" class="btn btn-primary" @click="deleteFree(boardNo)" >삭제하기</button>
+
                 </div>
             </div>
         </div>
@@ -134,9 +136,22 @@
                     this.$showFailAlert('댓글삭제에 실패했습니다. 사유 : ', result.status);
                 }
             },
+            //수정삭제
             modifyFree(boardNo) {
                 this.$router.push({path : '/freeboard/write', query : { modify : boardNo }});
+            },
+            async deleteFree(boardNo) {
+                const result = await axios.delete(`/api/board/freeboard/${boardNo}`);
+                if(result.data) {
+                    this.$showSuccessAlert('삭제 성공');
+                    this.$router.push({path : '/freeboard'});
+                }
+                else {
+                    this.$showFailAlert('삭제 실패');
+                }
             }
+
+
         }
     }
 </script>

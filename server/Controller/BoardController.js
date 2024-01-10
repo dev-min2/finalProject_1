@@ -90,6 +90,18 @@ boardRouter.put('/freeboard', async (req, res) => {
         console.log(e);
     }
 });
+//자유게시판 글 삭제
+boardRouter.delete('/freeboard/:no', async (req, res) => {
+    const boardNo = req.params.no;
+    try {
+        const boardService = new BoardService();
+        const result = boardService.deleteFreeBoard(boardNo);
+        res.status(200).send(result);
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 
 //자유게시판 덧글
 boardRouter.post('/free-reply', async (req, res) => {

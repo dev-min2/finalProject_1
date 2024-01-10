@@ -147,11 +147,11 @@ let freeBoardDAO = {
         `
         return query(insertFreeReplyQuery,obj);
     },
-    deleteNotieReplyQuery : async function(replyNo) {
-        const deleteNotieReplyQuery = `
+    deletFreeReplyQuery : async function(replyNo) {
+        const deletFreeReplyQuery = `
             UPDATE free_reply SET delete_date = current_date() where free_reply_no = ${replyNo}
         `
-        return query(deleteNotieReplyQuery);
+        return query(deletFreeReplyQuery);
     },
     updateFreeReplyQuery : async function(replyContent, replyNo) {
         const updateFreeReplyQuery = `

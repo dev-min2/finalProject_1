@@ -24,8 +24,8 @@
                     </div>
                 </div>
                 <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary mr-1" @click="modifyNotice(boardNo)" >수정하기</button>
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="deleteNotice(boardNo)" >삭제하기</button>
+                    <button style="background-color:#acb1f8; border:0; margin : 10px;" class="btn btn-primary mr-1" @click="modifyNotice(boardNo)" >수정하기</button>
+                    <button style="background-color:#bbbbbb; border:0;" class="btn btn-primary" @click="deleteNotice(boardNo)" >삭제하기</button>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="container py-3">
         <h1 class="py-4" style="text-align:center;">자유게시판</h1>
-        <BoardSearchBar @board-search="getFreeBoardList" />
+        <BoardSearchBar @board-search="getFreeBoardList2" />
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -58,6 +58,9 @@ export default {
     },
     methods: {
         //리스트 띄워주기
+            async getFreeBoardList2(pageNo, keyword) {
+                this.getFreeBoardList(this.userNo,pageNo,keyword);
+            },
             async getFreeBoardList(userNo, pageNo,keyword) {
                 //this.$showLoading();
                 const result = await axios.get(`/api/board/freeboard?userNo=${userNo}&pg=${pageNo}&keyword=${keyword}`);

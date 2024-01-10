@@ -221,7 +221,7 @@ class BoardService {
 
         return resResult;
     }
-    //자유게시판 단건조회, 댓글
+    //자유게시판 단건조회
     async getFreeBoardInfo(boardNo) {
         const result = await freeBoardDAO.selectFreeBoardQuery(boardNo);
         let replyResult = await freeBoardDAO.selectFreeBoardReplyQuery(boardNo);
@@ -266,25 +266,8 @@ class BoardService {
 
         return result;
     }
-
-    //자유게시판 덧글
-
-    async registFreeReply(replyObj) {
-        replyObj.reply_date = new Date();
-        const result = await freeBoardDAO.insertFreeReplyQuery(replyObj);
-        return result;
-    }
-
-    async deleteFreeReply(replyNo) {
-        const result = await freeBoardDAO.deleteNotieReplyQuery(replyNo);
-        return result;
-    }
-
-    async modifyFreeReply(modifyReplyObj) {
-        const result = await freeBoardDAO.updateFreeReplyQuery(modifyReplyObj.comment, modifyReplyObj.free_reply_no);
-        return result;
-    }
-
+    //자유게시판 수정
+    
     async modifyFree(userNo, boardNo, randFreeValue, curTimeVal, freeBoardInfo) {
         let freeVO = {
             title: freeBoardInfo.title,
@@ -301,6 +284,37 @@ class BoardService {
             return null;
         }
 
+        return result;
+    }
+
+    //자유게시판 삭제
+    async deleteFreeBoard(boardNo) {
+        const result2 = await freeBoardDAO.deletFreeReplyQuery(boardNo);
+        const result = await freeBoardDAO.deleteFreeBoardQuery(boardNo);
+
+        if(result.affectedRows > 0 && result2.affectedRows > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
+    //자유게시판 덧글
+    async registFreeReply(replyObj) {
+        replyObj.reply_date = new Date();
+        const result = await freeBoardDAO.insertFreeReplyQuery(replyObj);
+        return result;
+    }
+
+    async deleteFreeReply(replyNo) {
+        const result = await freeBoardDAO.deletFreeReplyQuery(replyNo);
+        return result;
+    }
+
+    async modifyFreeReply(modifyReplyObj) {
+        const result = await freeBoardDAO.updateFreeReplyQuery(modifyReplyObj.comment, modifyReplyObj.free_reply_no);
         return result;
     }
 
