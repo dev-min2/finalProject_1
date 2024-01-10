@@ -169,4 +169,7 @@
     a {
         text-decoration-line: none;
     }
+    .card-body {
+        min-height: 500px;
+    }
 </style>
