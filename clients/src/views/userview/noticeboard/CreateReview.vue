@@ -114,7 +114,6 @@ export default {
 				this.reviewBoardInfo.product_no = result.data.product_no;
 				this.reviewBoardInfo.star_cnt = result.data.star_cnt;
 				this.starValue = this.registReviewBoard.star_cnt;
-				console.log('별점',result.data.star_cnt);
 				if(this.reviewBoardInfo.star_cnt == 5) {
 					this.$refs.ra5.checked = true;
 				}

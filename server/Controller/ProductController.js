@@ -246,7 +246,7 @@ productRouter.get('/productdetails/review/:productNo/:pageNo', async (req, res) 
       let userNo = req.session.userNo;
       let pageNo = req.params.pageNo;
       const productService = new ProductService();
-      const result = await productService.showReviewListCnt(productNo, pageNo);
+      const result = await productService.showReviewListCnt(productNo, userNo, pageNo);
       res.send(result);
    } catch (e) {
       console.log(e);
