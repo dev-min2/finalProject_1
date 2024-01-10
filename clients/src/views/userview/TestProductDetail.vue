@@ -1,3 +1,4 @@
+
 <template>
 <div>
     <hr />
@@ -265,6 +266,9 @@
         </section>
     </div>
 </template>
+
+
+
 <script>
 import axios from 'axios'
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
@@ -327,6 +331,8 @@ export default {
             this.cartInfo = cartResult.data;
             this.wishInfo = wishResult.data;
             
+            console.log(result);
+
             this.$hideLoading();
         },
         async getQnaResult(qnaPage) {

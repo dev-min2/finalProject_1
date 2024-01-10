@@ -37,15 +37,15 @@
         	<h6>{{paymentInfo.orderPrice}}</h6>
         </div>
       </div>
-    </div>    
+    </div>
     <div class="d-flex justify-content-center">
     	<hr class="w-50">
     </div>
     
     <div class="col-lg-6 mx-auto">
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <button type="button" class="btn btn-outline-secondary  btn-lg px-4 gap-3" style="background-color:pink;"><a @click="$router.push('/orderdetail')" style="color:white;">주문내역 확인하기</a></button>
-        <button type="button" class="btn btn-outline-secondary btn-lg px-4"><a @click="$router.push('/main')" style="color:black;">메인으로 가기</a></button>
+        <button type="button" class="btn text-white" style="background-color: #fab3cc;"><a @click="$router.push('/orderdetail')" >주문내역 확인하기</a></button>
+        <button type="button" class="btn text-white" style="background-color: #acb1f8;"><a @click="$router.push('/main')" >메인으로 가기</a></button>
       </div>
     </div>
   </div>

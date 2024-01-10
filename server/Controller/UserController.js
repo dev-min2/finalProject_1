@@ -149,11 +149,12 @@ userRouter.post('/email-auth/confirm', async(req, res) => {
 
 userRouter.post('/forgot-account', async(req, res) => {
     let forgotInfo = req.body.forgotInfo;
+    console.log('하이');
     try {
         const userService = new UserService();
         let result = await userService.sendForgotAccountInfoMail(forgotInfo);
         if(result === "일치하는 회원이 없음") {
-            res.status(500).send("일치하는 회원이 없음");
+            res.status(200).send("Not Found");
             return;
         }
 
@@ -254,7 +255,24 @@ userRouter.put('/info', async(req, res) => {
         console.log(e);
         res.status(500).send("FAIL");
     }
-})
+});
+
+//작성한 리뷰 목록
+userRouter.get('/myreview', async(req, res)=>{
+    const userNo = req.query.userNo;
+    const pageNo = req.query.pageNo;
+    try{
+        const userService = new UserService();
+        const result = await userService.getMyReviewList(userNo,pageNo);
+        res.send(result);
+    }catch(e) {
+        console.log(e);
+    }
+});
+
+//리뷰 작성하기
+
+
 
 userRouter.put('/password', async(req, res) => {
     try {

@@ -5,13 +5,13 @@
 <div>
     <div class="conatiner mt-5">
         <div class="row">
-            <h2>댓글 {{noticeReplyCount}}</h2>
+            <h2>댓글 {{replyCount}}</h2>
         </div>
         <hr>
     </div>
     <div class="media">
         <div class="media-body">
-            <div v-for="(reply, objIdx, idx ) in noticeReply" :key="idx" class="mt-1">
+            <div v-for="(reply, objIdx, idx ) in boardReply" :key="idx" class="mt-1">
                 <div style="float:left;">
                     <h5 class="mt-0" style="display:inline-block;">{{reply[0].parent_user_name}}</h5>
                 </div>
@@ -54,7 +54,7 @@
                 <!-- 자식컴포넌트 영역 -->
 
                 <template v-if="reply[0].child_reply_no !== null">
-                    <div class="ml-5" style="background-color:#fafafa" v-for="(childReply,idx) in noticeReply[objIdx]" :key="idx">
+                    <div class="ml-5" style="background-color:#fafafa" v-for="(childReply,idx) in boardReply[objIdx]" :key="idx">
                         <div style="float:left;">
                             <h5 class="mt-0" style="display:inline-block;">{{childReply.child_name}}</h5>
                         </div>
@@ -83,7 +83,7 @@
                     </div>
                 </template>
             </div>
-        </div>
+        </div>0
     </div>
     <div class="mt-2">
         <h3>댓글 작성</h3>
@@ -111,24 +111,37 @@
             }
         },
         props : {
-            noticeReply : Object,
-            noticeReplyCount : Number       
+            boardReply : Object,
+            replyCount : Number       
         },
-        created() {
-            console.log(this.noticeReply);
-            for(const obj in this.noticeReply) { // obj -> parent_reply_no
-                this.showContent.push(false);
-                this.commentReply.push('');
-                
-                this.modifyContent[obj] = false;
-                this.modifyContentReply[obj] = this.noticeReply[obj][0].parent_comment;
-                for(const innerObj of this.noticeReply[obj]) {
-                    this.modifyContent[innerObj.child_reply_no] = false
-                    this.modifyContentReply[innerObj.child_reply_no] = innerObj.child_comment;
-                }
+        watch : {
+            boardReply(newVal,oldVal) {
+                this.initReply();
             }
         },
+        created() {
+            this.initReply();
+        },
         methods : {
+            initReply() {
+                this.comment = '';
+                this.commentReply = [];
+                this.showContent = []; // 답글 박스를 보여줄(true,false) 배열
+                this.modifyContent = {}; // 댓글 수정 박스를 보여줄(true,false) 객체(해시테이블역할)
+                this.modifyContentReply = {};
+
+                for(const obj in this.boardReply) { // obj -> parent_reply_no
+                    this.showContent.push(false);
+                    this.commentReply.push('');
+                
+                    this.modifyContent[obj] = false;
+                    this.modifyContentReply[obj] = this.boardReply[obj][0].parent_comment;
+                    for(const innerObj of this.boardReply[obj]) {
+                        this.modifyContent[innerObj.child_reply_no] = false
+                        this.modifyContentReply[innerObj.child_reply_no] = innerObj.child_comment;
+                    }
+                }
+            },
             registReply(pno,idx) {
                 if(idx >= 0 && this.commentReply[idx] == '') {
                     this.$showWarningAlert('빈 내용은 작성이 불가능합니다.');

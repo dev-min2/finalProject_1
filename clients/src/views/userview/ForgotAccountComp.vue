@@ -23,7 +23,7 @@
                             </div>
                         </template>
                         <div class="mb-4"></div>
-                        <input class="btn btn-primary btn-lg btn-block" @click="sendMail" type="button" value="이메일 전송" style="background-color:pink;border:1px white;width:200px;margin:auto;">
+                        <input class="btn btn-primary btn-lg btn-block" @click="sendMail" type="button" value="이메일 전송" style="background-color:#fab3cc; border:0;width:200px;margin:auto;">
                     </div>
                 <footer class="my-3 text-center text-small"> </footer>
                 </div>
@@ -57,8 +57,13 @@
                 this.$showLoading();
                 const result = await axios.post('/api/user/forgot-account', { forgotInfo : sendObj}, { headers : {"Content-Type" : "application/json"}});
                 if(result.status == 200) {
-                    this.$showSuccessAlert('메일 전송완료. 메일을 확인해주세요.',null);        
-                    this.$router.push({path : '/login'});
+                    if(result.data == "Not Found") {
+                        this.$showWarningAlert('입력한 정보와 일치하는 계정이 없습니다.',null);        
+                    }
+                    else {                        
+                        this.$showSuccessAlert('메일 전송완료. 메일을 확인해주세요.',null);        
+                        this.$router.push({path : '/login'});
+                    }
                 }
                 else {
                     this.$showFailAlert('오류 발생 : ' + result.status,null);

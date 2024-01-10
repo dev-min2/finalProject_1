@@ -15,7 +15,7 @@
               @change="checkComp($event.target.checked, companyIndex, idx)"
               />
               </td>
-            <td>나중에 hidden하기 </td>
+            <td hidden> 상품번호 hidden </td>
             <td class="fixedcol0">상품이미지</td>
             <td class="fixedcol1">상품정보</td>
             <td class="fixedcol2">옵션</td>
@@ -48,7 +48,7 @@
                 @change="checkProd($event.target, products, idx, companyIndex)" 
               />
             </td>
-            <td>{{products.cart_no}}</td>
+            <td hidden>{{products.cart_no}}</td>
             <td>
               <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}">
                   <img v-if="products.pet_type == 'd1'" :src="$store.state.prImg + `dog/` + products.product_image" style="width:100px" />
@@ -66,13 +66,13 @@
                 type="button"
                 value="▲"
                 class="cart_list_optionbtn"
-                @click="upfunction($event.target, products, idx, companyIndex)"
+                @click="upfunction($event.target, products, idx, companyIndex,productsIndex)"
               />
               <input
                 type="button"
                 value="▼"
                 class="cart_list_optionbtn"
-                @click="downfunction($event.target, products, idx, companyIndex)"
+                @click="downfunction($event.target, products, idx, companyIndex,productsIndex)"
               />
               <input
                 type="button"
@@ -176,7 +176,7 @@ export default {
       this.$hideLoading();
     },
     //상품선택수량증가
-    async upfunction(target, products, idx, companyIndex){
+    async upfunction(target, products, idx, companyIndex,productsIndex){
      companyIndex
       this.$showLoading();
       let result = await axios
@@ -205,12 +205,12 @@ export default {
         if(!products.selected) {
           products.selected = true;
           target.checked = true;
-          this.checkProd(target,products,idx,companyIndex);
+          this.checkProd(target,products,idx,companyIndex,productsIndex);
         }
       }
     },
     //상품선택수량감소
-    async downfunction(target, products, idx, companyIndex){
+    async downfunction(target, products, idx, companyIndex,productsIndex){
       this.$showLoading();
       let result = await axios
                           .put(`/api/user/carts/${products.product_no}/down`)
@@ -235,7 +235,7 @@ export default {
         }if(!products.selected) {
           products.selected = true;
           target.checked = true;
-          this.checkProd(target,products,idx,companyIndex);
+          this.checkProd(target,products,idx,companyIndex,productsIndex);
         }
       }
     },
@@ -288,6 +288,8 @@ export default {
 
 
         //선택한 카트 번호 배열에 담기 (민)
+        console.log(productArray);
+        console.log(productsIndex);
         if(this.CartNoList.indexOf(productArray[productsIndex].cart_no) < 0){
               this.CartNoList.push(productArray[productsIndex].cart_no); //선택한 번호 추가
         }

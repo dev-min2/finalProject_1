@@ -74,7 +74,7 @@ export default {
 		this.reviewBoardInfo.product_no = this.$route.query.pno;
 		this.product_name = this.$route.query.pname;
 		this.reviewNo = this.$route.query.modify;
-		
+		this.reviewBoardInfo.payment_no = this.$route.query.payno;
 		if(this.reviewNo > 0) {
 			this.curModifyForm = true;
 			
@@ -170,7 +170,7 @@ th{
 	padding-top : 25px;
 }
 @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
-       .rate { display: inline-block;border: 0;margin-right: 15px;}
+.rate { display: inline-block;border: 0;margin-right: 15px;}
 .rate > input {display: none;}
 .rate > label {float: right;color: #ddd}
 .rate > label:before {display: inline-block;font-size: 1rem;padding: .3rem .2rem;margin: 0;cursor: pointer;font-family: FontAwesome;content: "\f005 ";}

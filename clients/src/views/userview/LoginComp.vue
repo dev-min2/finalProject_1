@@ -4,7 +4,9 @@
 		<div class="container my-5">
 			<div class="input-form-backgroud row">
 				<div class="input-form col-md-12 mx-auto">
-					<h4 class="mb-5" style="text-align: center;font-size:50px;color:pink">디어마이 펫</h4>
+                    <div style="text-align: center;" class="my-2">
+                        <img class="mx-2" src="../../assets/commonResource/catlogo.png" alt="cat" style="width: 200px; height:60px;" />
+                    </div>
 					<div class="row">
 						<div class="mb-3">
 							<label for="userId">아이디</label> 
@@ -28,9 +30,9 @@
                         </div>
 						
                         <div class="mt-4">
-                            <input class="btn btn-primary btn-lg btn-block" type="submit" value="로그인" @click="login">
-                            <router-link class="btn btn-primary btn-lg btn-block" :to="{ name : 'join', params : { sellerJoin : 0 } }" >회원가입</router-link>
-                            <router-link class="btn btn-primary btn-lg btn-block" :to="{ name : 'join', params : { sellerJoin : 1 } }" >판매자 회원가입</router-link>
+                            <input class="btn btn-primary btn-lg btn-block" style="background-color:#fab3cc; border:0;" type="submit" value="로그인" @click="login">
+                            <router-link class="btn btn-primary btn-lg btn-block" style="background-color:#fab3cc; border:0;" :to="{ name : 'join', params : { sellerJoin : 0 } }" >회원가입</router-link>
+                            <router-link class="btn btn-primary btn-lg btn-block" style="background-color:#fab3cc; border:0;" :to="{ name : 'join', params : { sellerJoin : 1 } }" >판매자 회원가입</router-link>
                         </div>
 
                         <div class="mt-4 d-flex justify-content-center">
@@ -171,6 +173,7 @@
 }
 .box__login-link span a {
     text-decoration-line: none;
-    color: #999;
+    color: #bbbbbb;
+    font-weight: bold;
 }
 </style>

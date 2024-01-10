@@ -17,6 +17,9 @@ import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
 import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
+import UserMyCouponView from '../views/userview/mypage/UserMyCouponView.vue'
+
+import MyReview from '../views/userview/mypage/MyReviewList.vue'
 import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
 import WishList from '../views/userview/mypage/WishList.vue'
 import MyQna from '../views/userview/mypage/MyQna.vue'
@@ -26,11 +29,17 @@ import SearchPage from '../views/userview/SearchPage.vue'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
+import CreateReview from '../views/userview/noticeboard/CreateReview.vue'
+import ReviewInfo from '../views/userview/noticeboard/ReviewContent.vue'
 
 //결제
 import PaymentForm from '../views/userview/payment/PaymentForm.vue'
 import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
 import PaymentDetailPage from '../views/userview/mypage/PaymentDetailPage.vue'
+
+import FreeBoardList from '../views/userview/freeboard/FreeBoardList.vue'
+import FreeBoardContent from '../views/userview/freeboard/FreeBoardContent.vue'
+import FreeboardWrite from '../views/userview/freeboard/CreateFreeBoard.vue'
 
 export default {
   path: '/',
@@ -118,6 +127,16 @@ export default {
           component: ChangeMyInfo
         },
         {
+          path: "/userMyCouponView",
+          name: "userMyCouponView",
+          component: UserMyCouponView
+        },
+        {
+          path: "/myreview",
+          name: "myreview",
+          component: MyReview
+        },
+        {
           path: "/paymentDetail",
           name: "paymentDetail",
           component : PaymentDetailPage
@@ -172,12 +191,39 @@ export default {
     {
       path: "/user-pass",
       name: "userPass",
-      component : CgPasswordAndAccountLeave
+      component: CgPasswordAndAccountLeave
+    },
+    {
+      path: "/myreview/write",
+      name: "myreviewWrite",
+      component: CreateReview
+    },
+    {
+      path: "/myreview/info",
+      name: "myreviewinfo",
+      component: ReviewInfo
     },
     {
       path: "/leave",
       name: "leave",
       component: CgPasswordAndAccountLeave
     },
+    {
+      path: "/freeboard",
+      name: "freeboard",
+      component: FreeBoardList
+    },
+    {
+      path: "/freeboard/write",
+      name: "freeboardWrite",
+      component: FreeboardWrite
+    },
+
+    {
+      path: "/freeboard/:no",
+      name: "freeboardInfo",
+      component: FreeBoardContent
+    },
+
   ]
 };
