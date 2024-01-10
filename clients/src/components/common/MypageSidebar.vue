@@ -21,7 +21,7 @@
 										<a @click="$router.push('/wishList')" class="nav-link">
 											<div class="sb-nav-link-icon"><i class="fas fa-heart"></i></div> 찜 목록
 										</a> 
-										<a class="nav-link" >
+										<a @click="$router.push('/myQnaList')" class="nav-link" >
 											<div class="sb-nav-link-icon"><i class="bi bi-box-seam"></i></div> 문의내역
 										</a> 
 										<a @click="$router.push('/myreview')"  class="nav-link">
@@ -39,7 +39,7 @@
 						</div>
 						<router-view/>
 					</div>
-	       		 	<footer class="my-3 text-center text-small"> </footer>
+<footer class="my-3 text-center text-small"> </footer>
 				</div>
 			</div>
 		</section>

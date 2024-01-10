@@ -5,7 +5,7 @@
         <form action="addUserQna.do" name="addQnaForm" method="post"
             style="text-align: center">
             
-            <h3>문의글 수정</h3>
+            <h3 style="font-weight : bold">문의글 수정</h3>
             <br>
             <hr>
             <table class="table" border="1">
@@ -67,7 +67,7 @@
             </tr>
             <tr>
                 <td colspan="14" align="center">
-                <button type="button" @click="modQna()" class="btn text-white" style="background-color: #fab3cc;">수정하기</button></td>
+                <button type="button" @click="modQna()" class="btn text-white" style="background-color: #acb1f8;">수정하기</button></td>
             </tr>
             </table>
         </form>
