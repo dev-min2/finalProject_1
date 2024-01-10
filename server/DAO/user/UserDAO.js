@@ -19,7 +19,7 @@ const userDAO = {
 
     selectUserQuery : async function(userId, userPw) {
         const selectUserQuery = `
-            SELECT user_no, user_permission
+            SELECT user_no, user_name, user_permission, forgot_pw_change, user_leavedate
                 FROM user
                 WHERE user_id = ? AND user_pw = ?
         `;
@@ -46,12 +46,28 @@ const userDAO = {
         return query(selectForgotPWQuery,[user_id, user_email]);
     },
     updateResetPWQuery : async function(user_pw, user_id, user_email) {
-        console.log(user_pw);
         const updateResetPWQuery = `
-            UPDATE user SET user_pw = ? WHERE user_id = ? AND user_email = ?
+            UPDATE user SET user_pw = ?, forgot_pw_change = ? WHERE user_id = ? AND user_email = ?
         `;
 
-        return query(updateResetPWQuery,[user_pw,user_id,user_email]);
+        return query(updateResetPWQuery,[user_pw, 'P2', user_id,user_email]);
+    },
+    selectUserInfoQuery : async function(userNo) {
+        const selectUserInfoQuery = `
+            SELECT *
+                FROM user
+                WHERE user_no = ?
+        `
+        return query(selectUserInfoQuery, userNo);
+    },
+
+    updateUserInfoQuery : async function(userObj) {
+        const user_no = userObj.user_no;
+        delete userObj.user_no;
+        const updateUserInfoQuery = `
+            UPDATE user SET ? where user_no = ?
+        `
+        return query(updateUserInfoQuery, [userObj, user_no]);
     },
 
     //테스트용 지워야함
@@ -71,6 +87,31 @@ const userDAO = {
         `
         return query(selectQuery);
     },
+    selectUserPasswordQuery : async function(prevUserPw, user_no) {
+        const selectUserPasswordQuery = `
+            SELECT * FROM user WHERE user_no = ? AND user_pw = ?
+        `;
+
+        return query(selectUserPasswordQuery, [user_no, prevUserPw]);
+    },
+    updateUserPasswordQuery : async function(prevUserPw, user_no, newUserPw) {
+        const updateUserPasswordQuery = `
+            UPDATE user SET user_pw = ? WHERE user_no = ? AND user_pw = ?
+        `
+        return query(updateUserPasswordQuery, [newUserPw, user_no, prevUserPw]);
+    },
+    updateUserLeaveDateQuery : async function(userNo) {
+        const updateUserLeaveDateQuery = `
+            UPDATE user SET user_leavedate = current_date() WHERE user_no = ${userNo}
+        `;
+        return query(updateUserLeaveDateQuery);
+    },
+    updateUserNullLeaveDateQuery : async function(userNo) {
+        const updateUserNullLeaveDateQuery = `  
+            UPDATE user SET user_leavedate = null WHERE user_no = ${userNo}
+        `;
+        return query(updateUserNullLeaveDateQuery);
+    }
 };
 
 module.exports = userDAO;

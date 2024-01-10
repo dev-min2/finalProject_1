@@ -38,8 +38,8 @@
 							</tr>
 							<tr>
 								<td colspan="4" align="center">
-                                    <input type="submit" value="저장" class="btn text-white" style="background-color: #fc97bf; margin : 10px;" @click="isUpdated? updatePetQuery() : insertPetQuery()">
-                                    <input type="reset" value="초기화" class="btn text-white" style="background-color: #a4a4a4;">
+                                    <input type="submit" value="저장" class="btn text-white" style="background-color: #fab3cc; margin : 10px;" @click="isUpdated? updatePetQuery() : insertPetQuery()">
+                                    <input type="reset" value="초기화" class="btn text-white" style="background-color: #bbbbbb;">
                                 </td>
 							</tr>
 						</table>
@@ -84,7 +84,6 @@ export default {
             this.$showLoading();
             let result = await axios.get(`/api/user/mypetform/${this.petNo}`)
                                     .catch(err => console.log(err));
-            //console.log(';-;나와줘', result.data);
             this.petInfo = result.data[0];
             this.petInfo.pet_birth = this.$dateFormat(this.petInfo.pet_birth);
             this.$hideLoading();
@@ -105,9 +104,8 @@ export default {
             this.$showLoading();
             let result = await axios.put(`/api/user/mypetform/${this.petNo}`, petObj)
                                      .catch(err=>console.log(err));
-            console.log('수정test',result.data.affectedRows);
             if(result.data.affectedRows > 0){
-                this.$showSuccessAlert('수정되었습니다');
+                this.$showSuccessAlert('수정되었습니다. ');
             }else{
                 this.$showFailAlert('수정에 실패했습니다. ');
             }

@@ -10,7 +10,8 @@ const methods = {
         Swal.fire({
             title : title,
             text : text,
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc"
         });
     },
     showInfoAlert(title, text) {
@@ -18,7 +19,8 @@ const methods = {
             title : title,
             text : text,
             icon: 'info',
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc",
         })
     },
     showSuccessAlert(title,text) {
@@ -26,7 +28,8 @@ const methods = {
             title : title,
             text : text,
             icon: 'success',
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc"
         })
     },
     showFailAlert(title, text) {
@@ -42,7 +45,8 @@ const methods = {
             title : title,
             text : text,
             icon: 'warning',
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc"
         })
     },
     showLoadingOverlay() {
@@ -145,6 +149,24 @@ const methods = {
         }
 
         return attachFile.substr(startRealFileNameIdx, attachFile.length);
+    },
+    groupBy: function(data, key){
+        return data.reduce(function (carry, el){
+            var group = el[key];
+            if(carry[group] === undefined){
+                carry[group] = []
+            }
+            carry[group].push(el)
+            return carry
+        },{})
+    },
+    printPriceComma(price) {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    getSubCodeName(subCode) {
+        return this.$store.state.subCode.find(ele => {
+            return ele.sub_code == subCode
+        }).sub_code_name;
     }
 }
 
@@ -164,5 +186,8 @@ export default {
         Vue.config.globalProperties.$dateTimeFormat = methods.dateTimeFormat;
         Vue.config.globalProperties.$convertAttachFileNameList = methods.convertAttachFileNameList;
         Vue.config.globalProperties.$convertAttachFileName = methods.convertAttachFileName;
+        Vue.config.globalProperties.$groupBy = methods.groupBy;
+        Vue.config.globalProperties.$printPriceComma = methods.printPriceComma;
+        Vue.config.globalProperties.$getSubCodeName = methods.getSubCodeName;
     }
 }

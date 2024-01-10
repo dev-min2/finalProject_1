@@ -3,20 +3,43 @@ import MainBody from '../views/userview/MainPage.vue'
 import LoginComp from '../views/userview/LoginComp.vue'
 import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
-import TestView from '../views/userview/TestView.vue'
 import CartView from '../views/userview/CartView.vue'
+import TestProductDetailView from '../views/userview/TestProductDetail.vue'
+import TestAddQna from '../views/userview/TestAddQna.vue'
+import TestDetailQna from '../views/userview/DetailQna.vue'
+import TestModQna from '../views/userview/TestModQna.vue'
+import AllQna from '../views/AllQna.vue'
+
 //마이페이지
 import MyPageSide from '../components/common/MypageSidebar.vue'
 import MyInfo from '../views/userview/mypage/MyInfo.vue'
 import OrderDetail from '../views/userview/mypage/OrderDetail.vue'
 import MyPetInfo from '../views/userview/mypage/MyPetInfo.vue'
 import MyPetForm from '../views/userview/mypage/MyPetForm.vue'
+import ChangeMyInfo from '../views/userview/mypage/ChangeMyInfo.vue'
+import UserMyCouponView from '../views/userview/mypage/UserMyCouponView.vue'
+
+import MyReview from '../views/userview/mypage/MyReviewList.vue'
+import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
+import WishList from '../views/userview/mypage/WishList.vue'
+import MyQna from '../views/userview/mypage/MyQna.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
 import NoticeList from '../views/userview/noticeboard/NoticeList.vue'
 import CreateNotice from '../views/userview/noticeboard/CreateNotice.vue'
 import NoticeContent from '../views/userview/noticeboard/NoticeContent.vue'
+import CreateReview from '../views/userview/noticeboard/CreateReview.vue'
+import ReviewInfo from '../views/userview/noticeboard/ReviewContent.vue'
+
+//결제
+import PaymentForm from '../views/userview/payment/PaymentForm.vue'
+import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
+import PaymentDetailPage from '../views/userview/mypage/PaymentDetailPage.vue'
+
+import FreeBoardList from '../views/userview/freeboard/FreeBoardList.vue'
+import FreeBoardContent from '../views/userview/freeboard/FreeBoardContent.vue'
+import FreeboardWrite from '../views/userview/freeboard/CreateFreeBoard.vue'
 
 export default {
   path: '/',
@@ -45,14 +68,34 @@ export default {
       component: TestUploadView
     },
     {
-      path: '/uploadView',
-      name: 'uploadView',
-      component: TestView
-    },
-    {
       path: "/cart",
       name: "cart",
       component: CartView,
+    },
+    {
+      path: "/productdetail",
+      name: "productdetail",
+      component: TestProductDetailView,
+    },
+    {
+      path: "/addqnaform",
+      name: "addqnaform",
+      component: TestAddQna,
+    },
+    {
+      path: "/detailqnaform",
+      name: "detailqnaform",
+      component: TestDetailQna,
+    },
+    {
+      path: "/modqnaform",
+      name: "modqnaform",
+      component: TestModQna,
+    },
+    {
+      path: "/allqna",
+      name: "allqna",
+      component: AllQna,
     },
     {
       path: "/mypageside",
@@ -77,8 +120,48 @@ export default {
           path: "/mypetform",
           name: "mypetform",
           component: MyPetForm
-        }
+        },
+        {
+          path: "/changeInfo",
+          name: "changeInfo",
+          component: ChangeMyInfo
+        },
+        {
+          path: "/userMyCouponView",
+          name: "userMyCouponView",
+          component: UserMyCouponView
+        },
+        {
+          path: "/myreview",
+          name: "myreview",
+          component: MyReview
+        },
+        {
+          path: "/paymentDetail",
+          name: "paymentDetail",
+          component : PaymentDetailPage
+        },
+        {
+          path: "/wishList",
+          name: "wishList",
+          component : WishList
+        },
+        {
+          path: "/myQnaList",
+          name: "myQnaList",
+          component : MyQna
+        },
       ]
+    },
+    {
+      path: "/paymentform",
+      name: "paymentform",
+      component: PaymentForm
+    },
+    {
+      path: "/paymentcomplete",
+      name: "paymentcomplete",
+      component: PaymentComplete
     },
     {
       path: "/forgot-account/:forgot",
@@ -104,6 +187,43 @@ export default {
       path: "/notice/:no",
       name: "noticeInfo",
       component: NoticeContent
-    }
+    },
+    {
+      path: "/user-pass",
+      name: "userPass",
+      component: CgPasswordAndAccountLeave
+    },
+    {
+      path: "/myreview/write",
+      name: "myreviewWrite",
+      component: CreateReview
+    },
+    {
+      path: "/myreview/info",
+      name: "myreviewinfo",
+      component: ReviewInfo
+    },
+    {
+      path: "/leave",
+      name: "leave",
+      component: CgPasswordAndAccountLeave
+    },
+    {
+      path: "/freeboard",
+      name: "freeboard",
+      component: FreeBoardList
+    },
+    {
+      path: "/freeboard/write",
+      name: "freeboardWrite",
+      component: FreeboardWrite
+    },
+
+    {
+      path: "/freeboard/:no",
+      name: "freeboardInfo",
+      component: FreeBoardContent
+    },
+
   ]
 };

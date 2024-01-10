@@ -2,7 +2,7 @@
   <div class="container">
     <template
       v-for="(company, companyIndex, idx) in cartList" :key="idx">
-      <h2>업체명 : {{company[0].company_name}}</h2>
+      <h3>업체명 : {{company[0].company_name}}</h3>
       <table class="cart_list">
         <thead>
           <tr>
@@ -15,7 +15,8 @@
               @change="checkComp($event.target.checked, companyIndex, idx)"
               />
               </td>
-            <td>상품이미지</td>
+            <td hidden> 상품번호 hidden </td>
+            <td class="fixedcol0">상품이미지</td>
             <td class="fixedcol1">상품정보</td>
             <td class="fixedcol2">옵션</td>
             <td>상품금액</td>
@@ -25,50 +26,82 @@
           <tr
             class="cart_list_detail"
             v-for="(products, productsIndex) in cartList[companyIndex]" :key="productsIndex">
-            <td>
+            <td v-if="products.product_stock > 0">  
               <input
                 type="checkbox"
                 name="product"
                 value="products.product_price"
                 id="products.product_no"
                 v-model="products.selected"
-                @change="checkProd($event.target, products, idx, companyIndex)"
+                @change="checkProd($event.target, products, idx, companyIndex,productsIndex)"
               />
             </td>
+            <td v-else>
+              <input
+                type="checkbox"
+                name="product"
+                value="products.product_price"
+                id="products.product_no"
+                v-model="products.selected"
+                checked = "checked" 
+                disabled ="disabled" 
+                @change="checkProd($event.target, products, idx, companyIndex)" 
+              />
+            </td>
+            <td hidden>{{products.cart_no}}</td>
             <td>
-                <a href="">
+              <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}">
                   <img v-if="products.pet_type == 'd1'" :src="$store.state.prImg + `dog/` + products.product_image" style="width:100px" />
                   <img v-else :src="$store.state.prImg + `cat/` + products.product_image" style="width:100px" />
-                  </a>
+                  </router-link>               
               </td>
             <td>
-              <a href="">{{products.product_name}}</a>
-              <br />
-              <span class="price">가격 : {{ products.product_price }}</span>
+              <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}" style="text-decoration : none; color : black"><span style="font-weight : bold; font-size : medium">{{products.product_name}}</span></router-link>
+              <hr />
+              <span class="price" style="font-weight : bold; font-size : medium">가격 : {{ products.product_price }}</span>
             </td>
-            <td class="cart_list_option">
-              <p>선택수량 : {{ products.product_sel_cnt }}</p>
+            <td class="cart_list_option" v-if="products.product_stock > 0">
+              <h6 style="font-weight : bold">선택수량 : {{ products.product_sel_cnt }}</h6>
               <input
                 type="button"
                 value="▲"
                 class="cart_list_optionbtn"
-                @click="upfunction(products, idx)"
+                @click="upfunction($event.target, products, idx, companyIndex,productsIndex)"
               />
               <input
                 type="button"
                 value="▼"
                 class="cart_list_optionbtn"
-                @click="downfunction(products, idx)"
+                @click="downfunction($event.target, products, idx, companyIndex,productsIndex)"
               />
+              <input
+                type="button"
+                value="상품 삭제"
+                style="font-weight : bold"
+                class="cart_list_optionbtn"
+                @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
+              />
+            </td>
+            <td class="cart_list_option" v-else-if="products.product_stock == 0">
+            <h6 style="color : red; font-weight : bold">품절 되었습니다.</h6>
               <input
                 type="button"
                 value="상품 삭제"
                 class="cart_list_optionbtn"
                 @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
               />
-            </td>
+            </td>  
+            <td class="cart_list_option" v-else-if="products.product_stock < 0">
+            <h6 style="color : red; font-weight : bold">판매가 종료 되었습니다.</h6>
+              <input
+                type="button"
+                value="상품 삭제"
+                class="cart_list_optionbtn"
+                @click="delfunction(products,cartList[companyIndex],idx, companyIndex)"
+              />
+            </td>  
             <td>
-              <span class="price">{{products.product_price * products.product_sel_cnt}}</span>
+              <span class="price" style="font-weight : bold; font-size : medium">{{products.product_price * products.product_sel_cnt}}</span>
               <br />
             </td>
           </tr>
@@ -78,7 +111,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td colspan="2"><h4>선택 상품금액 : {{companyPriceList[idx]}}원</h4></td>
+            <td colspan="2"><h4> 선택 상품금액 : {{companyPriceList[idx]}}원 <br> 배송비 : {{deliveryPriceList[idx]}}원 <hr>◀{{company[0].company_name}}▶결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
           </tr>
           <br>
           <br>
@@ -87,9 +120,10 @@
       </table>
     </template>
     <td class="total">
-      <h4 v-if="cartList && Object.keys(cartList).length > 0">총 결제 금액 : {{checkedPrice}}</h4>
+      <h4 v-if="cartList && Object.keys(cartList).length > 0">총 선택 상품금액 : {{checkedPrice}}원<br>총 배송비 : {{totalPrice()}}원 <hr>총 결제금액 : {{checkedPrice + totalPrice()}}원</h4> 
       <h4 v-else style="text-align : center">장바구니가 비어있습니다.</h4>
-    </td>
+      
+    </td> 
   </div>
 </template>
 <script>
@@ -98,14 +132,18 @@ export default {
   name: "CartList",
   data() {
     return {
+      //전체 상품배열
       cartList: [],
-      cartPriceList:[],
-
+      //총 선택 상품금액
       checkedPrice:0,
-      companyPrice:0,
-
+      //상품 개별 선택할때 업체 그룹체크 확인하는 배열
       companyChecked : [],
+      //업체별 선택한 상품금액 배열
       companyPriceList : [],
+      //업체별 선택한 상품 배송비 배열
+      deliveryPriceList : [],
+      //선택상품 cart_no
+      CartNoList : []
     };
   },
   created() {
@@ -133,12 +171,13 @@ export default {
       for(const object in this.cartList) {
           object;
           this.companyPriceList.push(0);
+          this.deliveryPriceList.push(0);
       }
       this.$hideLoading();
     },
     //상품선택수량증가
-    async upfunction(products, idx){
-     
+    async upfunction(target, products, idx, companyIndex,productsIndex){
+     companyIndex
       this.$showLoading();
       let result = await axios
                         .put(`/api/user/carts/${products.product_no}/up`)
@@ -153,13 +192,25 @@ export default {
         products.product_sel_cnt++;
         if(products.selected){
           this.checkedPrice += products.product_price;
-          this.companyPriceList[idx] += products.product_price ;          
+          this.companyPriceList[idx] += products.product_price ;
+          if(this.companyPriceList[idx] >= 30000){
+            this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }  
+                    
+        }
+        if(!products.selected) {
+          products.selected = true;
+          target.checked = true;
+          this.checkProd(target,products,idx,companyIndex,productsIndex);
         }
       }
     },
     //상품선택수량감소
-    async downfunction(products, idx){
-     
+    async downfunction(target, products, idx, companyIndex,productsIndex){
       this.$showLoading();
       let result = await axios
                           .put(`/api/user/carts/${products.product_no}/down`)
@@ -174,19 +225,34 @@ export default {
         if(products.selected){
           this.checkedPrice -= products.product_price;
           this.companyPriceList[idx] -= products.product_price ;
+          if(this.companyPriceList[idx] >= 30000){
+            this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }
+        }if(!products.selected) {
+          products.selected = true;
+          target.checked = true;
+          this.checkProd(target,products,idx,companyIndex,productsIndex);
         }
       }
     },
     //상품삭제
     async delfunction(products, companyPrArray, idx, companyIndex){
       this.$showLoading();
+      if (confirm("상품을 장바구니에서 삭제하시겠습니까?") == true){  
+                  this.$showSuccessAlert('','선택한 상품이 삭제되었습니다. ');
+                    
+                }else{ 
+                    this.$hideLoading();
+                    return;
+                }
       let result = await axios  
                             .delete(`/api/user/carts/${this.$store.state.userNo}/${products.product_no}`)
                             .catch(err => console.log(err));
-      this.$hideLoading();
       if(result.data.affectedRows > 0){
-        this.$showSuccessAlert("상품이 삭제되었습니다.");
-      
       for(let i=0; i< companyPrArray.length; i++){
         if(companyPrArray[i].product_no == products.product_no){
             if(companyPrArray.length == 1) {
@@ -196,56 +262,123 @@ export default {
               companyPrArray.splice(i,1);
             break;
         }
-      }  
+      }
+      this.$store.state.cartCnt -= 1;  
+      this.$hideLoading();
       }
       if(products.selected){
         this.checkedPrice -= products.product_price * products.product_sel_cnt;
         this.companyPriceList[idx] -= products.product_price * products.product_sel_cnt ;
+        if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }
       }  
     },
-    //체크박스
-    //상품별
-    checkProd(target, products,idx,companyIndex){
+    //상품별 체크박스
+    checkProd(target, products,idx,companyIndex, productsIndex){
       if(target.checked) {
+        //상품 체크됐을 때 가격
         this.companyPriceList[idx] += products.product_price * products.product_sel_cnt ;
         this.checkedPrice += products.product_price * products.product_sel_cnt;
-
         const productArray = this.cartList[companyIndex];
+
+
+        //선택한 카트 번호 배열에 담기 (민)
+        console.log(productArray);
+        console.log(productsIndex);
+        if(this.CartNoList.indexOf(productArray[productsIndex].cart_no) < 0){
+              this.CartNoList.push(productArray[productsIndex].cart_no); //선택한 번호 추가
+        }
+
         let isAllCheck = true;
         for(let i = 0; i < productArray.length; ++i) {
           if(!this.cartList[companyIndex][i].selected) {
             isAllCheck = false;
             break;
           }
-        }
 
+        }
+        //상품 체크했을 때 배송비 추가
         if(isAllCheck && !this.companyChecked[idx]) {
           this.companyChecked[idx] = true;
         }
+        if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }      
       }
       else {
+        //체크 해제했을 때 상품 총가격, 배송비 빼기
         this.companyPriceList[idx] -= products.product_price * products.product_sel_cnt;
         this.checkedPrice -= products.product_price * products.product_sel_cnt;
-
         if(this.companyChecked[idx]) {
           this.companyChecked[idx] = false;
         }
+        if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }    
+
+        //선택한 카트 번호 배열에서 삭제 (민)
+        const productArray = this.cartList[companyIndex];
+        const index = this.CartNoList.indexOf(productArray[productsIndex].cart_no);
+        this.CartNoList.splice(index, 1);
+
         return;
       }
+      //데이터 부모한테 보내기 (민)
+      this.$emit('productNo', this.CartNoList, this.deliveryPriceList);
     },
-    //그룹별
+    //총배송비 함수
+    totalPrice() {
+      let sum = 0;
+      for(let i = 0; i < this.deliveryPriceList.length; ++i) {
+        sum += this.deliveryPriceList[i];
+      }
+      
+      return sum;
+    },
+    //그룹별 체크박스
     checkComp(checked, companyIndex, idx){
       const productArray = this.cartList[companyIndex];
+      console.log(productArray);
       if(checked) {
           let sum = 0;
           for(let i = 0; i < productArray.length; ++i) {
+            if(this.cartList[companyIndex][i].product_stock > 0){
             if(!this.cartList[companyIndex][i].selected) {
               sum += productArray[i].product_price * productArray[i].product_sel_cnt;
               this.cartList[companyIndex][i].selected = true;
             }
+            }
           }
           this.companyPriceList[idx] += sum;
           this.checkedPrice += sum;
+          if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }
+
+            //선택한 카트 번호 배열에 담기 (민)
+            for(let i = 0; i<productArray.length; i++ ){
+                if(this.CartNoList.indexOf(productArray[i].cart_no) >= 0){
+                  continue;
+                }
+                this.CartNoList.push(productArray[i].cart_no)
+            }
       }
       else { // 그룹별 체크가 풀린상태. (기존에 풀린건 냅두고, 선택된것만 풀어야함.)
           let sum = 0;
@@ -257,9 +390,23 @@ export default {
           }
           this.companyPriceList[idx] = 0;
           this.checkedPrice -= sum;
+          if(this.companyPriceList[idx] >= 30000){
+              this.deliveryPriceList[idx] = 0;
+            }else if(this.companyPriceList[idx] > 0){
+              this.deliveryPriceList[idx] = 3000;
+            }else if(this.companyPriceList[idx] <= 0){
+              this.deliveryPriceList[idx] = 0;
+            }
+          //선택한 번호 카트번호 배열에서 삭제 (민)
+          for(let i = 0; i< productArray.length; i++ ){
+                const index = this.CartNoList.indexOf(productArray[i].cart_no);
+                this.CartNoList.splice(index, 1);
+          }
       }
+      //데이터 부모한테 보내기 (민)
+      this.$emit('productNo', this.CartNoList, this.deliveryPriceList); 
     },
-    //함수
+    //그룹바이함수
     groupBy: function(data, key){
       return data.reduce(function (carry, el){
         var group = el[key];
@@ -288,11 +435,14 @@ thead {
 tbody {
   font-size: 12px;
 }
+td.fixedcol0{
+  width: 200px;
+}
 td.fixedcol1{
-  width: 450px;
+  width: 300px;
 }
 td.fixedcol2{
-  width: 400px;
+  width: 350px;
 }
 td {
   padding: 15px 0px;
@@ -302,7 +452,7 @@ td {
 }
 .cart_list_optionbtn {
     background-color: white;
-    font-size: 10px;
+    font-size: 12px;
     border: lightgrey solid 1px;
     padding: 7px;
 }

@@ -4,7 +4,9 @@
 		<div class="container my-5">
 			<div class="input-form-backgroud row">
 				<div class="input-form col-md-12 mx-auto">
-					<h4 class="mb-5" style="text-align: center;font-size:50px;color:pink">디어마이 펫</h4>
+                    <div style="text-align: center;" class="my-2">
+                        <img class="mx-2" src="../../assets/commonResource/catlogo.png" alt="cat" style="width: 200px; height:60px;" />
+                    </div>
 					<div class="row">
 						<div class="mb-3">
 							<label for="userId">아이디</label> 
@@ -28,9 +30,9 @@
                         </div>
 						
                         <div class="mt-4">
-                            <input class="btn btn-primary btn-lg btn-block" type="submit" value="로그인" @click="login">
-                            <router-link class="btn btn-primary btn-lg btn-block" :to="{ name : 'join', params : { sellerJoin : 0 } }" >회원가입</router-link>
-                            <router-link class="btn btn-primary btn-lg btn-block" :to="{ name : 'join', params : { sellerJoin : 1 } }" >판매자 회원가입</router-link>
+                            <input class="btn btn-primary btn-lg btn-block" style="background-color:#fab3cc; border:0;" type="submit" value="로그인" @click="login">
+                            <router-link class="btn btn-primary btn-lg btn-block" style="background-color:#fab3cc; border:0;" :to="{ name : 'join', params : { sellerJoin : 0 } }" >회원가입</router-link>
+                            <router-link class="btn btn-primary btn-lg btn-block" style="background-color:#fab3cc; border:0;" :to="{ name : 'join', params : { sellerJoin : 1 } }" >판매자 회원가입</router-link>
                         </div>
 
                         <div class="mt-4 d-flex justify-content-center">
@@ -62,6 +64,10 @@
             }
         },
         methods : {
+        async cartCount(){
+            let result = await axios.get(`/api/user/cart-count/${this.$store.state.userNo}`).catch((err)=>console.log(err));
+            this.$store.commit('setCartCnt',result.data.CNT);
+        },
             async kakaoLogin() {
                 let myThis = this;
                 Kakao.Auth.loginForm({
@@ -89,15 +95,21 @@
                                     };
                                     
                                     let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
+                                    this.$hideLoading();
                                     if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
+                                        if(result.data[0].user_leavedate != null) {
+                                            this.$router.push({path : "/account-leave", query : { userNo : result.data[0].user_no, leaveDate : result.data[0].user_leavedate}});
+                                            return;
+                                        }
+                                        this.$store.commit('setUserName', result.data[0].user_name);
                                         this.$store.commit('setUserNo', result.data[0].user_no);
                                         this.$store.commit('setUserPermission', result.data[0].user_permission);
+                                        this.cartCount();
                                         this.$router.push({path : '/main'});
                                     }
                                     else {
                                         console.log('실패?');
                                     }
-                                    this.$hideLoading();
                                 }
                             }
                         });
@@ -113,7 +125,7 @@
                 };
 
                 let result = await axios.post('/api/user/login',{user : userObj}, {'Content-Type' : 'application/json'});
-                console.log(result);
+                this.$hideLoading();
                 if(result.status == 200 && result.data.length > 0 && result.data[0].user_no > 0) {
                     if(this.idSaveChecked) {
                         localStorage.setItem("userId", this.userId);    
@@ -122,14 +134,33 @@
                         localStorage.setItem("userId", "");
                     }
 
+                    if(result.data[0].user_leavedate != null) {
+                        this.$router.push({path : "/account-leave", query : { userNo : result.data[0].user_no, leaveDate : result.data[0].user_leavedate}});
+                        return;
+                    }
+
+                    this.$store.commit('setUserName', result.data[0].user_name);
                     this.$store.commit('setUserNo', result.data[0].user_no);
                     this.$store.commit('setUserPermission', result.data[0].user_permission);
-                    this.$router.push({path : '/main'});
+                    this.cartCount();
+                    if(result.data[0].forgot_pw_change == 'P2') {
+                        this.$showWarningAlert('비밀번호 변경해주세요!');
+                        this.$router.push({path : '/myinfo'});
+                    }
+                    else {
+                        if(this.$store.state.userPermission=='F2'){
+                            this.$router.push({path : '/sellerMain'});
+                        }else if(this.$store.state.userPermission=='F3'){
+                            this.$router.push({path : '/adminMain'});
+                        }
+                        else{
+                            this.$router.push({path : '/main'});
+                        }
+                    }
                 }
                 else {
                     this.$showWarningAlert('아이디와 비밀번호를 확인해주세요',null);        
                 }
-                this.$hideLoading();
             }
         }
     }
@@ -149,6 +180,7 @@
 }
 .box__login-link span a {
     text-decoration-line: none;
-    color: #999;
+    color: #bbbbbb;
+    font-weight: bold;
 }
 </style>

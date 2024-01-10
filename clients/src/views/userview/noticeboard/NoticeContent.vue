@@ -24,11 +24,16 @@
                     </div>
                 </div>
                 <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="modifyNotice(boardNo)" >수정하기</button>
+                    <button style="background-color:#acb1f8; border:0; margin : 10px;" class="btn btn-primary mr-1" @click="modifyNotice(boardNo)" >수정하기</button>
+                    <button style="background-color:#bbbbbb; border:0;" class="btn btn-primary" @click="deleteNotice(boardNo)" >삭제하기</button>
                 </div>
             </div>
         </div>
-        <BoardReply v-if="noticeReply !== null" :noticeReply="noticeReply" :noticeReplyCount="noticeReplyCount"  @regist-reply="registReply"/>
+        <BoardReply v-if="noticeReply !== null" :boardReply="noticeReply" :replyCount="noticeReplyCount"  
+            @regist-reply="registReply"
+            @delete-reply="deleteReply"
+            @update-reply="updateReply"
+            />
     </div>
 </template>
 
@@ -57,7 +62,6 @@
         async created() {
             this.boardNo = this.$route.params.no;
             await this.getNoticeData();
-            
             const viewDiv = this.$refs.viewer;
             const html = this.boardInfo.content;
             toastViewer = new Viewer({
@@ -102,6 +106,29 @@
                     this.$showFailAlert('댓글등록에 실패했습니다. 사유 : ', result.status);
                 }
             },
+            async deleteReply(replyNo) {
+                const result = await axios.put(`/api/board/notice-reply?replyNo=${replyNo}`);
+                if(result.status == 200) {
+                    await this.getNoticeData();
+                }
+                else {
+                    this.$showFailAlert('댓글삭제에 실패했습니다. 사유 : ', result.status);
+                }
+            },
+            async updateReply(recvObj) {
+                const sendObj = {
+                    notice_reply_no : recvObj.replyNo,
+                    comment : recvObj.modifyComment
+                }
+
+                const result = await axios.put(`/api/board/notice-reply`, sendObj);
+                if(result.status == 200) {
+                    await this.getNoticeData();
+                }
+                else {
+                    this.$showFailAlert('댓글삭제에 실패했습니다. 사유 : ', result.status);
+                }
+            },
             modifyNotice(boardNo) {
                 if(this.$store.state.userPermission != 'F3') {
                     this.$showFailAlert('권한이 없습니다.')
@@ -109,6 +136,20 @@
                 }
 
                 this.$router.push({path : '/notice/write', query : { modify : boardNo }});
+            },
+            async deleteNotice(boardNo) {
+                if(this.$store.state.userPermission != 'F3') {
+                    this.$showFailAlert('권한이 없습니다.');
+                    return;
+                }
+                const result = await axios.delete(`/api/board/notice/${boardNo}`);
+                if(result.data) {
+                    this.$showSuccessAlert('삭제 성공');
+                    this.$router.push({path : '/notice'});
+                }
+                else {
+                    this.$showFailAlert('삭제에 실패했음.');
+                }
             }
         }
     }
@@ -127,5 +168,8 @@
 
     a {
         text-decoration-line: none;
+    }
+    .card-body {
+        min-height: 500px;
     }
 </style>
