@@ -52,20 +52,20 @@ export default {
     },
     created() {
         this.userNo = this.$store.state.userNo;
-        this.getFreeBoardList(this.userNo, 1, '');
+        this.getFreeBoardList(1, '');
         console.log(this.userNo);
         
     },
     methods: {
         //리스트 띄워주기
-            async getFreeBoardList(userNo, pageNo,keyword) {
-                //this.$showLoading();
-                const result = await axios.get(`/api/board/freeboard?userNo=${userNo}&pg=${pageNo}&keyword=${keyword}`);
+            async getFreeBoardList(pageNo,keyword) {
+                this.$showLoading();
+                const result = await axios.get(`/api/board/freeboard?pg=${pageNo}&keyword=${keyword}`);
                 if(result.status == 200) {
                     this.freeBoardList = result.data.selectResult;
                     this.page = result.data.pageDTO;
                 }
-                //this.$hideLoading();
+                this.$hideLoading();
             },
             goWriteFree() {
                 this.$router.push({path : "/freeboard/write"});

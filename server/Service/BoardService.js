@@ -266,8 +266,8 @@ class BoardService {
 
     /*자유게시판*/
     //자유게시판 전체조회
-    async getFreeBoardList(userNo, pageNo, keyword) {
-        const result = await freeBoardDAO.selectFreeBoardListQuery(userNo, pageNo, keyword);
+    async getFreeBoardList(pageNo, keyword) {
+        const result = await freeBoardDAO.selectFreeBoardListQuery(pageNo, keyword);
         const countResult = await freeBoardDAO.selectFreeBoardCountQuery(keyword); // 총 카운트.
 
         const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
@@ -278,7 +278,7 @@ class BoardService {
 
         return resResult;
     }
-    //자유게시판 단건조회, 댓글
+    //자유게시판 단건조회
     async getFreeBoardInfo(boardNo) {
         const result = await freeBoardDAO.selectFreeBoardQuery(boardNo);
         let replyResult = await freeBoardDAO.selectFreeBoardReplyQuery(boardNo);
@@ -323,26 +323,9 @@ class BoardService {
 
         return result;
     }
-
-    //자유게시판 덧글
-
-    async registFreeReply(replyObj) {
-        replyObj.reply_date = new Date();
-        const result = await freeBoardDAO.insertFreeReplyQuery(replyObj);
-        return result;
-    }
-
-    async deleteFreeReply(replyNo) {
-        const result = await freeBoardDAO.deleteNotieReplyQuery(replyNo);
-        return result;
-    }
-
-    async modifyFreeReply(modifyReplyObj) {
-        const result = await freeBoardDAO.updateFreeReplyQuery(modifyReplyObj.comment, modifyReplyObj.free_reply_no);
-        return result;
-    }
-
-    async modifyFreeBoard(userNo, boardNo, randFreeValue, curTimeVal, freeBoardInfo) {
+    //자유게시판 수정
+    
+    async modifyFree(userNo, boardNo, randFreeValue, curTimeVal, freeBoardInfo) {
         let freeVO = {
             title: freeBoardInfo.title,
             content: freeBoardInfo.html
@@ -358,6 +341,37 @@ class BoardService {
             return null;
         }
 
+        return result;
+    }
+
+    //자유게시판 삭제
+    async deleteFreeBoard(boardNo) {
+        const result2 = await freeBoardDAO.deletFreeReplyQuery(boardNo);
+        const result = await freeBoardDAO.deleteFreeBoardQuery(boardNo);
+
+        if(result.affectedRows > 0 && result2.affectedRows > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
+    //자유게시판 덧글
+    async registFreeReply(replyObj) {
+        replyObj.reply_date = new Date();
+        const result = await freeBoardDAO.insertFreeReplyQuery(replyObj);
+        return result;
+    }
+
+    async deleteFreeReply(replyNo) {
+        const result = await freeBoardDAO.deletFreeReplyQuery(replyNo);
+        return result;
+    }
+
+    async modifyFreeReply(modifyReplyObj) {
+        const result = await freeBoardDAO.updateFreeReplyQuery(modifyReplyObj.comment, modifyReplyObj.free_reply_no);
         return result;
     }
 }
