@@ -113,6 +113,18 @@ class BoardService {
         return result;
     }
 
+    async deleteNoticeBoard(boardNo) {
+        const result2 = await noticeBoardDAO.deleteNoticeBoardReplyQuery(boardNo);
+        const result = await noticeBoardDAO.deleteNoticeBoardQuery(boardNo);
+
+        if(result.affectedRows > 0 && result2.affectedRows > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     async registNoticeReply(replyObj) {
         replyObj.reply_date = new Date();
         const result = await noticeBoardDAO.insertNoticeReplyQuery(replyObj);
