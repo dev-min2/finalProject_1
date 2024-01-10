@@ -14,14 +14,17 @@
                                 <input v-else type="text" class="form-control" v-model="userId" id="id" name="id" placeholder="아이디" value="" readonly required>
 								<div class="invalid-feedback">아이디를 입력해주세요.</div>
 							</div>
-								<input v-if="userIdDuplicateCheck == false" type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px">
-                                <input v-else type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px" disabled>
+								<input v-if="userIdDuplicateCheck == false" type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px;background-color:#fab3cc;color:white;border:0;border-radius: 15px;">
+                                <input v-else type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px;background-color:#fab3cc;color:white;border-radius: 10px;" disabled>
 							<hr>
 							<div class="col-md-6 mb-3">
 								<label for="upw">비밀번호</label> 
-                                <input type="password" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
+                                <input v-if="showPassword == false" type="password" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
+                                <input v-else type="text" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
 								<div class="invalid-feedback">비밀번호를 입력해주세요.</div>
 							</div>
+                                <i v-if="showPassword == false" class="fas fa-eye" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:gray;"></i>
+                                <i v-else class="fas fa-eye" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:red;"></i>
 								<p class="ml-1" v-if="userPwCheck == false" id='alert' style="color:red;font-size:12px">비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자(!@#$%^)를 사용해 주세요.</p>
                                 <p class="ml-1" v-else id='alert' style="color:green;font-size:12px">통과!</p>
 							<hr>
@@ -36,8 +39,8 @@
 						<div class="mb-3 d-flex gap-3" >
                             <input type="email" style="width:250px; height:40px;" class="form-control align-self-center" v-model="userEmail" id="email" name="email" placeholder="you@example.com" required>
 							<div class="invalid-feedback">이메일을 입력해주세요.</div>
-                            <input v-if="showEmailAuth == false" type="button" @click="sendEmailAuthMail" value="이메일 인증" style="border-radius: 20px; margin-top:5px;width:150px;height:30px">
-                            <input v-else type="button" value="이메일 인증" style="border-radius: 20px; margin-top:5px;width:150px;height:30px" disabled>
+                            <input v-if="showEmailAuth == false" type="button" @click="sendEmailAuthMail" value="이메일 인증" style="border-radius: 15px; margin-top:5px;width:150px;height:30px;background-color:#fab3cc;color:white;border:0;">
+                            <input v-else type="button" value="이메일 인증" style="border-radius: 15px; margin-top:5px;width:150px;height:30px;background-color:#fab3cc;color:white;border:0;" disabled>
 						</div>  
                         <template v-if="showEmailAuth == true">
                             <label for="emailAuth">이메일인증</label> 
@@ -115,6 +118,7 @@
     export default {
         data() {
             return {
+                showPassword : false,
                 socialAccount : false,
                 socialSubCode : '',
                 accessToken : '',
@@ -458,4 +462,5 @@
 	font-size:30px;
 	margin: 20px;
 }
+
 </style>
