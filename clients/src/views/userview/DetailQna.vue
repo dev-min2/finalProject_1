@@ -4,7 +4,7 @@
 		<div class="container-fluid">
 			<form action="modifyUserQnaForm.do" name="userQnaDetailForm" method="post" style=text-align:center;>
 				<input type="hidden" name="qnaNo" value="">
-				<h3>문의글</h3>
+				<h3 style="font-weight : bold">문의글</h3>
 				<br><hr>
 				<table class="table" border="1">
 					<tr>
