@@ -15,18 +15,20 @@
 								<div class="invalid-feedback">아이디를 입력해주세요.</div>
 							</div>
 								<input v-if="userIdDuplicateCheck == false" type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px;background-color:#fab3cc;color:white;border:0;border-radius: 15px;">
-                                <input v-else type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px;background-color:#fab3cc;color:white;border-radius: 10px;" disabled>
+                                <input v-else type="button" @click="checkDuplicateId" value="아이디 중복확인" style="margin-top:35px;width:150px;height:30px;background-color:#bbbbbb;color:white;border-radius: 10px;" disabled>
 							<hr>
 							<div class="col-md-6 mb-3">
 								<label for="upw">비밀번호</label> 
                                 <input v-if="showPassword == false" type="password" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
                                 <input v-else type="text" class="form-control" v-model="userPw" id="upw" name="upw" placeholder="비밀번호" value="" autoComplete="off" required>
+                                <input v-if="showPassword == false" type="password" class="form-control mt-1" v-model="userPwConfirm" id="upw2" name="upw2" placeholder="비밀번호 확인" value="" autoComplete="off" required>
+                                <input v-else type="text" class="form-control mt-1" v-model="userPwConfirm" id="upw2" name="upw2" placeholder="비밀번호 확인" value="" autoComplete="off" required>
 								<div class="invalid-feedback">비밀번호를 입력해주세요.</div>
 							</div>
-                                <i v-if="showPassword == false" class="fas fa-eye" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:gray;"></i>
-                                <i v-else class="fas fa-eye" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:red;"></i>
+                                <i v-if="showPassword == false" class="fas fa-eye-slash" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:gray;"></i>
+                                <i v-else class="fas fa-eye" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:gray;"></i>
 								<p class="ml-1" v-if="userPwCheck == false" id='alert' style="color:red;font-size:12px">비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자(!@#$%^)를 사용해 주세요.</p>
-                                <p class="ml-1" v-else id='alert' style="color:green;font-size:12px">통과!</p>
+                                <p class="ml-1" v-else id='alert' style="color:green;font-size:12px">비밀번호가 일치합니다.</p>
 							<hr>
                         </template>
 							<div class="col-md-6 mb-3">
@@ -37,10 +39,10 @@
 						
                         <label for="email">이메일</label> 
 						<div class="mb-3 d-flex gap-3" >
-                            <input type="email" style="width:250px; height:40px;" class="form-control align-self-center" v-model="userEmail" id="email" name="email" placeholder="you@example.com" required>
+                            <input type="email" style="width:250px; height:40px;" class="form-control align-self-center" v-model="userEmail" id="email" name="email" placeholder="myEmail@example.com" required>
 							<div class="invalid-feedback">이메일을 입력해주세요.</div>
                             <input v-if="showEmailAuth == false" type="button" @click="sendEmailAuthMail" value="이메일 인증" style="border-radius: 15px; margin-top:5px;width:150px;height:30px;background-color:#fab3cc;color:white;border:0;">
-                            <input v-else type="button" value="이메일 인증" style="border-radius: 15px; margin-top:5px;width:150px;height:30px;background-color:#fab3cc;color:white;border:0;" disabled>
+                            <input v-else type="button" value="이메일 인증" style="border-radius: 15px; margin-top:5px;width:150px;height:30px;background-color:#bbbbbb;color:white;border:0;" disabled>
 						</div>  
                         <template v-if="showEmailAuth == true">
                             <label for="emailAuth">이메일인증</label> 
@@ -48,8 +50,8 @@
                                 <input v-if="completedEmailAuth== false" type="text" style="width:250px; height:40px;" class="form-control align-self-center" id="emailAuth" name="emailAuth" v-model="authCode" required>
                                 <input v-else type="text" style="width:250px; height:40px;" class="form-control align-self-center" id="emailAuth" name="emailAuth" v-model="authCode" readonly required>
                                 <div class="invalid-feedback">이메일 인증값을 입력해주세요.</div>
-                                <input v-if="completedEmailAuth == false" type="button" @click="confirmEmailAuth" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px">
-                                <input v-else type="button" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px" disabled>
+                                <input v-if="completedEmailAuth == false" type="button" @click="confirmEmailAuth" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px;background-color:#fab3cc;border:0;color:white;">
+                                <input v-else type="button" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px;background-color:#bbbbbb;color:white;border:0;" disabled>
                             </div>
                             <div>
                                 <p v-show="completedEmailAuth == false" style="color:red;">유효시간 : {{showCount}}</p>
@@ -69,7 +71,7 @@
 						
                         <div class="mb-3">
                             <input type="text" v-model="postcode" placeholder="우편번호"  style="margin:5px 0" readonly>
-                            <input class="ml-2" type="button" @click="callDaumAddressAPI" value="우편번호 찾기" style="margin:5px 0"><br> 
+                            <input class="ml-2" type="button" @click="callDaumAddressAPI" value="우편번호 찾기" style="border-radius: 20px; margin-top:5px;width:120px;height:30px;background-color:#fab3cc;border:0;color:white;"><br> 
                             <input class="w-100" type="text" v-model="roadAddress" placeholder="도로명주소" name="addr" style="margin:5px 0" readonly> 
                             <span id="guide" style="color: #999; display: none"></span>
                             <input class="w-100" type="text" v-model="detailAddress" name="addr_detail" placeholder="상세주소" style="margin:5px 0">
@@ -81,8 +83,8 @@
                                 <input v-if="completedBusinessAuth==false" type="text" class="form-control" id="business_number" name="business_number" v-model="businessNumber" placeholder="111-11-11111" required>
                                 <input v-else type="text" class="form-control" id="business_number" name="business_number" v-model="businessNumber" readonly required>
                                 <div class="invalid-feedback">사업자 등록증 입력해주세요</div>
-                                <input v-if="completedBusinessAuth == false" type="button" @click="checkBusinessNumber" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px">
-                                <input v-else type="button" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px" disabled>
+                                <input v-if="completedBusinessAuth == false" type="button" @click="checkBusinessNumber" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px;background-color:#fab3cc;border:0;color:white;">
+                                <input v-else type="button" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px;background-color:#bbbbbb;color:white;border:0;" disabled>
                             </div>
 
                             <div class="mb-3">
@@ -131,6 +133,7 @@
                 userId : '',
                 userIdDuplicateCheck : false,
                 userPw : '',
+                userPwConfirm : '',
                 userEmail : '',
                 userPhone : '',
                 userBirth : '',
@@ -154,8 +157,14 @@
             }
         },
         computed : {
-            userPwCheck() {                
-                return this.pwCheckReg.test(this.userPw) == true ? true : false;
+            userPwCheck() {
+                if(this.userPw == '' || this.userPwConfirm == '') {
+                    return false;
+                }
+                if(!this.pwCheckReg.test(this.userPw)) {
+                    return false;
+                }               
+                return this.userPw == this.userPwConfirm;//this.pwCheckReg.test(this.userPw) == true ? true : false;
             }
         },
         created() {
