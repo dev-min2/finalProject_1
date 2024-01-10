@@ -593,9 +593,10 @@ productRouter.get('/search/recproduct', async (req, res) => {
 //하랑
 productRouter.get('/productDetail', async (req, res) => {
    let productNo = req.query.pno;
+   let ptype = req.query.ptype;
    try {
       const productService = new ProductService();
-      let result = await productService.showProdDetail(productNo);
+      let result = await productService.showProdDetail(productNo,ptype);
       res.send(result);
    } catch (err) {
       console.log(err);
@@ -671,20 +672,30 @@ productRouter.get('/productdetails/review/:productNo/:pageNo', async (req, res) 
         console.log(e);
     }
 });
-
-productRouter.put('/productdetails/review/:reviewNo/:productNo', async (req, res) => {
+//리뷰 좋아요 추가
+productRouter.put('/productdetails/review/:reviewNo', async (req, res) => {
     try {
         let reviewNo = req.params.reviewNo;
-        let productNo = req.params.productNo;
         let userNo = req.session.userNo;
         const productService = new ProductService();
-        const result = await productService.addReviewLikeCnt(reviewNo, userNo, productNo);
+        const result = await productService.addReviewLikeCnt(reviewNo, userNo);
         res.send(result);
     } catch (e) {
         console.log(e);
     }
 });
-
+//리뷰좋아요 삭제
+productRouter.delete('/productdetails/review/:reviewNo', async(req, res)=>{
+   try{
+      let reviewNo = req.params.reviewNo;
+      let userNo = req.session.userNo;
+      const productService = new ProductService();
+      const result = await productService.cancelReviewLikeCnt(reviewNo, userNo);
+      res.send(result);
+   }catch (e){
+      console.log(e);
+   }
+});
 
 
 module.exports = productRouter;

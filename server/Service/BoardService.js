@@ -2,11 +2,10 @@ const fxExtra = require('fs-extra');
 const path = require('path');
 const fs = require('fs');
 const noticeBoardDAO = require('../DAO/board/NoticeBoardDAO');
+const QnABoardDAO = require('../DAO/board/QnABoardDAO');
+const { groupBy } = require('../commonModule/commonModule');
 const freeBoardDAO = require('../DAO/board/FreeBoardDAO');
 const reviewDAO = require('../DAO/user/ReviewDAO');
-const {
-    groupBy
-} = require('../commonModule/commonModule');
 const PageDTO = require('../commonModule/PageDTO');
 
 class BoardService {
@@ -160,6 +159,64 @@ class BoardService {
             return null;
         }
 
+        return result;
+    }
+    //하랑
+    async getQnaList(product_no, pageNo) {
+        let result = await QnABoardDAO.showQnaQuery(product_no, pageNo);
+        //위에거는 사실상 최대 5개만가져옴
+        const countResult = await QnABoardDAO.selectQnaCountQuery(product_no); // 총 카운트.
+        const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 5);
+        
+        const mulResult = {
+            selectResult: result,
+            page: pageDTO
+        };
+
+        return mulResult;
+    }
+    async allQnaList(pageNo) {
+        let result = await QnABoardDAO.allQnaQuery(pageNo);
+        const countResult = await QnABoardDAO.selectQnaCountQuery(); // 총 카운트.
+        const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
+        
+        const mulResult = {
+            selectResult: result,
+            page: pageDTO
+        };
+        return mulResult;
+    }
+    async myQna(user_no, pageNo) {
+        let result = await QnABoardDAO.myQnaQuery(user_no, pageNo);
+        const countResult = await QnABoardDAO.selectQnaCountQuery(); // 총 카운트.
+        const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
+        const mulResult = {
+            selectResult: result,
+            page: pageDTO
+        };
+        return mulResult;
+    }
+    async addQna(qna_category, title, board_public, content, product_no, user_no) {
+        if (typeof product_no == "undefined") {
+            this.product_no = null;
+        }
+        let result = await QnABoardDAO.addQnaQuery(qna_category, title, board_public, content, product_no, user_no);
+        return result;
+    }
+    async detailQna(qno) {
+        let result = await QnABoardDAO.showDetailQnaQuery(qno);
+        return result[0];
+    }
+    async modQna(qna_category, title, board_public, content, qna_board_no) {
+        let result = await QnABoardDAO.modQnaQuery(qna_category, title, board_public, content, qna_board_no);
+        return result;
+    }
+    async delQna(qna_board_no) {
+        let result = await QnABoardDAO.delQnaQuery(qna_board_no);
+        return result;
+    }
+    async addReQna(qna_admin_reply, qna_board_no) {
+        let result = await QnABoardDAO.addReQnaQuery(qna_admin_reply, qna_board_no);
         return result;
     }
     //리뷰작성
@@ -317,9 +374,6 @@ class BoardService {
         const result = await freeBoardDAO.updateFreeReplyQuery(modifyReplyObj.comment, modifyReplyObj.free_reply_no);
         return result;
     }
-
-
- 
 }
 
 module.exports = BoardService;

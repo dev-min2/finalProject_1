@@ -24,10 +24,6 @@
                             <li v-for="(product, idx) in paymentProductsListByCompany[objectIdx]" :key="idx">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <!-- 상품명 가격 
-                                        <router-link :to="{path: '/productdetail',query: { pno: product.product_no },}">
-                                        </router-link>
-                                        구매갯수-->
                                         <h5 class="productDiv">{{product.product_name}}</h5>
                                         <p>{{$printPriceComma(product.product_price)}}원 {{product.buy_cnt}}개</p>
                                     </div>
@@ -36,11 +32,6 @@
                                             {{$getSubCodeName(product.delivery_state)}}</h5>
                                     </div>
                                     <div>
-                                        <!--테스트
-                                        <button @click="testBtn(objectIdx)" class="btn btn-primary"
-                                            style="background-color: #bbbbbb; border: none; margin : 5px;">테스트</button>
-                                        <br>
-                                        -->
                                     <!--쿠폰사용 X -->
                                         <div v-if="myCouponNo == null">
                                             <!--주문완료상태 : 후기작성 X / 주문 취소 O -->
@@ -61,7 +52,7 @@
                                             <div class="reviewBtn" v-else-if="product.delivery_state == 'C4'">
                                                 <button class="btn btn-primary"
                                                         style="background-color: #fab3cc; border: none; margin : 5px;"
-                                                        @click="goWriteReview(product.product_no, product.product_name)">후기작성</button>
+                                                        @click="goWriteReview(product.payment_no,product.product_no, product.product_name)">후기작성</button>
                                                 <button disabled class="btn btn-primary"
                                                     style="background-color: #bbbbbb; border: none; margin : 5px;">주문취소</button>
                                             </div>
@@ -72,7 +63,7 @@
                                             <div v-if="product.delivery_state == 'C4'" class="reviewBtn">
                                                 <button class="btn btn-primary"
                                                     style="background-color: #fab3cc; border: none; margin : 5px;"
-                                                    @click="goWriteReview(product.product_no, product.product_name)">후기작성</button>
+                                                    @click="goWriteReview(product.payment_no, product.product_no, product.product_name)">후기작성</button>
                                                 <button disabled class="btn btn-primary"
                                                     style="background-color: #bbbbbb; border: none; margin : 5px;">주문취소</button>
                                             </div>
@@ -239,8 +230,8 @@
         },
         methods: {
             //후기작성
-            goWriteReview(product_no, product_name){
-                this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
+            goWriteReview(payment_no, product_no, product_name){
+                this.$router.push({path : "/myreview/write", query : {payno : payment_no, pno: product_no, pname : product_name}});
             },
             //부분주문취소 테스트 버튼
             testBtn: function (sellerNo) {

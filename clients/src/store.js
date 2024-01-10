@@ -24,8 +24,8 @@ const store = createStore({
             userPermission : '',
             cartCnt : 0,
             prImg : 'http://localhost:12532/uploads/productImage/',
-            subCode : [],
-            userName : ''
+            subCode: [],
+            userName : '',
         }
     },
     getters : {
