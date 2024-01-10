@@ -31,9 +31,9 @@
                   </tr>
                 <tr>
                   <td colspan="2" style="text-align:center;">
-                    <input v-if="curModifyForm == false" type="submit" value="저장" class="btn btn-primary mx-3" @click="registPost">
-                    <input v-else type="submit" value="수정" class="btn btn-primary mx-3" @click="modifyPost">
-                    <router-link class="btn btn-warning" to="/free">작성취소</router-link>
+                    <input v-if="curModifyForm == false" type="submit" value="저장" class="btn text-white" style="background-color: #fab3cc; margin : 10px;" @click="registPost">
+                    <input v-else type="submit" value="수정" class="btn text-white" style="background-color: #acb1f8; margin : 10px;" @click="modifyPost">
+                    <router-link class="btn text-white" style="background-color: #bbbbbb;" to="/freeboard">작성취소</router-link>
                   </td>
                 </tr>
               </table>
@@ -59,7 +59,6 @@ export default {
               startDate : null,
               endDate : null,
               html : null,
-              sel : 'J2'
           },
           subCodes : {},
 
@@ -87,9 +86,6 @@ export default {
         this.curTimeVal = new Date().getTime();
     },
     computed : {
-        showDate() {
-            return this.freeBoardInfo.sel == "J1";
-        }
     },
     methods : {
         async registPost() {
@@ -119,12 +115,6 @@ export default {
             const result = await axios.get(`/api/board/freeboard/${boardNo}`);
             if(result.status == 200) {
                 this.freeBoardInfo.title = result.data.freeBoard.title;
-				this.freeBoardInfo.sel = result.data.freeBoard.importance_level;
-				if(this.freeBoardInfo.sel == 'J1') {
-					this.freeBoardInfo.startDate = this.$dateFormat(result.data.freeBoard.free_start_date);
-					this.freeBoardInfo.endDate = this.$dateFormat(result.data.freeBoard.free_end_date);
-				}
-
 				this.freeBoardInfo.html = result.data.freeBoard.content;
                 this.realAttachFileNameList = result.data.attachFileList;
             }
@@ -142,7 +132,6 @@ export default {
 
 			const editor = this.$refs.editor.editor;
 			this.freeBoardInfo.html = editor.getHTML();
-			this.freeBoardInfo.importanceLevel = this.freeBoardInfo.sel;
 			const sendObj = {
 				param : {
 					free_board_no : this.boardNo,
@@ -154,7 +143,7 @@ export default {
 			const result = await axios.put('/api/board/freeboard', sendObj, { headers : {"Content-Type" : "application/json"}});
 			if(result.status == 200) {
 				this.$showSuccessAlert('수정성공',null);
-				this.$router.push({path : `/free/${this.boardNo}`});
+				this.$router.push({path : `/freeboard/${this.boardNo}`});
 			}
 		},
 

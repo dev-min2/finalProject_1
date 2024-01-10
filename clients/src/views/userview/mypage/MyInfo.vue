@@ -38,8 +38,8 @@
 						<!--버튼-->
 						<div class="mb-4" style="text-align:center;">
                             <button type="button" @click="changeMyInfo" class="btn text-white" style="margin:10px;padding:8px; background-color: #fab3cc;">내 정보 변경</button>
-                            <button type="button" @click="changePassword" class="btn text-white" style="margin:10px;padding:8px; background-color: #fab3cc;" >비밀번호 변경</button>
-                            <button type="button" class="btn text-white" style="margin:10px;padding:8px; background-color: #fab3cc;"><router-link :to="{path : '/main'}" style="text-decoration:none; color:white;">돌아가기</router-link></button>
+                            <button type="button" @click="changePassword" class="btn text-white" style="margin:10px;padding:8px; background-color: #acb1f8;" >비밀번호 변경</button>
+                            <button type="button" class="btn text-white" style="margin:10px;padding:8px; background-color: #bbbbbb;"><router-link :to="{path : '/main'}" style="text-decoration:none; color:white;">돌아가기</router-link></button>
                         </div>
 		</main>
 	</div>

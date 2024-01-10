@@ -84,11 +84,11 @@
                     <div class="container px-4 px-lg-5 my-5" style="text-align:center;">
 			<a
 				style="border: none; padding: 10px 50px; color: black; font-size: 18px; text-decoration-line: none"
-				href="#detail">상품 정보</a> <a
+				href="#detail">상품 정보</a> <a v-if="page !== null" 
 				style="border: none; padding: 10px 50px; color: black; font-size: 18px; text-decoration-line: none"
-				href="#review">구매 후기</a> <a
+				href="#review">구매 후기({{page.total}})</a> <a v-if="qnaPage !== null"
 				style="border: none; padding: 10px 50px; color: black; font-size: 18px; text-decoration-line: none"
-				href="#qna">문의 게시판</a> <a
+				href="#qna">문의 게시판({{qnaPage.total}})</a> <a
 				style="border: none; padding: 10px 50px; color: black; font-size: 18px; text-decoration-line: none"
 				href="#order">취소/교환/반품 안내</a>
 			<hr>
@@ -114,7 +114,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <tr v-if="this.reviewList != null"><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
+                    <tr v-if="reviewList == null || reviewList.length <= 0"><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
                             <tr v-else v-for="(review, idx) in reviewList" :key="idx">
                                 <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
                                     {{ review.review_no }}</td>
@@ -319,6 +319,7 @@ export default {
     methods:{
         async getProductDetail(pno){
             this.$showLoading();
+            console.log(this.reviewList);
             let result = await axios
                         .get(`/api/product/productDetail?pno=${pno}&ptype=${this.$store.state.curShowPetType}`)
                         .catch(err => console.log(err));
@@ -448,7 +449,6 @@ export default {
             }
         },
         async showReviewList(pageno) {
-                console.log(pageno);
                 this.$showLoading();
                 const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
                     .catch((err) =>
@@ -469,6 +469,11 @@ export default {
                 this.$hideLoading();
             },
             async addReviewLikeCnt(rno) {
+                if(this.$store.state.userNo <= 0) {
+                    this.$showWarningAlert('로그인을 해주세요.');
+                    return;
+                }
+
                 this.$showLoading();
                 const result = await axios.put(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
@@ -477,6 +482,11 @@ export default {
                 this.showReviewList(this.page.curPage);
             },
             async cancleReviewLikeCnt(rno) {
+                if(this.$store.state.userNo <= 0) {
+                    this.$showWarningAlert('로그인을 해주세요.');
+                    return;
+                }
+
                 this.$showLoading();
                 const result = await axios.delete(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));

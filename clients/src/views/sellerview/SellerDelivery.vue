@@ -149,6 +149,11 @@
             }
         },
         created() {
+            if(this.$store.state.userPermission != 'F2') {
+                this.$showFailAlert('권한이 없습니다.');
+                this.$router.push({path : '/main'})
+                return;
+            }
             this.getSellerDeliveryList(1);
         },
         computed: {
@@ -267,7 +272,7 @@
     .delivery-toolbar {
         display: flex;
         justify-content: space-between;
-        background-color: #363636;
+        background-color: #5f5f5f;
         padding: 10px;
         color: white;
         margin: 10px;
@@ -324,11 +329,11 @@
         border-collapse: collapse;
         padding: 8px;
         text-align: center;
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
     }
 
     th {
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
         background-color: #f2f2f2;
 
     }
