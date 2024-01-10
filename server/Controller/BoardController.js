@@ -3,13 +3,13 @@ const boardRouter = express.Router();
 const BoardService = require('../Service/BoardService');
 
 /*자유게시판*/
+//전체조회
 boardRouter.get('/freeboard', async (req, res) => {
-    const userNo = req.query.userNo;
     const pageNo = req.query.pg;
     const keyword = req.query.keyword;
     try {
         const boardService = new BoardService();
-        const result = await boardService.getFreeBoardList(userNo, pageNo, keyword);
+        const result = await boardService.getFreeBoardList(pageNo, keyword);
         res.status(200).send(result);
     } catch (e) {
         console.log(e);
@@ -64,6 +64,89 @@ boardRouter.post('/freeboard', async (req, res) => {
         console.log(e);
     }
 });
+//자유게시판 글 수정
+boardRouter.put('/freeboard', async (req, res) => {
+    const {
+        free_board_no,
+        freeBoardInfo,
+        randFreeValue,
+        curTimeVal
+    } = req.body.param;
+    if (typeof req.session.userNo === "undefined") {
+        res.status(403).send("FAIL");
+        return;
+    }
+    console.log('수정테스트', req);
+
+    try {
+        const boardService = new BoardService();
+
+        const result = await boardService.modifyFree(req.session.userNo,
+            free_board_no, randFreeValue, curTimeVal, freeBoardInfo);
+
+        res.send("OK");
+    } catch (e) {
+        console.log(e);
+    }
+});
+//자유게시판 글 삭제
+boardRouter.delete('/freeboard/:no', async (req, res) => {
+    const boardNo = req.params.no;
+    try {
+        const boardService = new BoardService();
+        const result = boardService.deleteFreeBoard(boardNo);
+        res.status(200).send(result);
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+
+//자유게시판 덧글
+boardRouter.post('/free-reply', async (req, res) => {
+    const body = req.body;
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.registFreeReply(body.param);
+        if (result) {
+            res.status(200).send(result);
+        } else {
+            res.status(500).send('FAIL');
+        }
+    } catch (e) {
+        console.log(e);
+    }
+});
+// 댓글삭제와 수정을 동시에 처리함.
+boardRouter.put('/free-reply', async(req, res) => {
+    const replyNo = req.query.replyNo;
+    let modifyReplyObject = null;
+    if(typeof replyNo == "undefined") {
+        modifyReplyObject = req.body;
+    }
+
+    try {
+        const boardService = new BoardService();
+        let result = '';
+        if(modifyReplyObject == null) {
+            result = await boardService.deleteFreeReply(replyNo);
+        }
+        else {
+            result = await boardService.modifyFreeReply(modifyReplyObject);
+        }
+        
+        if(result) {
+            res.status(200).send(result);
+        }
+        else {
+            res.status(500).send('FAIL');
+        }
+    }
+    catch(e) {
+        console.log(e);
+    }
+})
+
 
 
 

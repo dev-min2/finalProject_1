@@ -23,8 +23,8 @@
                             </select>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" @click="CouponBtn()" class="btn btn-primary" data-bs-dismiss="modal">확인</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            <button type="button" @click="CouponBtn()" class="btn text-white" style="background-color: #fab3cc;" data-bs-dismiss="modal">확인</button>
+                            <button type="button" class="btn text-white" style="background-color: #bbbbbb;" data-bs-dismiss="modal">닫기</button>
                         </div>
                     </div>
                 </div>
@@ -32,8 +32,8 @@
             <!--장바구니 폼-->
             <div class="col-md-5 col-lg-4 order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-primary" style="color:gray;"> 장바구니</span>
-                    <span class="badge bg-primary rounded-pill" style="background-color: #fab3cc;">{{totalCount}}</span>
+                    <span style="color:#fc97bc;"> 장바구니</span>
+                    <span class="badge badge-pill badge-secondary" style="background-color: #fab3cc;">{{this.$printPriceComma(totalCount)}}</span>
                 </h4>
                 <ul class="list-group mb-3" id="pList">
                     <div :key="i" v-for="(cart, i) in selectCartQuery">
@@ -43,7 +43,7 @@
                                 <h6 class="my-0">{{cart.product_name}}</h6>
                                 <small class="prSel">{{cart.product_sel_cnt}}</small><small>개</small>
                             </div>
-                            <span class="text-muted">{{cart.price_sum}}원</span>
+                            <span class="text-muted">{{this.$printPriceComma(cart.price_sum)}}원</span>
                         </li>
                     </div>
 
@@ -51,17 +51,17 @@
                         <div >
                             <h6 id="discount" style="color:red;">할인율</h6>
                         </div>
-                        <span style="color:red;"> - {{couponPrice}} 원 </span>
+                        <span style="color:red;"> - {{this.$printPriceComma(couponPrice)}} 원 </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
                         <div class="text-success">
                             <h6 class="my-0" id="fee">배송비</h6>
                         </div>
-                        <span class="text-success"> {{totalDelivery}} 원 </span>
+                        <span class="text-success"> {{this.$printPriceComma(totalDelivery)}} 원 </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>총 결제금액</span>
-                        <strong id="priceTag">{{ realTotalPrice }}원</strong>
+                        <strong id="priceTag">{{this.$printPriceComma(realTotalPrice) }}원</strong>
                     </li>
                 </ul>
 
@@ -69,7 +69,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="" id="couponNameBox"
                             style="font-size:10px;" v-model="couponName" >
-                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                        <button type="button" class="btn text-white" style="background-color: #fab3cc;" data-bs-toggle="modal"
                             data-bs-target="#exampleModal" data-target="#couponmodal" >쿠폰선택</button>
                     </div>
                 </form>
@@ -153,21 +153,21 @@
                     <h4 class="mb-3">결제수단</h4>
                     <div class="my-3">
                         <div class="form-check">
-                            <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="credit"
+                            <input type="radio" v-model="selectPayment" value="html5_inicis"
                                 name="paymentMethod" class="form-check-input" checked required>
                             <label class="form-check-label" for="credit">신용카드</label>
                         </div>
                     </div>
                     <div class="my-3">
                         <div class="form-check">
-                            <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="toss"
+                            <input type="radio" v-model="selectPayment" value="tosspay"
                                 name="paymentMethod" class="form-check-input" required>
                             <label class="form-check-label" for="credit">토스페이</label>
                         </div>
                     </div>
                     <div class="my-3">
                         <div class="form-check">
-                            <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="kakao"
+                            <input type="radio" v-model="selectPayment" value="kakaopay"
                                 name="paymentMethod" class="form-check-input" required>
                             <label class="form-check-label" for="credit">카카오페이</label>
                         </div>
@@ -275,14 +275,6 @@
                 if(this.coupon.my_coupon_no === undefined ){
                     this.couponNo = null; //쿠폰 사용 안할 경우
                 }
-                console.log('할수잇당',this.coupon);
-                console.log('퍼센트',this.couponPercent);
-                console.log(this.coupon.my_coupon_no)
-                console.log('쿠폰번호', this.couponNo);
-                // if(this.couponPercent = 0){
-                //     this.my_coupon_no = '';
-
-                // }
             },
             //회원 장바구니, 쿠폰리스트, 회원정보 가져오기
             async getUserInfo() {
@@ -317,17 +309,7 @@
                     this.totalCount += this.selectCartQuery[i].product_sel_cnt;
                 }
                 this.realTotalPrice += this.totalPrice + this.totalDelivery;
-            },
-            //결제방식 선택
-            Paymentmethod: function () {
-                if (this.selectPayment == "kakao") {
-                    this.selectPayment = 'kakaopay';
-                } else if (this.selectPayment == "credit") {
-                    this.selectPayment = 'html5_inicis';
-                } else {
-                    this.selectPayment = 'tosspay';
-                }
-            },
+            },            
             //주문번호, 주문날짜 , 주문품목 생성 (~포함 총 n건)
             orderInfo() {
                 this.orderNo = String(new Date().getTime()) + this.userNo;
@@ -433,7 +415,13 @@
                     this.$showWarningAlert('결제 동의란을 확인하고 체크해주세요. ');
                     return;
                 }
-
+                if( this.couponNo != null){
+                    if (confirm("쿠폰사용시 부분취소가 불가능합니다. ") == false){    //확인
+                        this.$showFailAlert('주문취소');
+                        return;
+                    }
+                }
+                console.log(this.selectPayment);
                 //주문번호, 주문날짜 , 주문품목 데이터 불러오기
                 this.orderInfo();
 
