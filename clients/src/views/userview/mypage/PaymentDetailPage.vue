@@ -237,7 +237,6 @@
                 console.log(result);
                 this.paymentList = result.data;
                 let payment = this.paymentList[0];
-                console.log('할수잇당', payment.refund_price);
 
                 //주문정보
                 this.impNo = payment.payment_sub_unique_no;
