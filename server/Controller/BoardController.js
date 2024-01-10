@@ -5,12 +5,11 @@ const BoardService = require('../Service/BoardService');
 /*자유게시판*/
 //전체조회
 boardRouter.get('/freeboard', async (req, res) => {
-    const userNo = req.query.userNo;
     const pageNo = req.query.pg;
     const keyword = req.query.keyword;
     try {
         const boardService = new BoardService();
-        const result = await boardService.getFreeBoardList(userNo, pageNo, keyword);
+        const result = await boardService.getFreeBoardList(pageNo, keyword);
         res.status(200).send(result);
     } catch (e) {
         console.log(e);

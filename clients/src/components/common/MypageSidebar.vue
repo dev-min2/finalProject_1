@@ -22,7 +22,7 @@
 											<div class="sb-nav-link-icon"><i class="fas fa-heart"></i></div> 찜 목록
 										</a> 
 										<a class="nav-link" >
-											<div class="sb-nav-link-icon"><i class="bi bi-box-seam"></i></div> 상품문의
+											<div class="sb-nav-link-icon"><i class="bi bi-box-seam"></i></div> 문의내역
 										</a> 
 										<a @click="$router.push('/myreview')"  class="nav-link">
 											<div class="sb-nav-link-icon"><i class="bi bi-chat-left-text"></i>
@@ -32,9 +32,6 @@
 											<div class="sb-nav-link-icon"><i class="bi bi-reddit"></i></div> 내반려동물정보
 										</a><a @click="$router.push('/leave')" class="nav-link" href="#">
 											<div class="sb-nav-link-icon"><i class="bi bi-person"></i></div> 회원 탈퇴
-										</a>
-										<a @click="$router.push('/paymentDetail')" class="nav-link" href="#">
-											<div class="sb-nav-link-icon"><i class="bi bi-person"></i></div> 테스트 주문내역 상세페이지
 										</a>
 									</div>
 								</div>

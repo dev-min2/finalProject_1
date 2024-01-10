@@ -23,7 +23,7 @@
 						<DownloadAttachFile :realAttachFileNameList="realAttachFileNameList" :boardType="'free'" :pk="boardNo" />
                     </div>
                 </div>
-                <div class="mt-1 text-right">
+                <div class="mt-1 text-right" v-if="$store.state.userNo == boardUserNo ">
                     <button style="background-color:#acb1f8; border:0; margin : 10px;" class="btn btn-primary" @click="modifyFree(boardNo)" >수정하기</button>
                     <button style="background-color:#bbbbbb; border:0;" class="btn btn-primary" @click="deleteFree(boardNo)" >삭제하기</button>
 
@@ -60,6 +60,7 @@
                 freeReply : null, // 댓글 데이터를 가지는 데이터
                 freeReplyCount : 0,  // 댓글 갯수
                 realAttachFileNameList : [], // 서버에서 고유한 처리를 위해 변경한 파일이름이 담긴 리스트
+                boardUserNo: '',
             }
         },
         async created() {
@@ -79,6 +80,8 @@
                     console.log(result);
                     if(result.status == 200) {
                         this.boardInfo = result.data.freeBoard;
+                        this.boardUserNo = this.boardInfo.user_no;
+                        console.log('ㅎㅎ', result.data);
                         this.freeReply = result.data.reply;
                         this.freeReplyCount = result.data.replyCount;
                         this.realAttachFileNameList = result.data.attachFileList;

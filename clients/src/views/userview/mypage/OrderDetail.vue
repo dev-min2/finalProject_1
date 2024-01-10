@@ -60,13 +60,14 @@ export default {
 	methods: {
 		//주문정보 가져오기
 		async getSelectPayment(pageNo){
+            this.$showLoading();
 			let result 
 				= await axios.get(`/api/product/orderdetail?userNo=${this.userNo}&pageNo=${pageNo}`)
 							.catch(err => console.log(err));
 			this.selectPaymentList = result.data.selectResult; 
 			this.page = result.data.pageDTO;
-			console.log(this.selectPaymentList);
-			console.log(this.page);
+            this.$hideLoading();
+
 		},
 		//주문상세페이지로 이동
 		goOrderDetail(paymentNo){

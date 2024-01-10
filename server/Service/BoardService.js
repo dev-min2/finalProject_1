@@ -209,8 +209,8 @@ class BoardService {
 
     /*자유게시판*/
     //자유게시판 전체조회
-    async getFreeBoardList(userNo, pageNo, keyword) {
-        const result = await freeBoardDAO.selectFreeBoardListQuery(userNo, pageNo, keyword);
+    async getFreeBoardList(pageNo, keyword) {
+        const result = await freeBoardDAO.selectFreeBoardListQuery(pageNo, keyword);
         const countResult = await freeBoardDAO.selectFreeBoardCountQuery(keyword); // 총 카운트.
 
         const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
