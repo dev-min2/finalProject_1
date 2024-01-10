@@ -1,7 +1,6 @@
 
 <template>
 <div>
-    {{reviewList}}
     <hr />
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
@@ -449,7 +448,6 @@ export default {
             }
         },
         async showReviewList(pageno) {
-                this.$showLoading();
                 const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
                     .catch((err) =>
                         console.log(err));
@@ -464,16 +462,14 @@ export default {
                     if (this.reviewList[i].content.length >= 10) {
                         this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
                     }
-
                 }
-                this.$hideLoading();
+                
             },
             async addReviewLikeCnt(rno) {
                 if(this.$store.state.userNo <= 0) {
                     this.$showWarningAlert('로그인을 해주세요.');
                     return;
                 }
-
                 this.$showLoading();
                 const result = await axios.put(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
@@ -517,6 +513,11 @@ export default {
                 });
             },
         toAddQnaForm(){
+            if(this.$store.state.userNo <= 0) {
+                    this.$showWarningAlert('로그인을 해주세요.');
+                    this.$router.push({path: '/login'});
+                    return;
+            }
             this.$router.push({
                 path:`/addqnaform`,
                 query: { pno: this.productDetail.product_no , pname : this.productDetail.product_name},

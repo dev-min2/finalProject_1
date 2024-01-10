@@ -88,6 +88,11 @@
                 this.$hideLoading();
             },
             toAddQnaForm(){
+            if(this.$store.state.userNo <= 0) {
+                    this.$showWarningAlert('로그인을 해주세요.');
+                    this.$router.push({path: '/login'});
+                    return;
+            }
             this.$router.push({
                 path:`/addqnaform`,
             })

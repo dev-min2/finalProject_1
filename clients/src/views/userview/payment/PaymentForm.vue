@@ -16,8 +16,8 @@
                                 <option disabled value="">쿠폰을 선택해주세요</option>
                                 <option value="coupon"> 쿠폰 취소 </option>
                                 <option :key="i" :value="coupon"  v-for="(coupon, i) in selectMyCouponQuery">
-                                   <div style="display:none;"> {{coupon.my_coupon_no}} </div>
-                                   [ {{coupon.coupon_name}} ]    할인율: {{coupon.discount_pct}} % 
+                                <div style="display:none;"> {{coupon.my_coupon_no}} </div>
+                                [ {{coupon.coupon_name}} ]    할인율: {{coupon.discount_pct}} % 
                                     | 발급 : {{this.$dateFormat(coupon.receive_date)}} ~ 만료: {{this.$dateFormat(coupon.expire_date)}}
                                 </option>
                             </select>
