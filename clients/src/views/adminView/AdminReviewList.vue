@@ -17,7 +17,7 @@
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="리뷰 내용 검색" v-model="search" />
-                <button @click="searchAdminReview(search)" style="border-radius:8px">검색</button>
+                <button @click="searchAdminReview(search)" type="button" class="btn text-white" style="background-color: #fab3cc;">검색</button>
             </div>
         </div>
 
@@ -28,6 +28,7 @@
                     <th>상품명</th>
                     <th>리뷰내용</th>
                     <th>좋아요 수</th>
+                    <th>게시 날짜</th>
                     <th>리뷰 삭제</th>
                 </tr>
             </thead>
@@ -37,11 +38,12 @@
                     <td class="pName">{{ review.product_name }}</td>
                     <td><router-link :to="{path : '/myreview/info', query : {rno : review.review_no }}">{{ review.content }}</router-link></td>
                     <td class="likecnt">{{ review.review_like_cnt }}</td>
-                    <td class="Del"><button @click="deleteReview(review.review_no)">리뷰 삭제</button></td>
+                    <td>{{$dateFormat(review.review_date)}}</td>
+                    <td class="Del"><button type="button" class="btn text-white" style="background-color: #bbbbbb;" @click="deleteReview(review.review_no)">리뷰 삭제</button></td>
                 </tr>
             </tbody>
         </table>
-        <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminReview" />
+        <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminReview" style="margin-top : 20px"/>
 
     </div>
 </template>

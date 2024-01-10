@@ -78,8 +78,8 @@ class ProductService {
         return accessToken;
     }
 
-     /* 결제 전체 취소 */
-    async cancelAllPayment(refundPrice, realPaymentAmount, paymentNo, impUid, cancelRequestAmount, cancelableAmount){
+    /* 결제 전체 취소 */
+    async cancelAllPayment(refundPrice, realPaymentAmount, paymentNo, impUid, cancelRequestAmount, cancelableAmount) {
 
         const accessToken = await this.getImpAccessToken();
         //deliveryState로 배송상태 검증하기 (수정하기)
@@ -178,7 +178,7 @@ class ProductService {
     /* 주문내역 전제조회 */
     //주문 전체 내역 리스트 가져오기
 
-    async getPaymentList(userNo, pageNo){
+    async getPaymentList(userNo, pageNo) {
         const result = await paymentDAO.selectPaymentList(userNo, pageNo);
         const countResult = await paymentDAO.selectPaymentListCnt(userNo);
         const pageDTO = new PageDTO(countResult[0].cnt, Number(pageNo), 10);
@@ -291,9 +291,9 @@ class ProductService {
     }
 
     //관리자-상품리스트
-    async getAdminProductList( publicStateNo, pageNo, showCnt) {
-        let result = await productDAO.getAdminProductList( publicStateNo, pageNo, showCnt);
-        let cntResult = await productDAO.adminProductCnt( publicStateNo);
+    async getAdminProductList(publicStateNo, pageNo, showCnt) {
+        let result = await productDAO.getAdminProductList(publicStateNo, pageNo, showCnt);
+        let cntResult = await productDAO.adminProductCnt(publicStateNo);
         const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
 
         const resResult = {
@@ -304,13 +304,13 @@ class ProductService {
         return resResult;
     }
     //관리자 상품관리-필터검색
-    async getAdminProductListFilter( publicStateNo, categoryArray) {
+    async getAdminProductListFilter(publicStateNo, categoryArray) {
         let result = '';
         try {
-            if (categoryArray == -1) 
+            if (categoryArray == -1)
                 result = await productDAO.getAdminProductList(); //카테고리를 선택하지 않았을때 전체상품 리스트를 조회함
             else //카테고리를 선택했을때 공개상태와 categoryArray를 인수로 보냄
-                result = await productDAO.getAdminProductListFilter( publicStateNo, categoryArray);
+                result = await productDAO.getAdminProductListFilter(publicStateNo, categoryArray);
         } catch (e) {
             console.log(e);
         }
@@ -340,17 +340,17 @@ class ProductService {
 
         return resResult;
     }
-//관리자-리뷰조회
-async getAdminReview( pageNo, showCnt) {
-    let result = await ReviewDAO.getAdminReview(pageNo, showCnt);
-    let cntResult = await ReviewDAO.adminReviewCnt();
-    const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
-    const resResult = {
-        selectResult: result,
-        pageDTO: pageDTO
+    //관리자-리뷰조회
+    async getAdminReview(pageNo, showCnt) {
+        let result = await ReviewDAO.getAdminReview(pageNo, showCnt);
+        let cntResult = await ReviewDAO.adminReviewCnt();
+        const pageDTO = new PageDTO(cntResult[0].CNT, Number(pageNo), showCnt);
+        const resResult = {
+            selectResult: result,
+            pageDTO: pageDTO
+        }
+        return resResult;
     }
-    return resResult;
-}
 
     //관리자-리뷰삭제
     async deleteAdminReview(reviewNo) {
@@ -433,15 +433,16 @@ async getAdminReview( pageNo, showCnt) {
     async getMyProductListFilter(userNo, publicStateNo, categoryArray) {
         let result = '';
         try {
-
-            if (categoryArray == -1) //-1 특별한 의미는 없다..
-                result = await productDAO.getMyProductList(userNo); //카테고리를 선택하지 않았을때 전체상품 리스트를 조회함
-            else //카테고리를 선택했을때 공개상태와 categoryArray를 인수로 보냄
-                result = await productDAO.getMyProductListFilter(userNo, publicStateNo, categoryArray);
+            if (categoryArray == -1) { //-1 특별한 의미는 없다..
+                result = await productDAO.getMyProductList(userNo,publicStateNo,pageNo,showCnt); //카테고리를 선택하지 않았을때 전체상품 리스트를 조회함
+                cntResult = await productDAO.sellerProductCnt(userNo, publicStateNo);
+            } else { //카테고리를 선택했을때 공개상태와 categoryArray를 인수로 보냄
+            }
+            result = await productDAO.getMyProductListFilter(userNo, publicStateNo, categoryArray);
+            cntResult = await productDAO.getMyProductListFilterCnt(userNo, publicStateNo);
         } catch (e) {
             console.log(e);
         }
-
         return result;
     }
 
@@ -502,7 +503,7 @@ async getAdminReview( pageNo, showCnt) {
         return result;
     }
 
-    //판매자-리뷰삭제
+    //리뷰삭제
     async removeSellerReview(reviewNo) {
         let result = await ReviewDAO.removeSellerReview(reviewNo);
         return result;

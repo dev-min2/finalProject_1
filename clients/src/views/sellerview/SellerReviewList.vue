@@ -16,8 +16,8 @@
                 <h4>전체 리뷰</h4>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="리뷰 내용 검색" v-model="search" />
-                <button @click="searchSellerReview(search)" style="border-radius:8px">검색</button>
+                <!-- <input type="text" placeholder="리뷰 내용 검색" v-model="search" />
+                <button @click="searchSellerReview(search)" style="border-radius:8px">검색</button> -->
             </div>
         </div>
 
@@ -27,6 +27,7 @@
                     <th>닉네임</th>
                     <th>상품명</th>
                     <th>리뷰내용</th>
+                    <th>게시 날짜</th>
                     <th>좋아요 수</th>
                 </tr>
             </thead>
@@ -34,12 +35,13 @@
                 <tr :key="i" v-for="(review, i) in displayedReviews">
                     <td class="Name">{{ review.user_name }}</td>
                     <td class="pName">{{ review.product_name }}</td>
-                    <td><router-link :to="{path : '/myreview/info', query : {rno : review.review_no }}">{{ review.content }}</router-link></td>
+                    <td><router-link :to="{path : '/myreview/info', query : {rno: review.review_no, pname: review.product_name }}">{{ review.content }}</router-link></td>
+                   <td>{{$dateFormat(review.review_date)}}</td>
                     <td class="likecnt">{{ review.review_like_cnt }}</td>
                 </tr>
             </tbody>
         </table>
-               <PaginationComp v-if="page !== null" :page="page" @go-page="getSellerReview" />
+               <PaginationComp v-if="page !== null" :page="page" @go-page="getSellerReview" style="margin-top : 20px"/>
 
     </div>
 </template>
@@ -86,7 +88,7 @@
         methods: {
             async getSellerReview(pageNo) {
                 this.$showLoading();
-                const userNo = 1;
+                
             
                 const result = await axios.get(`/api/product/SellerReviewList?pg=${pageNo}&showCnt=${this.reviewsPerPage}`);
                 if(result.status == 200) {
@@ -100,7 +102,7 @@
             async searchSellerReview(search) {
                 let result = '';
 
-                const userNo = 1;
+                const userNo = req.session.userNo
                 try {
                     result = await axios.get(`/api/product/SellerReviewList/${userNo}/${search}`)
 

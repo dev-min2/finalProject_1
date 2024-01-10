@@ -111,8 +111,12 @@
             <router-link v-if="$store.state.userNo == -1" to="/login" class="nav-link">로그인</router-link>
             <a v-else class="nav-link" @click="logout" href="#">로그아웃</a>
           </li>
-                <li class="nav-item"><router-link class="nav-link" to="/admin">관리자테스트</router-link></li>
-                <li class="nav-item"><router-link class="nav-link" to="/seller">판매자테스트</router-link></li>
+          <template v-if="$store.state.userPermission == 'F3'">
+                <li class="nav-item"><router-link class="nav-link" to="/admin">관리자 페이지</router-link></li>
+          </template>
+          <template v-if="$store.state.userPermission == 'F2'">
+                <li class="nav-item"><router-link class="nav-link" to="/seller">판매자 페이지</router-link></li>
+          </template> 
         </ul>
       </div>
     </nav>
