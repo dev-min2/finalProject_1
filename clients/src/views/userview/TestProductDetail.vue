@@ -1,4 +1,5 @@
 <template>
+<div>
     <hr />
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
@@ -99,7 +100,7 @@
         <!-- 구매후기  -->
         <div id="review" class="reviewTable">
         <h2 style="font: bolder; font-size: 30px; text-align: left">구매 후기</h2>
-        <table class = "table" style= text-align:center>
+        <table class = "table table-hover" style= text-align:center>
                     <thead >
                         <tr style=text-align:center>
                             <th>리뷰번호</th>
@@ -111,10 +112,72 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <tr><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
+                    <tr v-if="reviewList == null"><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
+                            <tr v-else v-for="(review, idx) in reviewList" :key="idx">
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.review_no }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.content }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.star_cnt }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.user_name }}</td>
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ $dateFormat(review.review_date) }}</td>
+                                <!-- 리뷰좋아요버튼 -->
+                                <td v-if="review.like_click == 0">
+                                    <button @click="addReviewLikeCnt(review.review_no)"
+                                        style="border:0;background:none;">🤍</button>
+                                    {{ review.review_like_cnt }} </td>
+                                <td v-else><button @click="cancleReviewLikeCnt(review.review_no)"
+                                        style="border:0;background:none;">❤</button>
+                                    {{ review.review_like_cnt }} </td>
+
+                            </tr>
                     </tbody>
                     </table>
+                    <PaginationComp v-if="page !== null" :page="page" @go-page="showReviewList" />
 		</div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"> 리뷰 상세내용 </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container mt-3">
+                                    <div class="row">
+                                        <div class="col-md-12 offset-md-0">
+                                            <h2 class="my-3">리뷰내용</h2>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title"></h3>
+                                                    <div style="float:left" ref="title">
+
+                                                    </div>
+                                                    <div style="float:right" ref="starPos">
+
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div ref="viewer2">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         <!-- 문의게시판 -->
 		<form >
 		<div id="qna" class="qnaTable">
@@ -194,131 +257,30 @@
             <div class="container px-4 px-lg-5 mt-5">
                 <h2 class="fw-bolder mb-4">관련 상품</h2>
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Fancy Product</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    $80.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">자세히 보기</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Special Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    $18.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">자세히 보기</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Sale Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    $25.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">자세히 보기</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Popular Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    $40.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">자세히 보기</a></div>
-                            </div>
-                        </div>
+                    <div v-for="(product,idx) in relationCategoryList" :key="idx">
+                        <Product :product="product" />
                     </div>
                 </div>
             </div>
         </section>
+    </div>
 </template>
 <script>
 import axios from 'axios'
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
 
 import PaginationComp2 from '../../components/common/PaginationComp.vue';
+import PaginationComp from '../../components/common/PaginationComp.vue';
+import Product from '../../components/userview/Product.vue';
+import Viewer2 from '@toast-ui/editor/dist/toastui-editor-viewer';
 let toastViewer = null;
+let toastViewerModal = null;
+
 export default {
     components : {
-        PaginationComp2
+        PaginationComp2,
+        PaginationComp,
+        Product,
     },
     data(){
         return{
@@ -328,10 +290,18 @@ export default {
             wishInfo : [],
             qnaInfo : [],
             qnaPage : null,
-            qnaPageNo : 1
+            qnaPageNo : 1,
+            reviewList: null,
+            product_no: 0,
+            reviewLikeArray: [],
+            page: null,
+            relationCategoryList: [],
         };
     },
     async created(){
+        this.product_no = this.$route.query.pno;
+        await this.showReviewList(1);
+
         await this.getProductDetail(this.$route.query.pno);
         await this.getQnaResult(this.qnaPageNo);
         const viewDiv = this.$refs.viewer;
@@ -471,6 +441,63 @@ export default {
                 }
             }
         },
+        async showReviewList(pageno) {
+                console.log(pageno);
+                this.$showLoading();
+                const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
+                    .catch((err) =>
+                        console.log(err));
+                this.reviewList = result.data.selectResult;
+                this.page = result.data.pageDTO;
+                // html 태그 삭제하고 리뷰내용 보이기
+                for (let i = 0; i < this.reviewList.length; ++i) {
+                    const div = document.createElement('div');
+                    this.reviewList[i].realContent = this.reviewList[i].content;
+                    div.innerHTML = this.reviewList[i].content;
+                    this.reviewList[i].content = div.textContent || div.innerText || '';
+                    if (this.reviewList[i].content.length >= 10) {
+                        this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
+                    }
+
+                }
+                this.$hideLoading();
+            },
+            async addReviewLikeCnt(rno) {
+                this.$showLoading();
+                const result = await axios.put(`/api/product/productdetails/review/${rno}`)
+                    .catch((err) => console.log(err));
+                this.$hideLoading();
+                this.showReviewList(this.page.curPage);
+            },
+            async cancleReviewLikeCnt(rno) {
+                this.$showLoading();
+                const result = await axios.delete(`/api/product/productdetails/review/${rno}`)
+                    .catch((err) => console.log(err));
+                this.$hideLoading();
+                this.showReviewList(this.page.curPage);
+            },
+            setViewer(review) {
+                const viewDiv = this.$refs.viewer2;
+                const modalTitle = this.$refs.title;
+                const modalStar = this.$refs.starPos;
+                modalStar.innerHTML = '';
+                modalTitle.innerHTML = '';
+
+                modalTitle.innerHTML = `<p>${this.productDetail.product_name}</p>`;
+                let starTag = "<p style='color:#fab3cc; display:inline-block;'>별점 | ";
+                for (let i = 0; i < review.star_cnt; ++i) {
+                    starTag += '★';
+                }
+                starTag += '</p>';
+
+                modalStar.innerHTML = starTag;
+                const html = review.realContent;
+
+                toastViewerModal = new Viewer2({
+                    el: viewDiv,
+                    initialValue: html
+                });
+            },
         toAddQnaForm(){
             this.$router.push({
                 path:`/addqnaform`,
@@ -481,5 +508,7 @@ export default {
 }    
 </script>
 <style scoped>
-
+.modal-dialog {
+        max-width: 50%;
+    }
 </style>
