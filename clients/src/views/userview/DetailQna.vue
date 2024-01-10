@@ -62,7 +62,7 @@
 			<br><br>
 			<form style=text-align:center method="post">
 				<input type="hidden" name="qnaNo" value="">
-				<h3>문의답변</h3>
+				<h3 style="font-weight : bold">문의답변</h3>
 				<br><hr>
 				<table class="table">
 								<tr v-if="this.$store.state.userPermission == 'F3'">
