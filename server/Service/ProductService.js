@@ -471,10 +471,10 @@ async getAdminReview( pageNo, showCnt) {
             pet_type: sendObj.petType,
             category_no: sendObj.categoryNo,
             product_name: sendObj.productName,
-            product_detail_desc: sendObj.productDetailDesc,
+            product_desc: sendObj.productDetailDesc,
             product_price: sendObj.productPrice,
             product_stock: sendObj.productStock,
-            product_desc: sendObj.product_desc,
+            product_detail_desc: sendObj.product_desc,
             user_no: sendObj.user_no,
             product_public_state: sendObj.product_public_state,
             product_image: productImage.originalFilename

@@ -122,6 +122,7 @@ export default {
             this.$showLoading();
 			let result = await axios.post('/api/product/uploadProduct', formData);
             this.$hideLoading();
+            
             if(result.data.insertId > 0) {
                 this.$showSuccessAlert('상품등록 성공');
                 this.$router.push({path : '/SellerProductList'});
