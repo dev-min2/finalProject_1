@@ -83,7 +83,7 @@
                     </div>
                 </template>
             </div>
-        </div>0
+        </div>
     </div>
     <div class="mt-2">
         <h3>댓글 작성</h3>

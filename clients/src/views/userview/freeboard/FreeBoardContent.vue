@@ -5,8 +5,6 @@
                 <h1 class="my-3">자유게시판</h1>
                 <div class="card">
                     <div class="card-header">
-                        <!--
-                        -->
                         <h3 class="card-title">{{boardInfo.title}}</h3>
                         <div style="float:left">
                             <p class="card-text" style="text-align='right'; display:inline-block;">{{boardInfo.user_name}} | {{$dateTimeFormat(boardInfo.created_date)}}</p>
@@ -25,17 +23,19 @@
 						<DownloadAttachFile :realAttachFileNameList="realAttachFileNameList" :boardType="'free'" :pk="boardNo" />
                     </div>
                 </div>
-                <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="modifyFreeBoard(boardNo)" >수정하기</button>
+                <div class="mt-1 text-right" v-if="$store.state.userNo == boardUserNo ">
+                    <button style="background-color:#acb1f8; border:0; margin : 10px;" class="btn btn-primary" @click="modifyFree(boardNo)" >수정하기</button>
+                    <button style="background-color:#bbbbbb; border:0;" class="btn btn-primary" @click="deleteFree(boardNo)" >삭제하기</button>
+
                 </div>
             </div>
         </div>
-        <!--
         <BoardReply v-if="freeReply !== null" :boardReply="freeReply" :replyCount="freeReplyCount"  
             @regist-reply="registReply"
             @delete-reply="deleteReply"
             @update-reply="updateReply"
             />
+        <!--
         -->
     </div>
 </template>
@@ -60,6 +60,7 @@
                 freeReply : null, // 댓글 데이터를 가지는 데이터
                 freeReplyCount : 0,  // 댓글 갯수
                 realAttachFileNameList : [], // 서버에서 고유한 처리를 위해 변경한 파일이름이 담긴 리스트
+                boardUserNo: '',
             }
         },
         async created() {
@@ -79,6 +80,8 @@
                     console.log(result);
                     if(result.status == 200) {
                         this.boardInfo = result.data.freeBoard;
+                        this.boardUserNo = this.boardInfo.user_no;
+                        console.log('ㅎㅎ', result.data);
                         this.freeReply = result.data.reply;
                         this.freeReplyCount = result.data.replyCount;
                         this.realAttachFileNameList = result.data.attachFileList;
@@ -136,17 +139,23 @@
                     this.$showFailAlert('댓글삭제에 실패했습니다. 사유 : ', result.status);
                 }
             },
+            //수정삭제
             modifyFree(boardNo) {
-                if(this.$store.state.userPermission != 'F3') {
-                    this.$showFailAlert('권한이 없습니다.')
-                    return;
-                }
-
                 this.$router.push({path : '/freeboard/write', query : { modify : boardNo }});
+            },
+            async deleteFree(boardNo) {
+                const result = await axios.delete(`/api/board/freeboard/${boardNo}`);
+                if(result.data) {
+                    this.$showSuccessAlert('삭제 성공');
+                    this.$router.push({path : '/freeboard'});
+                }
+                else {
+                    this.$showFailAlert('삭제 실패');
+                }
             }
 
-        }
 
+        }
     }
 </script>
 
@@ -154,14 +163,19 @@
     textarea {
         resize: none;
     }
-
     .scroll_ul {
 		overflow-y:scroll;
 		list-style: none;
 		height : 100px;
 	}
-
     a {
         text-decoration-line: none;
+    }
+    /* .card-header {
+        min-height: 120px;
+        top: 50%;
+    } */
+    .card-body {
+        min-height: 500px;
     }
 </style>

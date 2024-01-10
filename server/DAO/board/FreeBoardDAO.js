@@ -2,10 +2,10 @@ let { pool,query } = require('../../config/dbPool');
 
 // 쿼리문 만들기
 let freeBoardDAO = {
-    selectFreeBoardListQuery : async function(userNo, pageNo, keyword) {
+    selectFreeBoardListQuery : async function(pageNo, keyword) {
         //10개씩 출력하기
         console.log('넘겨받기');
-        console.log(userNo, pageNo, keyword)
+        console.log(pageNo, keyword)
         const pageStartList = (pageNo - 1) * 10;
 
         let selectFreeBoardQuery = null;
@@ -18,11 +18,9 @@ let freeBoardDAO = {
                 FROM free_board f
                 JOIN user u
                 WHERE u.user_no = f.user_no
-                AND u.user_no = ?
                 ORDER BY created_date DESC
                 LIMIT ?,?
             `;
-            inputArray.push(userNo);
             inputArray.push(pageStartList);
             inputArray.push(10);
         }
@@ -34,12 +32,11 @@ let freeBoardDAO = {
                     FROM free_board f
                     JOIN user u
                     WHERE u.user_no = f.user_no
-                    AND title like ? AND u.user_no = ?
+                    AND title like ? 
                     ORDER BY created_date DESC
                     LIMIT ?,?
                 `;
             inputArray.push(searchquery);
-            inputArray.push(userNo);
             inputArray.push(pageStartList);
             inputArray.push(10);
         }
@@ -147,11 +144,11 @@ let freeBoardDAO = {
         `
         return query(insertFreeReplyQuery,obj);
     },
-    deleteNotieReplyQuery : async function(replyNo) {
-        const deleteNotieReplyQuery = `
+    deletFreeReplyQuery : async function(replyNo) {
+        const deletFreeReplyQuery = `
             UPDATE free_reply SET delete_date = current_date() where free_reply_no = ${replyNo}
         `
-        return query(deleteNotieReplyQuery);
+        return query(deletFreeReplyQuery);
     },
     updateFreeReplyQuery : async function(replyContent, replyNo) {
         const updateFreeReplyQuery = `

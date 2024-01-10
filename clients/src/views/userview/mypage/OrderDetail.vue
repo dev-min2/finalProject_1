@@ -11,7 +11,7 @@
 							<tr align="center">
 								<th>주문번호</th>
 								<th>상품명</th>
-								<th>가격</th>
+								<th>결제금액</th>
 								<th>수량</th>
 								<th>결제일</th>
 								<th>주문상태</th>
@@ -60,13 +60,14 @@ export default {
 	methods: {
 		//주문정보 가져오기
 		async getSelectPayment(pageNo){
+            this.$showLoading();
 			let result 
 				= await axios.get(`/api/product/orderdetail?userNo=${this.userNo}&pageNo=${pageNo}`)
 							.catch(err => console.log(err));
 			this.selectPaymentList = result.data.selectResult; 
 			this.page = result.data.pageDTO;
-			console.log(this.selectPaymentList);
-			console.log(this.page);
+            this.$hideLoading();
+
 		},
 		//주문상세페이지로 이동
 		goOrderDetail(paymentNo){
