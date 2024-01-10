@@ -54,7 +54,7 @@
               <td>{{dateFormat1(coupon.payment_date)}}</td>
             </tr>
             <tr>
-              <td>주문 번호</td>
+              <td >주문 번호</td>
               <td><router-link :to="{path : '/paymentdetail', query : {paymentNo : coupon.payment_no }}">{{coupon.payment_no}}</router-link></td>
             </tr>
           </table>
@@ -123,7 +123,7 @@
         let result = '';
         this.$showLoading();   
         try {
-          result = await axios.get(`/api/user/myCoupon/${this.couponType}/${this.userNo}/${this.pageNo}`);
+          result = await axios.get(`/api/user/myCoupon/${this.couponType}/${this.$store.state.userNo}/${this.pageNo}`);
         } catch (e) {
           console.log(e);
         }
