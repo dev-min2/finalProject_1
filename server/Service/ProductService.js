@@ -25,7 +25,7 @@ class ProductService {
     //결제폼 회원정보, 장바구니, 쿠폰 가져오기 합침
     async getUserPaymentInfo(userNo, cartNo) {
         const cartList = await paymentDAO.selectCartQuery(userNo, cartNo);
-        const couponList = await couponDAO.selectMyCouponQuery(userNo);
+        const couponList = await couponDAO.selectMyCouponQuery2(userNo);
         const userInfo = await userDAO.selectUserInfoQuery(userNo);
         let result = [cartList, couponList, userInfo[0]];
         return result;
