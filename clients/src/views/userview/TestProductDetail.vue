@@ -408,7 +408,7 @@
             },
 
             async showReviewList(pageno) {
-                console.log(pageno);
+            
                 this.$showLoading();
                 const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
                     .catch((err) =>
@@ -445,7 +445,7 @@
                     this.$showWarningAlert('로그인을 해주세요.');
                     return;
                 }
-                
+
                 this.$showLoading();
                 const result = await axios.delete(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));

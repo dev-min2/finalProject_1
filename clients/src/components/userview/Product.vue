@@ -37,13 +37,13 @@
           <br />
           <div class="text-left">
             <!-- Product price-->
-            <p style="text-align : right">{{ $printPriceComma(product.product_price) }}원</p>
+            <p style="text-align : left">{{ $printPriceComma(product.product_price) }}원</p>
           </div>
           <div class="text-left">
-            <p v-if="product.avg_cnt !== null">
+            <p v-if="product.avg_cnt !== null" style="color:#7b7b7b; display:inline-block;">
               {{ "★" + product.avg_cnt }}{{ "(" + product.cnt + ")" }}
             </p>
-            <p v-else>{{ "★0.0" }}{{ "(" + product.cnt + ")" }}</p>
+            <p v-else style="color:#7b7b7b; display:inline-block;">{{ "★0.0" }}{{ "(" + product.cnt + ")" }}</p>
           </div>
         </div>
         </router-link>
