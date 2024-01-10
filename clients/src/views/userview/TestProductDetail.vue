@@ -319,11 +319,13 @@ export default {
         async getProductDetail(pno){
             this.$showLoading();
             let result = await axios
-                        .get(`/api/product/productDetail?pno=${pno}`)
+                        .get(`/api/product/productDetail?pno=${pno}&ptype=${this.$store.state.curShowPetType}`)
                         .catch(err => console.log(err));
-            this.productDetail = result.data;
+            this.productDetail = result.data.selectResult;
+            this.relationCategoryList = result.data.relationResult;
+
             const cartResult = await axios
-                        .get(`/api/product/productDetail/${this.$store.state.userNo}/${this.productDetail.product_no}`)
+                        .get(`/api/product/productDetail/${this.$store.state.userNo}/${pno}`)
                         .catch(err => console.log(err));
             const wishResult = await axios
                         .get(`/api/product/wish/${this.$store.state.userNo}`)
@@ -472,6 +474,7 @@ export default {
                 this.$showLoading();
                 const result = await axios.put(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
+                    result;
                 this.$hideLoading();
                 this.showReviewList(this.page.curPage);
             },
@@ -479,6 +482,7 @@ export default {
                 this.$showLoading();
                 const result = await axios.delete(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
+                    result;
                 this.$hideLoading();
                 this.showReviewList(this.page.curPage);
             },

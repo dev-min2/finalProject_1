@@ -118,9 +118,6 @@ export default {
             this.$showLoading();
             if(this.title == ''||this.category == undefined || this.radio == '' || this.content == ''){
                 this.$showWarningAlert('미입력 정보가 있습니다.');
-                console.log(this.category)
-                console.log(this.radio)
-                console.log(this.content)
                 this.$hideLoading();
                 return;
             }

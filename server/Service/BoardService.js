@@ -165,7 +165,7 @@ class BoardService {
     async getQnaList(product_no, pageNo) {
         let result = await QnABoardDAO.showQnaQuery(product_no, pageNo);
         //위에거는 사실상 최대 5개만가져옴
-        const countResult = await QnABoardDAO.selectQnaCountQuery(); // 총 카운트.
+        const countResult = await QnABoardDAO.selectQnaCountQuery(product_no); // 총 카운트.
         const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 5);
         
         const mulResult = {
@@ -180,6 +180,16 @@ class BoardService {
         const countResult = await QnABoardDAO.selectQnaCountQuery(); // 총 카운트.
         const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
         
+        const mulResult = {
+            selectResult: result,
+            page: pageDTO
+        };
+        return mulResult;
+    }
+    async myQna(user_no, pageNo) {
+        let result = await QnABoardDAO.myQnaQuery(user_no, pageNo);
+        const countResult = await QnABoardDAO.selectQnaCountQuery(); // 총 카운트.
+        const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
         const mulResult = {
             selectResult: result,
             page: pageDTO
@@ -208,16 +218,6 @@ class BoardService {
     async addReQna(qna_admin_reply, qna_board_no) {
         let result = await QnABoardDAO.addReQnaQuery(qna_admin_reply, qna_board_no);
         return result;
-    }
-    async myQna(user_no, pageNo) {
-        let result = await QnABoardDAO.myQnaQuery(user_no, pageNo);
-        const countResult = await QnABoardDAO.selectQnaCountQuery(); // 총 카운트.
-        const pageDTO = new PageDTO(countResult[0].CNT, Number(pageNo), 10);
-        const mulResult = {
-            selectResult: result,
-            page: pageDTO
-        };
-        return mulResult;
     }
     //리뷰작성
     async registReviewBoard(userNo, reviewBoardInfo) {

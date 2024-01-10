@@ -92,7 +92,6 @@ export default {
     },
     methods:{
         async addQna(){
-            this.$showLoading();
             let obj = {
                 qnaCategory : this.category,
                 title : this.title,
@@ -101,13 +100,23 @@ export default {
                 userNo : this.$store.state.userNo,
                 pno : this.pno
             }
+            this.$showLoading();
+            if(this.title == ''||this.category == undefined || this.radio == '' || this.content == ''){
+                this.$showWarningAlert('미입력 정보가 있습니다.');
+                console.log(this.category)
+                console.log(this.radio)
+                console.log(this.content)
+                this.$hideLoading();
+                return;
+            }
             let result = await axios
                         .post(`/api/board/qna`,obj)
                         .catch(err => console.log(err));
         if(result.data.affectedRows > 0){
             this.$showSuccessAlert("문의 등록이 완료되었습니다.");
+            this.$hideLoading();
+            this.$router.go(-1);
         }
-        this.$hideLoading();
         },
         categoryBox(event){
             if(event.target.value == 'G1') {

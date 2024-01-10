@@ -14,12 +14,23 @@ let qnaBoardDAO = {
         `;
         return query(showQnaQuery, [product_no, pageStartList, endPageList]);
     },
-    selectQnaCountQuery: async function () {
-        const countQuery = `
-        SELECT count(*) as CNT
-        FROM qna_board
-        `  ;
-        return query(countQuery);
+    selectQnaCountQuery: async function (product_no) {
+        if (typeof product_no == "undefined") {
+            const countQuery = `
+            SELECT count(*) as CNT
+            FROM qna_board
+            `  ;
+            return query(countQuery);    
+        }
+        else {
+            const countQuery = `
+            SELECT count(*) as CNT
+            FROM qna_board
+            WHERE product_no = ?
+            `  ;
+            return query(countQuery,product_no);    
+        }
+        
     },
     addQnaQuery: async function (qna_category, title, board_public, content, product_no, user_no) {
         const addQnaQuery = `
