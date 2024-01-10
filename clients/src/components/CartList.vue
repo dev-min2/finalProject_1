@@ -109,9 +109,9 @@
         <tfoot>
           <tr>
             <td></td>
+            <td>◀{{company[0].company_name}}▶</td>
             <td></td>
-            <td></td>
-            <td colspan="2"><h4>◀{{company[0].company_name}}▶ 선택 상품금액 : {{companyPriceList[idx]}}원 <br>◀{{company[0].company_name}}▶ 배송비 : {{deliveryPriceList[idx]}}원 <hr>결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
+            <td colspan="2"><h4> 선택 상품금액 : {{companyPriceList[idx]}}원 <br> 배송비 : {{deliveryPriceList[idx]}}원 <hr>결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
           </tr>
           <br>
           <br>
@@ -242,12 +242,17 @@ export default {
     //상품삭제
     async delfunction(products, companyPrArray, idx, companyIndex){
       this.$showLoading();
+      if (confirm("상품을 장바구니에서 삭제하시겠습니까?") == true){  
+                  this.$showSuccessAlert('','선택한 상품이 삭제되었습니다. ');
+                    
+                }else{ 
+                    this.$hideLoading();
+                    return;
+                }
       let result = await axios  
                             .delete(`/api/user/carts/${this.$store.state.userNo}/${products.product_no}`)
                             .catch(err => console.log(err));
       if(result.data.affectedRows > 0){
-        this.$showSuccessAlert("상품이 삭제되었습니다.");
-      
       for(let i=0; i< companyPrArray.length; i++){
         if(companyPrArray[i].product_no == products.product_no){
             if(companyPrArray.length == 1) {

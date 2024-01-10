@@ -9,6 +9,7 @@ let qnaBoardDAO = {
         SELECT *
         FROM qna_board q join user u on q.user_no = u.user_no
         WHERE q.product_no = ?
+        ORDER BY created_date desc
         LIMIT ?, ?
         `;
         return query(showQnaQuery, [product_no, pageStartList, endPageList]);
@@ -30,7 +31,7 @@ let qnaBoardDAO = {
     showDetailQnaQuery: async function (qno) {
         const showDetailQnaQuery = `
         SELECT *
-        FROM qna_board
+        FROM qna_board q left join product p on q.product_no = p.product_no left join user u on q.user_no = u.user_no
         WHERE qna_board_no = ?
         `;
         return query(showDetailQnaQuery, qno);
@@ -59,20 +60,25 @@ let qnaBoardDAO = {
         `;
         return query(addReQnaQuery, [qna_admin_reply, qna_board_no]);
     },
-    myQnaQuery: async function (user_no) {
+    myQnaQuery: async function (user_no, pageNo) {
+        const pageStartList = (pageNo - 1) * 10;
+        const endPageList = 10;
         const myQnaQuery = `
         SELECT *
         FROM qna_board
         WHERE user_no = ?
+        ORDER BY created_date desc
+        LIMIT ?, ?
         `;
-        return query(myQnaQuery, user_no);
+        return query(myQnaQuery, [user_no, pageStartList, endPageList]);
     },
     allQnaQuery: async function (pageNo) {
         const pageStartList = (pageNo - 1) * 10;
         const endPageList = 10;
         const allQnaQuery = `
         SELECT *
-        FROM qna_board
+        FROM qna_board q left join product p on q.product_no = p.product_no left join user u on q.user_no = u.user_no
+        ORDER BY created_date desc
         LIMIT ?, ?
         `;
         return query(allQnaQuery, [pageStartList, endPageList]);

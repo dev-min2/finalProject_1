@@ -98,26 +98,21 @@
         </div>   
         <!-- 구매후기  -->
         <div id="review" class="reviewTable">
-         <h2 style="font: bolder; font-size: 30px; text-align: left">구매 후기</h2>
-         <table class = "table" style= text-align:center>
-                       <thead >
-                          <tr style=text-align:center>
-                             <th>리뷰번호</th>
-                             <th>상품이름</th>
-                             <th>별점</th>
-                             <th>작성자</th>
-                             <th>등록날짜</th>
-                             <th>좋아요</th>
-                          </tr>
-                       </thead>
-                       <tbody>
-                       
-		                    
-	                    		
-	                    			<tr><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
-	                    		
-	                    
-                       </tbody>
+        <h2 style="font: bolder; font-size: 30px; text-align: left">구매 후기</h2>
+        <table class = "table" style= text-align:center>
+                    <thead >
+                        <tr style=text-align:center>
+                            <th>리뷰번호</th>
+                            <th>상품이름</th>
+                            <th>별점</th>
+                            <th>작성자</th>
+                            <th>등록날짜</th>
+                            <th>좋아요</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
+                    </tbody>
                     </table>
 		</div>
         <!-- 문의게시판 -->
@@ -129,42 +124,47 @@
 				<thead>
 					<tr>
 						<th>공개여부</th>
-                   		<th>글번호</th>
-                   		<th>문의정보</th>
-                   		<th>제목</th>
-                   		<th>작성자</th>
-                   		<th>작성일</th>
-                   		<th>문의상태</th>
+                <th>글번호</th>
+                <th>문의정보</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>문의상태</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-if="qnaInfo.length <= 0"><td style=color:gray; colspan="7">아직 작성된 문의가 없습니다.</td></tr>
                     <tr v-else v-for="(qna,idx) in qnaInfo" :key="idx">
-                        <th v-if="qna.board_public == 'H1'">공개글</th>
-                        <th v-else-if="qna.board_public == 'H2'">비공개글</th>
-                        <th>{{qna.qna_board_no}}</th>
-                        <th v-if="qna.qna_category == 'G1'">상품문의</th>
-                        <th v-else-if="qna.qna_category == 'G2'">배송문의</th>
-                        <th v-else-if="qna.qna_category == 'G3'">교환/환불문의</th>
-                        <th v-else-if="qna.qna_category == 'G4'">기타문의</th>
-                        <th><router-link style="text-decoration : none" 
+                        <td v-if="qna.board_public == 'H1'">공개글</td>
+                        <td v-else-if="qna.board_public == 'H2'">비공개글</td>
+                        <td>{{qna.qna_board_no}}</td>
+                        <td v-if="qna.qna_category == 'G1'">상품문의</td>
+                        <td v-else-if="qna.qna_category == 'G2'">배송문의</td>
+                        <td v-else-if="qna.qna_category == 'G3'">교환/환불문의</td>
+                        <td v-else-if="qna.qna_category == 'G4'">기타문의</td>
+                        <td v-if="this.$store.state.userPermission == 'F3'">
+                            <router-link style="text-decoration : none" 
                             :to="{
                                 path: '/detailqnaform',
                                 query: {qno: qna.qna_board_no, pname : this.productDetail.product_name},
-                                }">{{qna.title}}</router-link></th>
-                        <th>{{qna.user_name}}</th>
-                        <th>{{$dateFormat(qna.created_date)}}</th>
-                        <th v-if="qna.qna_state == 'K1'" style="color : red">답변대기중</th>
-                        <th v-if="qna.qna_state == 'K2'" style="color : blue">답변완료</th>
+                                }">{{qna.title}}</router-link></td>
+                        <td v-else-if="qna.board_public == 'H2' && qna.user_no != this.$store.state.userNo">{{qna.title}}</td>
+                        <td v-else><router-link style="text-decoration : none" 
+                            :to="{
+                                path: '/detailqnaform',
+                                query: {qno: qna.qna_board_no, pname : this.productDetail.product_name},
+                                }">{{qna.title}}</router-link></td>
+                        <td>{{qna.user_name}}</td>
+                        <td>{{$dateFormat(qna.created_date)}}</td>
+                        <td v-if="qna.qna_state == 'K1'" style="color : red">답변대기중</td>
+                        <td v-if="qna.qna_state == 'K2'" style="color : blue">답변완료</td>
                     </tr>
 				</tbody>
-                   
 			</table>
             <PaginationComp2 v-if="qnaPage !== null" :page="qnaPage" @go-page="getQnaResult"/>
-			 <button @click="toAddQnaForm">
+			<button @click="toAddQnaForm">
                 문의글 작성
-             </button>
-             
+            </button>
 		</div>
 		<hr>
 		</form>
@@ -388,10 +388,10 @@ export default {
                         .catch(err => console.log(err));
             if(result.data.affectedRows > 0){
                 this.$showSuccessAlert("찜에 등록되었습니다."); 
-                 const wishResult = await axios
+                const wishResult = await axios
                         .get(`/api/product/wish/${this.$store.state.userNo}`)
                         .catch(err => console.log(err));
-                         this.wishInfo = wishResult.data;
+                        this.wishInfo = wishResult.data;
             }
                 this.$hideLoading();   
         },

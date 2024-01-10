@@ -103,10 +103,11 @@ export default {
                         .get(`/api/board/qna?qno=${this.qno}`)
                         .catch(err => console.log(err));
             this.qnaDetail = result.data;
+            this.title = this.qnaDetail.title;
+            this.content = this.qnaDetail.content;
             this.$hideLoading();
         },
         async modQna(){
-            this.$showLoading();
             let obj = {
                 qnaCategory : this.category,
                 title : this.title,
@@ -114,21 +115,31 @@ export default {
                 content : this.content,
                 qno : this.qno,
             }
+            this.$showLoading();
+            if(this.title == ''||this.category == undefined || this.radio == '' || this.content == ''){
+                this.$showWarningAlert('미입력 정보가 있습니다.');
+                console.log(this.category)
+                console.log(this.radio)
+                console.log(this.content)
+                this.$hideLoading();
+                return;
+            }
             let result = await axios
                         .put(`/api/board/qnamod`,obj)
                         .catch(err => console.log(err));
-        if(result.data.affectedRows > 0){
+            if(result.data.affectedRows > 0){
             this.$showSuccessAlert("문의 수정이 완료되었습니다.");
-        }
-        this.$hideLoading();
-        },
+            this.$hideLoading();
+            this.$router.go(-1);
+            }
+            },
         categoryBox(event){
             if(event.target.value == 'G1') {
-                if(this.pname != '') {
-                    this.content = `상품명 : ${this.pname}\n 주문자 : ${this.$store.state.userName} \n 문의내용 :  `
+                if(this.qnaDetail.product_name != undefined) {
+                    this.content = `상품명 : ${this.qnaDetail.product_name}\n 주문자 : ${this.$store.state.userName} \n 문의내용 :  `
                 }
                 else {
-                    this.content = `상품명 : ○○○\n 주문자 : ○○○ \n 문의내용 :  `
+                    this.content = `상품명 : <입력해주세요> \n 주문자 : ${this.$store.state.userName} \n 문의내용 :  `
                 }
             }
             else {

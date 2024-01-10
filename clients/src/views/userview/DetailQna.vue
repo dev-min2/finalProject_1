@@ -1,5 +1,5 @@
 <template>
-{{this.qnaDetail}}
+{{qnaDetail}}
     <section class="py-5">
 	<div class="container px-4 px-lg-5 mt-5">
 		<div class="container-fluid">
@@ -12,7 +12,7 @@
 						<th>글번호</th>
 							<td>{{qnaDetail.qna_board_no}}</td>	
 						<th colspan="2">작성자</th>
-							<td>{{this.$store.state.userName}}</td>
+							<td>{{qnaDetail.user_name}}</td>
 						<th colspan="2">작성일시</th>
 							<td>{{$dateFormat(qnaDetail.created_date)}}</td>
 						<th colspan="2">문의상태</th>
@@ -36,7 +36,7 @@
 							
 						
 							<th colspan="2">상품명</th>
-								<td>{{this.pname}}</td>
+								<td>{{qnaDetail.product_name}}</td>
 							<th colspan="2">공개여부</th>
 								<td v-if="qnaDetail.board_public == 'H1'">공개글</td>
 								<td v-else-if="qnaDetail.board_public == 'H2'">비공개글</td>
@@ -120,12 +120,18 @@ export default {
         },
 		async delqna(){
 			this.$showLoading();
+			if (confirm("정말 삭제하시겠습니까?") == true){  
+                this.$showSuccessAlert('','문의가 삭제되었습니다. ');
+                }else{ 
+					this.$hideLoading();
+                    return;
+                }
             let result = await axios
                         .delete(`/api/board/qnadel?qno=${this.qno}`)
                         .catch(err => console.log(err));
             this.qnaDetail = result.data;
 			if(result.data.affectedRows > 0){
-        this.$showSuccessAlert("문의가 삭제되었습니다.");
+				this.$router.go(-1);
             this.$hideLoading();
 			}
     },

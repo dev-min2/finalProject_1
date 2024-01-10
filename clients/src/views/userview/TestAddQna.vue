@@ -111,11 +111,11 @@ export default {
         },
         categoryBox(event){
             if(event.target.value == 'G1') {
-                if(this.pname != '') {
+                if(this.pname != undefined) {
                     this.content = `상품명 : ${this.pname}\n 주문자 : ${this.$store.state.userName} \n 문의내용 :  `
                 }
                 else {
-                    this.content = `상품명 : ○○○\n 주문자 : ○○○ \n 문의내용 :  `
+                    this.content = `상품명 : <입력해주세요> \n 주문자 : ${this.$store.state.userName} \n 문의내용 :  `
                 }
             }
             else {

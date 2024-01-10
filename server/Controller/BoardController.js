@@ -210,9 +210,10 @@ boardRouter.post('/reqna', async (req, res) => {
 })
 boardRouter.get('/myqna', async (req, res) => {
     let userNo = req.query.userNo
+    let pageNo = req.query.pageNo
     try {
         const boardService = new BoardService();
-        let result = await boardService.myQna(userNo);
+        let result = await boardService.myQna(userNo, pageNo);
         res.send(result);
     } catch(err) {
         console.log(err);
