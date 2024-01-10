@@ -429,6 +429,11 @@
                 this.$hideLoading();
             },
             async addReviewLikeCnt(rno) {
+                if(this.$store.state.userNo <= 0) {
+                    this.$showWarningAlert('로그인을 해주세요.');
+                    return;
+                }
+
                 this.$showLoading();
                 const result = await axios.put(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
@@ -436,6 +441,11 @@
                 this.showReviewList(this.page.curPage);
             },
             async cancleReviewLikeCnt(rno) {
+                if(this.$store.state.userNo <= 0) {
+                    this.$showWarningAlert('로그인을 해주세요.');
+                    return;
+                }
+                
                 this.$showLoading();
                 const result = await axios.delete(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
