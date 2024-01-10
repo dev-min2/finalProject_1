@@ -89,6 +89,9 @@
           <li class="nav-item">
             <router-link class="nav-link" aria-current="page" to="/notice">공지사항</router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="nav-link" aria-current="page" to="/freeboard">자유게시판</router-link>
+          </li>
           <li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
           <li class="nav-item">
             <router-link v-if="$store.state.userNo == -1" to="/login" class="nav-link">로그인</router-link>

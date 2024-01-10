@@ -56,6 +56,117 @@ productRouter.get('/orderdetail/:userNo', async (req, res) => {
    }
 })
 
+/*주문 전체 취소*/
+ productRouter.post('/paymentdetail/cancel', async(req, res)=>{
+    let paymentNo = req.body.param.paymentNo;
+    const impUid = req.body.param.impUid;
+    const cancelRequestAmount= req.body.param.cancelRequestAmount;
+    const cancelableAmount= req.body.param.cancelableAmount;    
+    const refundPrice = req.body.param.cancelableAmount;
+    const realPaymentAmount = cancelRequestAmount - refundPrice;
+
+    console.log('prdController주문전체취소!',paymentNo);
+    try{
+
+        const productService = new ProductService();
+        let result 
+         = await productService.cancelAllPayment(refundPrice, realPaymentAmount, paymentNo, impUid, cancelRequestAmount, cancelableAmount);
+        res.send(result);
+    }
+    catch(e){
+        console.log(e);
+    }
+ })
+
+
+ /*주문 일부 취소*/
+ productRouter.post('/paymentdetail/cancelselect/', async(req, res)=>{
+    //API 정보 담아주기
+    const sellerNo = req.body.param.sellerNo;
+    let paymentNo = req.body.param.paymentNo;
+    const impUid = req.body.param.impUid;
+    const paymentProductNo = req.body.param.paymentProductNo;
+    
+    try{
+        //필요한 데이터 정의
+        const productService = new ProductService();
+        let companyPrice = await productService.cancelCompanySum(sellerNo, paymentNo); //업체별 금액 합계 쿼리
+        let price = await productService.cancelSelectPayPrice(paymentProductNo); //취소한 제품 정보 가져오기
+
+        const cancelableAmount= price[0].payment_price ;  //환불가능한 금액 (전체결제금액)
+        let cancelRequestAmount = price[0].prod_payment_price; //취소요청금액
+        let ifPrice = companyPrice[0].companyTotalPrice - cancelRequestAmount; //배송비 기준 계산 (업체합계 - 취소가격)
+       
+        let totalDeliveryFee = price[0].total_delivery_fee; //총 배송비
+        let deliveryFee = 0;
+
+        console.log(price[0].delivery_fee, ifPrice);
+        
+        //환불 배송비 계산
+        if(price[0].delivery_fee == 0 && 0 <  ifPrice && ifPrice < 30000){ //무료배송 기준 깨질 때 (ex 4만원중 2만원 환불) 
+            cancelRequestAmount -=  3000; //배송비 빼고 환불
+            totalDeliveryFee += 3000;
+            deliveryFee = 3000;
+        }
+        else if(price[0].delivery_fee != 0 && ifPrice == 0){ //배송비 있고, 단건 취소일 때는 +배송비까지 환불
+                //cancelRequestAmount = cancelRequestAmount + 3000;
+                cancelRequestAmount = cancelRequestAmount + price[0].delivery_fee;
+                totalDeliveryFee -= 3000;
+        }
+        //Payment테이블 Update 위한 데이터
+        //real_payment_amount = 53000, total_delivery_fee = 0, total_product = 5
+        let payTotalCnt= price[0].total_product - price[0].buy_cnt; //전체 구매 수량 - 취소수량
+        let cancelFinalPrice = cancelableAmount - cancelRequestAmount; //남은 결제 금액
+        let cancelPrice = price[0].payment_price - price[0].total_delivery_fee - price[0].prod_payment_price; 
+        let refundPrice = price[0].refund_price + cancelRequestAmount;
+        
+        let paymentObj = {
+            real_payment_amount : cancelFinalPrice,
+            total_delivery_fee : totalDeliveryFee,
+            total_product : payTotalCnt,
+            payment_amount : cancelPrice, //(원결제금액)
+            refund_price : refundPrice
+        };
+
+        console.log('업체전체가격', companyPrice[0].companyTotalPrice);
+        console.log(price);
+        console.log('전체금액-취소금액: ', ifPrice);
+        console.log('개별배송비인가',price[0].delivery_fee);
+        console.log('환불가격2', cancelRequestAmount);
+        console.log(paymentObj);
+        console.log('개별배송비',deliveryFee);
+        console.log('환불금액 누적', refundPrice);
+        
+
+        // //API, 테이블에 정보 넘겨주기
+        let result 
+            = await productService.cancelSelectAPI(
+                        paymentNo, impUid, cancelRequestAmount, cancelableAmount, //API 정보
+                        paymentObj, paymentProductNo, deliveryFee, sellerNo
+
+                    );
+
+        res.send(result);
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//주문 전체 내역 리스트 불러오기 (전체페이지)
+ productRouter.get('/orderdetail', async(req, res) => {
+    const userNo = req.query.userNo;
+    const pageNo = req.query.pageNo;
+
+    try {
+        const productService = new ProductService();
+        let result = await productService.getPaymentList(userNo, pageNo);
+        res.send(result);
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+
 
 //주문 전체내역 불러오기 2
 productRouter.get('/paymentdetail/all/:userNo', async (req, res) => {

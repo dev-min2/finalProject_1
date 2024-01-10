@@ -47,7 +47,6 @@
         components: {
             PaginationComp
         },
-
         data() {
             return {
                 reviewList: [],
@@ -56,7 +55,6 @@
         },
         created() {
             this.getMyReviewList(1);
-           
         },
         methods: {
             async getMyReviewList(pageNo) {

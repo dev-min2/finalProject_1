@@ -90,14 +90,14 @@
             async deletePetQuery(pet){
                 let petNo = pet.pet_no;
                 this.$showLoading();
-                if (confirm("정말 취소하시겠습니까?") == true){
+                if (confirm("정말 삭제하시겠습니까?") == true){
                     let result 
                         = await axios.delete(`/api/user/mypetinfo/${petNo}`)
                                             .catch(err=>console.log(err));
                     if(result.data.affectedRows > 0){
-                        this.$showSuccessAlert('삭제되었습니다');
+                        this.$showSuccessAlert('삭제되었습니다. ');
                     }else{
-                        this.$showWarningAlert('삭제에 실패했습니다. ');
+                        this.$showWarningAlert('취소되었습니다. ');
                     }
                     for(let i=0; i<this.selectPetQuery.length;i++){
                         if (this.selectPetQuery[i].pet_no == petNo){
@@ -107,7 +107,7 @@
                     }
                 }
                 else{
-                    this.$showWarningAlert('삭제를 취소하셨습니다. ');
+                    this.$showWarningAlert('취소되었습니다. ');
                 }
                 this.$hideLoading();
             },

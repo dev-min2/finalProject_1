@@ -31,6 +31,10 @@ import PaymentForm from '../views/userview/payment/PaymentForm.vue'
 import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
 import PaymentDetailPage from '../views/userview/mypage/PaymentDetailPage.vue'
 
+import FreeBoardList from '../views/userview/freeboard/FreeBoardList.vue'
+import FreeBoardContent from '../views/userview/freeboard/FreeBoardContent.vue'
+import FreeboardWrite from '../views/userview/freeboard/CreateFreeBoard.vue'
+
 export default {
   path: '/',
   name: 'tmpMain',
@@ -172,6 +176,23 @@ export default {
       path: "/leave",
       name: "leave",
       component: CgPasswordAndAccountLeave
-    }
+    },
+    {
+      path: "/freeboard",
+      name: "freeboard",
+      component: FreeBoardList
+    },
+    {
+      path: "/freeboard/write",
+      name: "freeboardWrite",
+      component: FreeboardWrite
+    },
+
+    {
+      path: "/freeboard/:no",
+      name: "freeboardInfo",
+      component: FreeBoardContent
+    },
+
   ]
 };
