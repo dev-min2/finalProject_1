@@ -52,7 +52,7 @@
                                             <div class="reviewBtn" v-else-if="product.delivery_state == 'C4'">
                                                 <button class="btn btn-primary"
                                                         style="background-color: #fab3cc; border: none; margin : 5px;"
-                                                        @click="goWriteReview(product.payment_no,product.product_no, product.product_name)">후기작성</button>
+                                                        @click="goWriteReview(product.payment_no, product.product_no, product.product_name)">후기작성</button>
                                                 <button disabled class="btn btn-primary"
                                                     style="background-color: #bbbbbb; border: none; margin : 5px;">주문취소</button>
                                             </div>
@@ -233,11 +233,6 @@
             goWriteReview(payment_no, product_no, product_name){
                 this.$router.push({path : "/myreview/write", query : {payno : payment_no, pno: product_no, pname : product_name}});
             },
-            //부분주문취소 테스트 버튼
-            testBtn: function (sellerNo) {
-                let productsListByCompany = this.paymentProductsListByCompany;
-            },
-
             //버튼 비활성화 체크
             orderBtnStatus() {
                 for (let company in this.paymentProductsList) {

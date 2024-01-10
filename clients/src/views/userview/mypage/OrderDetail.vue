@@ -11,7 +11,7 @@
 							<tr align="center">
 								<th>주문번호</th>
 								<th>상품명</th>
-								<th>가격</th>
+								<th>결제금액</th>
 								<th>수량</th>
 								<th>결제일</th>
 								<th>주문상태</th>
