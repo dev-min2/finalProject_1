@@ -25,7 +25,7 @@ userRouter.get('/mypetinfo/:userNo', async(req,res)=>{ //전체조회
     let userNo = req.params.userNo;
     try{
         const userService = new UserService();
-        let result = await userService.getMyCoupon(userNo);
+        let result = await userService.getPetList(userNo);
         //console.log('test',result);
         res.send(result);
     }
