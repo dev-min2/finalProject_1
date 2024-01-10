@@ -12,6 +12,7 @@
                                 <th scope="col">리뷰번호</th>
                                 <th scope="col">주문번호</th>
                                 <th scope="col">상품명</th>
+                                <th scope="col">가격</th>
                                 <th scope="col">상품가격</th>
                                 <th scope="col">결제일</th>
                                 <th scope="col">비고</th>

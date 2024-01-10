@@ -519,7 +519,6 @@ class ProductService {
     async showProdDetail(product_no, ptype) {
         let result = await productDAO.showProductDetailQuery(product_no);
         let result2 = await productDAO.relationProductListQuery(result[0].category_no, ptype);
-        console.log('ㅎㅎ',result[0].category_no, ptype);
         const result3 = {
             selectResult: result[0],
             relationResult: result2

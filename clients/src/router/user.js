@@ -5,6 +5,11 @@ import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
 import CartView from '../views/userview/CartView.vue'
 import TestProductDetailView from '../views/userview/TestProductDetail.vue'
+import TestAddQna from '../views/userview/TestAddQna.vue'
+import TestDetailQna from '../views/userview/DetailQna.vue'
+import TestModQna from '../views/userview/TestModQna.vue'
+import AllQna from '../views/AllQna.vue'
+
 //마이페이지
 import MyPageSide from '../components/common/MypageSidebar.vue'
 import MyInfo from '../views/userview/mypage/MyInfo.vue'
@@ -17,6 +22,7 @@ import UserMyCouponView from '../views/userview/mypage/UserMyCouponView.vue'
 import MyReview from '../views/userview/mypage/MyReviewList.vue'
 import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
 import WishList from '../views/userview/mypage/WishList.vue'
+import MyQna from '../views/userview/mypage/MyQna.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
@@ -72,6 +78,26 @@ export default {
       component: TestProductDetailView,
     },
     {
+      path: "/addqnaform",
+      name: "addqnaform",
+      component: TestAddQna,
+    },
+    {
+      path: "/detailqnaform",
+      name: "detailqnaform",
+      component: TestDetailQna,
+    },
+    {
+      path: "/modqnaform",
+      name: "modqnaform",
+      component: TestModQna,
+    },
+    {
+      path: "/allqna",
+      name: "allqna",
+      component: AllQna,
+    },
+    {
       path: "/mypageside",
       name: "mypageside",
       component: MyPageSide,
@@ -119,7 +145,12 @@ export default {
           path: "/wishList",
           name: "wishList",
           component : WishList
-        }
+        },
+        {
+          path: "/myQnaList",
+          name: "myQnaList",
+          component : MyQna
+        },
       ]
     },
     {
