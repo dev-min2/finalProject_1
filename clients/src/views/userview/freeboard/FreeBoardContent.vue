@@ -5,8 +5,6 @@
                 <h1 class="my-3">자유게시판</h1>
                 <div class="card">
                     <div class="card-header">
-                        <!--
-                        -->
                         <h3 class="card-title">{{boardInfo.title}}</h3>
                         <div style="float:left">
                             <p class="card-text" style="text-align='right'; display:inline-block;">{{boardInfo.user_name}} | {{$dateTimeFormat(boardInfo.created_date)}}</p>
@@ -25,17 +23,17 @@
 						<DownloadAttachFile :realAttachFileNameList="realAttachFileNameList" :boardType="'free'" :pk="boardNo" />
                     </div>
                 </div>
-                <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="modifyFreeBoard(boardNo)" >수정하기</button>
+                <div class="mt-1 text-right">
+                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="modifyFree(boardNo)" >수정하기</button>
                 </div>
             </div>
         </div>
-        <!--
         <BoardReply v-if="freeReply !== null" :boardReply="freeReply" :replyCount="freeReplyCount"  
             @regist-reply="registReply"
             @delete-reply="deleteReply"
             @update-reply="updateReply"
             />
+        <!--
         -->
     </div>
 </template>
@@ -137,16 +135,9 @@
                 }
             },
             modifyFree(boardNo) {
-                if(this.$store.state.userPermission != 'F3') {
-                    this.$showFailAlert('권한이 없습니다.')
-                    return;
-                }
-
                 this.$router.push({path : '/freeboard/write', query : { modify : boardNo }});
             }
-
         }
-
     }
 </script>
 
@@ -154,14 +145,19 @@
     textarea {
         resize: none;
     }
-
     .scroll_ul {
 		overflow-y:scroll;
 		list-style: none;
 		height : 100px;
 	}
-
     a {
         text-decoration-line: none;
+    }
+    /* .card-header {
+        min-height: 120px;
+        top: 50%;
+    } */
+    .card-body {
+        min-height: 500px;
     }
 </style>

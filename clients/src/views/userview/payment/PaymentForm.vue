@@ -153,21 +153,21 @@
                     <h4 class="mb-3">결제수단</h4>
                     <div class="my-3">
                         <div class="form-check">
-                            <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="credit"
+                            <input type="radio" v-model="selectPayment" value="html5_inicis"
                                 name="paymentMethod" class="form-check-input" checked required>
                             <label class="form-check-label" for="credit">신용카드</label>
                         </div>
                     </div>
                     <div class="my-3">
                         <div class="form-check">
-                            <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="toss"
+                            <input type="radio" v-model="selectPayment" value="tosspay"
                                 name="paymentMethod" class="form-check-input" required>
                             <label class="form-check-label" for="credit">토스페이</label>
                         </div>
                     </div>
                     <div class="my-3">
                         <div class="form-check">
-                            <input type="radio" v-model="selectPayment" @change="Paymentmethod" value="kakao"
+                            <input type="radio" v-model="selectPayment" value="kakaopay"
                                 name="paymentMethod" class="form-check-input" required>
                             <label class="form-check-label" for="credit">카카오페이</label>
                         </div>
@@ -319,15 +319,16 @@
                 this.realTotalPrice += this.totalPrice + this.totalDelivery;
             },
             //결제방식 선택
-            Paymentmethod: function () {
-                if (this.selectPayment == "kakao") {
-                    this.selectPayment = 'kakaopay';
-                } else if (this.selectPayment == "credit") {
-                    this.selectPayment = 'html5_inicis';
-                } else {
-                    this.selectPayment = 'tosspay';
-                }
-            },
+            // Paymentmethod: function () {
+            //     if (this.selectPayment == "kakao") {
+            //         this.selectPayment = 'kakaopay';
+            //     } else if (this.selectPayment == "credit") {
+            //         this.selectPayment = 'html5_inicis';
+            //     } else {
+            //         this.selectPayment = 'tosspay';
+            //     }
+            // },
+            
             //주문번호, 주문날짜 , 주문품목 생성 (~포함 총 n건)
             orderInfo() {
                 this.orderNo = String(new Date().getTime()) + this.userNo;
@@ -433,7 +434,7 @@
                     this.$showWarningAlert('결제 동의란을 확인하고 체크해주세요. ');
                     return;
                 }
-
+                console.log(this.selectPayment);
                 //주문번호, 주문날짜 , 주문품목 데이터 불러오기
                 this.orderInfo();
 

@@ -273,7 +273,7 @@ class BoardService {
         return result;
     }
 
-    async modifyFreeBoard(userNo, boardNo, randFreeValue, curTimeVal, freeBoardInfo) {
+    async modifyFree(userNo, boardNo, randFreeValue, curTimeVal, freeBoardInfo) {
         let freeVO = {
             title: freeBoardInfo.title,
             content: freeBoardInfo.html
