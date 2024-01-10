@@ -25,7 +25,7 @@
                                 </td>
                                 <td style="vertical-align : middle">    
                                     <router-link :to="{ path : '/productdetail', query : { pno : wish.product_no}}" style="text-decoration : none; color : black">
-								    <p><span>{{wish.product_name}}</span></p>
+								<p><span>{{wish.product_name}}</span></p>
                                     </router-link>
                                 </td>                   
 								<td style="vertical-align : middle"><p><span>{{wish.product_price}}원</span></p></td>
