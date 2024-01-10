@@ -262,6 +262,7 @@ const multipart = require('connect-multiparty')
 productRouter.post('/uploadProduct', multipart(), async (req, res) => {
    let data = req.body;
    const fileImage = req.files.productImage;
+   console.log(data);
    try {
       const productService = new ProductService();
       result = await productService.uploadProduct(data, fileImage);

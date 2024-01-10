@@ -5,25 +5,25 @@
         <form action="addUserQna.do" name="addQnaForm" method="post"
             style="text-align: center">
             
-            <h3>문의글 작성</h3>
+            <h3 style="font-weight : bold">문의글 작성</h3>
             <br>
             <hr>
             <table class="table" border="1">
             <tr>
-                <th colspan="3">작성자</th>
+                <th colspan="2">작성자</th>
                 <td><input type="hidden" name="userName"
                     value="">{{this.$store.state.userName}}</td>
 
-                <th colspan="2">문의상태</th>
+                <th>문의상태</th>
                 <td>
                         문의대기중
                 </td>
             </tr>
             <tr>
             
-                <th colspan="6">문의종류</th>
+                <th colspan="2">문의종류</th>
                 <td>
-                    <select class="productName" name="category" @change="categoryBox($event)">
+                    <select class="form-select" name="category" @change="categoryBox($event)">
                         <option value="" selected disabled >선택해주세요</option>
                         <option value="G1" >상품문의</option>
                         <option value="G2" >배송문의</option>
@@ -31,13 +31,6 @@
                         <option value="G4" >기타문의</option>                       
                     </select>
                 </td>
-
-            </tr>
-            <tr>
-                <th >글제목</th>
-                <td colspan="4"><input style="width: 100%" type=text name="title"
-                    placeholder="제목을 입력해주세요" onfocus="this.placeholder=''"
-                    v-model="title"></td>
                 <th>공개여부</th>
                 <td>
                     <input type="radio" name="radio" value="H1" @change="radioBox($event)">
@@ -45,6 +38,13 @@
                     <input type="radio" name="radio" value="H2" @change="radioBox($event)">
                     비공개글
                 </td>
+
+            </tr>
+            <tr>
+                <th >글제목</th>
+                <td colspan="4"><input style="width: 90%" type=text name="title" class="form-control"
+                    placeholder="제목을 입력해주세요" onfocus="this.placeholder=''"
+                    v-model="title"></td>
             </tr>
 
             <tr>
@@ -67,7 +67,7 @@
             </tr>
             <tr>
                 <td colspan="14" align="center">
-                <button type="button" @click="addQna()">등록하기</button></td>
+                <button type="button" @click="addQna()"  class="btn text-white" style="background-color: #fab3cc;">등록하기</button></td>
             </tr>
             </table>
         </form>

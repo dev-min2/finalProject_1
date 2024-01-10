@@ -33,7 +33,7 @@
 						<th colspan="2">글제목</th>
 							<td>{{qnaDetail.title}}</td>
 							
-						
+							
 							<th colspan="2">상품명</th>
 								<td>{{qnaDetail.product_name}}</td>
 							<th colspan="2">공개여부</th>
@@ -50,9 +50,9 @@
 											path : '/modqnaform',
 											query: {qno: qnaDetail.qna_board_no, pname : this.pname}
 											}">
-										<input type="button" value="수정">
+										<input type="button" value="수정" class="btn text-white" style="background-color: #acb1f8; padding : 8px">
 										</router-link>
-										<input type="button" value="삭제" @click="delqna()">
+										<input type="button" value="삭제" @click="delqna()" class="btn text-white" style="background-color: #bbbbbb;">
 						</td>
 					</tr>
 				</table>
@@ -74,7 +74,7 @@
 									<td v-else><textarea rows="10" cols="40" class="form-control" disabled>{{qnaDetail.qna_admin_reply}}</textarea></td>
 								</tr>
 								<tr v-if="this.$store.state.userPermission == 'F3'">
-									<td><input type="button" value="등록하기" @click="reqna()"></td>
+									<td><input type="button" value="등록하기" @click="reqna()" class="btn text-white" style="background-color: #fab3cc;"></td>
 								</tr>
 								<tr v-else>
 									<!-- <td><input type="button" value="등록하기" @click="reqna()" disabled></td> -->
@@ -144,9 +144,10 @@ export default {
 						.post(`/api/board/reqna`,obj)
 						.catch(err => console.log(err));
 			if(result.data.affectedRows > 0){
-				this.$showSuccessAlert("문의답변이 등록되었습니다.")
+				this.$showSuccessAlert("문의답변이 등록되었습니다.");
+				this.$hideLoading();
+				this.$router.go(-1);
 			}
-			this.$hideLoading();
 		}
 	}  
 }

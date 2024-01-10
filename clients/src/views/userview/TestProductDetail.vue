@@ -38,10 +38,10 @@
                         </div>-->
                         <h1 class="display-5 fw-bolder">{{productDetail.product_name}}</h1>
                         <br />
-                        <p style="text-align : right; color : gray">♥ 3만원 이상 구매시 무료 배송♥</p>
+                        <p style="text-align : left; color : gray">♥ 3만원 이상 구매시 무료 배송♥</p>
                         <div class="fs-5 mb-5">
                             <!-- <span class="text-decoration-line-through">$45.00</span> -->
-                            <h4 style="font-size : 30px; text-align : right">\ {{productDetail.product_price}}</h4>
+                            <h4 style="font-size : 30px; color : gray; text-align : left">\ {{$printPriceComma(Number(productDetail.product_price))}}</h4>
                         </div>
                         <p class="lead">{{productDetail.product_desc}}</p>
                         <br />
@@ -55,7 +55,7 @@
                             <h3 v-else-if="productDetail.product_stock < 0" style="color : red">"현재 상품은 판매가 종료되었습니다." </h3>
                             
                             &nbsp;
-                            <h4 v-if="productDetail.product_stock > 0" style="color : gray; margin-inline-start: auto">총 상품 금액 \ {{this.cnt * productDetail.product_price}}</h4>
+                            <h4 v-if="productDetail.product_stock > 0" style="color : #fc97bc; font-weight : bold; font-size: 2.5rem; margin-inline-start: auto">총 상품 금액 \ {{$printPriceComma(this.cnt * productDetail.product_price)}}</h4>
                         </div>
                             <br />
                             <br />
@@ -225,7 +225,7 @@
 				</tbody>
 			</table>
             <PaginationComp2 v-if="qnaPage !== null" :page="qnaPage" @go-page="getQnaResult"/>
-			<button @click="toAddQnaForm">
+			<button @click="toAddQnaForm" class="btn text-white" style="background-color: #fab3cc;">
                 문의글 작성
             </button>
 		</div>
@@ -332,9 +332,6 @@ export default {
                         .catch(err => console.log(err)); 
             this.cartInfo = cartResult.data;
             this.wishInfo = wishResult.data;
-            
-            console.log(result);
-
             this.$hideLoading();
         },
         async getQnaResult(qnaPage) {
@@ -450,7 +447,6 @@ export default {
             }
         },
         async showReviewList(pageno) {
-                this.$showLoading();
                 const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
                     .catch((err) =>
                         console.log(err));
@@ -465,16 +461,14 @@ export default {
                     if (this.reviewList[i].content.length >= 10) {
                         this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
                     }
-
                 }
-                this.$hideLoading();
+                
             },
             async addReviewLikeCnt(rno) {
                 if(this.$store.state.userNo <= 0) {
                     this.$showWarningAlert('로그인을 해주세요.');
                     return;
                 }
-
                 this.$showLoading();
                 const result = await axios.put(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
@@ -518,6 +512,11 @@ export default {
                 });
             },
         toAddQnaForm(){
+            if(this.$store.state.userNo <= 0) {
+                    this.$showWarningAlert('로그인을 해주세요.');
+                    this.$router.push({path: '/login'});
+                    return;
+            }
             this.$router.push({
                 path:`/addqnaform`,
                 query: { pno: this.productDetail.product_no , pname : this.productDetail.product_name},
