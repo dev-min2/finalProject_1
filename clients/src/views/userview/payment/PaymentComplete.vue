@@ -37,7 +37,7 @@
         	<h6>{{paymentInfo.orderPrice}}</h6>
         </div>
       </div>
-    </div>    
+    </div>
     <div class="d-flex justify-content-center">
     	<hr class="w-50">
     </div>

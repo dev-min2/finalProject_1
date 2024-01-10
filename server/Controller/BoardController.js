@@ -2,7 +2,73 @@ const express = require('express');
 const boardRouter = express.Router();
 const BoardService = require('../Service/BoardService');
 
+/*자유게시판*/
+boardRouter.get('/freeboard', async (req, res) => {
+    const userNo = req.query.userNo;
+    const pageNo = req.query.pg;
+    const keyword = req.query.keyword;
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.getFreeBoardList(userNo, pageNo, keyword);
+        res.status(200).send(result);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send("FAIL");
+    }
+});
 
+//자유게시판 단건조회
+boardRouter.get('/freeboard/:no', async (req, res) => {
+    const boardNo = req.params.no;
+    console.log('보드컨ㄴ트롤러', req.params);
+
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.getFreeBoardInfo(boardNo);
+        res.status(200).send(result);
+    } catch (e) {
+        console.log(e);
+    }
+})
+boardRouter.put('/freeboard/:no', async (req, res) => {
+    const boardNo = req.params.no;
+    console.log('보드컨ㄴ트롤러', req.params);
+
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.updateFreeBoardViewCnt(boardNo);
+        res.status(200).send(result);
+    } catch (e) {
+        console.log(e);
+    }
+})
+//자유게시판 글 등록
+boardRouter.post('/freeboard', async (req, res) => {
+    const {
+        freeBoardInfo,
+        randFreeValue,
+        curTimeVal
+    } = req.body.param;
+
+    if (typeof req.session.userNo === "undefined") {
+        res.status(403).send("FAIL");
+        return;
+    }
+
+    try {
+        const boardService = new BoardService();
+        const result = await boardService.registFreeBoard(req.session.userNo, randFreeValue, curTimeVal, freeBoardInfo);
+
+        res.send("OK");
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+
+
+
+/*공지게시판*/
 boardRouter.post('/notice', async (req, res) => {
     const {
         noticeBoardInfo,
