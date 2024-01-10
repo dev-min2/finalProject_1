@@ -53,7 +53,7 @@
                         </div>
 
 						<hr class="mb-4">
-						<button class="btn btn-primary btn-lg btn-block" id="submit" type="submit" style="background-color:#fc97bf;;border:none;">수정완료</button>
+						<button class="btn btn-primary btn-lg btn-block" id="submit" type="submit" style="background-color:#fab3cc;;border:none;">수정완료</button>
                     </div>
                     </div>
                 </div>

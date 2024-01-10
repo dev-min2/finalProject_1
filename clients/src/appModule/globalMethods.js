@@ -10,7 +10,8 @@ const methods = {
         Swal.fire({
             title : title,
             text : text,
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc"
         });
     },
     showInfoAlert(title, text) {
@@ -18,7 +19,8 @@ const methods = {
             title : title,
             text : text,
             icon: 'info',
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc",
         })
     },
     showSuccessAlert(title,text) {
@@ -26,7 +28,8 @@ const methods = {
             title : title,
             text : text,
             icon: 'success',
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc"
         })
     },
     showFailAlert(title, text) {
@@ -42,7 +45,8 @@ const methods = {
             title : title,
             text : text,
             icon: 'warning',
-            confirmButtonText : "확인"
+            confirmButtonText : "확인",
+            confirmButtonColor : "#fab3cc"
         })
     },
     showLoadingOverlay() {

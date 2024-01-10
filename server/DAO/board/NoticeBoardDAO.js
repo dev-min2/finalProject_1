@@ -23,6 +23,12 @@ let noticeBoardDAO = {
         `
         return query(deleteNoticeBoardQuery, pkValue);
     },
+    deleteNoticeBoardReplyQuery : async function(boardNo) {
+        const deleteNoticeBoardReplyQuery = `
+            DELETE FROM notice_reply WHERE notice_board_no = ?
+        `
+        return query(deleteNoticeBoardReplyQuery, boardNo);
+    },
     selectNoticeBoardListQuery : async function(pageNo,keyword) {
         // 한번에 10개씩 리스트 보여줌
         const pageStartList = (pageNo - 1) * 10;

@@ -24,7 +24,8 @@
                     </div>
                 </div>
                 <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="modifyNotice(boardNo)" >수정하기</button>
+                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary mr-1" @click="modifyNotice(boardNo)" >수정하기</button>
+                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary" @click="deleteNotice(boardNo)" >삭제하기</button>
                 </div>
             </div>
         </div>
@@ -135,6 +136,20 @@
                 }
 
                 this.$router.push({path : '/notice/write', query : { modify : boardNo }});
+            },
+            async deleteNotice(boardNo) {
+                if(this.$store.state.userPermission != 'F3') {
+                    this.$showFailAlert('권한이 없습니다.');
+                    return;
+                }
+                const result = await axios.delete(`/api/board/notice/${boardNo}`);
+                if(result.data) {
+                    this.$showSuccessAlert('삭제 성공');
+                    this.$router.push({path : '/notice'});
+                }
+                else {
+                    this.$showFailAlert('삭제에 실패했음.');
+                }
             }
         }
     }
@@ -153,5 +168,8 @@
 
     a {
         text-decoration-line: none;
+    }
+    .card-body {
+        min-height: 500px;
     }
 </style>

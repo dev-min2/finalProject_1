@@ -201,6 +201,17 @@ boardRouter.put('/notice/:no', async (req, res) => {
     }
 })
 
+boardRouter.delete('/notice/:no', async (req, res) => {
+    const boardNo = req.params.no;
+    try {
+        const boardService = new BoardService();
+        const result = boardService.deleteNoticeBoard(boardNo);
+        res.status(200).send(result);
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 boardRouter.post('/notice-reply', async (req, res) => {
     const body = req.body;
     try {
