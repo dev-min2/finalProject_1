@@ -152,7 +152,6 @@
                                 <div class="container mt-3">
                                     <div class="row">
                                         <div class="col-md-12 offset-md-0">
-                                            <h2 class="my-3">리뷰내용</h2>
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title"></h3>
