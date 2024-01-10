@@ -68,13 +68,14 @@ export default {
 			product_name : '',
 			starValue : '',
 			reviewNo : ''
+
         }
     },
 	created (){
 		this.reviewBoardInfo.product_no = this.$route.query.pno;
 		this.product_name = this.$route.query.pname;
 		this.reviewNo = this.$route.query.modify;
-		
+		this.reviewBoardInfo.payment_no = this.$route.query.payno;
 		if(this.reviewNo > 0) {
 			this.curModifyForm = true;
 			

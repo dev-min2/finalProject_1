@@ -46,7 +46,7 @@
                                         <div name="reviewBtn"
                                             v-if="product.delivery_state == 'C1' && myCouponNo == null">
                                             <button class="btn btn-primary"
-                                                style="background-color: #fab3cc; border: none; margin : 5px;" @click="goWriteReview(product.product_no, product.product_name)">
+                                                style="background-color: #fab3cc; border: none; margin : 5px;" @click="goWriteReview(product.payment_no,product.product_no, product.product_name)">
                                                 후기작성
                                             </button>
                                             <button class="btn btn-primary" @click="cancelSelectPayment(product)"
@@ -211,9 +211,9 @@
         },
         methods: {
             //후기작성
-            goWriteReview(product_no, product_name){
+            goWriteReview(payment_no, product_no, product_name){
                 console.log(product_no, product_name);
-                this.$router.push({path : "/myreview/write", query : {pno: product_no, pname : product_name}});
+                this.$router.push({path : "/myreview/write", query : {payno : payment_no, pno: product_no, pname : product_name}});
             },
             //부분주문취소 테스트 버튼
             testBtn: function (sellerNo) {
