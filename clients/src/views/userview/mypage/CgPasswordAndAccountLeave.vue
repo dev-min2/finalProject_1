@@ -6,12 +6,20 @@
                     <template v-if="curPath == '/user-pass'">
                         <h4 class="mb-3" style="text-align:center">비밀번호를 입력하세요</h4>
                         <div class="row">
-                            <div class="mb-3">
-                                <label for="prevPass">기존 비밀번호</label> <input type="password" v-model="prevPassword" class="form-control" id="prevPass" name="prevPass" value="" required>
+                            <div class="col-md-10 mb-3">
+                                <label for="prevPass">기존 비밀번호</label> <input type="password" v-model="prevPassword" class="form-control" id="prevPass" name="prevPass" value="" style="width:93%;" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="newPass">변경할 비밀번호</label> <input type="password" v-model="nextPassword" class="form-control" id="newPass" name="newPass"  value="" required>
+                            <div class="col-md-10 mb-3">
+                                <label for="newPass">변경할 비밀번호</label> 
+                                <input v-if="showPassword == false" type="password" v-model="nextPassword" class="form-control" id="newPass" name="newPass"  value="" style="width:93%;" required>
+                                <input v-else type="text" v-model="nextPassword" class="form-control" id="newPass" name="newPass"  value="" style="width:93%;" required>
+                                <input v-if="showPassword == false" type="password" v-model="nextPasswordConfirm" class="form-control mt-1" id="newPass" name="newPass"  value="" style="width:93%;" required>
+                                <input v-else type="text" v-model="nextPasswordConfirm" class="form-control mt-1" id="newPass" name="newPass"  value="" style="width:93%;" required>
                             </div>
+                            <i v-if="showPassword == false" class="fas fa-eye-slash" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:gray;"></i>
+                            <i v-else class="fas fa-eye" type="button" @click="showPassword = !showPassword" value="보기" style="margin-top:42px;width:55px;height:30px;color:gray;"></i>
+                            <p class="ml-1" v-if="userPwCheck == false" id='alert' style="color:red;font-size:12px">비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자(!@#$%^)를 사용해 주세요.</p>
+                            <p class="ml-1" v-else id='alert' style="color:green;font-size:12px">비밀번호가 일치합니다.</p>
                             <div class="mb-4"></div>
                             <input class="btn btn-primary btn-lg btn-block" @click="sendMail" type="button" value="비밀번호 변경하기" style="background-color:pink;border:1px white;width:200px;margin:auto;">
                         </div>
@@ -48,7 +56,21 @@
             return {
                 prevPassword : '',
                 nextPassword : '',
-                curPath : ''
+                nextPasswordConfirm : '',
+                curPath : '',
+                showPassword : false,
+                pwCheckReg : /^(?=.*[a-zA-Z])(?=.*[!@#$%^])(?=.*[0-9]).{8,15}$/,
+            }
+        },
+        computed : {
+            userPwCheck() {
+                if(this.nextPassword == '' || this.nextPasswordConfirm == '') {
+                    return false;
+                }
+                if(!this.pwCheckReg.test(this.nextPassword)) {
+                    return false;
+                }               
+                return this.nextPassword == this.nextPasswordConfirm;
             }
         },
         created() {
