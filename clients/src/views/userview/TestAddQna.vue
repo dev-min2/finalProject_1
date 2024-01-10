@@ -67,7 +67,7 @@
             </tr>
             <tr>
                 <td colspan="14" align="center">
-                <button type="button" @click="addQna()">등록하기</button></td>
+                <button type="button" @click="addQna()" style="background-color: rgb(252, 151, 191); color: white;border-color: rgb(222, 226, 230);border-radius:0.375rem;">등록하기</button></td>
             </tr>
             </table>
         </form>

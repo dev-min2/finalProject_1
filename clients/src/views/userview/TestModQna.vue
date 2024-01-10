@@ -1,5 +1,4 @@
 <template>   
-{{this.qnaDetail}}
 <section class="py-5">
 <div class="container px-4 px-lg-5 mt-5">
     <div class="container-fluid">
@@ -68,12 +67,9 @@
             </tr>
             <tr>
                 <td colspan="14" align="center">
-                <button type="button" @click="modQna()">수정하기</button></td>
+                <button type="button" @click="modQna()" class="btn text-white" style="background-color: #fab3cc;">수정하기</button></td>
             </tr>
             </table>
-            <router-link to="" style="text-decoration : none; color : black">
-                전체 문의 목록으로
-            </router-link>
         </form>
     </div>
 </div>

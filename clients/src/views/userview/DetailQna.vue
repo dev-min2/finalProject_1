@@ -33,7 +33,7 @@
 						<th colspan="2">글제목</th>
 							<td>{{qnaDetail.title}}</td>
 							
-						
+							
 							<th colspan="2">상품명</th>
 								<td>{{qnaDetail.product_name}}</td>
 							<th colspan="2">공개여부</th>
@@ -50,9 +50,9 @@
 											path : '/modqnaform',
 											query: {qno: qnaDetail.qna_board_no, pname : this.pname}
 											}">
-										<input type="button" value="수정">
+										<input type="button" value="수정" class="btn text-white" style="background-color: #fab3cc; padding : 8px">
 										</router-link>
-										<input type="button" value="삭제" @click="delqna()">
+										<input type="button" value="삭제" @click="delqna()" class="btn text-white" style="background-color: #bbbbbb;">
 						</td>
 					</tr>
 				</table>

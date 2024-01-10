@@ -52,7 +52,7 @@
                 
 				</div>
                 <PaginationComp v-if="qnaPage !== null" :page="qnaPage" @go-page="getAllQna"/>       
-			<button @click="toAddQnaForm">
+			<button @click="toAddQnaForm" class="btn text-white" style="background-color: #fab3cc;">
                 문의글 작성
             </button>
 			</div>
