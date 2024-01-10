@@ -13,7 +13,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="background-color:#FFC0CB" v-for="(notice) in noticeImportanceList" :key="notice.notice_board_no" @click="goNoticeBoard(notice.notice_board_no)" >
+                <tr style="background-color:#fab3cc;" v-for="(notice) in noticeImportanceList" :key="notice.notice_board_no" @click="goNoticeBoard(notice.notice_board_no)" >
                     <td style="color:white;">{{notice.notice_board_no}}</td>
                     <td style="color:white;"><b>{{notice.title}}</b></td>
                     <td style="color:white;">관리자</td>
@@ -29,12 +29,14 @@
                 </tr>
             </tbody>
         </table>
+        <div class="text-right">
         <button v-if="$store.state.userPermission == 'F3'" 
-            class="btn btn-primary my-2" style="text-align:left; background-color:#fc97bf; border:0;"
+            class="btn btn-primary my-2" style="background-color:#fab3cc; border:0;"
             @click="goWriteNotice"
             >
             글쓰기
         </button>
+        </div>
         <!-- 서버에 비동기 통신으로 데이터 요청 응답이 오기전에 컴포넌트에 prop이 전달될 수 있으므로 null 이 아닐때만 전달되게끔 해야함.-->
         <PaginationComp v-if="page !== null" :page="page" @go-page="getNoticeBoardList" />
         
