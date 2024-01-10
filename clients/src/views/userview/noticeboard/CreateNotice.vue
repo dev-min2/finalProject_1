@@ -52,9 +52,9 @@
 						</tr>
 					<tr>
 						<td colspan="2" style="text-align:center;">
-							<input v-if="curModifyForm == false" type="submit" value="저장" class="btn btn-primary mx-3" @click="registPost">
-							<input v-else type="submit" value="수정" class="btn btn-primary mx-3" @click="modifyPost">
-							<router-link class="btn btn-warning" to="/notice">작성취소</router-link>
+							<input v-if="curModifyForm == false" type="submit" value="저장" class="btn btn-primary mx-3" style="background-color:#fab3cc; border:0; color:white;" @click="registPost">
+							<input v-else type="submit" value="수정" class="btn btn-primary mx-3" style="background-color:#fab3cc; border:0;color:white;" @click="modifyPost">
+							<router-link class="btn btn-warning" style="background-color:#bbbbbb; border:0; color:white;" to="/notice">작성취소</router-link>
 						</td>
 					</tr>
 				</table>

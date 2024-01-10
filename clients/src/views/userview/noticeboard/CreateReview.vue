@@ -59,7 +59,8 @@ export default {
 				content : '',
 				star_cnt : '',
 				product_no : '',
-				html : null
+				html : null,
+				payment_no : ''
 			},
 			curTimeVal : '',
 			curModifyForm : false,
@@ -73,7 +74,7 @@ export default {
 		this.reviewBoardInfo.product_no = this.$route.query.pno;
 		this.product_name = this.$route.query.pname;
 		this.reviewNo = this.$route.query.modify;
-		
+		this.reviewBoardInfo.payment_no = this.$route.query.payno;
 		if(this.reviewNo > 0) {
 			this.curModifyForm = true;
 			
@@ -89,10 +90,12 @@ export default {
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
+			console.log(this.reviewBoardInfo);
 			const sendObj = {
 				param : {
 					reviewBoardInfo : this.reviewBoardInfo,
-					product_no : this.reviewBoardInfo.product_no
+					product_no : this.reviewBoardInfo.product_no,
+					payment_no : this.reviewBoardInfo.payment_no
 				}
 			}
 			const result = await axios.post(`/api/board/myreview/write`,sendObj);
@@ -113,8 +116,7 @@ export default {
 				this.reviewBoardInfo.html = result.data.content;
 				this.reviewBoardInfo.product_no = result.data.product_no;
 				this.reviewBoardInfo.star_cnt = result.data.star_cnt;
-				this.starValue = this.registReviewBoard.star_cnt;
-				console.log('별점',result.data.star_cnt);
+				this.starValue = this.reviewBoardInfo.star_cnt;
 				if(this.reviewBoardInfo.star_cnt == 5) {
 					this.$refs.ra5.checked = true;
 				}
@@ -168,7 +170,7 @@ th{
 	padding-top : 25px;
 }
 @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
-       .rate { display: inline-block;border: 0;margin-right: 15px;}
+.rate { display: inline-block;border: 0;margin-right: 15px;}
 .rate > input {display: none;}
 .rate > label {float: right;color: #ddd}
 .rate > label:before {display: inline-block;font-size: 1rem;padding: .3rem .2rem;margin: 0;cursor: pointer;font-family: FontAwesome;content: "\f005 ";}

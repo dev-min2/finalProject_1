@@ -164,11 +164,12 @@ userRouter.post('/email-auth/confirm', async(req, res) => {
 
 userRouter.post('/forgot-account', async(req, res) => {
     let forgotInfo = req.body.forgotInfo;
+    console.log('하이');
     try {
         const userService = new UserService();
         let result = await userService.sendForgotAccountInfoMail(forgotInfo);
         if(result === "일치하는 회원이 없음") {
-            res.status(500).send("일치하는 회원이 없음");
+            res.status(200).send("Not Found");
             return;
         }
 

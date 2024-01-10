@@ -34,8 +34,8 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="$store.state.userPermission == 'F3'" class="mt-1 text-right">
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary"
+                <div v-if="$store.state.userPermission == 'F1'" class="mt-1 text-right">
+                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary my-2"
                         @click="modifyReview">수정하기</button>
                 </div>
             </div>
@@ -99,6 +99,9 @@
     textarea {
         resize: none;
     }
+    .card-body {
+        min-height: 500px;
+    }
 
     .scroll_ul {
         overflow-y: scroll;
@@ -108,5 +111,6 @@
 
     a {
         text-decoration-line: none;
+        color: #fab3cc; ;
     }
 </style>

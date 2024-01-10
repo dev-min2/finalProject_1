@@ -437,12 +437,15 @@ productRouter.get('/paymentform', async (req, res) => {
     const impUid = req.body.param.impUid;
     const cancelRequestAmount= req.body.param.cancelRequestAmount;
     const cancelableAmount= req.body.param.cancelableAmount;    
+    const refundPrice = req.body.param.cancelableAmount;
+    const realPaymentAmount = cancelRequestAmount - refundPrice;
 
     console.log('prdController주문전체취소!',paymentNo);
     try{
 
         const productService = new ProductService();
-        let result = await productService.cancelAllPayment(paymentNo, impUid, cancelRequestAmount, cancelableAmount);
+        let result 
+         = await productService.cancelAllPayment(refundPrice, realPaymentAmount, paymentNo, impUid, cancelRequestAmount, cancelableAmount);
         res.send(result);
     }
     catch(e){
@@ -491,12 +494,12 @@ productRouter.get('/paymentform', async (req, res) => {
         let cancelFinalPrice = cancelableAmount - cancelRequestAmount; //남은 결제 금액
         let cancelPrice = price[0].payment_price - price[0].total_delivery_fee - price[0].prod_payment_price; 
         let refundPrice = price[0].refund_price + cancelRequestAmount;
-
+        
         let paymentObj = {
             real_payment_amount : cancelFinalPrice,
             total_delivery_fee : totalDeliveryFee,
             total_product : payTotalCnt,
-            //payment_amount : cancelPrice, (원결제금액)
+            payment_amount : cancelPrice, //(원결제금액)
             refund_price : refundPrice
         };
 
@@ -525,17 +528,18 @@ productRouter.get('/paymentform', async (req, res) => {
 })
 
 //주문 전체 내역 리스트 불러오기 (전체페이지)
- productRouter.get('/orderdetail/:userNo', async(req, res) => {
+ productRouter.get('/orderdetail', async(req, res) => {
+    const userNo = req.query.userNo;
+    const pageNo = req.query.pageNo;
 
-    let userNo = req.params.userNo;
     try {
         const productService = new ProductService();
-        let result = await productService.getPaymentList(userNo);
+        let result = await productService.getPaymentList(userNo, pageNo);
         res.send(result);
     } catch (e) {
         console.log(e);
     }
-})
+});
 
 
 //주문 전체내역 단건 조회(상세페이지)
@@ -654,9 +658,10 @@ productRouter.get('/search/recproduct', async (req, res) => {
 //하랑
 productRouter.get('/productDetail', async (req, res) => {
    let productNo = req.query.pno;
+   let ptype = req.query.ptype;
    try {
       const productService = new ProductService();
-      let result = await productService.showProdDetail(productNo);
+      let result = await productService.showProdDetail(productNo,ptype);
       res.send(result);
    } catch (err) {
       console.log(err);
@@ -732,20 +737,30 @@ productRouter.get('/productdetails/review/:productNo/:pageNo', async (req, res) 
         console.log(e);
     }
 });
-
-productRouter.put('/productdetails/review/:reviewNo/:productNo', async (req, res) => {
+//리뷰 좋아요 추가
+productRouter.put('/productdetails/review/:reviewNo', async (req, res) => {
     try {
         let reviewNo = req.params.reviewNo;
-        let productNo = req.params.productNo;
         let userNo = req.session.userNo;
         const productService = new ProductService();
-        const result = await productService.addReviewLikeCnt(reviewNo, userNo, productNo);
+        const result = await productService.addReviewLikeCnt(reviewNo, userNo);
         res.send(result);
     } catch (e) {
         console.log(e);
     }
 });
-
+//리뷰좋아요 삭제
+productRouter.delete('/productdetails/review/:reviewNo', async(req, res)=>{
+   try{
+      let reviewNo = req.params.reviewNo;
+      let userNo = req.session.userNo;
+      const productService = new ProductService();
+      const result = await productService.cancelReviewLikeCnt(reviewNo, userNo);
+      res.send(result);
+   }catch (e){
+      console.log(e);
+   }
+});
 
 
 module.exports = productRouter;

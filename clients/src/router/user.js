@@ -5,6 +5,11 @@ import CreateAccountComp from '../views/userview/CreateAccountComp.vue'
 import TestUploadView from '../views/userview/TestUploadView.vue'
 import CartView from '../views/userview/CartView.vue'
 import TestProductDetailView from '../views/userview/TestProductDetail.vue'
+import TestAddQna from '../views/userview/TestAddQna.vue'
+import TestDetailQna from '../views/userview/DetailQna.vue'
+import TestModQna from '../views/userview/TestModQna.vue'
+import AllQna from '../views/AllQna.vue'
+
 //마이페이지
 import MyPageSide from '../components/common/MypageSidebar.vue'
 import MyInfo from '../views/userview/mypage/MyInfo.vue'
@@ -17,6 +22,7 @@ import UserMyCouponView from '../views/userview/mypage/UserMyCouponView.vue'
 import MyReview from '../views/userview/mypage/MyReviewList.vue'
 import CgPasswordAndAccountLeave from '../views/userview/mypage/CgPasswordAndAccountLeave.vue'
 import WishList from '../views/userview/mypage/WishList.vue'
+import MyQna from '../views/userview/mypage/MyQna.vue'
 
 import ForgotAccountComp from '../views/userview/ForgotAccountComp'
 import SearchPage from '../views/userview/SearchPage.vue'
@@ -30,6 +36,10 @@ import ReviewInfo from '../views/userview/noticeboard/ReviewContent.vue'
 import PaymentForm from '../views/userview/payment/PaymentForm.vue'
 import PaymentComplete from '../views/userview/payment/PaymentComplete.vue'
 import PaymentDetailPage from '../views/userview/mypage/PaymentDetailPage.vue'
+
+import FreeBoardList from '../views/userview/freeboard/FreeBoardList.vue'
+import FreeBoardContent from '../views/userview/freeboard/FreeBoardContent.vue'
+import FreeboardWrite from '../views/userview/freeboard/CreateFreeBoard.vue'
 
 export default {
   path: '/',
@@ -66,6 +76,26 @@ export default {
       path: "/productdetail",
       name: "productdetail",
       component: TestProductDetailView,
+    },
+    {
+      path: "/addqnaform",
+      name: "addqnaform",
+      component: TestAddQna,
+    },
+    {
+      path: "/detailqnaform",
+      name: "detailqnaform",
+      component: TestDetailQna,
+    },
+    {
+      path: "/modqnaform",
+      name: "modqnaform",
+      component: TestModQna,
+    },
+    {
+      path: "/allqna",
+      name: "allqna",
+      component: AllQna,
     },
     {
       path: "/mypageside",
@@ -115,7 +145,12 @@ export default {
           path: "/wishList",
           name: "wishList",
           component : WishList
-        }
+        },
+        {
+          path: "/myQnaList",
+          name: "myQnaList",
+          component : MyQna
+        },
       ]
     },
     {
@@ -172,6 +207,23 @@ export default {
       path: "/leave",
       name: "leave",
       component: CgPasswordAndAccountLeave
-    }
+    },
+    {
+      path: "/freeboard",
+      name: "freeboard",
+      component: FreeBoardList
+    },
+    {
+      path: "/freeboard/write",
+      name: "freeboardWrite",
+      component: FreeboardWrite
+    },
+
+    {
+      path: "/freeboard/:no",
+      name: "freeboardInfo",
+      component: FreeBoardContent
+    },
+
   ]
 };

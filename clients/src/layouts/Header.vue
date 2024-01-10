@@ -85,11 +85,28 @@
           </li>
 
         </ul>
+
         <ul class="navbar-nav">
+          <div class="btn-group">
+            <a type="button" class="dropdown-toggle" style="padding-top:8px; color:gray;" data-bs-toggle="dropdown" aria-expanded="false">
+              게시판
+            </a>
+            <ul class="dropdown-menu nav-item">
+              <li><router-link class="dropdown-item" to="/notice" href="#">공지사항</router-link></li>
+              <li><router-link class="dropdown-item" to="/notice" href="#">자유게시판</router-link></li>
+              <li><router-link class="dropdown-item" to="/notice" href="#">고객센터</router-link></li>
+            </ul>
+          </div>
           <li class="nav-item">
             <router-link class="nav-link" aria-current="page" to="/notice">공지사항</router-link>
           </li>
-          <li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
+          <li class="nav-item">
+            <router-link to="/allqna" style="text-decoration : none">
+            <a class="nav-link" href="#">고객센터</a></router-link>
+            </li>
+          <li>
+            <router-link class="nav-link" aria-current="page" to="/freeboard">자유게시판</router-link>
+          </li>
           <li class="nav-item">
             <router-link v-if="$store.state.userNo == -1" to="/login" class="nav-link">로그인</router-link>
             <a v-else class="nav-link" @click="logout" href="#">로그아웃</a>
@@ -143,7 +160,7 @@
         this.categoryList = groupBy(this.categoryList, "parent_no");
 
         for(let category in this.categoryList){
-           this.selectedMenu.push(false);
+          this.selectedMenu.push(false);
         }   
 
       },
@@ -191,6 +208,7 @@
         let result = await axios.get("/api/user/logout");
         if (result.status == 200 && result.data == "OK") {
           this.$showSuccessAlert("로그아웃 완료");
+          this.$store.commit('setUserName', '');
           this.$store.commit("setUserNo", -1);
           this.$store.commit("setUserPermission", '');
           this.$router.push({

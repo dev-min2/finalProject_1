@@ -9,7 +9,7 @@ const store = createStore({
     plugins : [
         createPersistedState({
             storage: window.sessionStorage,
-            paths : ['userNo','curShowPetType','testData','curIp','socialId','accessToken','userPermission','prImg','cartCnt','subCode'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
+            paths : ['userNo','curShowPetType','testData','curIp','socialId','accessToken','userPermission','prImg','cartCnt','subCode','userName'] // SessionStorage에 관리될 state들은 여기에 선언해주어야함
         })
     ],
     state() {
@@ -24,7 +24,8 @@ const store = createStore({
             userPermission : '',
             cartCnt : 0,
             prImg : 'http://localhost:12532/uploads/productImage/',
-            subCode : [],
+            subCode: [],
+            userName : '',
         }
     },
     getters : {
@@ -59,6 +60,9 @@ const store = createStore({
         },
         setSubCode(state, payload) {
             state.subCode = payload;
+        },
+        setUserName(state, payload) {
+            state.userName = payload;
         }
     },
     actions : { // 비동기
