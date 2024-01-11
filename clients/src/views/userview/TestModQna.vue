@@ -10,9 +10,9 @@
             <hr>
             <table class="table" border="1">
             <tr>
-                <th>글번호</th>
-							<td>{{qnaDetail.qna_board_no}}</td>	
-                <th colspan="2">작성자</th>
+                <!-- <th>글번호</th>
+							<td>{{qnaDetail.qna_board_no}}</td>	 -->
+                <th>작성자</th>
                 <td><input type="hidden" name="userName"
                     value="">{{this.$store.state.userName}}</td>
 
@@ -21,9 +21,9 @@
             </tr>
             <tr>
             
-                <th colspan="6">문의종류</th>
+                <th>문의종류</th>
                 <td>
-                    <select class="productName" name="category" @change="categoryBox($event)">
+                    <select class="form-select" name="category" @change="categoryBox($event)">
                         <option value="" selected disabled >선택해주세요</option>
                         <option value="G1" >상품문의</option>
                         <option value="G2" >배송문의</option>
@@ -31,14 +31,7 @@
                         <option value="G4" >기타문의</option>                       
                     </select>
                 </td>
-
-            </tr>
-            <tr>
-                <th >글제목</th>
-                <td colspan="4"><input style="width: 100%" type=text name="title"
-                    placeholder="제목을 입력해주세요" onfocus="this.placeholder=''"
-                    v-model="title"></td>
-                <th>공개여부</th>
+                <th >공개여부</th>
                 <td>
                     <input type="radio" name="radio" value="H1" @change="radioBox($event)">
                     공개글
@@ -46,7 +39,12 @@
                     비공개글
                 </td>
             </tr>
-
+            <tr>
+                <th >글제목</th>
+                <td colspan="5"><input style="width: 90%" type=text name="title" class="form-control"
+                    placeholder="제목을 입력해주세요" onfocus="this.placeholder=''"
+                    v-model="title"></td>
+            </tr>
             <tr>
                 <td colspan="14">
                     <textarea 
@@ -84,6 +82,8 @@ export default {
             pname : '',
             radio : '',
             category : '',
+            title : '',
+            content : '',
             qnaDetail:[],
         }
     },
@@ -112,8 +112,9 @@ export default {
                 qno : this.qno,
             }
             this.$showLoading();
-            if(this.title == ''||this.category == undefined || this.radio == '' || this.content == ''){
+            if(this.title == '' || this.category == '' || this.radio == '' || this.content == ''){
                 this.$showWarningAlert('미입력 정보가 있습니다.');
+                console.log(this.title)
                 this.$hideLoading();
                 return;
             }
