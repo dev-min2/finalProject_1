@@ -3,7 +3,7 @@
 		<main>
 			<div class="container-fluid px-4">
 				<div class="px-4 py-1 my-3 text-center">
-					<h2 class="fw-bold mb-3">문의사항</h2>
+					<h2 class="fw-bold mb-3">문의내역</h2>
 				</div>
 				<div class="d-flex justify-content-center">
 					<table class="table w-85">
