@@ -33,7 +33,7 @@
           </td>
         </tr>
       </table>
-       <button type="button" class="btn text-white" style="background-color: #fab3cc; margin-left : 10px; margin-top : 10px" @click="searchProducts" >검색</button>
+       <button type="button" class="btn text-white" style="background-color: #fab3cc; margin-left : 10px; margin-top : 10px" @click="search" >검색</button>
     </div>
   
   </div>
@@ -114,11 +114,7 @@ export default {
     maxPrice(newVal, o) {
       console.log(newVal);
     },
-    dateInit(){
-      this.period = null;
-      this.selectedPeriod = null; // 기간 선택 해제
-
-    }
+    
   }
 };
 </script>
