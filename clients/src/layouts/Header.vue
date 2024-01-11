@@ -145,7 +145,6 @@
         // 서버에 요청
         const result = await axios.get(`/api/product/category`).catch((err) => console.log(err));
         this.categoryList = result.data; //저장
-
         const groupBy = function (data, key) {
           return data.reduce(function (carry, el) {
             var group = el[key];
