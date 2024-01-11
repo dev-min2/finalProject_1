@@ -3,7 +3,7 @@
 		<main>
 			<div class="container-fluid px-4">
 				<div class="px-4 py-1 my-3 text-center">
-								<h2 class="fw-bold mb-3">내 반려동물 등록</h2>
+								<h2 class="fw-bold mb-3">반려동물 정보입력</h2>
 				</div>
 				<div class="d-flex justify-content-center">
 					<form @submit.prevent>

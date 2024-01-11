@@ -93,20 +93,10 @@
             </a>
             <ul class="dropdown-menu nav-item">
               <li><router-link class="dropdown-item" to="/notice" href="#">공지사항</router-link></li>
-              <li><router-link class="dropdown-item" to="/notice" href="#">자유게시판</router-link></li>
-              <li><router-link class="dropdown-item" to="/notice" href="#">고객센터</router-link></li>
+              <li><router-link class="dropdown-item" to="/freeboard" href="#">자유게시판</router-link></li>
+              <li><router-link class="dropdown-item" to="/allqna" href="#">고객센터</router-link></li>
             </ul>
           </div>
-          <li class="nav-item">
-            <router-link class="nav-link" aria-current="page" to="/notice">공지사항</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/allqna" style="text-decoration : none">
-            <a class="nav-link" href="#">고객센터</a></router-link>
-            </li>
-          <li>
-            <router-link class="nav-link" aria-current="page" to="/freeboard">자유게시판</router-link>
-          </li>
           <li class="nav-item">
             <router-link v-if="$store.state.userNo == -1" to="/login" class="nav-link">로그인</router-link>
             <a v-else class="nav-link" @click="logout" href="#">로그아웃</a>

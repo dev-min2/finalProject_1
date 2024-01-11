@@ -1,0 +1,12 @@
+target.checked
+
+
+[암기하기]
+
+//버튼이동
+goToPetInsert() {
+                this.$router.push({ path: '/mypetform'});
+            },
+
+
+@click="$router.push('/orderdetail')"

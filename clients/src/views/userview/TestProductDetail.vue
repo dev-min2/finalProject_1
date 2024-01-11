@@ -72,12 +72,6 @@
                             </button>
                             <br />
                             <br />
-
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button" style="width : 100%; height : 50px"
-                            v-if="productDetail.product_stock >= 0">
-                                <i></i>
-                                ▶ Buy Now
-                            </button>
                     </div>
                 </div>
                     <div class="container px-4 px-lg-5 my-5" style="text-align:center;">
@@ -104,10 +98,10 @@
         <table class = "table table-hover" style= text-align:center>
                     <thead >
                         <tr style=text-align:center>
-                            <th>상품이름</th>
+                            <th>리뷰내용</th>
                             <th>별점</th>
                             <th>작성자</th>
-                            <th>등록날짜</th>
+                            <th>작성일</th>
                             <th>좋아요</th>
                         </tr>
                     </thead>
