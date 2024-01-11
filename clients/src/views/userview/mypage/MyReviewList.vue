@@ -55,10 +55,12 @@
         },
         methods: {
             async getMyReviewList(pageNo) {
+                this.$showLoading();
                 const result = await axios.get(
                     `/api/user/myreview?userNo=${this.$store.state.userNo}&pageNo=${pageNo}`);
                 this.reviewList = result.data.selectResult;
                 this.page = result.data.pageDTO;
+                this.$hideLoading();
             },
             // //리뷰작성
             // goWriteReview(product_no, product_name){
@@ -71,9 +73,7 @@
 
             //리뷰 삭제
             async deleteReviewBoard(review_no){
-                this.$showLoading();
                 const result = await axios.delete(`/api/board/myreview/${review_no}`);
-                console.log(result);
                 if(result.data.affectedRows > 0){
                     this.$showSuccessAlert('삭제되었습니다');
                 }else{
@@ -85,7 +85,6 @@
                         break;
                     }
                 }
-                this.$hideLoading();
             }
         }
     }

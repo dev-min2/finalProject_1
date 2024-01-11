@@ -33,7 +33,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2" style="text-align:center;">
+						<td colspan="2">
 							<input v-if="curModifyForm == false" type="submit" value="저장" class="btn text-white mr-2" style="background-color :#fab3cc;"  @click="registReviewBoard">
 							<input v-else type="submit" style="background-color : #acb1f8;" value="수정" class="btn text-white mr-2" @click="modifyReviewPost">
 							
@@ -88,6 +88,7 @@ export default {
 	},
 	methods : {
 		async registReviewBoard(){
+			this.$showLoading();
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
@@ -105,6 +106,7 @@ export default {
 				this.$showSuccessAlert('등록성공',null);
 				this.$router.push({path : '/myreview'});
 			}
+			this.$hideLoading();
 		},
 		test(target) {
 			console.log(target);
@@ -146,6 +148,7 @@ export default {
 		},
 		//리뷰수정
 		async modifyReviewPost(){
+			this.$showLoading();
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
@@ -160,7 +163,7 @@ export default {
 				this.$showSuccessAlert('수정성공',null);
 				this.$router.push({path : `/myreview`});
 			}
-			
+			this.$hideLoading();
 		}
 	}
 }
@@ -169,6 +172,9 @@ export default {
 <style scoped>
 th{
 	padding-top : 25px;
+}
+td{
+	text-align: center
 }
 @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 .rate { display: inline-block;border: 0;margin-right: 15px;}

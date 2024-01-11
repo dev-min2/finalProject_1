@@ -435,6 +435,7 @@ export default {
             }
         },
         async showReviewList(pageno) {
+            this.$showLoading();
                 const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
                     .catch((err) =>
                         console.log(err));
@@ -450,6 +451,7 @@ export default {
                         this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
                     }
                 }
+                this.$hideLoading();
                 
             },
             async addReviewLikeCnt(rno) {

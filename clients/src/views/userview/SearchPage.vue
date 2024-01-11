@@ -52,19 +52,23 @@
         },
         methods: {
             async getCategoryProductList(cno, pageno) {
+                this.$showLoading();
                 const result = await axios.get(
                     `/api/product/search/category?cno=${cno}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
+                this.$hideLoading();
             },
 
             async getProductList(keyword, pageno) {
+                this.$showLoading();
                 const result = await axios.get(
                     `/api/product/search?q=${keyword}&type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
+                this.$hideLoading();
             },
             async getSearchPageList(pageno) {
                 let action = this.$route.query.action;
@@ -79,25 +83,34 @@
                 }
             },
             async getNewProductList(pageno){
+                this.$showLoading();
                 const result = await axios.get(
                     `/api/product/search/newproduct?type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
+                this.$hideLoading();
+
             },
             async getBestProductList(pageno){
+                this.$showLoading();
                 const result = await axios.get(
                     `/api/product/search/bestproduct?type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
+                this.$hideLoading();
+
             },
             async getRecProductList(pageno){
+                this.$showLoading();
                 const result = await axios.get(
                     `/api/product/search/recproduct?type=${this.$store.state.curShowPetType}&pageno=${pageno}`
                 );
                 this.productList = result.data.selectResult;
                 this.page = result.data.pageDTO;
+                this.$hideLoading();
+
             }
         }
     }
