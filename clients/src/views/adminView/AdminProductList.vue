@@ -16,8 +16,8 @@
                 <h4>상품 목록</h4>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="       상품명 검색" v-model="search" />
-                <button @click="adminProductSearchName()" style="border-radius:8px">검색</button>
+                <!-- <input type="text" placeholder="       상품명 검색" v-model="search" />
+                <button @click="adminProductSearchName()" style="border-radius:8px">검색</button> -->
             </div>
         </div>
         <table class="productList">
@@ -48,7 +48,8 @@
             </tbody>
         </table>
         
-       <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminProductList" />
+       <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminProductList"      style="margin-top : 20px"
+/>
     </div>
 </template>
 

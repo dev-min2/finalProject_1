@@ -243,13 +243,12 @@ productRouter.post('/SellerProductList', async (req, res) => {
    let categoryArray = req.body.categoryArray;
    let publicStateNo = req.body.publicStateNo;
 
-
    console.log('categoryNo', categoryArray)
    console.log(publicStateNo)
 
    try {
       const productService = new ProductService();
-      result = await productService.getMyProductListFilter(userNo, publicStateNo, categoryArray);
+      result = await productService.getMyProductListFilter(userNo, publicStateNo, categoryArray,pageNo);
       res.send(result);
    } catch (e) {
       console.log(e);

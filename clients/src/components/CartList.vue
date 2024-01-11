@@ -111,7 +111,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td colspan="2"><h4> 선택 상품금액 : {{companyPriceList[idx]}}원 <br> 배송비 : {{deliveryPriceList[idx]}}원 <hr>◀{{company[0].company_name}}▶결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
+            <td colspan="2"><h4> 선택 상품금액 : {{companyPriceList[idx]}}원 <br> 배송비 : {{deliveryPriceList[idx]}}원 <hr>{{company[0].company_name}} ▶ 결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
           </tr>
           <br>
           <br>

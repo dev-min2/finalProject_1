@@ -11,11 +11,7 @@
         </div>
         <div class="table-header">판매상품 순위 내역</div>
         <div class="my-1 mx-3 d-flex flex-row-reverse">
-            <select>
-                <option value='sell'>판매 수량</option>
-                <option value='prodsell'>상품 매출</option>
-                <option value='prodname'>상품 이름</option>
-            </select>
+            
         </div>
         <table>
             <thead>
@@ -41,7 +37,8 @@
                 </tr>
             </tbody>
         </table>
-                <PaginationComp v-if="page !== null" :page="page" @go-page="getPage" />
+                <PaginationComp v-if="page !== null" :page="page" @go-page="getPage" style="margin-top : 20px"
+/>
     </div>
 </template>
 

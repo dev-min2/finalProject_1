@@ -50,12 +50,12 @@
                             v-if="productDetail.product_stock > 0"
                             @input="inputNumber($event)"/> 
                             
-                            <h3 v-else-if="productDetail.product_stock == 0" style="color : red">"현재 상품은 품절되었습니다." </h3> 
+                            <h3 v-else-if="productDetail.product_stock == 0" style="color : red; margin: auto;">"현재 상품은 품절되었습니다." </h3> 
                             
-                            <h3 v-else-if="productDetail.product_stock < 0" style="color : red">"현재 상품은 판매가 종료되었습니다." </h3>
+                            <h3 v-else-if="productDetail.product_stock < 0" style="color : red; margin: auto;">"현재 상품은 판매가 종료되었습니다." </h3>
                             
                             &nbsp;
-                            <h4 v-if="productDetail.product_stock > 0" style="color : #fc97bc; font-weight : bold; font-size: 2.5rem; margin-inline-start: auto">총 상품 금액 \ {{$printPriceComma(this.cnt * productDetail.product_price)}}</h4>
+                            <h4 v-if="productDetail.product_stock > 0" style="color : #fc97bc; font-weight : bold; font-size: 2rem; margin-inline-start: auto">총 상품 금액 \ {{$printPriceComma(this.cnt * productDetail.product_price)}}</h4>
                         </div>
                             <br />
                             <br />
@@ -104,7 +104,6 @@
         <table class = "table table-hover" style= text-align:center>
                     <thead >
                         <tr style=text-align:center>
-                            <!-- <th>리뷰번호</th> -->
                             <th>상품이름</th>
                             <th>별점</th>
                             <th>작성자</th>
@@ -115,8 +114,6 @@
                     <tbody>
                     <tr v-if="reviewList == null || reviewList.length <= 0"><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
                             <tr v-else v-for="(review, idx) in reviewList" :key="idx">
-                                <!-- <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
-                                    {{ review.review_no }}</td> -->
                                 <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
                                     {{ review.content }}</td>
                                 <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
@@ -187,12 +184,11 @@
 				<thead>
 					<tr>
 						<th>공개여부</th>
-                <th>글번호</th>
-                <th>문의정보</th>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>작성일</th>
-                <th>문의상태</th>
+                        <th>문의정보</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>문의상태</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -200,7 +196,6 @@
                     <tr v-else v-for="(qna,idx) in qnaInfo" :key="idx">
                         <td v-if="qna.board_public == 'H1'">공개글</td>
                         <td v-else-if="qna.board_public == 'H2'">비공개글</td>
-                        <td>{{qna.qna_board_no}}</td>
                         <td v-if="qna.qna_category == 'G1'">상품문의</td>
                         <td v-else-if="qna.qna_category == 'G2'">배송문의</td>
                         <td v-else-if="qna.qna_category == 'G3'">교환/환불문의</td>
@@ -235,18 +230,11 @@
 			<div id="arrow"></div>
 			<h2 id="text1" onclick="openDiv()" style="font: bolder; font-size: 30px; text-align: left">취소/교환/반품안내</h2>
 			<ul>
-				<li>주문취소는 '입금대기, 입금완료' 단계에서만 가능합니다.</li>
-				<li>주문 내 일부 상품의 부분 취소는 불가능합니다.</li>
-				<li>주문취소는 '마이페이지 -> 주문 · 배송 -> 주문취소 -> 주문 상세 보기' 를 통해 직접 취소하실 수 있습니다.</li>
+				<li>주문취소는 모든 주문이 '주문완료' 상태일 경우에만 가능합니다.</li>
+				<li>쿠폰을 사용할 경우 주문 내 일부 상품의 부분취소는 불가능합니다. </li>
+				<li>주문취소는 '마이페이지 - 주문내역' 내의 주문 상세 내역 페이지를 통해 직접 취소하실 수 있습니다. </li>
 				<li>교환 및 반품은 배송 완료일 기준으로 7일 이내 신청 가능합니다.</li>
 				<li>단순변심으로 인한 교환/반품은 고객님께서 배송비를 부담하셔야 합니다.</li>
-			</ul>
-			<ul id="list" style="display:none">
-				<li>제주, 도서산간 지역은 추가 배송비가 발생할 수 있습니다.</li>
-				<li>브랜드배송 상품은 판매자 및 상품에 따라 교환/반품 배송비가 다를 수 있으므로 강아지대통령 고객센터로 문의해 주시기 바랍니다.</li>
-				<li>교환/반품하려는 상품은 처음 배송한 택배사에서 수거하므로 다른 택배사 이용은 불가능합니다.</li>
-				<li>'발송준비중, 발송처리완료' 단계에서는 상품 수령 후 교환 또는 반품만 가능합니다.</li>
-				<li>교환/반품 요청 기간이 지난 경우, 주문제작 상품으로 재판매가 불가능한 경우 교환/반품이 불가능합니다</li>
 			</ul>
 		</div>
             </div>
@@ -317,7 +305,6 @@ export default {
     methods:{
         async getProductDetail(pno){
             this.$showLoading();
-            console.log(this.reviewList);
             let result = await axios
                         .get(`/api/product/productDetail?pno=${pno}&ptype=${this.$store.state.curShowPetType}`)
                         .catch(err => console.log(err));
@@ -409,11 +396,12 @@ export default {
             if(result.data.affectedRows > 0){
                 this.$showSuccessAlert("성공적으로 장바구니에 담겼습니다."); 
                     this.$showLoading();
+                    const showcartcnt = await axios.get(`/api/user/cart-count/${this.$store.state.userNo}`).catch((err)=>console.log(err));
+                    this.$store.commit('setCartCnt',showcartcnt.data.CNT);
                     const cartResult = await axios
                         .get(`/api/product/productDetail/${this.$store.state.userNo}/${this.productDetail.product_no}`)
                         .catch(err => console.log(err));
                     this.cartInfo = cartResult.data;
-                    this.$store.state.cartCnt += 1;
                     this.$hideLoading();   
             }
         },
