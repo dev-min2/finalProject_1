@@ -38,7 +38,7 @@
                     <td><input type = "checkbox" v-model = "product.selected" /></td>
                     <td>{{product.product_no}}</td>
                     <td>{{product.product_image}}</td>
-                    <td>{{product.product_name}}</td>
+                    <td><router-link :to="{ path : '/productdetail', query : { pno : product.product_no}}">{{product.product_name}}</router-link></td>
                     <td>{{product.product_price}}</td>
                     <td v-if="product.product_public_state == 'I1'">공개</td>
                     <td v-else>비공개</td>

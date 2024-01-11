@@ -90,7 +90,7 @@
                                 <option value="15">15%</option>
                                 <option value="20">20%</option>
                                 <option value="25">25%</option>
-                                <option value="25">30%</option>
+                                <option value="30">30%</option>
                             </select>
                         </li>
                         <hr>
