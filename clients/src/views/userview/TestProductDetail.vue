@@ -213,10 +213,12 @@
                     </tr>
 				</tbody>
 			</table>
-            <PaginationComp2 v-if="qnaPage !== null" :page="qnaPage" @go-page="getQnaResult"/>
-			<button @click="toAddQnaForm" class="btn text-white" style="background-color: #fab3cc;">
+            <div class="text-right">
+			<button @click="toAddQnaForm" class="btn btn-primary my-2" style="text-align:right; background-color: #fab3cc; border:0;">
                 문의글 작성
             </button>
+            </div>
+            <PaginationComp2 v-if="qnaPage !== null" :page="qnaPage" @go-page="getQnaResult"/>
 		</div>
 		<hr>
 		</form>
