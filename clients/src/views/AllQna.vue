@@ -51,10 +51,12 @@
 			</table>
                 
 				</div>
-                <PaginationComp v-if="qnaPage !== null" :page="qnaPage" @go-page="getAllQna"/>       
-			<button @click="toAddQnaForm" class="btn text-white" style="background-color: #fab3cc;">
+            <div class="text-right">
+			<button @click="toAddQnaForm" class="btn btn-primary my-2" style="text-align:right; background-color: #fab3cc; border:0;">
                 문의글 작성
             </button>
+            </div>
+                <PaginationComp v-if="qnaPage !== null" :page="qnaPage" @go-page="getAllQna"/>       
 			</div>
 		</main>
 	</div>
