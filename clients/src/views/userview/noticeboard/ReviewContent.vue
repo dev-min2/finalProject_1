@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div v-if="$store.state.userPermission == 'F1'" class="mt-1 text-right">
-                    <button style="background-color:#fab3cc; border:0;" class="btn btn-primary my-2"
+                    <button type="button" class="btn text-white" style="background-color: #acb1f8;"
                         @click="modifyReview">수정하기</button>
                 </div>
             </div>

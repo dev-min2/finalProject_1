@@ -33,11 +33,12 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2" style="text-align:center;">
-							<input v-if="curModifyForm == false" type="submit" value="저장" class="btn btn-primary mx-3" @click="registReviewBoard">
-							<input v-else type="submit" value="수정" class="btn btn-primary mx-3" @click="modifyReviewPost">
-							<router-link v-if="curModifyForm == false" class="btn btn-warning" to="/myreview">작성취소</router-link>
-							<router-link v-else class="btn btn-warning" to="/myreview">수정취소</router-link>
+						<td colspan="2">
+							<input v-if="curModifyForm == false" type="submit" value="저장" class="btn text-white mr-2" style="background-color :#fab3cc;"  @click="registReviewBoard">
+							<input v-else type="submit" style="background-color : #acb1f8;" value="수정" class="btn text-white mr-2" @click="modifyReviewPost">
+							
+							<router-link v-if="curModifyForm == false" class="btn text-white mr-2" to="/myreview" style="background-color: #bbbbbb;">작성취소</router-link>
+							<router-link v-else class="btn text-white mr-2" style="background-color: #bbbbbb;" to="/myreview">수정취소</router-link>
 						</td>
 					</tr>
 				</table>
@@ -87,6 +88,7 @@ export default {
 	},
 	methods : {
 		async registReviewBoard(){
+			this.$showLoading();
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
@@ -104,6 +106,7 @@ export default {
 				this.$showSuccessAlert('등록성공',null);
 				this.$router.push({path : '/myreview'});
 			}
+			this.$hideLoading();
 		},
 		test(target) {
 			console.log(target);
@@ -145,6 +148,7 @@ export default {
 		},
 		//리뷰수정
 		async modifyReviewPost(){
+			this.$showLoading();
 			const editor = this.$refs.editor.editor;
 			this.reviewBoardInfo.html = editor.getHTML();
 			this.reviewBoardInfo.star_cnt = this.starValue;
@@ -159,7 +163,7 @@ export default {
 				this.$showSuccessAlert('수정성공',null);
 				this.$router.push({path : `/myreview`});
 			}
-			
+			this.$hideLoading();
 		}
 	}
 }
@@ -168,6 +172,9 @@ export default {
 <style scoped>
 th{
 	padding-top : 25px;
+}
+td{
+	text-align: center
 }
 @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 .rate { display: inline-block;border: 0;margin-right: 15px;}

@@ -104,7 +104,7 @@
         <table class = "table table-hover" style= text-align:center>
                     <thead >
                         <tr style=text-align:center>
-                            <th>리뷰번호</th>
+                            <!-- <th>리뷰번호</th> -->
                             <th>상품이름</th>
                             <th>별점</th>
                             <th>작성자</th>
@@ -115,8 +115,8 @@
                     <tbody>
                     <tr v-if="reviewList == null || reviewList.length <= 0"><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
                             <tr v-else v-for="(review, idx) in reviewList" :key="idx">
-                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
-                                    {{ review.review_no }}</td>
+                                <!-- <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.review_no }}</td> -->
                                 <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
                                     {{ review.content }}</td>
                                 <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
@@ -152,7 +152,6 @@
                                 <div class="container mt-3">
                                     <div class="row">
                                         <div class="col-md-12 offset-md-0">
-                                            <h2 class="my-3">리뷰내용</h2>
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title"></h3>
@@ -448,6 +447,7 @@ export default {
             }
         },
         async showReviewList(pageno) {
+            this.$showLoading();
                 const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
                     .catch((err) =>
                         console.log(err));
@@ -463,6 +463,7 @@ export default {
                         this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
                     }
                 }
+                this.$hideLoading();
                 
             },
             async addReviewLikeCnt(rno) {
