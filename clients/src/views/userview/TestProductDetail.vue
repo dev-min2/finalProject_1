@@ -105,7 +105,7 @@
                     <thead >
                         <tr style=text-align:center>
                             <!-- <th>리뷰번호</th> -->
-                            <th>상품이름</th>
+                            <th>리뷰내용</th>
                             <th>별점</th>
                             <th>작성자</th>
                             <th>등록날짜</th>
