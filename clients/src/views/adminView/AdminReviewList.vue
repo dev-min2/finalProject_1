@@ -98,7 +98,15 @@
                 if (result.status == 200) {
                     this.adminReviewList = result.data.selectResult;
                     this.page = result.data.pageDTO;
-
+                }
+                for (let i = 0; i < this.adminReviewList.length; ++i) {
+                    const div = document.createElement('div');
+                    this.adminReviewList[i].realContent = this.adminReviewList[i].content;
+                    div.innerHTML = this.adminReviewList[i].content;
+                    this.adminReviewList[i].content = div.textContent || div.innerText || '';
+                    if (this.adminReviewList[i].content.length >= 10) {
+                        this.adminReviewList[i].content = this.adminReviewList[i].content.substr(0, 10) + '...';
+                    }
                 }
                 //this.adminReviewList = result.data;
                 this.$hideLoading();
@@ -139,6 +147,7 @@
             updateReviewsPerPage() {
                 this.currentPage = 1;
             },
+
         },
     };
 </script>
