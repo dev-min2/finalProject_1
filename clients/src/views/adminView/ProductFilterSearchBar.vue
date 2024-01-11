@@ -38,8 +38,7 @@
         </td>
       </tr>
     </table>
-    <button class = "search" @click="searchProducts">검색</button> 
-  </div>
+<button type="button" class="btn text-white" style="background-color: #fab3cc; margin-left : 10px; margin-top : 10px" @click="searchProducts" >검색</button>   </div>
 </template>
 
 

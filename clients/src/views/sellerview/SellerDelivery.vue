@@ -14,7 +14,7 @@
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="      회원 이름 검색" v-model="search" />
-                <button @click="searchSellerDelivery()" style="border-radius:8px">검색</button>
+                <button @click="searchSellerDelivery()" type="button" class="btn text-white" style="background-color: #fab3cc; margin-left : 5px">검색</button>
             </div>
         </div>
 
@@ -47,11 +47,11 @@
                     <!--<td><button @click="changeDeliveryState">변경하기</button></td>-->
                     <td>
                         <div>
-                                <button v-if="delivery.delivery_state == 'C1'" type="button" class="btn btn-primary" data-bs-toggle="modal" @click="test"
+                                <button v-if="delivery.delivery_state == 'C1'" type="button" class="btn text-white" style="background-color: #acb1f8;" data-bs-toggle="modal" @click="test"
                                     :data-bs-target="`#exampleModal${i}`">
                                     변경하기
                                 </button>
-                                <button v-else-if="delivery.delivery_state == 'C2'" type="button" class="btn btn-primary" data-bs-toggle="modal" @click="test"
+                                <button v-else-if="delivery.delivery_state == 'C2'" type="button"  class="btn text-white" style="background-color: #acb1f8;" data-bs-toggle="modal" @click="test"
                                     :data-bs-target="`#exampleModal${i}`">
                                     변경하기
                                 </button>
@@ -98,14 +98,14 @@
                                     </div>
                                     <div class="modal-footer">
                                         <template v-if="delivery.delivery_state == 'C1'">
-                                            <button type="button" class="btn btn-primary"
+                                            <button type="button" class="btn text-white" style="background-color: #fab3cc;"
                                                 @click="DeliveryStateChangeC2(delivery.payment_product_no)"
                                                 data-bs-dismiss="modal">확인</button>
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">닫기</button>
                                         </template>
                                         <template v-if="delivery.delivery_state == 'C2'">
-                                            <button type="button" class="btn btn-primary"
+                                            <button type="button" class="btn text-white" style="background-color: #fab3cc;"
                                                 @click="sellerDeliveryUpdate(delivery.payment_no,delivery.payment_product_no)" data-bs-dismiss="modal">확인</button>
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">닫기</button>
@@ -202,7 +202,7 @@
                 if(result.data.changedRows > 0) {
                     this.$showSuccessAlert('상태가 변경되었습니다');
                     //await this.sellerDelivery();
-                    this.deliveryNumber = '';
+                   
                     for(let i = 0; i < this.sellerDeliveryList.length; ++i) {
                         if(this.sellerDeliveryList[i].payment_product_no == paymentProductNo) {
                             this.sellerDeliveryList[i].delivery_state = 'C3'
@@ -212,6 +212,7 @@
                 } else {
                     this.$showFailAlert('변경 실패');
                 }
+                this.deliveryNumber = '';
                 
             },
             async DeliveryStateChangeC2(paymentProductNo) {

@@ -45,24 +45,21 @@
               <td>할인율</td>
               <td>{{coupon.discount_pct}}%</td>
             </tr>
-            <tr>
-              <td>쿠폰 만료일</td>
-              <td>{{$dateFormat(coupon.expire_date)}}</td>
-            </tr>
+           
             <tr>
               <td>주문 일시</td>
               <td>{{dateFormat1(coupon.payment_date)}}</td>
             </tr>
             <tr>
               <td >주문 번호</td>
-              <td><router-link :to="{path : '/paymentdetail', query : {paymentNo : coupon.payment_no }}">{{coupon.payment_no}}</router-link></td>
+              <td><a href="#" data-bs-dismiss="modal" @click="moveDetail(coupon.payment_no)">{{coupon.payment_no}}</a></td>
             </tr>
           </table>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn text-white" style="background-color: #bbbbbb;" data-bs-dismiss="modal">닫기</button>
+       
       </div>
     </div>
   </div>
@@ -95,6 +92,9 @@
       this.getUserCouponList(1)
     },
     methods: {
+      moveDetail(payment_no){
+        this.$router.push({path : '/paymentdetail', query : {paymentNo : payment_no }})
+      },
         dateFormat1(date) {
     if (date) {
       return  new Date(date).toLocaleString();

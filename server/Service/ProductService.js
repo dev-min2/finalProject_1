@@ -433,15 +433,16 @@ class ProductService {
     async getMyProductListFilter(userNo, publicStateNo, categoryArray) {
         let result = '';
         try {
-
-            if (categoryArray == -1) //-1 특별한 의미는 없다..
-                result = await productDAO.getMyProductList(userNo); //카테고리를 선택하지 않았을때 전체상품 리스트를 조회함
-            else //카테고리를 선택했을때 공개상태와 categoryArray를 인수로 보냄
-                result = await productDAO.getMyProductListFilter(userNo, publicStateNo, categoryArray);
+            if (categoryArray == -1) { //-1 특별한 의미는 없다..
+                result = await productDAO.getMyProductList(userNo,publicStateNo,pageNo,showCnt); //카테고리를 선택하지 않았을때 전체상품 리스트를 조회함
+                cntResult = await productDAO.sellerProductCnt(userNo, publicStateNo);
+            } else { //카테고리를 선택했을때 공개상태와 categoryArray를 인수로 보냄
+            }
+            result = await productDAO.getMyProductListFilter(userNo, publicStateNo, categoryArray);
+            cntResult = await productDAO.getMyProductListFilterCnt(userNo, publicStateNo);
         } catch (e) {
             console.log(e);
         }
-
         return result;
     }
 
@@ -502,7 +503,7 @@ class ProductService {
         return result;
     }
 
-    //판매자-리뷰삭제
+    //리뷰삭제
     async removeSellerReview(reviewNo) {
         let result = await ReviewDAO.removeSellerReview(reviewNo);
         return result;
