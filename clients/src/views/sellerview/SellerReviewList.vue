@@ -95,6 +95,15 @@
                     this.sellerReviewList = result.data.selectResult;
                     this.page = result.data.pageDTO;
                 }   
+                for (let i = 0; i < this.sellerReviewList.length; ++i) {
+                    const div = document.createElement('div');
+                    this.sellerReviewList[i].realContent = this.sellerReviewList[i].content;
+                    div.innerHTML = this.sellerReviewList[i].content;
+                    this.sellerReviewList[i].content = div.textContent || div.innerText || '';
+                    if (this.sellerReviewList[i].content.length >= 10) {
+                        this.sellerReviewList[i].content = this.sellerReviewList[i].content.substr(0, 10) + '...';
+                    }
+                }
                 //this.sellerReviewList = result.data;
                 this.$hideLoading();
             },
