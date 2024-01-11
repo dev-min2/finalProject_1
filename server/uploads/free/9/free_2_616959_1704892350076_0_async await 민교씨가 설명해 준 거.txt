@@ -1,0 +1,10 @@
+비동기 : 요청시에 결과가 언제 올지 모름
+작업 자체가 병렬적으로 처리돼서 
+async await에서 비동기요청을 하고나면 > 콜스택에서 getSelectQuery 함수가 pop됨
+그리고 바로 totalPrice 함수 처리하러 감
+비동기 작업이 완료되면 다시 getSelectCartQuery함수를 콜스택에 집어넣어서 쓰레드가 이어서 작업을 처리하고
+
+async함수 : 반환값 promise
+Promise 완료상태로 보는 거 > resolve에 값 담기는 순간 >>그래서 return 값을 넣어줘야함
+
+async await로 고치면 >> this.getSelectCartQuery가 작업 완료되는 시점에 totalPrice함수 처리하러 감

@@ -31,6 +31,7 @@
             </div>
             <!--장바구니 폼-->
             <div class="col-md-5 col-lg-4 order-md-last">
+            <br><br><br>
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span style="color:#fc97bc;"> 장바구니</span>
                     <span class="badge badge-pill badge-secondary" style="background-color: #fab3cc;">{{this.$printPriceComma(totalCount)}}</span>

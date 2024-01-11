@@ -9,26 +9,26 @@
 								<div class="sb-sidenav-menu">
 									<div class="nav">
 										<div class="sb-sidenav-menu-heading">{{$store.state.userName}}님 환영합니다</div>
-										<a @click="$router.push('/myinfo')" class="nav-link" >
+										<a @click="$router.push('/myinfo')" class="nav-link" href="#">
 											<div class="sb-nav-link-icon"><i class="bi bi-person"></i></div> 내정보관리
 										</a>
-										<a @click="$router.push('/orderdetail')" class="nav-link">
-											<div class="sb-nav-link-icon"><i class="bi bi-basket3-fill"></i></div> 주문내역
+										<a @click="$router.push('/orderdetail')" class="nav-link" href="#">
+											<div class="sb-nav-link-icon"><i class="bi bi-basket3-fill" ></i></div> 주문내역
 										</a> 
-											<a @click="$router.push('/userMyCouponView')" class="nav-link">
+											<a @click="$router.push('/userMyCouponView')" class="nav-link" href="#">
 											<div class="sb-nav-link-icon"><i class="bi bi-upc-scan"></i></div> 내 쿠폰
 										</a> 
-										<a @click="$router.push('/wishList')" class="nav-link">
+										<a @click="$router.push('/wishList')" class="nav-link" href="#">
 											<div class="sb-nav-link-icon"><i class="fas fa-heart"></i></div> 찜 목록
 										</a> 
-										<a @click="$router.push('/myQnaList')" class="nav-link" >
+										<a @click="$router.push('/myQnaList')" class="nav-link" href="#">
 											<div class="sb-nav-link-icon"><i class="bi bi-box-seam"></i></div> 문의내역
 										</a> 
-										<a @click="$router.push('/myreview')"  class="nav-link">
+										<a @click="$router.push('/myreview')"  class="nav-link" href="#">
 											<div class="sb-nav-link-icon"><i class="bi bi-chat-left-text"></i>
 											</div> 내 리뷰보기
 										</a>
-										<a @click="$router.push('/mypetinfo')" class="nav-link">
+										<a @click="$router.push('/mypetinfo')" class="nav-link" href="#"> 
 											<div class="sb-nav-link-icon"><i class="bi bi-reddit"></i></div> 내반려동물정보
 										</a><a @click="$router.push('/leave')" class="nav-link" href="#">
 											<div class="sb-nav-link-icon"><i class="bi bi-person"></i></div> 회원 탈퇴
@@ -51,6 +51,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.nav-link:hover {
+  color : red;
+}
 
 </style>

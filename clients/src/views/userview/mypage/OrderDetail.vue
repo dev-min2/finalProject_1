@@ -18,9 +18,9 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center" @click="goOrderDetail(order.payment_no)">
-								<td>{{order.payment_no}}</td>
-								<td>{{order.payment_product}}</td>
+							<tr :key="i" v-for="(order, i) in selectPaymentList" align="center" @click="goOrderDetail(order.payment_no)" style="cursor:pointer;">
+								<td >{{order.payment_no}}</td>
+								<td style="width: 300px;">{{order.payment_product}}</td>
 								<td>{{$printPriceComma(order.real_payment_amount)}}원</td>
 								<td>총 {{order.total_product}}개</td>
 								<td>{{$dateFormat(order.payment_date)}}</td>

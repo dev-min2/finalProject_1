@@ -7,6 +7,7 @@ const BoardService = require('../Service/BoardService');
 boardRouter.get('/freeboard', async (req, res) => {
     const pageNo = req.query.pg;
     const keyword = req.query.keyword;
+    console.log(req.query);
     try {
         const boardService = new BoardService();
         const result = await boardService.getFreeBoardList(pageNo, keyword);

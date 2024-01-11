@@ -23,11 +23,14 @@
                 </tr>
             </tbody>
         </table>
-        <button class="btn btn-primary my-2" 
-                style="text-align:left; background-color:#fc97bf; border:0;"
-                @click="goWriteFree">
+        <div class="text-right">
+        <button v-if="$store.state.userNo > 0 " @click="goWriteFree"
+                class="btn btn-primary my-2" 
+                style="text-align:right;background-color:#fab3cc; border:0;"
+            >
             글쓰기
         </button>
+        </div>
         <!-- 서버에 비동기 통신으로 데이터 요청 응답이 오기전에 컴포넌트에 prop이 전달될 수 있으므로 null 이 아닐때만 전달되게끔 해야함.-->
         <PaginationComp v-if="page !== null" :page="page" @go-page="getFreeBoardList" />
     </div>
@@ -60,6 +63,9 @@ export default {
         //리스트 띄워주기
             async getFreeBoardList(pageNo,keyword) {
                 this.$showLoading();
+                if(typeof keyword == "undefined" ){
+                    keyword = '';
+                }
                 const result = await axios.get(`/api/board/freeboard?pg=${pageNo}&keyword=${keyword}`);
                 if(result.status == 200) {
                     this.freeBoardList = result.data.selectResult;
