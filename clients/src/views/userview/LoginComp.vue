@@ -5,7 +5,7 @@
 			<div class="input-form-backgroud row">
 				<div class="input-form col-md-12 mx-auto">
                     <div style="text-align: center;" class="my-2">
-                        <img class="mx-2" src="../../assets/commonResource/catlogo.png" alt="cat" style="width: 200px; height:60px;" />
+                        <img class="mx-2" src="../../assets/commonResource/dearMyPet.png" alt="cat" style="width: 200px; height:80px;" />
                     </div>
 					<div class="row">
 						<div class="mb-3">

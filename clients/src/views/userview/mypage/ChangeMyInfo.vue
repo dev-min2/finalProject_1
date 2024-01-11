@@ -14,10 +14,10 @@
 						
                         <label for="email">이메일</label> 
 						<div class="mb-3 d-flex gap-3" >
-                            <input type="email" style="width:250px; height:40px;" class="form-control align-self-center" v-model="userEmail" id="email" name="email" placeholder="you@example.com" required>
+                            <input type="email" style="width:250px; height:40px;" class="form-control align-self-center" v-model="userEmail" id="email" name="email" placeholder="myEmail@example.com" required>
 							<div class="invalid-feedback">이메일을 입력해주세요.</div>
-                            <input v-if="showEmailAuth == false" type="button" @click="sendEmailAuthMail" value="이메일 인증" style="border-radius: 20px; margin-top:5px;width:150px;height:30px">
-                            <input v-else type="button" value="이메일 인증" style="border-radius: 20px; margin-top:5px;width:150px;height:30px" disabled>
+                            <input v-if="showEmailAuth == false" type="button" @click="sendEmailAuthMail" value="이메일 인증" style="border-radius: 15px; margin-top:5px;width:150px;height:30px;background-color:#fab3cc;color:white;border:0;">
+                            <input v-else type="button" value="이메일 인증" style="border-radius: 15px; margin-top:5px;width:150px;height:30px;background-color:#bbbbbb;color:white;border:0;" disabled>
 						</div>  
                         <template v-if="showEmailAuth == true">
                             <label for="emailAuth">이메일인증</label> 
@@ -25,8 +25,8 @@
                                 <input v-if="completedEmailAuth== false" type="text" style="width:250px; height:40px;" class="form-control align-self-center" id="emailAuth" name="emailAuth" v-model="authCode" required>
                                 <input v-else type="text" style="width:250px; height:40px;" class="form-control align-self-center" id="emailAuth" name="emailAuth" v-model="authCode" readonly required>
                                 <div class="invalid-feedback">이메일 인증값을 입력해주세요.</div>
-                                <input v-if="completedEmailAuth == false" type="button" @click="confirmEmailAuth" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px">
-                                <input v-else type="button" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px" disabled>
+                                <input v-if="completedEmailAuth == false" type="button" @click="confirmEmailAuth" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px;background-color:#fab3cc;border:0;color:white;">
+                                <input v-else type="button" value="인증하기" style="border-radius: 20px; margin-top:5px;width:150px;height:30px;background-color:#bbbbbb;color:white;border:0;" disabled>
                             </div>
                             <div>
                                 <p v-show="completedEmailAuth == false" style="color:red;">유효시간 : {{showCount}}</p>
@@ -46,7 +46,7 @@
 						
                         <div class="mb-3">
                             <input type="text" v-model="postcode" placeholder="우편번호"  style="margin:5px 0" readonly>
-                            <input class="ml-2" type="button" @click="callDaumAddressAPI" value="우편번호 찾기" style="margin:5px 0"><br> 
+                            <input class="ml-2" type="button" @click="callDaumAddressAPI" value="우편번호 찾기" style="border-radius: 20px; margin-top:5px;width:120px;height:30px;background-color:#fab3cc;border:0;color:white;"><br> 
                             <input class="w-100" type="text" v-model="roadAddress" placeholder="도로명주소" name="addr" style="margin:5px 0" readonly> 
                             <span id="guide" style="color: #999; display: none"></span>
                             <input class="w-100" type="text" v-model="detailAddress" name="addr_detail" placeholder="상세주소" style="margin:5px 0">
