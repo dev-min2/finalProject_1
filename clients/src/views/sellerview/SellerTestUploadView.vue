@@ -65,8 +65,8 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							<input type="submit" value="저장" class="btn btn-primary">
-							<input type="reset" value="초기화" class="btn btn-warning">
+							<input type="submit" value="저장"  class="btn text-white" style="background-color: #fab3cc;">
+							<input type="reset" value="초기화"  class="btn text-white" style="background-color: #bbbbbb; margin-left : 3px;" >
 						</td>
 					</tr>
 				</table>
@@ -104,9 +104,7 @@ export default {
     },
 
 	created(){
-
-        //this.productInfo.user_no = this.$store.state.userNo;
-        this.productInfo.user_no = 1;
+        this.productInfo.user_no = this.$store.state.userNo;
 		this.randValue = Math.floor(Math.random() * (999999 - 111111 + 1)) + 111111;
 		this.curTimeVal = new Date().getTime();
 	},
@@ -117,7 +115,7 @@ export default {
             const html = this.$refs.editor.editor.getHTML();
             console.log(html);
             formData.append('product_desc', html);
-            formData.append('user_no', 1);
+            formData.append('user_no', this.$store.state.userNo);
             formData.append('product_public_state', 'I1');
             this.$showLoading();
 			let result = await axios.post('/api/product/uploadProduct', formData);
@@ -152,21 +150,21 @@ export default {
     table {
         border-collapse: collapse;
         width: 100%;
-        border: 2px solid #000000;
+        border: 1px solid #bbbbbb;
        
-        margin-left: 10px;
+      
     }
 
     th,
     td {
         border-collapse: collapse;
         padding: 8px;
-       
-        border: 2px solid #000000;
+        text-align: center;
+        border: 1px solid #bbbbbb;
     }
 
     th {
-        border: 2px solid #000000;
+        border: 1px solid #bbbbbb;
         background-color: #f2f2f2;
 
     }

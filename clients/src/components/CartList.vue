@@ -58,7 +58,7 @@
             <td>
               <router-link :to="{ path : '/productdetail', query : { pno : products.product_no}}" style="text-decoration : none; color : black"><span style="font-weight : bold; font-size : medium">{{products.product_name}}</span></router-link>
               <hr />
-              <span class="price" style="font-weight : bold; font-size : medium">가격 : {{ products.product_price }}</span>
+              <span class="price" style="font-weight : bold; font-size : medium">가격 : {{ $printPriceComma(products.product_price) }}</span>
             </td>
             <td class="cart_list_option" v-if="products.product_stock > 0">
               <h6 style="font-weight : bold">선택수량 : {{ products.product_sel_cnt }}</h6>
@@ -101,7 +101,7 @@
               />
             </td>  
             <td>
-              <span class="price" style="font-weight : bold; font-size : medium">{{products.product_price * products.product_sel_cnt}}</span>
+              <span class="price" style="font-weight : bold; font-size : medium">{{$printPriceComma(products.product_price * products.product_sel_cnt)}}</span>
               <br />
             </td>
           </tr>
@@ -111,7 +111,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td colspan="2"><h4> 선택 상품금액 : {{companyPriceList[idx]}}원 <br> 배송비 : {{deliveryPriceList[idx]}}원 <hr>◀{{company[0].company_name}}▶결제금액 : {{companyPriceList[idx] + deliveryPriceList[idx]}}원</h4></td>
+            <td colspan="2"><h4> 선택 상품금액 : {{$printPriceComma(companyPriceList[idx])}}원 <br> 배송비 : {{$printPriceComma(deliveryPriceList[idx])}}원 <hr>{{company[0].company_name}} ▶ 결제금액 : {{$printPriceComma(companyPriceList[idx] + deliveryPriceList[idx])}}원</h4></td>
           </tr>
           <br>
           <br>
@@ -120,7 +120,7 @@
       </table>
     </template>
     <td class="total">
-      <h4 v-if="cartList && Object.keys(cartList).length > 0">총 선택 상품금액 : {{checkedPrice}}원<br>총 배송비 : {{totalPrice()}}원 <hr>총 결제금액 : {{checkedPrice + totalPrice()}}원</h4> 
+      <h4 v-if="cartList && Object.keys(cartList).length > 0">총 선택 상품금액 : {{$printPriceComma(checkedPrice)}}원<br>총 배송비 : {{$printPriceComma(totalPrice())}}원 <hr>총 결제금액 : {{$printPriceComma(checkedPrice + totalPrice())}}원</h4> 
       <h4 v-else style="text-align : center">장바구니가 비어있습니다.</h4>
       
     </td> 

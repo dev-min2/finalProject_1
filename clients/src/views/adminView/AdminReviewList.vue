@@ -17,7 +17,7 @@
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="리뷰 내용 검색" v-model="search" />
-                <button @click="searchAdminReview(search)" style="border-radius:8px">검색</button>
+                <button @click="searchAdminReview(search)" type="button" class="btn text-white" style="background-color: #fab3cc;">검색</button>
             </div>
         </div>
 
@@ -28,6 +28,7 @@
                     <th>상품명</th>
                     <th>리뷰내용</th>
                     <th>좋아요 수</th>
+                    <th>게시 날짜</th>
                     <th>리뷰 삭제</th>
                 </tr>
             </thead>
@@ -37,11 +38,12 @@
                     <td class="pName">{{ review.product_name }}</td>
                     <td><router-link :to="{path : '/myreview/info', query : {rno : review.review_no }}">{{ review.content }}</router-link></td>
                     <td class="likecnt">{{ review.review_like_cnt }}</td>
-                    <td class="Del"><button @click="deleteReview(review.review_no)">리뷰 삭제</button></td>
+                    <td>{{$dateFormat(review.review_date)}}</td>
+                    <td class="Del"><button type="button" class="btn text-white" style="background-color: #bbbbbb;" @click="deleteReview(review.review_no)">리뷰 삭제</button></td>
                 </tr>
             </tbody>
         </table>
-        <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminReview" />
+        <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminReview" style="margin-top : 20px"/>
 
     </div>
 </template>
@@ -96,7 +98,15 @@
                 if (result.status == 200) {
                     this.adminReviewList = result.data.selectResult;
                     this.page = result.data.pageDTO;
-
+                }
+                for (let i = 0; i < this.adminReviewList.length; ++i) {
+                    const div = document.createElement('div');
+                    this.adminReviewList[i].realContent = this.adminReviewList[i].content;
+                    div.innerHTML = this.adminReviewList[i].content;
+                    this.adminReviewList[i].content = div.textContent || div.innerText || '';
+                    if (this.adminReviewList[i].content.length >= 10) {
+                        this.adminReviewList[i].content = this.adminReviewList[i].content.substr(0, 10) + '...';
+                    }
                 }
                 //this.adminReviewList = result.data;
                 this.$hideLoading();
@@ -137,6 +147,7 @@
             updateReviewsPerPage() {
                 this.currentPage = 1;
             },
+
         },
     };
 </script>

@@ -5,7 +5,7 @@
       <table>
         <tr class>
           <td class="A">
-            <span>기간</span>
+            <span style="font-weight : bold">기간</span>
           </td>
           <td class="B">
             <div class = "labels">
@@ -23,7 +23,7 @@
         <tr>
           <td class="A">
             <div>
-              <span>상품 판매가격</span>
+              <span style="font-weight : bold">상품 판매가격</span>
             </div>
           </td>
           <td class="B">
@@ -33,7 +33,7 @@
           </td>
         </tr>
       </table>
-      <button @click="search">검색</button>
+       <button type="button" class="btn text-white" style="background-color: #fab3cc; margin-left : 10px; margin-top : 10px" @click="search" >검색</button>
     </div>
   
   </div>
@@ -114,11 +114,7 @@ export default {
     maxPrice(newVal, o) {
       console.log(newVal);
     },
-    dateInit(){
-      this.period = null;
-      this.selectedPeriod = null; // 기간 선택 해제
-
-    }
+    
   }
 };
 </script>
@@ -157,7 +153,7 @@ label {
   margin: 10px;
   padding-top: 8px;
   padding-left: 10px;
-  border: 2px solid;
+  border: 2px solid #9b9b9b;
   margin: 0px;
   
  
@@ -169,17 +165,7 @@ label.active {
   color: rgb(255, 255, 255);
 }
 
-button {
-  margin-top: 10px;
-  margin-left: 10px;
-  padding: 5px 10px;
-  background-color: #dfdfdf;
-  color: rgb(0, 0, 0);
-  border: 0.5px solid;
-  border-radius: 3px;
-  cursor: pointer;
-  font-weight: bold;
-}
+
 
 button:hover {
   background-color: #b6b6b6;
@@ -209,6 +195,7 @@ button:hover {
         border: 2px solid #000000;
         text-align: center;
         margin-left: 10px;
+        
     }
 
     th,
@@ -216,11 +203,11 @@ button:hover {
         border-collapse: collapse;
         padding: 8px;
         text-align: center;
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
     }
 
     th {
-        border: 2px solid #000000;
+        border: 2px solid #bbbbbb;
         background-color: #f2f2f2;
 
     }

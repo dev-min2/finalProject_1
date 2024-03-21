@@ -16,8 +16,8 @@
                 <h4>상품 목록</h4>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="       상품명 검색" v-model="search" />
-                <button @click="sellerProductSearchName()" style="border-radius:8px">검색</button>
+                <!-- <input type="text" placeholder="       상품명 검색" v-model="search" />
+                <button type="button" class="btn text-white" style="background-color: #fab3cc;" @click="sellerProductSearchName()">검색</button> -->
             </div>
         </div>
         <table class="productList">
@@ -38,7 +38,7 @@
                     <td><input type = "checkbox" v-model = "product.selected" /></td>
                     <td>{{product.product_no}}</td>
                     <td>{{product.product_image}}</td>
-                    <td>{{product.product_name}}</td>
+                    <td><router-link :to="{ path : '/productdetail', query : { pno : product.product_no}}">{{product.product_name}}</router-link></td>
                     <td>{{product.product_price}}</td>
                     <td v-if="product.product_public_state == 'I1'">공개</td>
                     <td v-else>비공개</td>
@@ -48,9 +48,9 @@
             </tbody>
         </table>
     <!-- 상품등록,삭제,숨김 버튼 -->
-    <button class = "b1" @click="upload" style="border-radius:5px"><router-link class="nav-link" to="/upload">상품등록</router-link></button>
-    <button class = "b2" @click="productDelete" style="border-radius:5px">삭제</button>
-    <button class = "b3" @click="productHiding" style="border-radius:5px">숨김</button>
+    <button type="button" class="btn text-white" style="background-color: #fab3cc; margin-left : 10px; margin-top : 10px"  @click="upload" ><router-link class="nav-link" to="/upload">상품등록</router-link></button>
+    <button type="button" class="btn text-white" style="background-color: #bbbbbb; margin-left : 2px; margin-top : 10px" @click="productDelete" >삭제</button>
+    <button type="button" class="btn text-white" style="background-color: #acb1f8; margin-left : 2px; margin-top : 10px" @click="productHiding" >숨김</button>
         
        <PaginationComp v-if="page !== null" :page="page" @go-page="getSellerProductList" />
     </div>

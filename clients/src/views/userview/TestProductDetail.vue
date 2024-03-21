@@ -1,6 +1,7 @@
 
 <template>
 <div>
+    {{reviewList}}
     <hr />
     <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
@@ -104,19 +105,19 @@
         <table class = "table table-hover" style= text-align:center>
                     <thead >
                         <tr style=text-align:center>
-                            <!-- <th>리뷰번호</th> -->
-                            <th>리뷰내용</th>
+                            <th>리뷰번호</th>
+                            <th>상품이름</th>
                             <th>별점</th>
                             <th>작성자</th>
-                            <th>작성일</th>
+                            <th>등록날짜</th>
                             <th>좋아요</th>
                         </tr>
                     </thead>
                     <tbody>
                     <tr v-if="reviewList == null || reviewList.length <= 0"><td style=color:gray; colspan="6">아직 작성된 리뷰가 없습니다.</td></tr>
                             <tr v-else v-for="(review, idx) in reviewList" :key="idx">
-                                <!-- <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
-                                    {{ review.review_no }}</td> -->
+                                <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
+                                    {{ review.review_no }}</td>
                                 <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
                                     {{ review.content }}</td>
                                 <td @click="setViewer(review)" data-bs-target="#exampleModal" data-bs-toggle="modal">
@@ -152,6 +153,7 @@
                                 <div class="container mt-3">
                                     <div class="row">
                                         <div class="col-md-12 offset-md-0">
+                                            <h2 class="my-3">리뷰내용</h2>
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title"></h3>
@@ -447,7 +449,7 @@ export default {
             }
         },
         async showReviewList(pageno) {
-            this.$showLoading();
+                this.$showLoading();
                 const result = await axios.get(`/api/product/productdetails/review/${this.product_no}/${pageno}`)
                     .catch((err) =>
                         console.log(err));
@@ -462,15 +464,16 @@ export default {
                     if (this.reviewList[i].content.length >= 10) {
                         this.reviewList[i].content = this.reviewList[i].content.substr(0, 10) + '...';
                     }
+
                 }
                 this.$hideLoading();
-                
             },
             async addReviewLikeCnt(rno) {
                 if(this.$store.state.userNo <= 0) {
                     this.$showWarningAlert('로그인을 해주세요.');
                     return;
                 }
+
                 this.$showLoading();
                 const result = await axios.put(`/api/product/productdetails/review/${rno}`)
                     .catch((err) => console.log(err));
@@ -514,11 +517,6 @@ export default {
                 });
             },
         toAddQnaForm(){
-            if(this.$store.state.userNo <= 0) {
-                    this.$showWarningAlert('로그인을 해주세요.');
-                    this.$router.push({path: '/login'});
-                    return;
-            }
             this.$router.push({
                 path:`/addqnaform`,
                 query: { pno: this.productDetail.product_no , pname : this.productDetail.product_name},

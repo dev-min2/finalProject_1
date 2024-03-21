@@ -65,6 +65,9 @@
         methods : {
             async getNoticeBoardList(pageNo,keyword) {
                 this.$showLoading();
+                if(typeof keyword == "undefined" ){
+                    keyword = '';
+                }
                 const result = await axios.get(`/api/board/notice?pg=${pageNo}&keyword=${keyword}`);
                 if(result.status == 200) {
                     this.noticeList = result.data.selectResult;

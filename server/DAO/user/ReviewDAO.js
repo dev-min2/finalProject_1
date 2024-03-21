@@ -10,7 +10,7 @@ let reviewDAO = {
         let startPage = (pageNo - 1) * showCnt;
         let showPage = showCnt;
         const getAdminReview = `
-            SELECT B.user_name,C.product_name,A.content,A.review_like_cnt,A.review_no
+            SELECT B.user_name,C.product_name,A.content,A.review_like_cnt,A.review_no, A.review_date
             FROM review A JOIN user B ON A.user_no = B.user_no  
             JOIN PRODUCT C ON A.product_no=C.product_no
             LIMIT ${startPage},${showPage}
@@ -41,7 +41,7 @@ let reviewDAO = {
         let startPage = (pageNo - 1) * showCnt;
         let showPage = showCnt;
         const getSellerReview = `
-            SELECT B.user_name,C.product_name,A.content,A.review_like_cnt,A.review_no
+            SELECT B.user_name,C.product_name,A.content,A.review_like_cnt,A.review_no,A.review_date
             FROM review A JOIN user B ON A.user_no = B.user_no  
             JOIN PRODUCT C ON A.product_no=C.product_no
             WHERE A.USER_NO = ?

@@ -16,8 +16,8 @@
                 <h4>상품 목록</h4>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="       상품명 검색" v-model="search" />
-                <button @click="adminProductSearchName()" style="border-radius:8px">검색</button>
+                <!-- <input type="text" placeholder="       상품명 검색" v-model="search" />
+                <button @click="adminProductSearchName()" style="border-radius:8px">검색</button> -->
             </div>
         </div>
         <table class="productList">
@@ -38,7 +38,7 @@
                     <td><input type = "checkbox" v-model = "product.selected" /></td>
                     <td>{{product.product_no}}</td>
                     <td>{{product.product_image}}</td>
-                    <td>{{product.product_name}}</td>
+                    <td><router-link :to="{ path : '/productdetail', query : { pno : product.product_no}}">{{product.product_name}}</router-link></td>
                     <td>{{product.product_price}}</td>
                     <td v-if="product.product_public_state == 'I1'">공개</td>
                     <td v-else>비공개</td>
@@ -48,7 +48,8 @@
             </tbody>
         </table>
         
-       <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminProductList" />
+       <PaginationComp v-if="page !== null" :page="page" @go-page="getAdminProductList"      style="margin-top : 20px"
+/>
     </div>
 </template>
 

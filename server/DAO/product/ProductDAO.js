@@ -505,10 +505,9 @@ AND user_leavedate is ${leaveFilter} null
     },
 
     //판매자 상품 필터 조회
-    getMyProductListFilter: async function (userNo, publicStateNo, categoryArray) {
-        console.log('dao');
-        console.log(publicStateNo);
-        console.log('sdsd',categoryArray)
+    getMyProductListFilter: async function (userNo, publicStateNo, categoryArray,pageNo,showCnt) {
+        let startPage = (pageNo - 1) * showCnt;
+        let showPage = showCnt;
         let question = '';
         //let categoryArray = [];
         for (let i = 0; i < categoryArray.length; ++i) {
@@ -530,10 +529,25 @@ AND user_leavedate is ${leaveFilter} null
                 WHERE user_no = ?
                 AND A.product_public_state = ?
                 AND A.category_no IN(${question}
+                LIMIT ?, ?
                 `;
         // ...(스프레드 연산자)를 사용하지 않으면, query 함수에 배열 전체가 하나의 인수로 전달.
-        return query(getMyProductListFilter, [userNo, publicStateNo, ...categoryArray])
+        return query(getMyProductListFilter, [userNo, publicStateNo, ...categoryArray,startPage,showPage])
     },
+
+    getMyProductListFilterCnt: async function (userNo, publicStateNo, categoryArray) {
+        const getMyProductListFilterCnt = `
+            SELECT count(*) AS CNT
+                FROM product AS A
+                JOIN category AS B ON A.category_no = B.category_no
+                JOIN category AS C ON C.category_no = B.category_pno
+                WHERE user_no = ?
+                AND A.product_public_state = ?
+                AND A.category_no IN(${question}
+        `;
+        return query(getMyProductListFilterCnt, [userNo,publicStateNo,categoryArray]);
+    },
+
 
 
     //판매자 상품검색

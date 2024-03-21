@@ -19,7 +19,7 @@
                     <td>{{coupon.coupon_name}}</td>
                     <td>{{coupon.discount_pct}}</td>
                     <td>{{coupon.expire_date}}일 후 만료</td>
-                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    <td><button type="button" class="btn text-white" style="background-color: #fab3cc;" data-bs-toggle="modal"
                             data-bs-target="#exampleModal2" @click="loadAdminMemberList(coupon)">쿠폰 지급</button></td>
                 </tr>
             </tbody>
@@ -49,7 +49,7 @@
                                         <td>{{user.user_no}}</td>
                                         <td>{{user.user_id}}</td>
                                         <td>{{user.user_name}}</td>
-                                        <td><button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                        <td><button type="button" class="btn text-white" style="background-color: #acb1f8;" data-bs-dismiss="modal"
                                                 @click="giveCoupon(user, selectedCoupon)">지급하기</button></td>
                                     </tr>
                                 </tbody>
@@ -57,7 +57,7 @@
                             <PaginationComp2 v-if="userPage !== null" :page="userPage" @go-page="getPage2" style="margin-top:5px" />
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button>
+                            <button type="button" class="btn text-white" style="background-color: #fab3cc;" data-bs-dismiss="modal">확인</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
         </table>
         <PaginationComp v-if="page !== null" :page="page" @go-page="getPage" style="margin-top:5px" />
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="btn text-white" style="background-color: #acb1f8;" data-bs-toggle="modal" data-bs-target="#exampleModal">
             쿠폰 생성
         </button>
         <!-- Modal -->
@@ -90,13 +90,13 @@
                                 <option value="15">15%</option>
                                 <option value="20">20%</option>
                                 <option value="25">25%</option>
-                                <option value="25">30%</option>
+                                <option value="30">30%</option>
                             </select>
                         </li>
                         <hr>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click="createCouponInfo()"
+                        <button type="button" class="btn text-white" style="background-color: #fab3cc;" @click="createCouponInfo()"
                             data-bs-dismiss="modal">확인</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                     </div>
